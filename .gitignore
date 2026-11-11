@@ -1,0 +1,15 @@
+node_modules/
+*.log
+.DS_Store
+
+# pi session state. Todos belong to a session, not to the project;
+# .pi/settings.json is committed on purpose so a fresh clone is configured the
+# same way (codemode + tool_search in defaultTools).
+.pi/todos/
+.pi/npm/
+
+# Linked worktrees (see .pi/skills/worktree/). Shared refs, so branch names must
+# stay unique across them.
+.worktrees/
+
+lab/

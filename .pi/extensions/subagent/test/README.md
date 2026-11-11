@@ -1,0 +1,198 @@
+# Subagent extension tests
+
+Unit and behaviour tests for `.pi/extensions/` — the `subagent/` tree, the
+sibling `btw/` extension, plus the sibling `todos.ts` tool (`todos-tool.test.ts`),
+which lives here because this is where the test harness and the linked pi
+packages are. Node runs these `.ts` files directly (native type stripping) —
+there is no build step and no compiler in the loop, so type errors are not
+caught here.
+
+## Running
+
+```bash
+# 1. Link the globally installed pi packages into node_modules (idempotent)
+.pi/extensions/subagent/test/setup-deps.sh
+
+# 2. Run the suite from the repository root
+node --test .pi/extensions/subagent/test/*.test.ts
+```
+
+No `--test-force-exit` is needed: `session_shutdown` sets a `shuttingDown` flag
+that stops the watcher from re-arming its poll timer (local patch 10 in
+`index.ts`), so the suite drains its event loop and exits on its own.
+`lifecycle.test.ts` pins that behaviour with a regression test that asserts no
+further `pi.exec` calls happen after shutdown.
+
+The suite is safe to run from inside a pi subagent child: `createHarness` clears
+`PI_TMUX_SUBAGENT_CHILD` / `PI_TMUX_SUBAGENT_RESULT`, which the extension factory
+otherwise branches on, and `lifecycle.test.ts` guards that with a regression
+test.
+
+## Layout
+
+| File | Covers |
+|---|---|
+| `export.test.ts` | the `__test__` block in `index.ts` still exists (guards a future re-vendor) |
+| `pure.test.ts` | `shellQuote` (now in `shell.ts`), `PI_SUBAGENT_*` env parsing, `isSameOrDescendant`, `resolveModel`, `validateCwd` |
+| `tmux.test.ts` | tmux session/socket naming, command construction, `--attach-subagent` parsing |
+| `status.test.ts` | `runSummary`, `isTerminal`, `holdsChild`, `runDirOwnsLiveTranscript`, `isMissingTmuxTarget`, `statusDetail`, `formatDuration`, `trimPane`, `truncateToolText`, `textFromAssistant` |
+| `classifier.test.ts` | the status classifier: phase classification, stall/recovery transitions, monotonicity against stale snapshots, `interrupted` authority |
+| `listview.test.ts` | the bounded `subagent_status` list: the total detail budget, `compact`, one-line rows, the withheld-output note, and the run→row projection |
+| `widget.test.ts` | `renderStatusRows` and the widget component: icons, capping, task trimming, width fitting, and the click surface (`onRowClick`, press-before-click gating, the un-clickable overflow line, ignored wheel/right/middle/move/drag, and the input-inert default) |
+| `panel.test.ts` | the panel builders (`panel.ts`): the Escape bind argv, the nested attach command (both `TMUX` variables unset, quoting), the popup argv, the id/prefix/suffix title derivation and its sanitization, its refusal of a run id carrying a tmux format metacharacter, and the `openSubagentPanel` guards (missing/queued/terminal run, non-tmux, no attached client, dead session, failed bind, non-TUI/shutdown) via a fake exec + popup launcher |
+| `popup.test.ts` | the shared popup machinery (`popup.ts`) both extensions call: the two-probe tmux argv, the window filter, the activity tie-break and its stability on equal seconds, tolerated malformed client lines, `pane-gone` vs `no-client`, the optional per-probe timeout, argument-not-environment input, a rejection propagating to the caller, the `TMUX` socket and socket+pane pointer helpers, and the launcher's spawn-error callback |
+| `result.test.ts` | the child→parent result protocol (`result.ts`): acceptance (complete v1 and a newer version with a compatible shape, an empty output, extra fields, a missing version) and every rejection (non-object, unknown status, non-string output/optional field, non-finite `finishedAt`, bad JSON), the version-skew detail on a shape failure, and the file reader's missing-vs-unreadable split |
+| `usage.test.ts` | child session usage/cost accounting |
+| `handoff.test.ts` | child launch argv per mode, lineage/fork session seeding, live-branch fork ordering, and the usage baseline |
+| `btw-launch.test.ts` | the sibling `.pi/extensions/btw/launch.ts`: paths (the per-session socket from the full session id, the 0700 run dir, `answer.md`, `owner.pid`), the `exec node <viewer.mjs> <answer>` viewer command, the tmux argv with session targets and `kill-server`, and the question / absolute-path / session-id guards |
+| `btw-markdown.test.ts` | the sibling `.pi/extensions/btw/markdown.mjs`: the Markdown→ANSI renderer — ATX headings at three levels, blockquotes/rules/lists/tasks, fenced code, inline code/links/bold/italic/strike, escapes and HTML tags, the dimmed usage footer, the opt-in gutter, incremental resume, line-independence, and NO_COLOR |
+| `btw.test.ts` | the `/btw` command wiring: reset and viewer start, the popup ladder/argv/title (the question comes from the answer file's header on launch and reattach; multi-line is joined, a body blockquote is ignored, and `#`/escape sequences are cleaned) and its fallbacks (vanished pane, no client, failed bind), reattach with and without an answer, restarting a dead viewer, the answer/usage/error footers, the guard ladder, replace ordering, the failed-kill replace that keeps the old answer, the `blockImages` wiring, multi-line question headers, and the factory's prompt/reattach/empty-submission/non-TUI/starting paths |
+| `btw-lifecycle.test.ts` | the owner-pid lifecycle: the start and shutdown reason tables, the live-owner guard on both paths, missing and malformed owner files, kill→delete ordering, the failed-kill retry that keeps the answer and socket, the cross-session sweep, stray files in the root, and idempotency |
+| `btw-request.test.ts` | the sibling `.pi/extensions/btw/request.ts`: the projection→`convertToLlm` prefix with no system/tools override, the deliberate absence of `tool_choice`, the main-session routing header, `reasoning`/`sessionId` (including `off` → dropped), the `blockImages` mirror, the sanitizer, and the stream / tool-call-continuation outcomes; plus the resolved thinking level + thinking budgets, the telemetry attribution headers, the ignored-tool-call accumulation across the continuation, the zero-cache warning threshold, and the drift guard against pi's mirrored internals |
+| `lifecycle.test.ts` | launch, concurrency queueing, finalisation, failure detection, cancel, status, clean, shutdown stops the watcher, turn-level interrupt, the `result.json` protocol in situ (an unusable read retried across ticks with a later good result still winning, an unusable result failing the run once and stopping the watcher, a newer protocol version with a compatible shape finalizing, and the dead-child and cancel-mid-tick branches), the live widget (install/refresh/clear), and the widget→panel wiring (a click binds Escape then launches the popup detached, through a fake launcher) |
+| `interrupt.test.ts` | the `interrupt.json` marker (validation, reading, writing), the child reporter's abort path, and the parent lifecycle of an interrupted run |
+| `session-breakdown.test.ts` | the vendored `/session-breakdown`: aggregation over fixture session trees, its four `LOCAL PATCH` hunks — agent-dir roots, inherited-prefix exclusion, the footer note (including that it reaches both the TUI and the non-interactive path), and the `__test__` surface — the upstream behaviours re-vendored on 2026-10-05 (faux/test-provider sessions skipped, only models that produced a message counted, cost/session + provider grouping), which ship untested upstream, and the four metric tables' exact layout plus both palette choosers (pinned against the pre-2026-10-08-dedup output) |
+| `review.test.ts` | the vendored `/review`: strict-ESM load guard, the `__test__` surface, arg parsing (`tokenizeArgs`/`parseArgs`/`parseReviewPaths`/`parsePrReference`), and the verdict/findings rubric (`hasNeedsAttentionVerdict`, `hasBlockingReviewFindings`, code-fence skipping, verdict fall-through) |
+| `goal.test.ts` | the vendored `/goal`: strict-ESM load guard, the `__test__` surface, and the session-log state reconstruction (`reconstructGoalFromBranch` — the reload/tree-navigation risk), the 4k objective limit, usage accounting, the budget-exhaustion decision, and the continuation/budget prompts |
+| `todos-tool.test.ts` | the sibling `.pi/extensions/todos.ts` tool: the six id-taking actions' missing-id / malformed-id / not-found responses, pinned against the pre-dedup output, plus a create→mutate→delete round trip |
+| `repo-explorer-git.test.ts` | the sibling `.pi/extensions/repo-explorer/git.ts` plumbing: branch listing (locals, remotes, full refnames, HEAD flag, detached tip, and a branch literally named `HEAD` — the ambiguous-refname case that used to drop the detached tip), the per-branch tree cache keyed on the branch tip (reuse, copy semantics, invalidation on a moved tip), and `readFile`'s refusals (missing/tree/unknown-branch, binary NUL sniff, mojibake U+FFFD tripwire, too-large before fetch, single-line page overflow) plus the line and byte caps with banner notes, and the `git-unavailable` branch for a spawn failure (distinct from a directory that is merely not a repo) |
+| `repo-explorer-menu.test.ts` | the sibling `.pi/extensions/repo-explorer/` branch menu (`branch-menu.ts`): row order (detached tip, locals, remotes), the `(current)` marker, label disambiguation when a local branch is named like a remote-tracking ref — including the pathological second sweep — and the default's refname-not-short-name rule; `chooseBranch` against real repositories (the remembered pick, cancel, the one-branch auto-pick, the empty-repository warning, a propagating git failure); the `/explore` handler's own wiring (menu → `listFiles` → browser, the pick reported, the quick-open file/directory/missing-path/unknown-branch paths, the TUI-mode refusal, the not-a-repo report, a cancelled menu); and `runner.ts`'s byte-faithful stdout across a 64 KiB multi-byte boundary, `GIT_*` environment hygiene, the aborted-signal path, git's own exit code, the command-not-found `127` a spawn failure reports, the post-exit drain that releases a quiet descendant holding the pipe, and the SIGTERM-ignored escalation to SIGKILL |
+| `repo-explorer-browser.test.ts` | the sibling `.pi/extensions/repo-explorer/file-browser.ts`: the directory model (`listDirectory`'s folder-first ordering, nested-folder synthesis, a directory that is only a prefix of a sibling, `parentPath`) and the real component driven by pi's key sequences — drill-in and file completion with the full repo-relative path, arrow wraparound, the ⌫/←-walks-up-only-while-the-filter-is-empty rule, Esc's clear-then-up-then-cancel order, fuzzy filtering, an empty directory, and width-bounded rendering; plus the display boundary in use (a byte-level assertion that no rendered line carries a raw control byte for a hostile listing, the breadcrumb sanitized, and the byte-faithful path still what a selection resolves to) and degenerate widths down to pi's 2-column floor |
+| `repo-explorer-transcript.test.ts` | the sibling `.pi/extensions/repo-explorer/file-transcript.ts` and `sanitize.ts`: the numbering (right-aligned, terminator-aware, blank lines preserved), `formatFileTranscript` (header, truncation note, empty-file case, hostile path sanitized while `details` keep it raw), `fileMessageRenderer` (the two coloured lines, a hostile body made inert, tabs preserved, CRLF normalized, width-bounded lines, the per-width render cache and its invalidate, non-string content tolerated), and `sanitizeDisplay`/`sanitizeFileContent`'s differing policies |
+| `repo-explorer-quick-open.test.ts` | the sibling `.pi/extensions/repo-explorer/quick-open.ts`: the `/explore <path>` argument grammar (`tokenizeArgs`, `normalizeRepoPath`, `parseExploreArgs` — the single-token-is-a-path rule, `branch:path` vs `<path> <branch>`, quotes, the absolute-path and too-many-tokens errors) and `resolveQuickBranch`'s refname rule (explicit refname / short name / menu label, the unlisted tag-or-sha fallthrough, the ambiguous `origin/main` refusal, and the last-pick and HEAD defaults) |
+| `voice.test.ts` | the sibling `.pi/extensions/voice/`: config defaults/file/env merge and the malformed-file warning; the recorder's command builders and state machine against a fake ssh runner and clock (start/stop/cancel/shutdown, `-q` handling, hex ids, quoting, the cancel-vs-stop races); the transcription POST against a fake fetch (multipart fields, auth and no-fallback key routing, the single `response_format` retry, timeout, caller abort, the 25 MB cap); and the end-to-end wiring start → stop → fetch → transcribe → paste/autoSubmit (status key, cancel mid-fetch and mid-transcribe, kept-audio notices, the no-UI fallback) |
+| `devc.test.ts` | `bin/devc` run against stubbed `docker`/`devcontainer`/`tmux` (none of these bugs is visible from the dry run alone): the config hash tolerating a project with no `.dockerignore` and still covering one that exists, dry-run argv parity for `exec_in` and both attach forms, the rebuild lock being held while the container is replaced, and a dry-run rebuild writing no config stamp |
+| `tmux-config.test.ts` | the truecolor claims in `.devcontainer/shell/tmux.conf` and the two skills that describe them: that the falsified `terminal-features` sentence stays gone, that `setenv -g` is named as what flips pi, and that both skills say a config edit needs a server restart and what that restart kills |
+| `helpers.ts` | env/temp-dir isolation and polling helpers |
+
+`lifecycle.test.ts` drives the real extension factory with a fake
+`ExtensionAPI`; all tmux access goes through `pi.exec`, so no tmux server or
+child pi process is required. `PI_CODING_AGENT_DIR` is redirected to a temp
+directory, so the tests never touch the real `~/.pi/agent` tree.
+
+## Not covered here
+
+About 20% of `index.ts` lines are still untested. The gaps, in rough order of
+size:
+
+- **the widget's placement in a real terminal.** The tests render the component
+  directly with a fake TUI and theme, so `setWidget` is called with the right
+  key and placement but nothing proves the strip looks right in a live TUI.
+  See "Manual check" below.
+- **`registerChildReporter`** (index.ts:550 onward) — its activity wiring is exercised
+  (the harness fires the events and reads the snapshot back), as is the
+  interrupted settle, but the atomic result writing and the shutdown fallback
+  still need a real child pi process.
+- **`attachToSubagentAndExit`** (index.ts:395 onward) — ends in `process.exit`, so it needs
+  a real terminal; the legacy `v1.` target decode is untested.
+- **`subagent_clean` `all_sessions`** — only the in-session path is covered;
+  `delete_files` in-session is now covered, including the transcript accounting
+  and the retention of a run dir that still owns a live run's session file.
+- **Context handoff against a real child.** `handoff.test.ts` and the lifecycle
+  tests cover the argv, the seeded session files and the usage baseline without
+  launching pi, but the end-to-end path — a real `pi` opening a forked or
+  resumed transcript — needs credentials and is not part of the suite.
+- **long-poll behaviour** — the fake always reports `pane_dead = "1"`, so
+  "pane still alive, keep waiting" is untested; `pi.exec`'s `timeout` option is
+  ignored by the fake, so no timeout or abort path runs.
+
+Anything requiring a live child pi process — real context handoff on resume, key
+delivery for `subagent_interrupt` against a real TUI, and liveness when a child
+hangs — needs an opt-in integration harness with model credentials, which this
+devcontainer does not have.
+
+## Environment
+
+Read once, when the extension factory runs:
+
+| Variable | Default | Effect |
+|---|---|---|
+| `PI_SUBAGENT_MAX_CONCURRENT` | `4` | children running at once; the rest queue |
+| `PI_SUBAGENT_NOTIFY` | `true` | push a message into the main session when a run ends |
+| `PI_SUBAGENT_AUTO_REAP` | `true` | kill a finished run's tmux session |
+| `PI_SUBAGENT_REAP_DELAY_MS` | `0` | wait this long before reaping |
+| `PI_SUBAGENT_GC_DAYS` | `7` | delete run dirs older than this |
+| `PI_SUBAGENT_KILL_ON_SHUTDOWN` | `false` | kill live children when the parent exits |
+| `PI_SUBAGENT_INTERRUPT_CONFIRM_MS` | `3000` | how long `subagent_interrupt` waits for confirmation; `0` returns immediately |
+| `PI_SUBAGENT_STALL_SECONDS` | `180` | silence, in whole seconds, before the widget calls a run stalled |
+| `PI_SUBAGENT_TOOL_STALL_SECONDS` | `900` | the same, for a run inside a tool call, which is silent by construction |
+
+A value that is set but is not a positive whole number is reported on stderr and
+ignored, in favour of the default.
+
+Integers are parsed strictly: `"3m"`, `"1e9"` and `"3.9"` are ignored in favour of
+the default, because a threshold silently shortened by a typo is worse than one
+that was never set.
+
+## Tool exposure
+
+`lifecycle.test.ts` covers local patch 15: the five management tools are
+registered with `exposure: "codemode"` when the harness reports
+`codemode`/`tool_search` in the ACTIVE set, and plain otherwise; `subagent` is
+never hidden; `/tools` switching discovery off mid-session re-registers them direct
+on the next turn; the "these tools are hidden" note is added through
+`prepareLoadout` only when they are; and an unbound `pi` (which throws from
+`getActiveTools`, exactly as pi does before the runtime binds) leaves everything
+declared.
+
+The harness models pi's **declared set**, not just the definitions: a tool is
+declared iff it is in the active set and its exposure is not `hidden`. Asserting
+on `definition.exposure` instead is what let the first version of this feature —
+which changed the exposure and removed nothing — pass 200 green tests (the suite is larger now; the point is that the payload assertion alone was not enough).
+
+## Flakiness
+
+`waitFor` polls with a 30s bound, because `node --test` runs test FILES in
+parallel and a 500ms watcher timer on a loaded machine can slip by seconds — a
+tight default turned "the machine was busy" into a red suite several times.
+These waits take well under a second in practice, so the bound only fires for a
+real break.
+
+The 2026-10-18 "a result that lands during the pane probe still wins" flake was
+not timing at all. `mkdtemp` can name the agent dir `subagent-test-Vxxxxx`, and
+the fake tmux recognised the version probe with `joined.includes("-V")` — so in
+such a directory EVERY tmux call was answered with `tmux 3.3a`. The `pane_dead`
+probe never read `1`, the probe hook never fired, and the 30s bound expired.
+About 1.6% of harness dirs are affected — frequent enough to appear across a
+session, rare enough to pass alone and on a rerun. The mock now matches the
+version call on its argv, and `lifecycle.test.ts` pins the classification with
+a socket path that contains `-V`.
+
+Driving the extension from a subagent shell needs `env -u PI_TMUX_SUBAGENT_CHILD`:
+the factory checks that variable first and takes the child branch, registering
+only the reporter. `waitForRunStatus` goes further for run transitions: when it gives up
+it reports the last persisted run record and the tmux poll counts, so a failure
+says whether the watcher died or the machine was slow.
+
+## Manual check for turn-level interrupt
+
+With credentials available, the one thing the suite cannot prove is that pi
+really aborts a turn on Escape and settles without exiting:
+
+1. `subagent({ task: "count slowly from 1 to 200" })`, note the id.
+2. `subagent_interrupt({ id })` mid-stream — it should report `interrupted`.
+3. Confirm the child is alive and idle: `tmux -S ~/.pi/agent/tmux-subagents.sock capture-pane -p -t pi-agent-<id>:0.0`
+   shows the prompt, and `<runDir>/interrupt.json` exists.
+4. Confirm the transcript is intact and still writable. Attach
+   (`pi --attach-subagent <id>`), type a follow-up, and watch it answer:
+   `subagent_status({ id })` should show `interrupted` alongside a live
+   `activity:` phase rather than claiming the child is idle.
+5. `subagent_cancel({ id })` and check the tmux session is gone. Resuming the
+   transcript afterwards must go through `subagent_cancel` first —
+   `subagent_resume` refuses while the interrupted child still holds the file.
+
+## Manual check for the live widget
+
+1. In a TUI session, start a run with a long task. A strip appears above the
+   editor within a second: `◔ <id>  starting · 0s · <task>`.
+2. Watch it follow the child: `● <id>  active 45s (bash) · 2m 0s · <task>` while
+   it works, `◌ <id>  waiting 12s · 4m 3s · <task>` when the child goes quiet.
+   Elapsed times must tick on their own, with nothing else happening.
+3. Give the child a silent long tool (`sleep 600`): the row must stay `active`
+   for `PI_SUBAGENT_TOOL_STALL_SECONDS` (default 900), not 180. A quiet tool is
+   working, not hung.
+4. Start a second run and check the cap: at most four rows, then `+N more`.
+   After `subagent_interrupt`, the interrupted row sorts last so it cannot push a
+   live run out of view.
+5. `subagent_cancel` the last run: the strip disappears.
+6. Run in `--mode rpc` and confirm no widget appears (RPC cannot render one).

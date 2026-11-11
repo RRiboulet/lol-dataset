@@ -1,0 +1,14 @@
+# Keep the Docker build context lean and predictable.
+#
+# This file is at the repository root on purpose. docker-compose.yml builds
+# with the REPOSITORY ROOT as the context (`context: ..`,
+# `dockerfile: .devcontainer/Dockerfile`), and docker reads
+# `<context>/.dockerignore` — so a `.dockerignore` next to the Dockerfile is
+# never read by this build. Without a root file every rebuild ships the whole
+# checkout to the daemon, including node_modules and any dataset files fetched
+# locally.
+.git
+.gitignore
+node_modules
+.pi
+*.log
