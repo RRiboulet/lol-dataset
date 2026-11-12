@@ -17,8 +17,8 @@ it relies on was proved on two events first.
 ## Scope
 
 The crawl plan over the committed event list, the committed dataset, and the
-generated coverage report. The attribution notice already exists from ticket 09 and
-is extended here only if the crawl reaches an event that notice does not cover;
+generated coverage report. The attribution notice already exists from ticket 01 and
+is extended here only if the crawl reaches an event that notice does not yet cover;
 documentation is ticket 11's.
 
 ## Acceptance criteria

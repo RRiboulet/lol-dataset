@@ -17,9 +17,10 @@ for the earliest games) and corrects the spec if the era boundary sits elsewhere
 ## Scope
 
 No new entities. Live fetching, cache hygiene under real throttling, the first
-committed slice of real data, a written coverage finding, and **the attribution
-notice that must accompany that first committed data** — the source is a
-share-alike wiki, so data never lands in a commit without its attribution.
+committed slice of real data, a written coverage finding, and **the extension of the
+attribution notice to cover it** — the notice already exists from ticket 01, which
+committed the first recorded source payloads; here it must name the events whose
+real data lands.
 Leaves the full event list to ticket 10.
 
 ## Acceptance criteria
@@ -34,8 +35,8 @@ Leaves the full event list to ticket 10.
 - [ ] A written report of what each event contains, with the queries used.
 - [ ] Any divergence from the spec's era assumption is recorded in the spec, not
       silently absorbed.
-- [ ] The attribution the licence requires is present in the same change that
-      commits the first real data; no data lands unattributed.
+- [ ] The attribution notice names every event whose real data is committed here,
+      so the notice grows with the data rather than lagging it.
 - [ ] Killing the crawl mid-run and re-running completes it without duplicate
       fetches.
 

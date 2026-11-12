@@ -313,8 +313,11 @@ re-derived on every run.
    data, and what that means for the repository when it stops being private.
    *(Partly decided 2026-11-12: attribution lands in the same change as the first
    committed data — ticket 09 — rather than after the full crawl in ticket 11, so
-   no data ever lands unattributed. Whether the repository goes public is still the
-   user's call, and does not block the data being correct.)*
+   no data ever lands unattributed. Refined the same day: the first committed
+   source-derived material is ticket 01's recorded payload fixtures, not ticket 09's
+   data, so attribution lands in ticket 01 and tickets 09 and 11 extend it. Whether
+   the repository goes public is still the user's call, and does not block the data
+   being correct.)*
 4. **Whether per-minute timelines are ever in scope.** They are the one thing ACS
    holds that no other source does, and they are excluded here. If the answer is
    yes, ACS's cookie requirement collides with R11 and needs its own decision.

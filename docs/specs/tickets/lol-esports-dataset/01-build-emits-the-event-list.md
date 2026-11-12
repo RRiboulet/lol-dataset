@@ -22,6 +22,10 @@ its schema, and the fixture-backed build seam. Recorded payloads for a handful o
 events are checked in as fixtures, including one regional-league event used purely
 as a rejection case.
 
+The attribution notice for that recorded content lands here, because these fixtures
+are the first commits to contain source material — not ticket 09, as originally
+planned.
+
 Leaves for later tickets: games, players, drafts, provenance, the real fetch layer,
 the full validator, and the actual crawl.
 
@@ -35,9 +39,13 @@ the full validator, and the actual crawl.
 - [ ] Output validates against the checked-in schema.
 - [ ] Two runs over the same fixtures produce byte-identical output.
 - [ ] The test suite runs with no network access available.
+- [ ] Attribution in `licenses/NOTICE.md` covers the recorded fixtures committed
+      here, so no source-derived content lands unattributed.
 
 ## Validation
 
 The primary build seam, over event fixtures only. Covers spec R1, and establishes
 the determinism and schema mechanics that R8 and R10 later depend on. The dataset
-suite is green.
+suite is green. Also satisfies the licence constraint at its earliest possible
+point — the first committed source material rather than the first committed
+dataset.
