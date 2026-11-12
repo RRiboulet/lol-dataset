@@ -11,7 +11,9 @@ The repository is a scaffold: a devcontainer, pi extensions and skills, and a
 test suite that guards them, with no data and no code that fetches data. The
 goal is a **complete per-game dataset of every major international League of
 Legends event from 2011 through 2026** — the games themselves, per-game team
-statistics, per-game player statistics, and the champion draft for each game.
+statistics, per-game player statistics, and the champion draft for each game — plus
+**a dimensional model over it**, so that a junior analyst opens dimensions and facts
+rather than reverse-engineering the ingestion format (R13).
 
 This matters now because nothing downstream (a site, an analysis notebook, a
 model) can begin until three things are fixed, and all three are expensive to
@@ -103,15 +105,25 @@ throttles, backs off on rate-limit responses, resumes from the cache, and can be
 interrupted and restarted without duplicating or losing work.
 
 **R12 — A junior analyst can use it without reading the build code.** The committed
-dataset is the deliverable; the builder is a means to it. The files are flat,
-documented, and load with no preprocessing step. Every record carries the
-human-readable name beside its canonical ID — and, where it exists, the source's own
-string — so no row has to be decoded through an identifier before it can be
+data is the deliverable; the builder is a means to it. Both layers ship, are
+documented, and load with no preprocessing step. Every record carries
+the human-readable name beside its canonical ID — and, where it exists, the source's
+own string — so no row has to be decoded through an identifier before it can be
 understood. The documentation names the files, the grain and the join keys, and
 answers questions an analyst would actually ask (who won a given series game; what a
-given player picked in a given event). What is **not** required is a modelled layer:
-no star schema, no pre-aggregated tables, no ratings or derived metrics. Those belong
-to whoever consumes the data, on top of it.
+given player picked in a given event).
+
+**R13 — A modelled layer, built by the data engineer, aggregated by the analyst.**
+A dimensional model sits above the curated data as a first-class deliverable, not a
+stretch goal: conformed dimensions (event, match, team, player, champion, patch) and
+facts at declared grains — one row per game per side, one row per game per player,
+one row per draft slot. Joins use integer surrogate keys; every dimension row carries
+its natural key and display name so a fact table can still be read. Renames are
+handled without duplicating a dimension row per alias. Facts hold measures only: no
+rates, ratios, averages or pre-aggregations — the analyst aggregates. The model is
+conformance-tested against the curated layer (row counts, referential integrity,
+grain uniqueness), ships with its DDL, and loads directly into a SQL engine and a
+dataframe library.
 
 ## Non-goals
 
@@ -127,9 +139,10 @@ to whoever consumes the data, on top of it.
   add timelines; see D4 and the ACS note in Constraints).
 - VOD media. Links may be recorded; nothing is downloaded.
 - Any website, API server, or query interface over the data.
-- A modelled or pre-aggregated layer over the data — star schema, summary tables,
-  ratings. R12 requires the data itself to be directly usable; a semantic layer on
-  top of it is someone else's project.
+- Aggregates, reports or metrics computed on top of the model — win rates, ratings,
+  leaderboards, summary tables. The model itself is in scope (R13); the summing is the
+  analyst's job, and a dataset that pre-computes it answers fewer questions than one
+  that does not.
 - Translations, commentary, or narrative content.
 
 ## Constraints
@@ -163,7 +176,13 @@ Statistics and drafts attach to the game, never to the match. A match exists
 because series score is a source fact that cannot be recovered by counting games
 (forfeits, ties, and nullified games all break the arithmetic).
 
-**D2 — Storage: committed JSONL, one file per entity, plus JSON Schema.**
+**D2 — Storage: two layers, both committed. Curated JSONL as source of truth, a
+dimensional model on top of it.** The curated layer is one JSONL file per entity plus
+JSON Schema: source-faithful, provenance-bearing, the thing the build validates and
+the audit trail when a value is questioned. The modelled layer is the star schema of
+R13, derived from it and never edited by hand. The split exists so that the analysis
+surface can change (a better dimension, a new grain) without disturbing the evidence
+it was built from. The paragraph below explains the curated layer's format;
 Chosen over SQLite (a binary blob nobody can review in a pull request, and a
 merge conflict nobody can resolve) and over CSV (nested drafts and per-player
 arrays force either a second table or a serialized column). JSONL gives
@@ -194,12 +213,13 @@ serialization, then invariants). Only the first two touch the network or the
 clock. Everything below the cache is a pure function of inputs on disk, which is
 what makes the whole thing testable without a mock server.
 
-**D6 — Repository layout.** `data/` holds the emitted dataset, one file per
-entity plus the manifest; `data/schema/` holds the JSON Schema; `raw/` (gitignored)
-holds the payload cache; `tools/dataset/` holds fetch, normalize, assemble, emit
-and validate, with its tests beside them. The raw cache is not committed — it is
-large, it duplicates a third party's content, and R9's manifest plus hashes
-already pin it.
+**D6 — Repository layout.** `data/curated/` holds the emitted dataset, one file per
+entity plus the manifest; `data/curated/schema/` holds the JSON Schema; `data/model/`
+holds the dimensional model (dimensions, facts, its DDL, and its own data dictionary);
+`raw/` (gitignored) holds the payload cache; `tools/dataset/` holds fetch, normalize,
+assemble, emit, model and validate, with its tests beside them. The raw cache is not
+committed — it is large, it duplicates a third party's content, and R9's manifest plus
+hashes already pin it.
 
 **D7 — Provenance record.** Each cached payload gets a sidecar with URL,
 fetch time, HTTP status and body hash; the manifest lists the payload hashes the
@@ -211,6 +231,19 @@ present) so any row can be walked back to a source page by hand.
 ID; no file contains a build timestamp; numbers are serialized with one fixed
 format. The manifest is the only place a time appears, and it is excluded from
 the byte-identity check.
+
+**D10 — Modelling approach.** Curated → star. Decided: the curated layer is never
+overwritten by the model; renames use an **alias bridge with validity dates rather
+than a slowly-changing dimension** (type-2 rows duplicate a dimension key per change
+and quietly break naive `COUNT(*)`/`GROUP BY` for the analyst who has not read the
+docs — the archive is append-only and facts point at canonical entities, so the bridge
+carries the history at a fraction of the confusion); facts carry integer surrogate
+keys; dimensions carry natural keys and display names; an explicit **unknown member**
+row exists for "not recorded", so an inner join does not silently drop games from an
+era with thin data; and no derived measures live in facts. Rejected: type-2
+dimensions (cost without benefit here), text keys in facts (no stability guarantee and
+worse joins), and a single-layer design (a model built on source-faithful records
+forbids ever correcting the source without losing the audit trail).
 
 **D9 — Fetch etiquette as a designed component, not an afterthought.** One
 process, sequential requests, a fixed interval with jitter, exponential backoff
@@ -303,6 +336,7 @@ test per field, which is a test of the mapping syntax rather than of the dataset
 ```bash
 node --test tools/dataset/test/*.test.ts     # S1 + S3, fixtures only, no network
 node tools/dataset/cli.ts build --offline    # emit + validate the committed dataset
+node tools/dataset/cli.ts model --offline    # build + conformance-test the star schema
 node --test .pi/extensions/subagent/test/*.test.ts   # scaffold stays green
 ```
 
@@ -350,6 +384,13 @@ re-derived on every run.
    *Confirm:* user, on a later spec.
 5. **Whether the dataset ships committed data or only the builder.** *(Decided
    2026-11-12: the data ships. The builder is a means, not the product — the artifact
-   is a dataset a data analyst can open and work with, and "not necessarily a gold
-   layer" was the user's words, which R12 encodes as: flat, documented, loadable,
-   with no modelled layer above it.)*
+   is a dataset a data analyst can open and work with, which is R12, on the modelled
+   layer of R13.)*
+6. **The modelled layer's file format.** Options: CSV plus DDL (recommended — no
+   dependency, opens in a spreadsheet, loads in pandas, DuckDB and SQLite alike), a
+   committed SQLite database (Node 26 in this container has `node:sqlite` built in,
+   but a binary artifact in git), or Parquet (needs a dependency this repository
+   currently refuses, and is not openable by a junior analyst without tooling). Also
+   open: whether a dimension should expose a type-2 history alongside the alias
+   bridge of D10. *Confirm:* user. Blocks ticket 12's emission format and nothing
+   else.

@@ -1,14 +1,16 @@
 # 11: Dataset documentation and licence attribution
 
-**Blocked by:** 10
+**Blocked by:** 13
 **Status:** ready
 
 ## What to build
 
-Documentation that lets someone who never read this conversation use the dataset:
-what grain the files are at, what each entity means, how identity and aliases work,
-how coverage is expressed and why some eras are thinner, how to rebuild from the
-cache, and what the licence obligations are for the derived data.
+Documentation that lets someone who never read this conversation use the dataset.
+It covers **both layers** and says which one to reach for: the curated records as the
+source of truth, and the dimensional model as the thing an analyst queries. What each
+entity and each dimension means, how identity and aliases work, how coverage is
+expressed and why some eras are thinner, how to rebuild from the cache, and what the
+licence obligations are for the derived data.
 
 The source is a wiki under a share-alike licence, so attribution is a requirement of
 using the data, not a courtesy. It is already in place: attribution landed with the
@@ -28,8 +30,9 @@ one is wanted, that is a separate conversation.
 - [ ] A reader can rebuild the dataset from the documentation without reading the
       source code.
 - [ ] The grain and every entity are documented with one worked example.
-- [ ] A data dictionary covers every file and every field, saying which fields can be
-      absent and what absence means in that place.
+- [ ] A data dictionary covers every file and every field in both layers, saying which
+      fields can be absent and what absence means in that place, and what the unknown
+      member stands for.
 - [ ] The coverage model and era caveats are documented, including which questions
       the data cannot answer.
 - [ ] Attribution for the source data sits where the data lives and in the licence
@@ -39,9 +42,12 @@ one is wanted, that is a separate conversation.
 - [ ] The documentation states the rebuild's operational cost honestly: throttled,
       cached, resumable, not a quick command.
 - [ ] At least three questions a junior analyst would actually ask are answered end
-      to end from the committed files, with a snippet they can run — including one that
-      lands on an era caveat, so the coverage markers are exercised rather than
+      to end **against the modelled layer**, with a snippet they can run — including one
+      that lands on an era caveat, so the coverage markers are exercised rather than
       described.
+- [ ] The documentation shows which layer answers which kind of question, so nobody
+      joins curated records by hand to do what the model already does — or chases a
+      measure the model deliberately does not pre-compute.
 - [ ] The documentation says plainly what was never modelled — no aggregates, no
       ratings, no per-minute data — so nobody goes hunting for a layer that does not
       exist (spec R12).
