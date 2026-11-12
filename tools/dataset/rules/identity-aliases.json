@@ -1,0 +1,15 @@
+{
+	"$comment": "Spec R7: the renames the source itself does not record. Measured 2026-11-12 on the live wiki: there is no champion redirect table (the export endpoint answers `Table ChampionRedirects not found`), `Champions.KeyDdragon` is empty for every champion, and `ScoreboardPlayers` stores the *current* champion name in every era — a 2011-06-18 row and a 2012-11-29 row both already say `Nunu &amp; Willump`. A retired champion name therefore cannot resolve from the source alone, and a payload that cited `Nunu` would mint a second champion entity, which is exactly the duplicate a rename must not create (spec D3). An entry here is a reviewed statement about one string. It targets a page for a team or player and Riot's numeric champion id for a champion, never a display name, because the display name is the thing that changes. `reason` is mandatory for the same reason the event rule's overrides require one: this file is human judgement, so it has to state the judgement.",
+	"version": 1,
+	"description": "Source strings that denote an existing entity but that no registry payload in the source records, each with its stated reason.",
+	"aliases": [
+		{
+			"kind": "champion",
+			"string": "Nunu",
+			"riotKey": 20,
+			"from": "2009-02-21",
+			"until": null,
+			"reason": "Riot renamed the champion Nunu to Nunu &amp; Willump in its 2019 rework; the champion id (20) did not change, and the source's own ReleaseDate for that id (2009-02-21) is when the old name started applying. The wiki carries only the new name in every era it covers, so the old string has no observed use in this corpus: `from` is the measured release date and `until` stays null rather than asserting a rename date the source does not record."
+		}
+	]
+}

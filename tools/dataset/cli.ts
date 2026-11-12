@@ -40,9 +40,17 @@ const REPO_ROOT = path.resolve(import.meta.dirname, "..", "..");
 
 function describe(result: BuildResult): string {
 	const lines: string[] = [];
-	const { events, selection, decisions } = result;
+	const { events, selection, decisions, identity } = result;
 	const rejected = selection.length - events.length;
 	lines.push(`${events.length} event(s) selected, ${rejected} rejected, from ${selection.length} considered`);
+	lines.push(
+		`${identity.teams.length} team(s), ${identity.players.length} player(s), ${identity.champions.length} champion(s), ` +
+			`${identity.aliases.length} alias row(s), ${identity.unresolved.length} unresolved reference(s)`,
+	);
+	for (const record of identity.unresolved) {
+		const what = record.id === null ? `${record.candidates.join(", ")}` : record.id;
+		lines.push(`  unresolved ${record.kind} ${JSON.stringify(record.string)} (${record.reason}) -> ${what}`);
+	}
 	for (const record of selection) {
 		const decision = decisions.get(record.id);
 		const reason = decision?.reason ?? "";
@@ -78,6 +86,7 @@ async function main(): Promise<void> {
 			raw: { type: "string" },
 			out: { type: "string" },
 			rule: { type: "string" },
+			aliases: { type: "string" },
 			schema: { type: "string" },
 			offline: { type: "boolean", default: false },
 			check: { type: "boolean", default: false },
@@ -135,6 +144,7 @@ async function main(): Promise<void> {
 	const result = await buildDataset({
 		rawDir,
 		ruleFile: values.rule ?? DEFAULT_RULE_FILE,
+		aliasFile: values.aliases,
 		schemaDir: values.schema ?? DEFAULT_SCHEMA_DIR,
 	}).catch((error: Error) => {
 		if (values.raw === undefined && /no recorded payloads/.test(error.message)) {

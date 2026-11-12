@@ -1,0 +1,54 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:identity-unresolved:1",
+	"title": "Unresolved identity report",
+	"description": "One row of data/curated/identity-unresolved.jsonl: a source string that named no entity the source registers. This is the report that makes resolution visible rather than silent — the same job event-selection.jsonl does for the event rule. `no-source-identity` means the string became a new entity with its ID anchored on the string itself, so a later registry row with that exact name keeps the same ID; `ambiguous` means the string names more than one entity and nothing is minted, because picking one would merge two distinct people. An empty file means every reference in this corpus resolved.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["kind", "string", "name", "id", "firstSeen", "lastSeen", "reason", "candidates"],
+	"properties": {
+		"kind": {
+			"type": "string",
+			"enum": ["team", "player", "champion"]
+		},
+		"string": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source string, verbatim (spec R7)."
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The minted entity's display name — the string itself — so the report reads without decoding an ID (spec R12). For an ambiguous string, the string itself."
+		},
+		"id": {
+			"type": ["string", "null"],
+			"pattern": "^(tm|pl|ch)-[0-9a-f]{12}$",
+			"description": "The entity minted for this string, or null for an ambiguity, where minting would hide the problem."
+		},
+		"firstSeen": {
+			"type": ["string", "null"],
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+			"description": "Earliest UTC date on which a recorded source row used this string."
+		},
+		"lastSeen": {
+			"type": ["string", "null"],
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+			"description": "Latest UTC date on which a recorded source row used this string."
+		},
+		"reason": {
+			"type": "string",
+			"enum": ["no-source-identity", "ambiguous"],
+			"description": "Why this string is here: nothing in the source registers it, or several entities answer to it."
+		},
+		"candidates": {
+			"type": "array",
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"pattern": "^(tm|pl|ch)-[0-9a-f]{12}$"
+			},
+			"description": "For `ambiguous`, the canonical IDs the string could mean. Empty for `no-source-identity`."
+		}
+	}
+}

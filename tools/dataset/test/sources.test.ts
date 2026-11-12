@@ -9,16 +9,17 @@
 // call below the cache or commits a payload without its provenance sidecar.
 
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { test } from "node:test";
 
 import { buildDataset } from "../build.ts";
-import { sha256 } from "../cache.ts";
+import { readPayloads, sha256 } from "../cache.ts";
 import { DATASET_DIR, FIXTURE_RAW, REPO_ROOT } from "./helpers.ts";
 
 /** Modules below the cache. `record.ts` and `cli.ts` are above it / users of it. */
-const PIPELINE = ["cache.ts", "normalize.ts", "rule.ts", "assemble.ts", "emit.ts", "validate.ts", "build.ts"];
+const PIPELINE = ["cache.ts", "normalize.ts", "rule.ts", "assemble.ts", "identity.ts", "emit.ts", "validate.ts", "build.ts"];
 
 test("no pipeline module can reach the network", async () => {
 	const forbidden = [/\bfetch\s*\(/, /node:https?/, /node:net/, /XMLHttpRequest/, /undici/, /\baxios\b/, /WebSocket/];
@@ -43,31 +44,49 @@ test("the build runs with the network taken away", async () => {
 	}
 });
 
+test("a payload outside <source>/<endpoint>/<table>/ is an error, not silently skipped", async () => {
+	// The table is a path segment because a Cargo body does not say which table it
+	// came from. A file at the wrong depth has no table, and guessing would route it
+	// to the wrong normalizer.
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-layout-"));
+	try {
+		const flat = path.join(dir, "lol-fandom", "cargoexport");
+		await mkdir(flat, { recursive: true });
+		await writeFile(path.join(flat, "stray.json"), "[]", "utf8");
+		await assert.rejects(readPayloads(dir), /expected <source>\/<endpoint>\/<table>\/<key>\.json/);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
 test("every recorded payload carries provenance that matches its bytes", async () => {
-	const dir = path.join(FIXTURE_RAW, "lol-fandom", "cargoexport");
-	const files = (await readdir(dir)).sort();
-	const bodies = files.filter((name) => name.endsWith(".json") && !name.endsWith(".meta.json"));
-	assert.ok(bodies.length > 0, "ticket 01 commits recorded fixtures");
-
-	for (const body of bodies) {
-		const metaName = body.replace(/\.json$/, ".meta.json");
-		assert.ok(files.includes(metaName), `${body} has no provenance sidecar`);
-
-		const bytes = await readFile(path.join(dir, body), "utf8");
-		const meta = JSON.parse(await readFile(path.join(dir, metaName), "utf8")) as {
+	// Every body, in every table directory: the sidecar is what lets a value be
+	// walked back to the bytes it came from (spec D7, R9), and the table it names has
+	// to agree with the directory the build routes by, or a payload would be parsed
+	// as the wrong kind of row.
+	const payloads = await readPayloads(FIXTURE_RAW);
+	const tables = new Set(payloads.map((payload) => payload.table));
+	for (const table of ["Tournaments", "Teams", "TeamRedirects", "PlayerRedirects", "Champions", "ScoreboardPlayers"]) {
+		assert.ok(tables.has(table), `the fixtures must carry recorded ${table} payloads`);
+	}
+	for (const payload of payloads) {
+		const bodyPath = path.join(FIXTURE_RAW, payload.file);
+		const metaPath = bodyPath.replace(/\.json$/, ".meta.json");
+		const meta = JSON.parse(await readFile(metaPath, "utf8")) as {
 			url: string;
 			status: number;
 			fetchedAt: string;
 			bodySha256: string;
 			query: { tables: string; fields: string; where?: string };
 		};
-		assert.equal(meta.bodySha256, sha256(bytes), `${body}: recorded hash does not match the recorded bytes`);
-		assert.equal(meta.status, 200, `${body}: recorded with a failing status`);
+		assert.equal(meta.bodySha256, sha256(payload.body), `${payload.file}: recorded hash does not match the recorded bytes`);
+		assert.equal(meta.status, 200, `${payload.file}: recorded with a failing status`);
 		assert.match(meta.url, /^https:\/\/lol\.fandom\.com\//);
-		assert.ok(Number.isFinite(Date.parse(meta.fetchedAt)), `${body}: fetchedAt is not a timestamp`);
+		assert.ok(Number.isFinite(Date.parse(meta.fetchedAt)), `${payload.file}: fetchedAt is not a timestamp`);
 		// Ticket 09 reuses these queries, so the query text has to travel with the bytes.
-		assert.equal(meta.query.tables, "Tournaments");
-		assert.ok(meta.query.fields.includes("OverviewPage"));
+		assert.equal(meta.query.tables, payload.table, `${payload.file}: the recorded table disagrees with its directory`);
+		assert.ok(meta.query.fields.length > 0, `${payload.file}: the recorded query has no fields`);
+		assert.doesNotThrow(() => JSON.parse(payload.body), `${payload.file}: body is not JSON`);
 	}
 });
 

@@ -1,0 +1,25 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:champion:1",
+	"title": "Curated champion",
+	"description": "One row of data/curated/champions.jsonl: a champion the corpus references. Its canonical ID is anchored on Riot's numeric champion id, which a display rename does not change (see tools/dataset/identity.ts); the retired display name, where one is declared, is a row in aliases.jsonl. Name and title are carried verbatim from the source, HTML entities included (spec R7: source strings are preserved, not rewritten).",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["id", "name", "riotKey"],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^ch-[0-9a-f]{12}$",
+			"description": "Opaque surrogate key derived from Riot's champion id (spec D3). Do not parse it: read the row through `name`."
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The champion's current display name as the source states it, so the row reads without decoding the ID (spec R12)."
+		},
+		"riotKey": {
+			"type": ["integer", "null"],
+			"description": "Riot's numeric champion id (20 = Nunu). Null only when a scoreboard cited a champion name no registry row carries: that entity is minted and reported in identity-unresolved.jsonl rather than dropped."
+		}
+	}
+}

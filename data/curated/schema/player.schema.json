@@ -1,0 +1,26 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:player:1",
+	"title": "Curated player",
+	"description": "One row of data/curated/players.jsonl: a player the corpus references, with the handle the source states. Its canonical ID is anchored on the player's wiki page, which survives a handle change (see tools/dataset/identity.ts); the handles and old pages that also denote the player are rows in aliases.jsonl. Two different players may share a handle — measured: eight entities answer to `Wolf` — and they stay two entities, which is why the ID is the page and not the handle.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["id", "name", "overviewPage"],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^pl-[0-9a-f]{12}$",
+			"description": "Opaque surrogate key derived from the player page (spec D3). Do not parse it: read the row through `name`."
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The player's current handle as the source states it, so the row reads without decoding the ID (spec R12). Not unique: it is a display string."
+		},
+		"overviewPage": {
+			"type": ["string", "null"],
+			"minLength": 1,
+			"description": "The player's wiki page. Null only when a scoreboard cited a link the source registers no page for: that entity is minted and reported in identity-unresolved.jsonl rather than dropped."
+		}
+	}
+}

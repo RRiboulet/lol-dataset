@@ -7,7 +7,7 @@
 
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { cp, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { promisify } from "node:util";
@@ -18,9 +18,20 @@ import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts"
 
 const run = promisify(execFile);
 
+/**
+ * A cache directory laid out the way `cache.ts` reads it: the table is a path
+ * segment. Tests write bodies here rather than at the root so they exercise the
+ * real layout instead of a shape the build would reject.
+ */
+async function cacheDir(root: string, table: string): Promise<string> {
+	const dir = path.join(root, "lol-fandom", "cargoexport", table);
+	await mkdir(dir, { recursive: true });
+	return dir;
+}
+
 /** Path of the recorded payload that carries `page`, so a test need not know file names. */
 async function payloadContaining(page: string): Promise<string> {
-	const source = path.join(FIXTURE_RAW, "lol-fandom", "cargoexport");
+	const source = path.join(FIXTURE_RAW, "lol-fandom", "cargoexport", "Tournaments");
 	for (const name of await readdir(source)) {
 		if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
 		const file = path.join(source, name);
@@ -122,8 +133,9 @@ test("the same recorded bytes under two cache keys are one event, not two", asyn
 	const dir = await mkdtemp(path.join(tmpdir(), "dataset-dup-"));
 	try {
 		const source = await payloadContaining("2023 Season World Championship");
-		await cp(source, path.join(dir, "copy-a.json"));
-		await cp(source, path.join(dir, "copy-b.json"));
+		const cache = await cacheDir(dir, "Tournaments");
+		await cp(source, path.join(cache, "copy-a.json"));
+		await cp(source, path.join(cache, "copy-b.json"));
 		const result = await buildDataset({ rawDir: dir });
 		const baseline = await fixtureBuild();
 		// Only the payload under this temp dir is seen, so this proves dedupe by page
@@ -144,9 +156,10 @@ test("two payloads that disagree about the same page fail the build, naming both
 		const body = JSON.parse(await readFile(source, "utf8")) as { OverviewPage: string; Name: string }[];
 		const worlds = body.find((row) => row.OverviewPage === "2023 Season World Championship");
 		assert.ok(worlds);
-		await cp(source, path.join(dir, "a.json"));
+		const cache = await cacheDir(dir, "Tournaments");
+		await cp(source, path.join(cache, "a.json"));
 		worlds.Name = "A Different Name For The Same Page";
-		await writeFile(path.join(dir, "b.json"), JSON.stringify(body), "utf8");
+		await writeFile(path.join(cache, "b.json"), JSON.stringify(body), "utf8");
 		await assert.rejects(buildDataset({ rawDir: dir }), /2023 Season World Championship: .* disagree about the same page/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });

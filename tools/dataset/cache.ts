@@ -26,9 +26,16 @@
 // and `normalize.ts` accepts either envelope. Which endpoint a crawl prefers is
 // ticket 08's decision.
 //
-// One payload is two files in `raw/<source>/<endpoint>/`:
+// One payload is two files in `raw/<source>/<endpoint>/<table>/`:
 //   <key>.json       the response body exactly as received
 //   <key>.meta.json  URL, fetch time, HTTP status and body hash (spec D7)
+//
+// The table is a directory, not a field, because a Cargo body does not say which
+// table it came from: `Special:CargoExport` returns bare rows, and a row's keys
+// only *hint* at its table. Reading the table from the path is the only routing
+// input that survives the byte-identity rule below (ticket 02 measures it: a
+// ScoreboardPlayers row and a Tournaments row both carry `OverviewPage`, so shape
+// sniffing would quietly feed one stage's rows to another's).
 //
 // The sidecar is provenance, not input: the build reads bodies, so a fixture and a
 // live payload are byte-compatible and the build cannot depend on when a payload
@@ -108,14 +115,29 @@ export function queryUrl(query: CargoQuery): string {
 	return `${EXPORT_URL}?${params.toString()}`;
 }
 
-/** Directory holding one endpoint's cached payloads. */
-export function payloadDir(root: string, endpoint: CargoEndpoint): string {
-	return path.join(root, SOURCE, endpoint);
+/**
+ * The table a query reads, as a single path segment.
+ *
+ * A Cargo query can name several tables (`ScoreboardPlayers=SP,ScoreboardGames=SG`),
+ * and the cache cannot name a directory after that list. Joins are rejected here
+ * rather than written somewhere surprising: the dataset fetches one table per
+ * query, which is also what makes a payload's table unambiguous.
+ */
+export function tableOf(query: CargoQuery): string {
+	if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(query.tables)) {
+		throw new Error(`tables ${JSON.stringify(query.tables)}: the cache names one table per directory, so a joined query is not recordable`);
+	}
+	return query.tables;
+}
+
+/** Directory holding one table's cached payloads. */
+export function payloadDir(root: string, endpoint: CargoEndpoint, table: string): string {
+	return path.join(root, SOURCE, endpoint, table);
 }
 
 /** Body and sidecar paths for a query under `root`. */
 export function payloadPaths(root: string, query: CargoQuery): { body: string; meta: string } {
-	const base = path.join(payloadDir(root, query.endpoint), cacheKey(query));
+	const base = path.join(payloadDir(root, query.endpoint, tableOf(query)), cacheKey(query));
 	return { body: `${base}.json`, meta: `${base}.meta.json` };
 }
 
@@ -204,6 +226,8 @@ export async function readPayload(root: string, query: CargoQuery): Promise<Cach
 export type CachedPayload = {
 	/** Path relative to the cache root, for error messages that name a file. */
 	file: string;
+	/** The Cargo table the query read, from the directory. This is how the build routes it. */
+	table: string;
 	body: string;
 };
 
@@ -234,7 +258,14 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
 	await walk(root);
 	const payloads: CachedPayload[] = [];
 	for (const file of found) {
-		payloads.push({ file: path.relative(root, file), body: await readFile(file, "utf8") });
+		const relative = path.relative(root, file);
+		const parts = relative.split(path.sep);
+		// <source>/<endpoint>/<table>/<key>.json: a payload outside that shape has no
+		// table, and guessing one would route it to the wrong normalizer.
+		if (parts.length !== 4 || (parts[1] !== "cargoexport" && parts[1] !== "cargoquery")) {
+			throw new Error(`${relative}: expected <source>/<endpoint>/<table>/<key>.json`);
+		}
+		payloads.push({ file: relative, table: parts[2], body: await readFile(file, "utf8") });
 	}
 	return payloads;
 }

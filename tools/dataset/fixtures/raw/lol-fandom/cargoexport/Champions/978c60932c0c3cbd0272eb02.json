@@ -1,0 +1,266 @@
+[
+    {
+        "Name": "Alistar",
+        "KeyInteger": 12,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Amumu",
+        "KeyInteger": 32,
+        "ReleaseDate": "2009-06-26",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Annie",
+        "KeyInteger": 1,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Aphelios",
+        "KeyInteger": 523,
+        "ReleaseDate": "2019-12-11",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Ashe",
+        "KeyInteger": 22,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Aurora",
+        "KeyInteger": 893,
+        "ReleaseDate": "2024-07-17",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Azir",
+        "KeyInteger": 268,
+        "ReleaseDate": "2014-09-16",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Braum",
+        "KeyInteger": 201,
+        "ReleaseDate": "2014-05-11",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Cho'Gath",
+        "KeyInteger": 31,
+        "ReleaseDate": "2009-06-26",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Corki",
+        "KeyInteger": 42,
+        "ReleaseDate": "2009-09-19",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Elise",
+        "KeyInteger": 60,
+        "ReleaseDate": "2012-10-26",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Fiora",
+        "KeyInteger": 114,
+        "ReleaseDate": "2012-02-29",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Gnar",
+        "KeyInteger": 150,
+        "ReleaseDate": "2014-08-13",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Gragas",
+        "KeyInteger": 79,
+        "ReleaseDate": "2010-02-02",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Irelia",
+        "KeyInteger": 39,
+        "ReleaseDate": "2010-11-16",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Janna",
+        "KeyInteger": 40,
+        "ReleaseDate": "2009-09-02",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Jax",
+        "KeyInteger": 24,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Jayce",
+        "KeyInteger": 126,
+        "ReleaseDate": "2012-07-07",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "K'Sante",
+        "KeyInteger": 897,
+        "ReleaseDate": "2022-11-02",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Kalista",
+        "KeyInteger": 429,
+        "ReleaseDate": "2014-11-20",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Karthus",
+        "KeyInteger": 30,
+        "ReleaseDate": "2009-06-12",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "LeBlanc",
+        "KeyInteger": 7,
+        "ReleaseDate": "2010-11-02",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Lee Sin",
+        "KeyInteger": 64,
+        "ReleaseDate": "2011-04-01",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Lucian",
+        "KeyInteger": 236,
+        "ReleaseDate": "2013-08-22",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Lulu",
+        "KeyInteger": 117,
+        "ReleaseDate": "2012-03-20",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Milio",
+        "KeyInteger": 902,
+        "ReleaseDate": "2023-03-23",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Miss Fortune",
+        "KeyInteger": 21,
+        "ReleaseDate": "2010-09-08",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Nautilus",
+        "KeyInteger": 111,
+        "ReleaseDate": "2012-02-14",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Nunu &amp; Willump",
+        "KeyInteger": 20,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Orianna",
+        "KeyInteger": 61,
+        "ReleaseDate": "2011-06-01",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Rell",
+        "KeyInteger": 526,
+        "ReleaseDate": "2020-12-09",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Renata Glasc",
+        "KeyInteger": 888,
+        "ReleaseDate": "2022-02-17",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Rengar",
+        "KeyInteger": 107,
+        "ReleaseDate": "2012-08-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Sejuani",
+        "KeyInteger": 113,
+        "ReleaseDate": "2012-01-17",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Singed",
+        "KeyInteger": 27,
+        "ReleaseDate": "2009-04-18",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Sivir",
+        "KeyInteger": 15,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Soraka",
+        "KeyInteger": 16,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Syndra",
+        "KeyInteger": 134,
+        "ReleaseDate": "2012-09-13",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Tristana",
+        "KeyInteger": 18,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Twisted Fate",
+        "KeyInteger": 4,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Twitch",
+        "KeyInteger": 29,
+        "ReleaseDate": "2009-05-01",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Vayne",
+        "KeyInteger": 67,
+        "ReleaseDate": "2011-05-10",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Warwick",
+        "KeyInteger": 19,
+        "ReleaseDate": "2009-02-21",
+        "ReleaseDate__precision": 1
+    },
+    {
+        "Name": "Wukong",
+        "KeyInteger": 62,
+        "ReleaseDate": "2011-07-26",
+        "ReleaseDate__precision": 1
+    }
+]
