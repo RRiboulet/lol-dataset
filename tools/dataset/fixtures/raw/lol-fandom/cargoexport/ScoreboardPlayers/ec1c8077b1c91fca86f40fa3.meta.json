@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "ScoreboardPlayers",
+    "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+    "where": "OverviewPage='IGN ProLeague Season 5'",
+    "order_by": "DateTime_UTC ASC",
+    "limit": 10
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardPlayers&fields=Name%2CLink%2CTeam%2CTeamVs%2CChampion%2COverviewPage%2CDateTime_UTC&where=OverviewPage%3D%27IGN+ProLeague+Season+5%27&order_by=DateTime_UTC+ASC&limit=10",
+  "fetchedAt": "2026-11-12T22:57:17.917Z",
+  "status": 200,
+  "bodySha256": "39d84c5dbf4a9d2e24d06718e28a04a95aecf43928680d9218b18e9237d0ef54"
+}

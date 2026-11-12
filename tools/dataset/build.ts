@@ -9,8 +9,13 @@
 // are byte-identical by construction rather than by luck.
 //
 // Ticket 08 grows the fetch layer above this seam; tickets 03-05 add more entity
-// paths beside `events`; ticket 06 adds the invariant gate after validation. None of
-// them need to move the boundary drawn here.
+// paths beside `events` and the identity tables; ticket 06 adds the invariant gate
+// after validation. None of them need to move the boundary drawn here.
+//
+// `OUTPUTS` is the single registry of emitted files: the file name, the checked-in
+// schema that guards it, and (in `toJsonl` calls below) the records it holds. A new
+// entity file is one entry here plus one record list, and both the schema gate and
+// `--check` pick it up without further wiring.
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as path from "node:path";
@@ -19,15 +24,25 @@ import type { AssembledDataset, EventRecord, SelectionRecord } from "./assemble.
 import { assembleDataset } from "./assemble.ts";
 import { readPayloads } from "./cache.ts";
 import { toJsonl } from "./emit.ts";
-import { normalizeTournaments } from "./normalize.ts";
+import type { AssembledIdentity } from "./identity.ts";
+import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
+import { normalizeSources } from "./normalize.ts";
 import type { EventSelectionRule } from "./rule.ts";
 import { loadRule } from "./rule.ts";
 import { assertValid } from "./validate.ts";
 
-/** The entity file and the selection report, each with the schema that guards it. */
+/**
+ * Every emitted file and the schema that guards it. One registry, because the
+ * schema gate, the CLI's `--check` and the writer all read it.
+ */
 export const OUTPUTS = {
 	"events.jsonl": { schema: "event.schema.json" },
 	"event-selection.jsonl": { schema: "event-selection.schema.json" },
+	"teams.jsonl": { schema: "team.schema.json" },
+	"players.jsonl": { schema: "player.schema.json" },
+	"champions.jsonl": { schema: "champion.schema.json" },
+	"aliases.jsonl": { schema: "alias.schema.json" },
+	"identity-unresolved.jsonl": { schema: "identity-unresolved.schema.json" },
 } as const;
 
 export type OutputFile = keyof typeof OUTPUTS;
@@ -37,6 +52,8 @@ export type BuildOptions = {
 	rawDir: string;
 	/** The committed rule. Defaults to this tool's own `rules/event-selection.json`. */
 	ruleFile?: string;
+	/** Declared renames the source does not record. Defaults to `rules/identity-aliases.json`. */
+	aliasFile?: string;
 	/** Directory holding the checked-in schemas. Defaults to `data/curated/schema/`. */
 	schemaDir?: string;
 };
@@ -44,7 +61,9 @@ export type BuildOptions = {
 export type BuildResult = AssembledDataset & {
 	/** The bytes to write, keyed by file name. */
 	files: Record<OutputFile, string>;
-	/** The rule that produced them, so a caller can explain a decision. */
+	/** The teams, players, champions, alias table and unresolved report. */
+	identity: AssembledIdentity;
+	/** The rule that produced the events, so a caller can explain a decision. */
 	rule: EventSelectionRule;
 };
 
@@ -86,19 +105,25 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		// would look like a successful run over an event that has no data.
 		throw new Error(`${options.rawDir}: no recorded payloads found`);
 	}
-	const sources = normalizeTournaments(payloads);
-	const assembled = assembleDataset(rule, sources);
+	const sources = normalizeSources(payloads);
+	const assembled = assembleDataset(rule, sources.tournaments);
+	const identity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE));
 
 	const files: Record<OutputFile, string> = {
 		"events.jsonl": toJsonl(assembled.events),
 		"event-selection.jsonl": toJsonl(assembled.selection),
+		"teams.jsonl": toJsonl(identity.teams),
+		"players.jsonl": toJsonl(identity.players),
+		"champions.jsonl": toJsonl(identity.champions),
+		"aliases.jsonl": toJsonl(identity.aliases),
+		"identity-unresolved.jsonl": toJsonl(identity.unresolved),
 	};
 
 	for (const [file, output] of Object.entries(OUTPUTS) as [OutputFile, (typeof OUTPUTS)[OutputFile]][]) {
 		validateFile(file, files[file], await loadSchema(schemaDir, output.schema));
 	}
 
-	return { ...assembled, files, rule };
+	return { ...assembled, files, identity, rule };
 }
 
 /** Write the emitted bytes. The only stage that writes to the output directory. */
@@ -109,5 +134,5 @@ export async function writeDataset(result: Pick<BuildResult, "files">, outDir: s
 	}
 }
 
-/** Export the two record types so callers and tests can name them. */
+/** Export the record types so callers and tests can name them. */
 export type { EventRecord, SelectionRecord };

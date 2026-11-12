@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "ScoreboardPlayers",
+    "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+    "where": "OverviewPage='2015 Season World Championship' AND Team IN ('SK Telecom T1','H2k-Gaming')",
+    "order_by": "DateTime_UTC ASC",
+    "limit": 10
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardPlayers&fields=Name%2CLink%2CTeam%2CTeamVs%2CChampion%2COverviewPage%2CDateTime_UTC&where=OverviewPage%3D%272015+Season+World+Championship%27+AND+Team+IN+%28%27SK+Telecom+T1%27%2C%27H2k-Gaming%27%29&order_by=DateTime_UTC+ASC&limit=10",
+  "fetchedAt": "2026-11-12T22:58:33.291Z",
+  "status": 200,
+  "bodySha256": "d94924cc5698ce9a89ad3801fab3ac8379362203f016bb0a7fb6835b5b32f109"
+}

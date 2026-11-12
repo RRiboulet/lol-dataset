@@ -1,0 +1,30 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:team:1",
+	"title": "Curated team",
+	"description": "One row of data/curated/teams.jsonl: a team the corpus references, with the display name and region the source states. Its canonical ID is anchored on the root of the source's rename chain (see tools/dataset/identity.ts), so it survives a rebrand; the other strings that denote this team are rows in aliases.jsonl. Contains no build timestamp, so the file is byte-identical across builds (spec R8).",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["id", "name", "overviewPage", "region"],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^tm-[0-9a-f]{12}$",
+			"description": "Opaque surrogate key derived from the source identity (spec D3). Do not parse it: read the row through `name`."
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The team's current display name as the source states it, so the row reads without decoding the ID (spec R12)."
+		},
+		"overviewPage": {
+			"type": ["string", "null"],
+			"minLength": 1,
+			"description": "The team's current wiki page. Null only when a scoreboard cited a team the source registers no page for: that entity is minted, and reported in identity-unresolved.jsonl, rather than dropped."
+		},
+		"region": {
+			"type": "string",
+			"description": "The source's Region string, verbatim. Empty when the source records none — including for a minted entity, whose region nobody recorded."
+		}
+	}
+}

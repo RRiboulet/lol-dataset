@@ -24,7 +24,7 @@ import * as path from "node:path";
 import { parseArgs } from "node:util";
 
 import type { CargoQuery } from "./cache.ts";
-import { payloadPaths, payloadDir, queryUrl, sha256, writePayload } from "./cache.ts";
+import { payloadDir, payloadPaths, queryUrl, sha256, tableOf, writePayload } from "./cache.ts";
 
 /** Measured 2026-11-12: three or four Cargo requests trip the limiter for >100s. */
 const DEFAULT_MIN_GAP_SECONDS = 75;
@@ -124,7 +124,7 @@ async function main(): Promise<void> {
 		}
 	}
 
-	await mkdir(payloadDir(values.root, endpoint), { recursive: true });
+	await mkdir(payloadDir(values.root, endpoint, tableOf(query)), { recursive: true });
 	await writePayload(values.root, query, body, { url, fetchedAt, status: response.status });
 	console.log(`recorded ${rowCount} rows -> ${paths.body}`);
 	if (rowCount === 0) console.log("warning: the query returned no rows; check --where quoting");

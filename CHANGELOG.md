@@ -45,6 +45,32 @@ Added:
   sidecar are renamed into place body-first so an interruption cannot leave a
   payload whose provenance is a lie. `cli.ts fetch` takes an explicit plan for
   now; the crawler that generates one is a later ticket.
+- Canonical identity for teams, players and champions, with the source's own rename
+  history behind it: `data/curated/teams.jsonl`, `players.jsonl`,
+  `champions.jsonl`, an `aliases.jsonl` table and an `identity-unresolved.jsonl`
+  report, each with a JSON Schema, all emitted and validated by the same build that
+  emits events. What a canonical ID is derived from is measured per entity kind
+  rather than assumed, because this is the decision the spec says will outlive the
+  scrapers: a team is anchored on the root of its `RenamedTo` chain, since a rebrand
+  is a *new page* (measured: SK Telecom T1 and T1 are two pages, one identity); a
+  player on their wiki page, since handle changes and disambiguated duplicates leave
+  redirect rows behind; a champion on Riot's numeric champion id, since the wiki
+  rewrites retired champion names retroactively and has no champion redirect table.
+  A rename therefore never mints a second entity, and adding an earlier event never
+  renumbers an existing one. Aliases carry the era the source used the string —
+  observed from game dates, or declared in `tools/dataset/rules/identity-aliases.json`
+  where the source records nothing — so a reader can ask who a 2015 string was. The
+  wiki stores its text HTML-escaped, so the two kinds of string are kept apart on
+  purpose: a display name is decoded (`Nunu & Willump` on the champion record and on
+  every alias's `entityName`), while an alias `string` keeps the source's own bytes
+  (`Nunu &amp; Willump`), because that is what exact matching runs against. Two
+  different players who share a display string stay two entities: the bare string is
+  reported as ambiguous with its candidates instead of being merged, and a string the
+  source registers nothing for becomes a new entity that is reported, so it is never
+  dropped or silently invented as a page. The payload cache now names the Cargo table
+  as a directory, because a recorded body does not say which table it came from and
+  routing by row shape would feed one stage's rows to another's parser; the recorded
+  fixtures moved accordingly and the committed event files are unchanged.
 
 Maintenance:
 

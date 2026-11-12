@@ -9,7 +9,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 
 import { readPayloads } from "../cache.ts";
-import { normalizeTournaments } from "../normalize.ts";
+import { normalizeSources } from "../normalize.ts";
 import type { SourceEvent } from "../normalize.ts";
 import type { EventSelectionRule, RuleDecision } from "../rule.ts";
 import { evaluateEvent, loadRule } from "../rule.ts";
@@ -28,7 +28,7 @@ export async function loadFixtureRule(): Promise<EventSelectionRule> {
 
 /** Every source event the recorded fixtures carry, deduplicated by page. */
 export async function fixtureSources(): Promise<SourceEvent[]> {
-	return normalizeTournaments(await readPayloads(FIXTURE_RAW));
+	return (await normalizeSources(await readPayloads(FIXTURE_RAW))).tournaments;
 }
 
 export type Decision = { source: SourceEvent; decision: RuleDecision };

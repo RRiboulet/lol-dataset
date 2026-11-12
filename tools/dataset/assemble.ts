@@ -13,9 +13,9 @@
 // carried beside the ID, so the hash stays an implementation detail a reader never
 // has to decode (R12).
 
-import { createHash } from "node:crypto";
-
+import { surrogateId } from "./identity.ts";
 import type { SourceEvent } from "./normalize.ts";
+import { displayName } from "./normalize.ts";
 import type { EventSelectionRule, RuleDecision } from "./rule.ts";
 import { evaluateEvent } from "./rule.ts";
 
@@ -50,9 +50,13 @@ export type AssembledDataset = {
 	decisions: Map<string, RuleDecision>;
 };
 
-/** `evt-` + 12 hex of the source page. Opaque on purpose; see the note above. */
+/**
+ * `evt-` + 12 hex of the source page. Opaque on purpose; see the note above. The
+ * hashing lives in `identity.ts` so an event cannot drift onto a different scheme
+ * from the teams, players and champions it will be joined to (tickets 03-05).
+ */
 export function eventId(overviewPage: string): string {
-	return `evt-${createHash("sha256").update(overviewPage).digest("hex").slice(0, 12)}`;
+	return surrogateId("evt", overviewPage);
 }
 
 export function assembleDataset(rule: EventSelectionRule, sources: SourceEvent[]): AssembledDataset {
@@ -74,7 +78,7 @@ export function assembleDataset(rule: EventSelectionRule, sources: SourceEvent[]
 
 		selection.push({
 			id,
-			name: source.name,
+			name: displayName(source.name),
 			overviewPage: source.overviewPage,
 			league: source.league,
 			region: source.region,
@@ -93,7 +97,7 @@ export function assembleDataset(rule: EventSelectionRule, sources: SourceEvent[]
 		}
 		events.push({
 			id,
-			name: source.name,
+			name: displayName(source.name),
 			overviewPage: source.overviewPage,
 			league: source.league,
 			region: source.region,

@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Champions",
+    "fields": "Name,KeyInteger,ReleaseDate",
+    "where": "Name IN ('Alistar','Amumu','Annie','Aphelios','Ashe','Aurora','Azir','Braum','Cho''Gath','Corki','Elise','Fiora','Gnar','Gragas','Irelia','Janna','Jax','Jayce','K''Sante','Kalista','Karthus','LeBlanc','Lee Sin','Lucian','Lulu','Milio','Miss Fortune','Nautilus','Nunu &amp; Willump','Orianna','Rell','Renata Glasc','Rengar','Sejuani','Singed','Sivir','Soraka','Syndra','Tristana','Twisted Fate','Twitch','Vayne','Warwick','Wukong')",
+    "order_by": "Name ASC",
+    "limit": 60
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Champions&fields=Name%2CKeyInteger%2CReleaseDate&where=Name+IN+%28%27Alistar%27%2C%27Amumu%27%2C%27Annie%27%2C%27Aphelios%27%2C%27Ashe%27%2C%27Aurora%27%2C%27Azir%27%2C%27Braum%27%2C%27Cho%27%27Gath%27%2C%27Corki%27%2C%27Elise%27%2C%27Fiora%27%2C%27Gnar%27%2C%27Gragas%27%2C%27Irelia%27%2C%27Janna%27%2C%27Jax%27%2C%27Jayce%27%2C%27K%27%27Sante%27%2C%27Kalista%27%2C%27Karthus%27%2C%27LeBlanc%27%2C%27Lee+Sin%27%2C%27Lucian%27%2C%27Lulu%27%2C%27Milio%27%2C%27Miss+Fortune%27%2C%27Nautilus%27%2C%27Nunu+%26amp%3B+Willump%27%2C%27Orianna%27%2C%27Rell%27%2C%27Renata+Glasc%27%2C%27Rengar%27%2C%27Sejuani%27%2C%27Singed%27%2C%27Sivir%27%2C%27Soraka%27%2C%27Syndra%27%2C%27Tristana%27%2C%27Twisted+Fate%27%2C%27Twitch%27%2C%27Vayne%27%2C%27Warwick%27%2C%27Wukong%27%29&order_by=Name+ASC&limit=60",
+  "fetchedAt": "2026-11-12T23:06:05.420Z",
+  "status": 200,
+  "bodySha256": "a64c3316afed37d153c2b8e98620aa92127e94d6c270f33ba49a453271452d90"
+}
