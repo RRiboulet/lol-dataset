@@ -14,6 +14,9 @@ Added:
   decision: the data starts in 2011 and each game records which field groups
   its era actually holds, instead of pretending every field exists from 2011.
   Still no data and no ingestion code.
+- Attribution and licence terms for the data the project is built on: the source
+  wiki is CC BY-SA 3.0, and the notice states which commits first carry
+  source-derived material, so no derived content is ever committed unattributed.
 
 Maintenance:
 

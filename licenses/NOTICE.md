@@ -59,3 +59,20 @@ The skills were edited to fit this repository rather than kept as copies:
   `show-me-your-work/scripts/log.sh` are executable here; upstream ships them
   mode 100644 while its own `validate.py` requires the bit, so its quality gate
   fails on a fresh clone.
+
+# Data source attribution
+
+The dataset under `data/`, and the recorded source payloads used as test fixtures,
+are derived from **Leaguepedia | League of Legends Esports Wiki**
+(<https://lol.fandom.com>), which is licensed **CC BY-SA 3.0**
+(<https://www.fandom.com/licensing>). The wiki reports that licence itself in its
+`siteinfo` (`rightsinfo`), and this notice states it rather than assumes it.
+
+Attribution starts at the first commit that contains source-derived material —
+which is the transcribed field inventory in `docs/specs/` and the recorded payload
+fixtures, not the first committed dataset. Reusing the derived data therefore
+requires crediting Leaguepedia and sharing derivative work alike.
+
+Riot Games' own material — champion and item data from Data Dragon, anything from
+the LoL Esports API — is not covered by that licence and is used under Riot's terms,
+not CC BY-SA.
