@@ -28,6 +28,8 @@ one is wanted, that is a separate conversation.
 - [ ] A reader can rebuild the dataset from the documentation without reading the
       source code.
 - [ ] The grain and every entity are documented with one worked example.
+- [ ] A data dictionary covers every file and every field, saying which fields can be
+      absent and what absence means in that place.
 - [ ] The coverage model and era caveats are documented, including which questions
       the data cannot answer.
 - [ ] Attribution for the source data sits where the data lives and in the licence
@@ -36,6 +38,13 @@ one is wanted, that is a separate conversation.
       find the commit that added it.
 - [ ] The documentation states the rebuild's operational cost honestly: throttled,
       cached, resumable, not a quick command.
+- [ ] At least three questions a junior analyst would actually ask are answered end
+      to end from the committed files, with a snippet they can run — including one that
+      lands on an era caveat, so the coverage markers are exercised rather than
+      described.
+- [ ] The documentation says plainly what was never modelled — no aggregates, no
+      ratings, no per-minute data — so nobody goes hunting for a layer that does not
+      exist (spec R12).
 - [ ] No `README.md` is created by this ticket.
 
 ## Validation
