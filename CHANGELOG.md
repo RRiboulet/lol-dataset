@@ -14,6 +14,10 @@ Added:
   decision: the data starts in 2011 and each game records which field groups
   its era actually holds, instead of pretending every field exists from 2011.
   Still no data and no ingestion code.
+- A dimensional model in scope, for the analyst rather than the pipeline: conformed
+  dimensions and three facts at declared grains, unknown members instead of dropped
+  joins, and no pre-computed measures — the aggregating stays with the analyst. The
+  curated records remain the source of truth underneath it.
 - Attribution and licence terms for the data the project is built on: the source
   wiki is CC BY-SA 3.0, and the notice states which commits first carry
   source-derived material, so no derived content is ever committed unattributed.
