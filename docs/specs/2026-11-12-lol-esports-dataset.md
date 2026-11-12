@@ -243,7 +243,9 @@ row exists for "not recorded", so an inner join does not silently drop games fro
 era with thin data; and no derived measures live in facts. Rejected: type-2
 dimensions (cost without benefit here), text keys in facts (no stability guarantee and
 worse joins), and a single-layer design (a model built on source-faithful records
-forbids ever correcting the source without losing the audit trail).
+forbids ever correcting the source without losing the audit trail). The model is
+emitted as **CSV plus DDL** (Open assumption 6), so it opens in a spreadsheet before
+anyone writes a query.
 
 **D9 — Fetch etiquette as a designed component, not an afterthought.** One
 process, sequential requests, a fixed interval with jitter, exponential backoff
@@ -386,11 +388,16 @@ re-derived on every run.
    2026-11-12: the data ships. The builder is a means, not the product — the artifact
    is a dataset a data analyst can open and work with, which is R12, on the modelled
    layer of R13.)*
-6. **The modelled layer's file format.** Options: CSV plus DDL (recommended — no
-   dependency, opens in a spreadsheet, loads in pandas, DuckDB and SQLite alike), a
-   committed SQLite database (Node 26 in this container has `node:sqlite` built in,
-   but a binary artifact in git), or Parquet (needs a dependency this repository
-   currently refuses, and is not openable by a junior analyst without tooling). Also
-   open: whether a dimension should expose a type-2 history alongside the alias
-   bridge of D10. *Confirm:* user. Blocks ticket 12's emission format and nothing
-   else.
+6. **The modelled layer's file format.** *(Decided 2026-11-12: CSV plus committed
+   DDL.)* One CSV per dimension and per fact, RFC 4180 quoting, UTF-8 without a BOM,
+   a header row, stable column order, ISO-8601 UTC dates, unformatted integers, and
+   an **empty field for absent** — distinct from `0`, which is why a measure is never
+   defaulted. The DDL is committed beside the CSVs and targets SQLite's dialect, which
+   DuckDB accepts as written and Postgres accepts with a type mapping, so the model
+   loads with no conversion step. A local `lol.sqlite` may be generated from them and
+   is not committed: binary in git is unreviewable, which is the same argument that
+   kept the curated layer out of SQLite in D2. Also settled here: dimensions carry an
+   **alias bridge, not a type-2 history** (D10) — type-2 duplicates keys and quietly
+   breaks naive `COUNT(*)` for a reader who has not studied the docs. Rejected: a
+   committed SQLite file (binary in git), Parquet (a dependency this repository
+   refuses, and unopenable by a junior analyst without tooling).

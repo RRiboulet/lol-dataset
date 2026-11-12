@@ -14,7 +14,7 @@ rather than being averaged away.
 ## Scope
 
 The full model build, its committed output, conformance tests against the curated
-dataset, and the load path — DDL plus whatever the agreed emission format needs.
+dataset, and the load path — the committed CSVs plus their DDL (Open assumption 6).
 Leaves the analyst-facing documentation and worked examples to ticket 11, which now
 documents both layers.
 

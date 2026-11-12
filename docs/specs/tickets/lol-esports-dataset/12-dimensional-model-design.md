@@ -23,8 +23,11 @@ does the summing, and a model that pre-computes it answers fewer questions.
 ## Scope
 
 The model's design, its DDL, its per-dimension and per-fact data dictionary, and the
-build step from curated fixtures into `data/model/`. Emission format is open
-assumption 6 in the spec — resolve it before writing the emitter, not after.
+build step from curated fixtures into `data/model/`. The emission format is decided
+(spec Open assumption 6, D10): one CSV per dimension and fact, RFC 4180 quoting, UTF-8
+without a BOM, header row, stable column order, ISO-8601 UTC dates, unformatted
+integers, empty field for absent rather than `0`, and committed DDL in SQLite's
+dialect. Do not reopen it.
 
 Leaves for later tickets: building the model over the full committed dataset, and the
 analyst-facing documentation.
@@ -43,8 +46,12 @@ analyst-facing documentation.
       readable next to its dimensions without decoding a key.
 - [ ] Facts contain no derived measure — no rate, ratio, average or percentage —
       enforced by a test that fails on an added column matching that shape.
-- [ ] The DDL loads into a SQL engine and the model loads into a dataframe library,
-      both with no preprocessing step.
+- [ ] The DDL loads the CSVs into a SQL engine and the model loads into a dataframe
+      library, both with no preprocessing or type-fixing step.
+- [ ] The CSV files follow the agreed canonical form: header, stable column order,
+      RFC 4180 quoting, no BOM, ISO-8601 UTC dates, integers unformatted, and an empty
+      field wherever a measure was not recorded.
+- [ ] No generated database file is committed; the CSVs plus DDL are the artifact.
 - [ ] The data dictionary covers every dimension and fact, including which measures
       can be absent and what the unknown member means.
 
