@@ -59,7 +59,11 @@ Added:
   A rename therefore never mints a second entity, and adding an earlier event never
   renumbers an existing one. Aliases carry the era the source used the string —
   observed from game dates, or declared in `tools/dataset/rules/identity-aliases.json`
-  where the source records nothing — so a reader can ask who a 2015 string was. Two
+  where the source records nothing — so a reader can ask who a 2015 string was. The
+  wiki stores its text HTML-escaped, so the two kinds of string are kept apart on
+  purpose: a display name is decoded (`Nunu & Willump` on the champion record and on
+  every alias's `entityName`), while an alias `string` keeps the source's own bytes
+  (`Nunu &amp; Willump`), because that is what exact matching runs against. Two
   different players who share a display string stay two entities: the bare string is
   reported as ambiguous with its candidates instead of being merged, and a string the
   source registers nothing for becomes a new entity that is reported, so it is never

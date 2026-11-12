@@ -61,6 +61,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";
 
+import { displayName } from "./normalize.ts";
 import type {
 	SourceChampion,
 	SourceDataset,
@@ -353,8 +354,8 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 	for (const { root, chain } of teamChains(sources.teams)) {
 		const current = chain[chain.length - 1];
 		const id = surrogateId(KIND_PREFIX.team, root.page);
-		teams.push({ id, name: current.name, overviewPage: current.page, region: current.region });
-		names.set(id, current.name);
+		teams.push({ id, name: displayName(current.name), overviewPage: current.page, region: current.region });
+		names.set(id, displayName(current.name));
 		for (const page of chain) teamIdByPage.set(page.page, id);
 		chain.forEach((page, index) => {
 			const isCurrent = index === chain.length - 1;
@@ -396,8 +397,8 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 	}
 	for (const [page, id] of playerIdByPage) {
 		const handle = currentHandle.get(page) ?? page;
-		players.push({ id, name: handle, overviewPage: page });
-		names.set(id, handle);
+		players.push({ id, name: displayName(handle), overviewPage: page });
+		names.set(id, displayName(handle));
 		register("player", page, id, "identity", "registry");
 		if (handle !== page) register("player", handle, id, "identity", "handle");
 	}
@@ -416,8 +417,8 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 	for (const champion of sources.champions) {
 		const id = surrogateId(KIND_PREFIX.champion, `riot:${champion.riotKey}`);
 		championIdByRiotKey.set(champion.riotKey, id);
-		champions.push({ id, name: champion.name, riotKey: champion.riotKey });
-		names.set(id, champion.name);
+		champions.push({ id, name: displayName(champion.name), riotKey: champion.riotKey });
+		names.set(id, displayName(champion.name));
 		register("champion", champion.name, id, "identity", "registry");
 	}
 
@@ -476,7 +477,7 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 			unresolved.set(key, {
 				kind,
 				string,
-				name: string,
+				name: displayName(string),
 				id: outcome.id,
 				firstSeen: DATE.test(date) ? date : null,
 				lastSeen: DATE.test(date) ? date : null,
@@ -493,10 +494,10 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 
 	const mint = (kind: EntityKind, string: string): string => {
 		const id = surrogateId(KIND_PREFIX[kind], string);
-		if (kind === "team") teams.push({ id, name: string, overviewPage: null, region: "" });
-		else if (kind === "player") players.push({ id, name: string, overviewPage: null });
-		else champions.push({ id, name: string, riotKey: null });
-		names.set(id, string);
+		if (kind === "team") teams.push({ id, name: displayName(string), overviewPage: null, region: "" });
+		else if (kind === "player") players.push({ id, name: displayName(string), overviewPage: null });
+		else champions.push({ id, name: displayName(string), riotKey: null });
+		names.set(id, displayName(string));
 		register(kind, string, id, "identity", "observed");
 		return id;
 	};

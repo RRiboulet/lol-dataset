@@ -26,8 +26,8 @@
 {"kind":"champion","string":"Milio","entityId":"ch-68dddbcc1c0c","entityName":"Milio","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Miss Fortune","entityId":"ch-52cc91b436d4","entityName":"Miss Fortune","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","observed"]}
 {"kind":"champion","string":"Nautilus","entityId":"ch-fd31ef9235c6","entityName":"Nautilus","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","observed"]}
-{"kind":"champion","string":"Nunu","entityId":"ch-f93dac5db740","entityName":"Nunu &amp; Willump","firstSeen":"2009-02-21","lastSeen":null,"evidence":["declared"]}
-{"kind":"champion","string":"Nunu &amp; Willump","entityId":"ch-f93dac5db740","entityName":"Nunu &amp; Willump","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","observed"]}
+{"kind":"champion","string":"Nunu","entityId":"ch-f93dac5db740","entityName":"Nunu & Willump","firstSeen":"2009-02-21","lastSeen":null,"evidence":["declared"]}
+{"kind":"champion","string":"Nunu &amp; Willump","entityId":"ch-f93dac5db740","entityName":"Nunu & Willump","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","observed"]}
 {"kind":"champion","string":"Orianna","entityId":"ch-607acddc0484","entityName":"Orianna","firstSeen":"2023-10-19","lastSeen":"2023-10-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Rell","entityId":"ch-db39a1c9d0ae","entityName":"Rell","firstSeen":"2023-10-19","lastSeen":"2023-10-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Renata Glasc","entityId":"ch-6e5a3a3ed10b","entityName":"Renata Glasc","firstSeen":"2023-10-19","lastSeen":"2023-10-19","evidence":["registry","observed"]}

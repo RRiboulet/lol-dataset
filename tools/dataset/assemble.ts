@@ -15,6 +15,7 @@
 
 import { surrogateId } from "./identity.ts";
 import type { SourceEvent } from "./normalize.ts";
+import { displayName } from "./normalize.ts";
 import type { EventSelectionRule, RuleDecision } from "./rule.ts";
 import { evaluateEvent } from "./rule.ts";
 
@@ -77,7 +78,7 @@ export function assembleDataset(rule: EventSelectionRule, sources: SourceEvent[]
 
 		selection.push({
 			id,
-			name: source.name,
+			name: displayName(source.name),
 			overviewPage: source.overviewPage,
 			league: source.league,
 			region: source.region,
@@ -96,7 +97,7 @@ export function assembleDataset(rule: EventSelectionRule, sources: SourceEvent[]
 		}
 		events.push({
 			id,
-			name: source.name,
+			name: displayName(source.name),
 			overviewPage: source.overviewPage,
 			league: source.league,
 			region: source.region,

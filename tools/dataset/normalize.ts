@@ -22,11 +22,32 @@
 //     either spelling.
 //   - values keep the wiki's HTML entities (`Nunu &amp; Willump`, and the source
 //     spells it that way in the champion table *and* in 2011 scoreboard rows).
-//     They are carried verbatim (spec R7): decoding would rewrite the source's own
-//     string, and exact matching against the registry works precisely because both
-//     sides carry the same bytes.
+//     The two kinds of string are treated differently on purpose: a *source string*
+//     — an alias, a page, a league — keeps those bytes, because spec R7 says source
+//     strings are preserved verbatim and exact matching against the registry depends
+//     on both sides carrying the same bytes. A *display name* goes through
+//     `displayName()` below, because spec R12 asks for the human-readable name and
+//     `&amp;` is the wiki's escaping, not part of Riot's name.
 
 import type { CachedPayload } from "./cache.ts";
+
+/**
+ * The human-readable form of a source string: HTML entities decoded once.
+ *
+ * Used for display names only (`name`, `entityName`), never for an alias `string`, a
+ * page or a league — those are source strings under spec R7. Decoding happens once
+ * by scanning left to right, so `&amp;lt;` becomes `&lt;` and never `<`: a source
+ * string that meant to show `&lt;` still does.
+ */
+export function displayName(source: string): string {
+	const named: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: "\u00a0" };
+	return source.replace(/&(?:(amp|lt|gt|quot|apos|nbsp)|#x([0-9a-fA-F]+)|#(\d+));/g, (whole, entity, hex, dec) => {
+		if (entity !== undefined) return named[entity as keyof typeof named];
+		const code = hex !== undefined ? Number.parseInt(hex, 16) : Number(dec);
+		if (!Number.isFinite(code) || code < 0 || code > 0x10ffff) return whole;
+		return String.fromCodePoint(code);
+	});
+}
 
 /** One tournament row as the source states it, already trimmed. */
 export type SourceEvent = {

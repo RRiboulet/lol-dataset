@@ -208,3 +208,31 @@ test("writeDataset is what the committed files are made of", async () => {
 		await rm(dir, { recursive: true, force: true });
 	}
 });
+
+test("an HTML entity in a source name is decoded on the record, not on the source string", async () => {
+	// The wiki escapes its own text (`Nunu &amp; Willump` is what the champion table
+	// says), so a name containing `&` arrives escaped. The display name is decoded
+	// (spec R12); the source page and the canonical ID are untouched (R7, D3).
+	const baseline = await fixtureBuild();
+	const before = baseline.events.find((event) => event.overviewPage === "2023 Season World Championship");
+	assert.ok(before);
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-entity-"));
+	try {
+		const source = await payloadContaining("2023 Season World Championship");
+		const rows = JSON.parse(await readFile(source, "utf8")) as { OverviewPage?: string; Name?: string }[];
+		const worlds = rows.find((row) => row.OverviewPage === "2023 Season World Championship");
+		assert.ok(worlds);
+		worlds.Name = "Worlds 2023 &amp; Friends";
+		const target = await cacheDir(dir, "Tournaments");
+		await writeFile(path.join(target, "tournaments.json"), JSON.stringify(rows), "utf8");
+
+		const built = await buildDataset({ rawDir: dir });
+		const after = built.events.find((event) => event.overviewPage === "2023 Season World Championship");
+		assert.ok(after);
+		assert.equal(after.name, "Worlds 2023 & Friends");
+		assert.equal(after.id, before.id, "a display name never feeds the canonical ID");
+		assert.equal(built.selection.find((record) => record.id === after.id)?.name, "Worlds 2023 & Friends");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});

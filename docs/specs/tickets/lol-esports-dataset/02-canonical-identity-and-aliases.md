@@ -75,6 +75,12 @@ rename cases could not be taken on faith:
   173 rows in `Champions`. The fixture that carries an unresolved string is therefore
   a 2026 Prime League game whose team `The Bandits Prime` has no `Teams` row and no
   `TeamRedirects` name — a recorded case, not an invented one.
+- **The source's text is HTML-escaped, and the two kinds of string are kept apart.**
+  `Nunu &amp; Willump` is what the champion table *and* the 2011 scoreboard rows say.
+  A display name is decoded (`Nunu & Willump`) because R12 asks for the name a reader
+  recognises; an alias `string`, a page and a league keep the source's bytes because
+  R7 says source strings are preserved verbatim and exact matching runs against them.
+  Decoding happens once, so a source string that meant to show `&lt;` still does.
 - **The 2011 and 2013 World Cyber Games have no `ScoreboardPlayers` rows at all**,
   although they are admitted events. That is ticket 03's problem, not identity's, and
   it is noted here so the game ticket does not discover it as a surprise.

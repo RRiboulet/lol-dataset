@@ -22,6 +22,7 @@ import { test } from "node:test";
 
 import { buildDataset } from "../build.ts";
 import { AmbiguousIdentity } from "../identity.ts";
+import { displayName } from "../normalize.ts";
 import type { BuildResult } from "../build.ts";
 import { validateAgainst } from "../validate.ts";
 import { CURATED_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
@@ -519,3 +520,41 @@ test("a payload in a table with no normalizer stops the build instead of being s
 		await rm(dir, { recursive: true, force: true });
 	}
 })
+
+// ---- display names vs source strings -------------------------------------------
+//
+// The wiki stores HTML-escaped strings, so `Nunu &amp; Willump` is what the champion
+// table and the 2011 scoreboard rows both say. Two different promises apply to it:
+// spec R7 keeps a *source string* verbatim (the alias table, exact matching), and
+// spec R12 puts the *human-readable* name on the record. A decoder that ran over
+// both would rewrite source bytes; one that ran over neither would put `&amp;` in
+// front of an analyst, and in every player row built on top (ticket 04).
+
+test("display names are decoded once, so a source string that meant to show an entity still does", () => {
+	assert.equal(displayName("Nunu &amp; Willump"), "Nunu & Willump");
+	assert.equal(displayName("A &amp;lt; B"), "A &lt; B", "one pass: `&amp;lt;` is a literal `&lt;`, not `<`");
+	assert.equal(displayName("Misfits &quot;Black&quot;"), 'Misfits "Black"');
+	assert.equal(displayName("&#38;&#x26;"), "&&");
+	assert.equal(displayName("KT Rolster"), "KT Rolster");
+	assert.equal(displayName("100&#37;"), "100%");
+});
+
+test("a champion's display name is decoded while its alias string stays verbatim", async () => {
+	const files = await fixtureBuild();
+	const champion = (files.files["champions.jsonl"] ?? "")
+		.split("\n")
+		.filter((line) => line !== "")
+		.map((line) => JSON.parse(line) as { name: string; riotKey: number | null })
+		.find((record) => record.riotKey === 20);
+	assert.ok(champion, "the fixtures carry Riot champion 20 (Nunu & Willump)");
+	assert.equal(champion.name, "Nunu & Willump");
+
+	const aliases = (files.files["aliases.jsonl"] ?? "")
+		.split("\n")
+		.filter((line) => line !== "")
+		.map((line) => JSON.parse(line) as { kind: string; string: string; entityName: string });
+	const sourceString = aliases.find((alias) => alias.kind === "champion" && alias.string.includes("Willump"));
+	assert.ok(sourceString, "the registry string must be in the alias table");
+	assert.equal(sourceString.string, "Nunu &amp; Willump", "the alias keeps the source's own bytes (R7)");
+	assert.equal(sourceString.entityName, "Nunu & Willump", "the alias names its entity by display name (R12)");
+});
