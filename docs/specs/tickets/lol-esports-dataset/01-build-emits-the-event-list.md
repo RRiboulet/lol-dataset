@@ -49,6 +49,8 @@ the full validator, and the actual crawl.
 - [ ] An override entry changes the selected set, and a reason is mandatory.
 - [ ] An event whose region is unknown is rejected rather than guessed.
 - [ ] Output validates against the checked-in schema.
+- [ ] Each event carries its display name and its source page beside its canonical ID,
+      so the file reads without decoding identifiers (spec R12).
 - [ ] Two runs over the same fixtures produce byte-identical output.
 - [ ] The test suite runs with no network access available.
 - [ ] Attribution in `licenses/NOTICE.md` covers the recorded fixtures committed

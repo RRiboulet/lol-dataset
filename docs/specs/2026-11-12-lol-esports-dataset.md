@@ -102,6 +102,17 @@ credential, cookie or token is stored in the repository. The fetch layer
 throttles, backs off on rate-limit responses, resumes from the cache, and can be
 interrupted and restarted without duplicating or losing work.
 
+**R12 — A junior analyst can use it without reading the build code.** The committed
+dataset is the deliverable; the builder is a means to it. The files are flat,
+documented, and load with no preprocessing step. Every record carries the
+human-readable name beside its canonical ID — and, where it exists, the source's own
+string — so no row has to be decoded through an identifier before it can be
+understood. The documentation names the files, the grain and the join keys, and
+answers questions an analyst would actually ask (who won a given series game; what a
+given player picked in a given event). What is **not** required is a modelled layer:
+no star schema, no pre-aggregated tables, no ratings or derived metrics. Those belong
+to whoever consumes the data, on top of it.
+
 ## Non-goals
 
 - Regional leagues (LCK, LPL, LEC, LCS, CBLOL, …) and national competitions.
@@ -116,6 +127,9 @@ interrupted and restarted without duplicating or losing work.
   add timelines; see D4 and the ACS note in Constraints).
 - VOD media. Links may be recorded; nothing is downloaded.
 - Any website, API server, or query interface over the data.
+- A modelled or pre-aggregated layer over the data — star schema, summary tables,
+  ratings. R12 requires the data itself to be directly usable; a semantic layer on
+  top of it is someone else's project.
 - Translations, commentary, or narrative content.
 
 ## Constraints
@@ -163,6 +177,9 @@ adding an earlier event never renumbers later ones. Display names live on the
 entity; aliases live in a separate alias table with the era they applied to.
 Rejected: using the source string as the key (breaks on every rename and on
 cross-source spelling differences — the archive spans sixteen years of both).
+Every record repeats the entity's display name beside the ID, and the source's own
+string where one exists, so the ID stays an implementation detail and an analyst
+never has to decode one to read a row (R12).
 
 **D4 — Era-aware coverage instead of uniform fields.** Field groups carry a
 per-game coverage marker (R6) rather than a nullable column whose meaning
@@ -331,6 +348,8 @@ re-derived on every run.
    holds that no other source does, and they are excluded here. If the answer is
    yes, ACS's cookie requirement collides with R11 and needs its own decision.
    *Confirm:* user, on a later spec.
-5. **Whether the dataset ships committed data or only the builder.** This spec
-   assumes committed data (D2, D6), because "a complete dataset" is the artifact.
-   *Confirm:* user.
+5. **Whether the dataset ships committed data or only the builder.** *(Decided
+   2026-11-12: the data ships. The builder is a means, not the product — the artifact
+   is a dataset a data analyst can open and work with, and "not necessarily a gold
+   layer" was the user's words, which R12 encodes as: flat, documented, loadable,
+   with no modelled layer above it.)*

@@ -33,6 +33,9 @@ documentation is ticket 11's.
 - [ ] The manifest pins the payload hashes the committed dataset came from.
 - [ ] A person can point at any game in the dataset and reach the source payload it
       came from using only committed files plus the manifest.
+- [ ] The committed files load directly into a dataframe library, a SQL engine and a
+      spreadsheet-grade tool with no preprocessing step, and the file list is
+      discoverable rather than guessed (spec R12).
 
 ## Validation
 

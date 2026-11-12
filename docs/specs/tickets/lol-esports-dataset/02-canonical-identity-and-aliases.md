@@ -34,6 +34,9 @@ Leaves for later tickets: joining those entities into games and player rows.
       failing the build or being dropped.
 - [ ] The alias table round-trips: given a source string and a date, the resolved
       canonical ID is stable.
+- [ ] Every emitted reference carries the entity's human-readable display name
+      beside its canonical ID, so no row requires decoding an identifier to be read
+      (spec R12).
 
 ## Validation
 
