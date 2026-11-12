@@ -1,7 +1,7 @@
 # 01: A build that emits the agreed event list
 
 **Blocked by:** None (can start immediately)
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -39,21 +39,21 @@ the full validator, and the actual crawl.
 
 ## Acceptance criteria
 
-- [ ] The build emits the event entity file from fixtures, sorted by canonical ID.
-- [ ] The committed rule selects the fixture Worlds and MSI events and rejects the
+- [x] The build emits the event entity file from fixtures, sorted by canonical ID.
+- [x] The committed rule selects the fixture Worlds and MSI events and rejects the
       fixture regional-league event; the rejection is visible, not silent.
-- [ ] An All-Star fixture event is rejected with its own stated reason — not merely
+- [x] An All-Star fixture event is rejected with its own stated reason — not merely
       absent — because it is international and the exclusion is deliberate.
-- [ ] A fixture qualifier for an included event is rejected, so the rule does not
+- [x] A fixture qualifier for an included event is rejected, so the rule does not
       pull a play-in tournament in twice under a different name.
-- [ ] An override entry changes the selected set, and a reason is mandatory.
-- [ ] An event whose region is unknown is rejected rather than guessed.
-- [ ] Output validates against the checked-in schema.
-- [ ] Each event carries its display name and its source page beside its canonical ID,
+- [x] An override entry changes the selected set, and a reason is mandatory.
+- [x] An event whose region is unknown is rejected rather than guessed.
+- [x] Output validates against the checked-in schema.
+- [x] Each event carries its display name and its source page beside its canonical ID,
       so the file reads without decoding identifiers (spec R12).
-- [ ] Two runs over the same fixtures produce byte-identical output.
-- [ ] The test suite runs with no network access available.
-- [ ] Attribution in `licenses/NOTICE.md` covers the recorded fixtures committed
+- [x] Two runs over the same fixtures produce byte-identical output.
+- [x] The test suite runs with no network access available.
+- [x] Attribution in `licenses/NOTICE.md` covers the recorded fixtures committed
       here, so no source-derived content lands unattributed.
 
 ## Validation
