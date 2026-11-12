@@ -1,0 +1,65 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:event-selection:1",
+	"title": "Event selection report",
+	"description": "One row of data/curated/event-selection.jsonl: every source event the build considered, and what the committed rule in tools/dataset/rules/event-selection.json did with it. This is what makes a rejection visible rather than absent — the reason itself is not duplicated here, it lives in the rule file under `rule`/`key`.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name",
+		"overviewPage",
+		"league",
+		"region",
+		"decision",
+		"rule",
+		"key"
+	],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^evt-[0-9a-f]{12}$",
+			"description": "Same canonical ID as events.jsonl, so a rejection and an include cannot disagree about identity."
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1
+		},
+		"overviewPage": {
+			"type": "string",
+			"minLength": 1
+		},
+		"league": {
+			"type": "string",
+			"description": "Source League verbatim; empty when the source records none."
+		},
+		"region": {
+			"type": "string",
+			"description": "Source Region verbatim; empty when the source records none, which is why unknown-region rejection exists."
+		},
+		"decision": {
+			"type": "string",
+			"enum": [
+				"included",
+				"rejected"
+			]
+		},
+		"rule": {
+			"type": "string",
+			"enum": [
+				"override",
+				"region",
+				"year",
+				"exclusion",
+				"admitted",
+				"fallback"
+			],
+			"description": "Which clause of the committed rule decided this event, in the order the rule is evaluated."
+		},
+		"key": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The entry inside that clause: a league key, an exclusion key, or an override marker."
+		}
+	}
+}

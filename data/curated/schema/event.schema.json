@@ -1,0 +1,75 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:event:1",
+	"title": "Curated event",
+	"description": "One row of data/curated/events.jsonl: a tournament admitted by the committed event-selection rule in tools/dataset/rules/event-selection.json (spec R1). Contains no build timestamp, because the file must be byte-identical across builds (spec R8).",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"name",
+		"overviewPage",
+		"league",
+		"region",
+		"dateStart",
+		"year",
+		"selection"
+	],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^evt-[0-9a-f]{12}$",
+			"description": "Opaque surrogate key derived from overviewPage (spec D3). Do not parse it: read the row through `name` or `overviewPage`."
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source's own display name, so the row reads without decoding the ID (spec R12)."
+		},
+		"overviewPage": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source page this event was recorded from, and the input to its canonical ID."
+		},
+		"league": {
+			"type": "string",
+			"description": "The source's League string, verbatim. Empty when the source records none, which is possible for an event admitted by a per-event override (see the rule file)."
+		},
+		"region": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source's Region string, verbatim. Not constrained to International here: a per-event override may admit an event on a stated reason (see the rule file)."
+		},
+		"dateStart": {
+			"type": "string",
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+			"description": "Source DateStart as a UTC calendar date. Absent if the source has none, which fails the build rather than emitting an undateable event."
+		},
+		"year": {
+			"type": "integer",
+			"description": "UTC calendar year of dateStart, repeated so a reader can group without parsing the date."
+		},
+		"selection": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"rule",
+				"key"
+			],
+			"description": "Which clause of tools/dataset/rules/event-selection.json admitted this event. The reason text lives once, in that file, under this key.",
+			"properties": {
+				"rule": {
+					"type": "string",
+					"enum": [
+						"admitted",
+						"override"
+					]
+				},
+				"key": {
+					"type": "string",
+					"minLength": 1
+				}
+			}
+		}
+	}
+}

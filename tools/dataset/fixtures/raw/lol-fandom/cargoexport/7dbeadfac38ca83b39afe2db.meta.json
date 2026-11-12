@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Tournaments",
+    "fields": "Name,OverviewPage,DateStart,League,Region",
+    "where": "OverviewPage IN ('IEM Season IX - World Championship','IEM Season IX - Cologne','Rift Rivals 2017/NA-EU','2020 Mid-Season Cup','2013 World Cyber Games','2010 World Cyber Games','Esports World Cup 2024','2025 First Stand','2027 First Stand','IGN ProLeague Season 5')",
+    "order_by": "OverviewPage ASC",
+    "limit": 20
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Tournaments&fields=Name%2COverviewPage%2CDateStart%2CLeague%2CRegion&where=OverviewPage+IN+%28%27IEM+Season+IX+-+World+Championship%27%2C%27IEM+Season+IX+-+Cologne%27%2C%27Rift+Rivals+2017%2FNA-EU%27%2C%272020+Mid-Season+Cup%27%2C%272013+World+Cyber+Games%27%2C%272010+World+Cyber+Games%27%2C%27Esports+World+Cup+2024%27%2C%272025+First+Stand%27%2C%272027+First+Stand%27%2C%27IGN+ProLeague+Season+5%27%29&order_by=OverviewPage+ASC&limit=20",
+  "fetchedAt": "2026-11-12T22:17:40.459Z",
+  "status": 200,
+  "bodySha256": "35c6877548184c8b53233ae093f0c2095d1e7684379e2442c9a58e01c970535c"
+}

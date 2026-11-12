@@ -21,6 +21,18 @@ Added:
 - Attribution and licence terms for the data the project is built on: the source
   wiki is CC BY-SA 3.0, and the notice states which commits first carry
   source-derived material, so no derived content is ever committed unattributed.
+- The dataset's first code: an offline `build` that turns **recorded** Leaguepedia
+  payloads into `data/curated/events.jsonl`, plus a `event-selection.jsonl` report
+  that shows every rejection and which clause caused it. Events are selected by a
+  committed rule in `tools/dataset/rules/event-selection.json` — international
+  region, the admitted leagues, a 2011 era floor, and stated exclusions for
+  All-Star, national-team events, IEM's regional stops, an event's stage pages and
+  qualifiers — with per-event overrides that must carry a reason. Output is
+  schema-validated, sorted by canonical ID and byte-identical across runs, and the
+  suite needs no network. The recorded payload fixtures and the licence notice
+  covering them ship here, as the first committed source-derived material; the raw
+  cache itself stays gitignored, and `--raw` points the build at the fixtures until
+  the real crawl fills it.
 
 Maintenance:
 

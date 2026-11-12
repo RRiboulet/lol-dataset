@@ -1,0 +1,128 @@
+{
+	"$comment": "Spec R1: the dataset contains every event matching this rule and nothing else. Evaluated in this order, first match wins: (1) overrides.exclude, (2) overrides.include, (3) region unknown, (4) region not international, (5) year outside the declared era, (6) exclusions in file order, (7) admitted in file order, (8) fallback. Every decision cites a reason from this file; the code carries no policy text. Exclusions match on any evidence (league, leaguePatterns, namePatterns); admissions match on League evidence and may add requiresNamePatterns as a filter. The decided scope is spec Open assumption 2, so a later change to the admitted set is a reviewable diff to this file.",
+	"version": 1,
+	"description": "International 5v5 Summoner's Rift tournament in an admitted league, inside the declared era, excluding qualifiers and stage pages of events already admitted.",
+	"format": {
+		"required": "5v5-summoners-rift",
+		"reason": "The dataset is per-game 5v5 Summoner's Rift statistics, so an event that also runs 1v1 brackets or alternate-mode showmatches cannot be admitted at event level — it would need a per-game judgement."
+	},
+	"years": {
+		"from": 2011,
+		"before": {
+			"key": "before-declared-era",
+			"reason": "The dataset's declared era starts in 2011 (spec objective, era-aware completeness), so an earlier event is out of scope even when its league is admitted."
+		},
+		"unknown": {
+			"key": "year-unknown",
+			"reason": "The source records no start date, so the event cannot be placed in the declared era without guessing."
+		}
+	},
+	"region": {
+		"include": ["International"],
+		"unknownValues": ["", "Unknown"],
+		"unknown": {
+			"key": "region-unknown",
+			"reason": "The source records no usable region, so an international scope cannot be established. Guessing would put a national league into an international dataset."
+		},
+		"notInternational": {
+			"key": "region-not-international",
+			"reason": "The source records a non-international region. Regional leagues and national competitions are out of scope (spec non-goals)."
+		}
+	},
+	"admitted": [
+		{
+			"key": "worlds",
+			"leagues": ["World Championship"],
+			"format": "5v5-summoners-rift",
+			"reason": "Riot's annual World Championship, the dataset's core event (2011-2026)."
+		},
+		{
+			"key": "msi",
+			"leagues": ["Mid-Season Invitational"],
+			"format": "5v5-summoners-rift",
+			"reason": "Riot's annual mid-season international (2015-2026, not held in 2020)."
+		},
+		{
+			"key": "first-stand",
+			"leagues": ["First Stand"],
+			"format": "5v5-summoners-rift",
+			"reason": "Riot's 2025+ seasonal international."
+		},
+		{
+			"key": "mid-season-cup",
+			"leaguePatterns": ["^mid-season cup\\b"],
+			"format": "5v5-summoners-rift",
+			"reason": "The 2020 Mid-Season Cup, the international that stood in for MSI that year. The source's League value carries the year (Mid-Season Cup 2020)."
+		},
+		{
+			"key": "rift-rivals",
+			"leaguePatterns": ["^rift rivals\\b"],
+			"format": "5v5-summoners-rift",
+			"reason": "The 2017-2019 inter-regional Rift Rivals events. The source's League value names the region pairing (Rift Rivals 2017 NA-EU), so the league is matched by prefix."
+		},
+		{
+			"key": "iem-world-championship",
+			"leagues": ["Intel Extreme Masters", "IEM"],
+			"format": "5v5-summoners-rift",
+			"requiresNamePatterns": ["world championship"],
+			"notMatching": {
+				"key": "iem-regional-stop",
+				"reason": "IEM's regional stops share the Intel Extreme Masters league but are excluded by the decided scope; only its World Championships are admitted."
+			},
+			"reason": "IEM World Championships, a third-party international major admitted by the decided scope."
+		},
+		{
+			"key": "ipl",
+			"leagues": ["IGN Pro League", "IPL"],
+			"format": "5v5-summoners-rift",
+			"reason": "IPL/IGN Pro League, a third-party international major admitted by the decided scope."
+		},
+		{
+			"key": "wcg",
+			"leagues": ["World Cyber Games"],
+			"format": "5v5-summoners-rift",
+			"reason": "World Cyber Games' international League of Legends tournaments."
+		},
+		{
+			"key": "esports-world-cup",
+			"leagues": ["Esports World Cup"],
+			"format": "5v5-summoners-rift",
+			"reason": "The Esports World Cup (2024-), admitted by the decided scope."
+		}
+	],
+	"exclusions": [
+		{
+			"key": "all-star",
+			"leaguePatterns": ["all[ -]?stars?\\b"],
+			"reason": "All-Star is excluded deliberately: it combines a 5v5 invitational with a 1v1 bracket and alternate-mode showmatches, so admitting it would push a per-game 'is this a real game' judgement into the event rule (spec Open assumption 2)."
+		},
+		{
+			"key": "national-team",
+			"leaguePatterns": ["asian games", "\\bIeSF\\b"],
+			"reason": "National-team events are a different competitive unit from the club dataset (spec non-goals), even where the source marks them international."
+		},
+		{
+			"key": "stage-subpage",
+			"namePatterns": ["/play-?in\\b", "/main[ -]event\\b", "/showmatches?\\b"],
+			"reason": "A stage page (/Play-In, /Main Event, /Showmatches) is part of an event whose own page is the event. Measured on the source: 2023 Worlds has 79 games on /Main Event and 31 on /Play-In and none on the parent page, so the crawl collects a stage's games under its parent, and admitting the stage as well would count the same event twice or three times."
+		},
+		{
+			"key": "qualifier",
+			"namePatterns": ["\\bqualifiers?\\b", "\\bqualifying\\b"],
+			"reason": "A qualifier feeds an event that is already admitted (for example 2023 Worlds Qualifying Series). Admitting both would count the same games twice under a different name, so the qualifier loses."
+		}
+	],
+	"fallback": {
+		"key": "league-not-admitted",
+		"reason": "The league is not in the admitted set, and no exclusion or override covers this event."
+	},
+	"overrides": {
+		"include": [
+			{
+				"overviewPage": "2011 World Cyber Games",
+				"reason": "The source records no League value for this page, so the league rule cannot admit it. The page is the 2011 World Cyber Games world final, which the decided scope admits as a World Cyber Games event; the override records that judgement rather than leaving the event silently missing."
+			}
+		],
+		"exclude": []
+	}
+}
