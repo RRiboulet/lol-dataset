@@ -33,6 +33,18 @@ Added:
   covering them ship here, as the first committed source-derived material; the raw
   cache itself stays gitignored, and `--raw` points the build at the fixtures until
   the real crawl fills it.
+- A fetch layer that can be left running. It issues one request at a time at a
+  designed interval with jitter, backs off exponentially when the source says
+  `ratelimited`, and stops the run after repeated failures with a message naming
+  the query and cache key to resume from. The reason for the care is measured,
+  not assumed: the source refused after three or four Cargo requests for more than
+  a hundred seconds, and it refused with **HTTP 200** and an error body — so a
+  response is cached only after it is classified as Cargo rows, never because it
+  arrived with a 200. The cache key comes from the canonical query, so reordering
+  the plan or killing the process costs nothing already fetched, and a body plus
+  sidecar are renamed into place body-first so an interruption cannot leave a
+  payload whose provenance is a lie. `cli.ts fetch` takes an explicit plan for
+  now; the crawler that generates one is a later ticket.
 
 Maintenance:
 

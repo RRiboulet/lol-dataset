@@ -1,11 +1,13 @@
 // Recorded-payload capture: one Cargo query per invocation, by hand.
 //
-// This is deliberately *not* the fetch layer. Ticket 08 builds that: a queue,
-// throttling with jitter, exponential backoff on `ratelimited`, and a resumable
-// run over thousands of windows. This tool exists so ticket 01's fixtures are
-// recorded from the live API rather than invented, and it stays honest about its
-// limits — it issues one request, spaces it away from the previous recording,
-// and refuses to overwrite a payload that changed upstream without being told to.
+// This is deliberately *not* the fetch layer. `fetch.ts` is the crawler: it takes
+// an explicit plan, issues sequential requests at a measured interval, backs off
+// on `ratelimited`, and resumes from a cache keyed by the query. This tool exists
+// so fixtures are recorded from the live API rather than invented, and it stays
+// honest about its limits — one query per invocation, a gap from the newest
+// recorded fetch, and a refusal to overwrite a payload that changed upstream
+// without `--replace`. It shares the cache key and sidecar format, so the build
+// cannot tell a hand-recorded fixture from a fetched payload.
 //
 //   node tools/dataset/record.ts --endpoint cargoexport \
 //     --tables Tournaments \
