@@ -1,0 +1,74 @@
+[
+    {
+        "Name": "WCG 2011",
+        "OverviewPage": "2011 World Cyber Games",
+        "DateStart": "2011-12-08",
+        "League": null,
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "MSI 2023",
+        "OverviewPage": "2023 Mid-Season Invitational",
+        "DateStart": "2023-05-02",
+        "League": "Mid-Season Invitational",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "Worlds 2023",
+        "OverviewPage": "2023 Season World Championship",
+        "DateStart": "2023-10-10",
+        "League": "World Championship",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "Worlds 2023 Main Event",
+        "OverviewPage": "2023 Season World Championship\/Main Event",
+        "DateStart": "2023-10-19",
+        "League": "World Championship",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "Worlds 2023 Play-In",
+        "OverviewPage": "2023 Season World Championship\/Play-In",
+        "DateStart": "2023-10-10",
+        "League": "World Championship",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "Worlds Qualifying Series 2023",
+        "OverviewPage": "2023 Worlds Qualifying Series",
+        "DateStart": "2023-10-09",
+        "League": "World Championship",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "All-Star 2019 Las Vegas",
+        "OverviewPage": "All-Star Las Vegas 2019",
+        "DateStart": "2019-12-05",
+        "League": "All-Star Las Vegas 2018",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "Curse King Of The Hill",
+        "OverviewPage": "Curse King Of The Hill",
+        "DateStart": null,
+        "League": null,
+        "Region": "Unknown",
+        "DateStart__precision": null
+    },
+    {
+        "Name": "LCK 2023 Spring",
+        "OverviewPage": "LCK\/2023 Season\/Spring Season",
+        "DateStart": "2023-01-18",
+        "League": "LoL Champions Korea",
+        "Region": "Korea",
+        "DateStart__precision": 1
+    }
+]

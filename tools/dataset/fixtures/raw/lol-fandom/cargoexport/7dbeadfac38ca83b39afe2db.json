@@ -1,0 +1,82 @@
+[
+    {
+        "Name": "WCG Grand Finals 2010",
+        "OverviewPage": "2010 World Cyber Games",
+        "DateStart": "2010-09-30",
+        "League": "World Cyber Games",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "World Cyber Games 2013",
+        "OverviewPage": "2013 World Cyber Games",
+        "DateStart": "2013-11-28",
+        "League": "World Cyber Games",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "Mid-Season Cup 2020",
+        "OverviewPage": "2020 Mid-Season Cup",
+        "DateStart": "2020-05-28",
+        "League": "Mid-Season Cup 2020",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "First Stand 2025",
+        "OverviewPage": "2025 First Stand",
+        "DateStart": "2025-03-10",
+        "League": "First Stand",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "First Stand 2027",
+        "OverviewPage": "2027 First Stand",
+        "DateStart": null,
+        "League": "First Stand",
+        "Region": "International",
+        "DateStart__precision": null
+    },
+    {
+        "Name": "Esports World Cup 2024",
+        "OverviewPage": "Esports World Cup 2024",
+        "DateStart": "2024-07-04",
+        "League": "Esports World Cup",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "IEM Season 9 Cologne",
+        "OverviewPage": "IEM Season IX - Cologne",
+        "DateStart": "2014-12-19",
+        "League": "Intel Extreme Masters",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "IEM Season 9 World Championship",
+        "OverviewPage": "IEM Season IX - World Championship",
+        "DateStart": "2015-03-13",
+        "League": "Intel Extreme Masters",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "IPL 5",
+        "OverviewPage": "IGN ProLeague Season 5",
+        "DateStart": "2012-11-29",
+        "League": "IGN Pro League",
+        "Region": "International",
+        "DateStart__precision": 1
+    },
+    {
+        "Name": "Rift Rivals 2017 NA-EU",
+        "OverviewPage": "Rift Rivals 2017\/NA-EU",
+        "DateStart": "2017-07-05",
+        "League": "Rift Rivals 2017 NA-EU",
+        "Region": "International",
+        "DateStart__precision": 1
+    }
+]

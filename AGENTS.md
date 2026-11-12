@@ -286,6 +286,7 @@ commissioned, hand the trail to that one reviewer alongside the diff.
 ```bash
 bash .pi/extensions/subagent/test/setup-deps.sh              # once: link pi's packages
 node --test .pi/extensions/subagent/test/*.test.ts
+node --test tools/dataset/test/*.test.ts                 # dataset: recorded fixtures, no network
 (cd .pi/extensions/opencode-go-provider && node --test)  # provider package tests (separate tree)
 ```
 
