@@ -106,6 +106,9 @@ interrupted and restarted without duplicating or losing work.
 
 - Regional leagues (LCK, LPL, LEC, LCS, CBLOL, …) and national competitions.
   International only, per the user's scope.
+- Exhibition events: All-Star (its 1v1 bracket and alternate-mode showmatches are
+  not comparable games) and national-team events such as the Asian Games. Both are
+  deliberate exclusions, not oversights — see Open assumption 2.
 - Live or real-time data; this is an archive, rebuilt on demand.
 - Player biographies, career totals, contracts, rosters over time.
 - Ratings, Elo, power rankings, or any derived model output.
@@ -303,12 +306,18 @@ re-derived on every run.
    closed, because starting the dataset in 2014/2017 instead was rejected on
    2026-11-12 in favour of keeping 2011 and marking it.
 2. **What counts as a "major international event"** beyond Worlds and MSI.
-   Proposed: Worlds (2011–2026), MSI (2015–2026), First Stand (2025–2026),
-   Mid-Season Cup (2020), Rift Rivals (2017–2019), All-Star (2013–2020), and the
-   pre-2015 international invitationals that the inclusion rule admits
-   (IEM World Championship, IPL5, World Cyber Games). Risky: the tail is a
-   judgement call and changes the dataset's size. *Confirm:* user, then frozen as
-   a committed rule.
+   *(Decided 2026-11-12: the third-party-majors scope, with All-Star excluded.)* The
+   admitted set is: World Championship (2011–2026), MSI (2015–2026, none in 2020),
+   First Stand (2025–2026), Mid-Season Cup (2020), Rift Rivals (2017–2019), IEM World
+   Championships, IPL, World Cyber Games, and the Esports World Cup. Deliberately
+   **excluded**: All-Star (its 5v5 invitationals are real games but its 1v1 bracket
+   and alternate-mode showmatches are not, so admitting it would push a per-game
+   "is this a real game" judgement into the event rule), national-team events such as
+   the Asian Games (a different competitive unit from the club dataset), regional
+   leagues, IEM's regional stops, and qualifiers for an already-included event. The
+   set lives in the repository as data, so a later change to it is a reviewable diff
+   rather than a rewrite. Size estimates used to make this call were computed from
+   team counts and format, not measured: ticket 09 measures, ticket 10 counts.
 3. **Licence and public release.** CC BY-SA share-alike on Leaguepedia-derived
    data, and what that means for the repository when it stops being private.
    *(Partly decided 2026-11-12: attribution lands in the same change as the first

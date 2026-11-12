@@ -10,9 +10,17 @@ event list, selecting events by a committed rule rather than a hand-maintained
 list. Running it twice produces identical bytes, and it never touches the network.
 
 The rule is data in the repository: an event is included when its source region is
-international, its event type is admitted by the rule, and it is not listed in the
-exclusions. Per-event overrides are allowed but must carry a stated reason.
-Someone reading only the repository must be able to compute the same set.
+international, it is a 5v5 Summoner's Rift tournament, it is not a qualifier for an
+already-included event, and its league appears in the admitted set. Per-event
+overrides are allowed but must carry a stated reason. Someone reading only the
+repository must be able to compute the same set.
+
+The admitted set, decided in review (spec Open assumption 2): World Championship,
+MSI, First Stand, Mid-Season Cup, Rift Rivals, IEM World Championships, IPL, World
+Cyber Games, Esports World Cup. Excluded on purpose: All-Star (1v1 and
+alternate-mode formats make "is this a real game" a per-game judgement, which does
+not belong in an event rule), national-team events such as the Asian Games,
+regional leagues, IEM's regional stops, and qualifiers.
 
 ## Scope
 
@@ -34,6 +42,10 @@ the full validator, and the actual crawl.
 - [ ] The build emits the event entity file from fixtures, sorted by canonical ID.
 - [ ] The committed rule selects the fixture Worlds and MSI events and rejects the
       fixture regional-league event; the rejection is visible, not silent.
+- [ ] An All-Star fixture event is rejected with its own stated reason — not merely
+      absent — because it is international and the exclusion is deliberate.
+- [ ] A fixture qualifier for an included event is rejected, so the rule does not
+      pull a play-in tournament in twice under a different name.
 - [ ] An override entry changes the selected set, and a reason is mandatory.
 - [ ] An event whose region is unknown is rejected rather than guessed.
 - [ ] Output validates against the checked-in schema.
