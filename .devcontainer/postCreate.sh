@@ -38,6 +38,21 @@ else
   echo '{"theme": "kokomi-theme"}' > "$SETTINGS"
 fi
 
+# --- pi package: this repo's extensions and skills ---
+# User-level, so the declaration goes into "$SETTINGS" — on the pi-config volume,
+# which is what makes it survive a rebuild. A rebuild re-runs this script, so the
+# install is also what repairs a wiped or freshly created volume; re-running is
+# idempotent and reconciles the clone to the tracked ref, picking up fixes.
+#
+# --no-approve because postCreate has no TTY to answer a project-trust prompt.
+# Never fatal: a creation with no network must not abort the rest of this script
+# (git identity, clipboard shim, gh config); pi loads the package on the next
+# start or /reload once the declaration is there.
+if command -v pi >/dev/null 2>&1; then
+  pi install --no-approve git:github.com/RRiboulet/my-agent-setup \
+    || echo '[postCreate] warning: could not install the pi package; extensions/skills will be missing until it succeeds' >&2
+fi
+
 # Note: extensions and skills live in "$REPO/.pi/" itself (that directory is
 # gitignored). Do not link them from "$REPO/extensions" and "$REPO/skills" —
 # those paths no longer exist, and "ln -sfn" would drop a dangling symlink
