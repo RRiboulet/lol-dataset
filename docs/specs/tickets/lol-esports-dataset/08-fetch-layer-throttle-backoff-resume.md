@@ -1,7 +1,7 @@
 # 08: The fetch layer — throttle, back off, resume
 
 **Blocked by:** 01
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -24,16 +24,16 @@ itself, which is ticket 10.
 
 ## Acceptance criteria
 
-- [ ] Requests are issued sequentially at the designed interval; the interval is
+- [x] Requests are issued sequentially at the designed interval; the interval is
       asserted by the fake clock, not by a real sleep.
-- [ ] A rate-limit response triggers backoff, is retried, and is never silently
+- [x] A rate-limit response triggers backoff, is retried, and is never silently
       dropped or turned into an empty result.
-- [ ] Repeated failures stop the run with a clear message naming what to resume.
-- [ ] A second run over a complete cache issues zero requests.
-- [ ] An interrupted run resumes and fetches only what is missing, with no
+- [x] Repeated failures stop the run with a clear message naming what to resume.
+- [x] A second run over a complete cache issues zero requests.
+- [x] An interrupted run resumes and fetches only what is missing, with no
       duplicate cache entries.
-- [ ] No credential, cookie or token is read from, or written to, the repository.
-- [ ] The cache key is derived from the query, so reordering the crawl does not
+- [x] No credential, cookie or token is read from, or written to, the repository.
+- [x] The cache key is derived from the query, so reordering the crawl does not
       invalidate work.
 
 ## Validation

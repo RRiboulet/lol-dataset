@@ -5,10 +5,24 @@
 //   node tools/dataset/cli.ts build \
 //     --raw tools/dataset/fixtures/raw                  # build from the recorded fixtures
 //
-// `--offline` is accepted and is the only mode there is: ticket 01's pipeline reads
-// the cache and nothing else. Ticket 08 adds the fetch stage as a separate command,
-// so `build --offline` keeps meaning exactly what the spec's verification section
-// says it means.
+// `--offline` is accepted and is the only mode there is: the pipeline below the
+// cache reads the cache and nothing else. Ticket 08 adds the fetch stage as a
+// separate command, so `build` keeps meaning exactly what the spec's verification
+// section says it means — and `fetch.ts` is imported only when that command is
+// chosen, never on the build path.
+//
+// The fetch command takes an explicit, small plan; the crawler that generates a
+// plan is ticket 10, not this ticket. A plan is a JSON array of cache queries
+// (`CargoQuery` in `cache.ts`), or an object with a `queries` array:
+//
+//   node tools/dataset/cli.ts fetch --plan plan.json --raw raw
+//   node tools/dataset/cli.ts fetch --raw raw \
+//     --query '{"endpoint":"cargoexport","tables":"Tournaments","fields":"Name,OverviewPage","limit":20}'
+//
+// `--interval`/`--jitter` are seconds and default to the measured-safe 75/15;
+// `--backoff` is the first retry delay in seconds and doubles; `--attempts` caps
+// retries per query. The run is sequential, skips anything already complete in
+// the cache, and stops with the query to resume from rather than hammering.
 //
 // The run prints every rejection with its stated reason. The same decisions are
 // committed in `event-selection.jsonl`, so a reviewer who was not watching the
@@ -20,6 +34,7 @@ import { parseArgs } from "node:util";
 
 import type { BuildResult, OutputFile } from "./build.ts";
 import { buildDataset, DEFAULT_RULE_FILE, DEFAULT_SCHEMA_DIR, OUTPUTS, writeDataset } from "./build.ts";
+import type { CargoQuery } from "./cache.ts";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..", "..");
 
@@ -66,15 +81,56 @@ async function main(): Promise<void> {
 			schema: { type: "string" },
 			offline: { type: "boolean", default: false },
 			check: { type: "boolean", default: false },
+			plan: { type: "string" },
+			query: { type: "string", multiple: true },
+			interval: { type: "string" },
+			jitter: { type: "string" },
+			backoff: { type: "string" },
+			attempts: { type: "string" },
 		},
 	});
 
 	const command = positionals[0] ?? "build";
-	if (command !== "build") {
-		throw new Error(`unknown command ${JSON.stringify(command)}; tickets 06/08 add \`model\` and \`fetch\``);
+	const rawDir = values.raw ?? path.join(REPO_ROOT, "raw");
+
+	if (command === "fetch") {
+		// Imported here, not at module load: the build path must not pull in the module
+		// that can reach the network (spec D5, sources.test.ts).
+		const { fetchQueries, loadPlan, parsePlan } = await import("./fetch.ts");
+		const queries: CargoQuery[] = [];
+		if (values.plan !== undefined) queries.push(...(await loadPlan(values.plan)));
+		for (const text of values.query ?? []) queries.push(...parsePlan(text, "--query"));
+		if (queries.length === 0) throw new Error("fetch needs a plan: pass --plan <file> or one or more --query <json>");
+
+		const seconds = (value: string | undefined, name: string): number | undefined => {
+			if (value === undefined) return undefined;
+			const parsed = Number(value);
+			if (!Number.isFinite(parsed) || parsed < 0) throw new Error(`--${name} must be a non-negative number of seconds`);
+			return parsed * 1000;
+		};
+		const attempts = values.attempts === undefined ? undefined : Number(values.attempts);
+		if (attempts !== undefined && (!Number.isInteger(attempts) || attempts < 1)) {
+			throw new Error("--attempts must be an integer >= 1");
+		}
+
+		const result = await fetchQueries({
+			queries,
+			root: rawDir,
+			intervalMs: seconds(values.interval, "interval"),
+			jitterMs: seconds(values.jitter, "jitter"),
+			backoffMs: seconds(values.backoff, "backoff"),
+			maxAttempts: attempts,
+			log: (line) => console.log(line),
+		});
+		console.log(`${result.fetched.length} fetched, ${result.skipped.length} already cached, ${result.requests} request(s)`);
+		console.log(`cache: ${rawDir}`);
+		return;
 	}
 
-	const rawDir = values.raw ?? path.join(REPO_ROOT, "raw");
+	if (command !== "build") {
+		throw new Error(`unknown command ${JSON.stringify(command)}; expected \`build\` or \`fetch\``);
+	}
+
 	const outDir = values.out ?? path.join(REPO_ROOT, "data", "curated");
 	const result = await buildDataset({
 		rawDir,

@@ -34,8 +34,8 @@
 // live payload are byte-compatible and the build cannot depend on when a payload
 // was fetched (spec R8 — no wall-clock in the data).
 
-import { createHash } from "node:crypto";
-import { readFile, readdir, writeFile } from "node:fs/promises";
+import { createHash, randomUUID } from "node:crypto";
+import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 
 /** Which wiki endpoint a recorded payload came from. */
@@ -123,7 +123,24 @@ export function sha256(body: string): string {
 	return createHash("sha256").update(body).digest("hex");
 }
 
-/** Write a recorded body and its provenance sidecar. */
+/**
+ * Write through a temporary name, then rename: a reader sees the old file or the
+ * new one, never a half-written one. `rename` is atomic within a filesystem.
+ */
+async function writeAtomic(file: string, body: string): Promise<void> {
+	const temporary = `${file}.tmp-${randomUUID()}`;
+	await writeFile(temporary, body, "utf8");
+	await rename(temporary, file);
+}
+
+/**
+ * Write a recorded body and its provenance sidecar, body first and sidecar last.
+ *
+ * The order matters to the fetcher: a run killed between the two leaves a body
+ * with no sidecar, and `readPayload` reports that as incomplete rather than as a
+ * cached payload. Rewriting it is cheap; treating it as complete would leave a
+ * payload whose provenance is a lie (spec D7, ticket 07's manifest).
+ */
 export async function writePayload(
 	root: string,
 	query: CargoQuery,
@@ -140,9 +157,47 @@ export async function writePayload(
 		status: meta.status,
 		bodySha256: sha256(body),
 	};
-	await writeFile(paths.body, body, "utf8");
-	await writeFile(paths.meta, `${JSON.stringify(record, null, 2)}\n`, "utf8");
+	await mkdir(path.dirname(paths.body), { recursive: true });
+	await writeAtomic(paths.body, body);
+	await writeAtomic(paths.meta, `${JSON.stringify(record, null, 2)}\n`);
 	return paths;
+}
+
+/** A cached payload that is complete enough for the fetcher to skip re-requesting it. */
+export type CachedPair = { body: string; meta: PayloadMeta };
+
+async function readIfExists(file: string): Promise<string | undefined> {
+	try {
+		return await readFile(file, "utf8");
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+		throw error;
+	}
+}
+
+/**
+ * A body and sidecar that agree, or `undefined` when either is missing or the
+ * recorded hash does not match the recorded bytes.
+ *
+ * The fetcher uses this as its cache check, so "incomplete" must include the old
+ * body left by an interrupted write, not only a missing file. `readPayloads`
+ * stays deliberately looser: the build reads committed fixtures, some of which
+ * legitimately have no sidecar in a test's scratch directory.
+ */
+export async function readPayload(root: string, query: CargoQuery): Promise<CachedPair | undefined> {
+	const paths = payloadPaths(root, query);
+	const body = await readIfExists(paths.body);
+	if (body === undefined) return undefined;
+	const text = await readIfExists(paths.meta);
+	if (text === undefined) return undefined;
+	let meta: PayloadMeta;
+	try {
+		meta = JSON.parse(text) as PayloadMeta;
+	} catch {
+		return undefined;
+	}
+	if (meta === null || typeof meta !== "object" || meta.bodySha256 !== sha256(body)) return undefined;
+	return { body, meta };
 }
 
 /** A recorded payload as the build sees it: the body is the input, never the sidecar. */
