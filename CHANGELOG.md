@@ -74,6 +74,20 @@ Added:
 
 Maintenance:
 
+- **A subagent launch no longer names an extension copy this project excluded.** The
+  child used to be started with `--extension .pi/extensions/subagent/index.ts` *and*
+  with discovery on, and since `.pi/settings.json` here excludes the local extension
+  tree on purpose (the installed package supplies it), the two copies collided: pi
+  exits when one flag is registered twice, so every run reported "Child Pi exited
+  before reporting a result" with nothing about extensions, in a worktree and in the
+  main checkout alike. `resolveChildExtensionPath` now reads the child project's
+  settings and names the copy *this* process is already running when that project
+  excludes its own, which is the package's copy and the same file discovery loads, so
+  pi sees one resolved path; a project that does not exclude its tree still gets its
+  own copy named, and an untrusted cwd still gets the fallback. Fixed upstream first
+  (`my-agent-setup` #139, corrected by #140 so a delegated project always gets a copy
+  that exists rather than a launch that defers) and synced here.
+
 - The devcontainer now installs the scaffold's pi package on creation, so the
   extensions and skills come from the upstream clone on the pi-config volume
   instead of only from the copy in this repository. `.pi/settings.json`
