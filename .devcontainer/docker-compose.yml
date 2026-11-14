@@ -5,9 +5,9 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ..:/workspace:cached
-      # Explicit name: without it Compose derives the volume name from the
-      # project directory, so renaming or moving the repo would silently point
-      # pi at an empty volume and appear to lose every past session.
+      # Private to this project. It used to be the shared `pi-agent-config`
+      # volume; the explicit name below keeps this container's state separate
+      # from every other one and survives a rename or move of the checkout.
       - pi-config:/home/vscode/.pi
     command: sleep infinity
     extra_hosts:
@@ -16,4 +16,4 @@ services:
 
 volumes:
   pi-config:
-    name: pi-agent-config
+    name: lol-dataset-pi-config
