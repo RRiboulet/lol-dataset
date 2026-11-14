@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+Changed:
+
+- The devcontainer no longer mounts the shared `pi-agent-config` volume. It gets
+  a private `lol-dataset-pi-config` volume (migrated from the shared one), the
+  image bakes `my-agent-setup` at the pin in
+  `.devcontainer/pi-agent-setup.version`, and `postCreate.sh` declares that baked
+  path instead of fetching `git:`. Credentials arrive from the host environment,
+  so no two containers share sessions, trust, package files or an auth token.
+  `sh .devcontainer/check-pi-agent-setup.sh` (also run by CI) fails when the pin,
+  the Dockerfile and `postCreate` disagree, and `postCreate` fails when the image
+  is older than the checkout's pin.
+
 Added:
 
 - Agent scaffold copied from `RRiboulet/my-agent-setup`: the devcontainer, the

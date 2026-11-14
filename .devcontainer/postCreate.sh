@@ -10,6 +10,12 @@ AGENT_DIR=/home/vscode/.pi/agent
 # under `set -e` and aborts the whole of postCreate before anything else runs.
 export GH_CONFIG_DIR="${GH_CONFIG_DIR:-/home/vscode/.pi/gh}"
 
+# The private volume's mount point can arrive root-owned on a first run, and a
+# bind mount can arrive owned by a host uid that does not match vscode. Repair
+# both before anything below writes into them; with `set -e`, a failed write
+# would abort the rest of postCreate (git identity, clipboard, gh config).
+sudo chown -R vscode:vscode /home/vscode/.pi "$REPO"
+
 # --- zsh + Powerlevel10k ---
 # The common-utils feature creates ~/.zshrc before postCreate runs.
 touch ~/.zshrc
@@ -38,19 +44,49 @@ else
   echo '{"theme": "kokomi-theme"}' > "$SETTINGS"
 fi
 
-# --- pi package: this repo's extensions and skills ---
-# User-level, so the declaration goes into "$SETTINGS" — on the pi-config volume,
-# which is what makes it survive a rebuild. A rebuild re-runs this script, so the
-# install is also what repairs a wiped or freshly created volume; re-running is
-# idempotent and reconciles the clone to the tracked ref, picking up fixes.
-#
-# --no-approve because postCreate has no TTY to answer a project-trust prompt.
-# Never fatal: a creation with no network must not abort the rest of this script
-# (git identity, clipboard shim, gh config); pi loads the package on the next
-# start or /reload once the declaration is there.
-if command -v pi >/dev/null 2>&1; then
-  pi install --no-approve git:github.com/RRiboulet/my-agent-setup \
-    || echo '[postCreate] warning: could not install the pi package; extensions/skills will be missing until it succeeds' >&2
+# --- pi package from the image (pinned) ---
+# The image clones RRiboulet/my-agent-setup at the tag in
+# .devcontainer/pi-agent-setup.version and labels it. This container only
+# declares that baked copy in its own agent settings; it never fetches the
+# package. A stale image (repo pin bumped, image not rebuilt) fails here rather
+# than silently loading the previous release.
+PI_PACKAGE=/opt/pi-packages/my-agent-setup
+PI_PACKAGE_TAG_FILE="$PI_PACKAGE/.pi-agent-setup-tag"
+EXPECTED_TAG="$(tr -d '[:space:]' < "$REPO/.devcontainer/pi-agent-setup.version")"
+if [ ! -d "$PI_PACKAGE" ] || [ ! -f "$PI_PACKAGE_TAG_FILE" ]; then
+  echo "postCreate: missing baked pi package at $PI_PACKAGE; rebuild the image" >&2
+  exit 1
+fi
+ACTUAL_TAG="$(tr -d '[:space:]' < "$PI_PACKAGE_TAG_FILE")"
+if [ "$ACTUAL_TAG" != "$EXPECTED_TAG" ]; then
+  echo "postCreate: image carries $ACTUAL_TAG but this checkout pins $EXPECTED_TAG; rebuild the image (devc rebuild lol-dataset)" >&2
+  exit 1
+fi
+
+# User-level declaration, absolute so the path does not depend on where the
+# agent dir lives. Remove any older git clone entry first: two entries would
+# load the same extensions twice, and pi exits on the duplicate tools.
+if ! command -v jq >/dev/null 2>&1; then
+  echo "postCreate: jq is required to declare the baked pi package" >&2
+  exit 1
+fi
+jq --arg pkg "$PI_PACKAGE" '
+  .packages = (((.packages // [])
+    | map(select((if type == "object" then (.source // "") else . end) | tostring | test("my-agent-setup") | not))) + [$pkg])
+' "$SETTINGS" > "$SETTINGS.tmp" && [ -s "$SETTINGS.tmp" ] \
+  && mv "$SETTINGS.tmp" "$SETTINGS" \
+  || { rm -f "$SETTINGS.tmp"; echo "postCreate: could not record $PI_PACKAGE in $SETTINGS" >&2; exit 1; }
+
+# Project trust makes /workspace/.pi/settings.json effective. Merge, never
+# replace: an older volume may trust another path.
+TRUST="$AGENT_DIR/trust.json"
+if [ -f "$TRUST" ] && ! jq -e . "$TRUST" >/dev/null 2>&1; then
+  rm -f "$TRUST"
+fi
+if [ -f "$TRUST" ]; then
+  jq --arg repo "$REPO" '. + {($repo): true}' "$TRUST" > "$TRUST.tmp" && mv "$TRUST.tmp" "$TRUST"
+else
+  jq -n --arg repo "$REPO" '{($repo): true}' > "$TRUST.tmp" && mv "$TRUST.tmp" "$TRUST"
 fi
 
 # Note: extensions and skills live in "$REPO/.pi/" itself (that directory is
@@ -99,15 +135,13 @@ for helper in wl-copy xclip xsel; do
 done
 
 # --- gh (GitHub CLI) ---
-# The token is not in the image and never in git. It lives in the pi-config volume
-# via GH_CONFIG_DIR (set in the Dockerfile), which is what makes one `gh auth login`
-# last across rebuilds. Creating the directory here is all this needs to do; an
-# unauthenticated gh is still useful (it reads public repos fine).
-# sudo, and after the chown below: on a first-run volume the mount point inherits
-# the image's root ownership, so a plain `mkdir -p` as vscode fails and `set -e`
-# aborts postCreate before the chown that would have fixed it.
-
-sudo chown -R vscode:vscode /home/vscode/.pi "$REPO"
+# The token is not in the image and never in git. It arrives as GH_TOKEN from
+# the host environment (devcontainer.json), so this container gets the same
+# credential as the others without sharing a volume. GH_CONFIG_DIR only holds
+# gh's non-secret config on this container's private volume. Creating the
+# directory here is all this needs to do; an unauthenticated gh is still useful
+# (it reads public repos fine). The volume was chowned above, before the first
+# write into it.
 mkdir -p "$GH_CONFIG_DIR"
 
 if ! gh auth status >/dev/null 2>&1; then
@@ -118,11 +152,13 @@ gh is installed but not authenticated. One-time setup, in this terminal:
   gh auth login --hostname github.com --git-protocol https --web
 
 It prints a one-time code and a URL: open the URL, paste the code, approve. The
-token lands in the pi-config volume, so it survives a rebuild. Then run
+token is stored by gh in GH_CONFIG_DIR on this container's private volume, so it
+survives a rebuild, but the supported path here is GH_TOKEN from the host
+environment (`~/.config/devc/env`, sourced by devc). Then run
 
 Nothing else is needed: git's credential helper is configured system-wide in
 the Dockerfile, so plain `git push` works in a fresh container without this.
 MSG
 fi
 
-echo "pi coding-agent ready. Sessions persist in the pi-agent-config volume."
+echo "pi coding-agent ready. Sessions persist in the private lol-dataset-pi-config volume."

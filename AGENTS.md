@@ -80,15 +80,19 @@ out in a worktree and run the suite before assuming it stands alone.
 
 Branches reach GitHub through `gh`, which is baked into the devcontainer image
 (`.devcontainer/Dockerfile`) rather than installed at runtime, so a rebuild does
-not silently drop it. The token lives in the `pi-agent-config` volume via
-`GH_CONFIG_DIR=/home/vscode/.pi/gh`, which is what makes one `gh auth login` last
-across rebuilds — `/home/vscode` itself is container-local and is discarded.
+not silently drop it. The token is not on a shared volume: it arrives as
+`GH_TOKEN` from the host environment, and gh's non-secret config lives at
+`GH_CONFIG_DIR=/home/vscode/.pi/gh` on this container's private volume.
 
 One-time setup, run by the human (it needs a browser):
 
 ```bash
 gh auth login --hostname github.com --git-protocol https --web
 ```
+
+The host-side value comes from `~/.config/devc/env`, which `devc` sources before
+`devcontainer up`. One login inside a container writes only that container's
+private volume; the host file is what makes every project start authenticated.
 
 That is the whole setup. `git push` then works with no credential in
 `.git/config`, because the Dockerfile registers gh as git's credential helper
@@ -165,6 +169,17 @@ accumulates on `dev`; `main` is brought forward and tagged.
 Versions are git tags. `package.json` also carries a `pi` manifest listing the
 extension entry points and skills, which is what lets this repository be
 installed into another project as a pi package.
+
+The devcontainer does **not** load the vendored `.pi/extensions`/`.pi/skills`
+tree: `.pi/settings.json` excludes both, and the image bakes
+`RRiboulet/my-agent-setup` at the tag in `.devcontainer/pi-agent-setup.version`
+under `/opt/pi-packages/my-agent-setup`. `postCreate.sh` declares that baked path
+in the container's own agent settings and fails when the running image carries a
+different tag than the checkout pins. To bump: change
+`.devcontainer/pi-agent-setup.version`, change the `ARG PI_AGENT_SETUP_TAG=` line
+in the Dockerfile, run `sh .devcontainer/check-pi-agent-setup.sh`, then
+`devc rebuild lol-dataset`. The vendored tree stays in the repo for the test
+suite, not for runtime discovery.
 
 ## Extensions
 
