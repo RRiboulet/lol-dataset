@@ -12,7 +12,12 @@ Changed:
   so no two containers share sessions, trust, package files or an auth token.
   `sh .devcontainer/check-pi-agent-setup.sh` (also run by CI) fails when the pin,
   the Dockerfile and `postCreate` disagree, and `postCreate` fails when the image
-  is older than the checkout's pin.
+  is older than the checkout's pin. That pin now tracks the latest
+  `my-agent-setup` release instead of lagging one behind: it moves to `v1.13.0`,
+  which brings the `grilling`/`teach` skills, `bin/pi-agent-dir` and the `devc`
+  fixes. A new tag is followed by a bump of
+  `.devcontainer/pi-agent-setup.version` and the Dockerfile's
+  `ARG PI_AGENT_SETUP_TAG=` in the same commit, then a rebuild.
 
 Added:
 
