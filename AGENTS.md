@@ -5,11 +5,16 @@ from the first tournament through the one being played right now (2026). It is
 the first step of a larger project, so the shape of the data matters more than
 speed: expect schema decisions to outlive the scrapers that fill them.
 
-**Current state: the agent scaffold only.** There is no dataset yet and no
-`README.md` on purpose. The devcontainer, pi extensions, skills and templates
-are in place so that project-specific structure can be added on top without
-redoing the environment. Do not invent a schema, a scraper or a README as a
-side effect of an unrelated task; those are their own changes.
+**Current state: the spec and its first tickets, on top of the scaffold.** The
+devcontainer, pi extensions, skills and templates are in place, and the project's
+own structure has started to grow on them: `docs/specs/` holds the dataset's
+spec and the ticket series under `docs/specs/tickets/lol-esports-dataset/`,
+and `data/curated/` holds what the build emits today — the selected events,
+the report that shows every rejection, and the team, player, champion and alias
+identity tables. There are no game rows yet (ticket 03 starts them) and no
+`README.md` on purpose: ticket 11 writes the dataset's documentation. Do not
+invent a schema, a scraper or a README as a side effect of an unrelated task;
+those are their own changes.
 
 The scaffold — `.devcontainer/`, `.pi/extensions/`, `.pi/skills/`, `bin/devc`,
 `package.json`, this file, `REVIEW_GUIDELINES.md` — is copied from

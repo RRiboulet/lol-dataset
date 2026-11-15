@@ -4,6 +4,10 @@
 
 Changed:
 
+- `AGENTS.md`'s "current state" paragraph describes what the repository now
+  holds — the dataset spec, its ticket series, and the curated event and identity
+  layer — instead of claiming there is no dataset yet, which had been untrue
+  since the spec landed. Nothing else in the file moved.
 - The devcontainer no longer mounts the shared `pi-agent-config` volume. It gets
   a private `lol-dataset-pi-config` volume (migrated from the shared one), the
   image bakes `my-agent-setup` at the pin in
