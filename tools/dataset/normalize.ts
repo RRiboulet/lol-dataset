@@ -114,6 +114,92 @@ export type SourceScoreboardRow = {
 	sourceFile: string;
 };
 
+/**
+ * The per-side team statistics a `ScoreboardGames` row states, in the order they are
+ * emitted. The source column names are the wiki's own (`Team1` + suffix).
+ *
+ * `deaths` is deliberately absent: `cargofields` on `ScoreboardGames` (measured, 69
+ * fields) has no `Deaths` and no `Assists` column for either side, so a deaths figure
+ * could only be derived from the opponent's kills. A kill is not always one death —
+ * executions exist — so deriving it would put a fabricated number where spec R4 says
+ * an absence belongs.
+ */
+export const TEAM_STAT_FIELDS = [
+	["kills", "Kills"],
+	["gold", "Gold"],
+	["towers", "Towers"],
+	["inhibitors", "Inhibitors"],
+	["barons", "Barons"],
+	["dragons", "Dragons"],
+	["dragonsClouds", "Clouds"],
+	["dragonsInfernals", "Infernals"],
+	["dragonsMountains", "Mountains"],
+	["dragonsOceans", "Oceans"],
+	["dragonsHextechs", "Hextechs"],
+	["dragonsChemtechs", "Chemtechs"],
+	["dragonsElders", "Elders"],
+	["riftHeralds", "RiftHeralds"],
+	["voidGrubs", "VoidGrubs"],
+	["atakhans", "Atakhans"],
+] as const;
+
+export type TeamStatField = (typeof TEAM_STAT_FIELDS)[number][0];
+
+/** One side of one game, as the source states it. `null` means the source recorded no value. */
+export type SourceSide = { team: string } & Record<TeamStatField, number | null>;
+
+/**
+ * One `ScoreboardGames` row: the game itself and its two sides.
+ *
+ * `Team1`/`Team2` are **sides**, not teams — measured on the recorded fixture, where a
+ * side-swapped series has the same team as `Team1` in games 1-2 and as `Team2` in game
+ * 3. So the side is blue/red by position, and the team is a reference that identity
+ * resolves per game.
+ */
+export type SourceGame = {
+	page: string;
+	tournament: string;
+	/** UTC calendar date, `YYYY-MM-DD`. */
+	date: string;
+	/** UTC instant, `YYYY-MM-DDTHH:MM:SSZ`. */
+	dateTimeUtc: string;
+	gameId: string;
+	matchId: string;
+	/** The team string the source credits with the win (a display string, not an ID). */
+	winTeam: string;
+	/** Source `Winner`: 1 or 2. NaN when the source states none. */
+	winnerSide: number;
+	/** Seconds, parsed from the exact `Gamelength` (`mm:ss`); null when the source has none. */
+	durationSeconds: number | null;
+	/** Patch as the source states it, as text: the column is numeric, so `4.10` arrives as `4.1`. */
+	patch: string | null;
+	sides: [SourceSide, SourceSide];
+	riotPlatformGameId: string;
+	sourceFile: string;
+};
+
+/** One `MatchSchedule` row: a series. `Team1`/`Team2` are sides here too. */
+export type SourceMatch = {
+	page: string;
+	tournament: string;
+	matchId: string;
+	date: string;
+	dateTimeUtc: string;
+	sides: [string, string];
+	/** Source `Winner`: "1" or "2". NaN when absent. */
+	winnerSide: number;
+	bestOf: number | null;
+	/** Source `Tab` — the round label the source actually carries (`Phase`/`Round` are null). */
+	tab: string;
+	patch: string | null;
+	/** Source `FF` == 1. Measured null on both recorded events; kept because a walkover is a real row. */
+	forfeit: boolean;
+	isNullified: boolean;
+	/** Cumulative series score per side, aligned with `sides`; null when not stated. */
+	seriesScore: [number | null, number | null];
+	sourceFile: string;
+};
+
 /** Everything the stages below the cache hand to `assemble` / `identity`. */
 export type SourceDataset = {
 	tournaments: SourceEvent[];
@@ -122,6 +208,9 @@ export type SourceDataset = {
 	playerNames: SourcePlayerName[];
 	champions: SourceChampion[];
 	scoreboard: SourceScoreboardRow[];
+	/** Games and matches (ticket 03). Empty when the corpus carries no scoreboard payload. */
+	games: SourceGame[];
+	matches: SourceMatch[];
 };
 
 /** Cargo returns list-typed fields as arrays; everything else as strings. */
@@ -372,6 +461,140 @@ export function normalizeScoreboard(payloads: CachedPayload[]): SourceScoreboard
 	);
 }
 
+/**
+ * An integer field, or `null` when the source has no value. A value that is present
+ * but not a number is a source change this stage does not understand, so it stops
+ * rather than becoming an absence the reader would mistake for "never recorded".
+ */
+function optionalInteger(value: unknown, where: string): number | null {
+	const text = asText(value);
+	if (text === "") return null;
+	const parsed = Number(text);
+	if (!Number.isFinite(parsed)) throw new Error(`${where}: expected a number, got ${JSON.stringify(text)}`);
+	return parsed;
+}
+
+/** `2023-10-10 07:17:00` -> `2023-10-10T07:17:00Z`; empty stays empty. */
+function asIsoDateTime(value: unknown): string {
+	const text = asText(value);
+	const match = /^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2})/.exec(text);
+	return match ? `${match[1]}T${match[2]}Z` : "";
+}
+
+/**
+ * `Gamelength` (`mm:ss`, or `h:mm:ss`) as whole seconds.
+ *
+ * The exact value is this string: `Gamelength_Number` is float *minutes* (measured
+ * 28.65 for `28:39`), which cannot round-trip `:39` and is therefore not used.
+ */
+function asDurationSeconds(value: unknown): number | null {
+	const text = asText(value);
+	if (text === "") return null;
+	const parts = text.split(":");
+	if (parts.length < 2 || parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) return null;
+	const seconds = parts.reduce((total, part) => total * 60 + Number(part), 0);
+	return seconds;
+}
+
+/**
+ * The patch as text. The column is numeric in the source (`13.19`, `5.4`) even though
+ * `cargofields` reports `String`, and `PatchSort`/`LegacyPatch` add nothing: the source
+ * cannot distinguish `4.10` from `4.1`, so this carries the digits it sent and never
+ * pads or infers. An absent patch is an absent key, never an empty string.
+ */
+function asPatch(value: unknown): string | null {
+	if (value === null || value === undefined) return null;
+	const text = asText(value);
+	return text === "" ? null : text;
+}
+
+function gameSide(row: Record<string, unknown>, prefix: "Team1" | "Team2", where: string): SourceSide {
+	const side = { team: asText(raw(row, prefix)) } as SourceSide;
+	for (const [field, suffix] of TEAM_STAT_FIELDS) {
+		side[field] = optionalInteger(raw(row, `${prefix}${suffix}`), `${where}: ${prefix}${suffix}`);
+	}
+	return side;
+}
+
+/** `ScoreboardGames` rows: one per game, deduplicated by the source's `GameId`. */
+export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[] {
+	const rows: SourceGame[] = [];
+	for (const payload of payloads) {
+		for (const row of parse(payload)) {
+			const gameId = asText(raw(row, "GameId"));
+			const page = asText(raw(row, "OverviewPage"));
+			const matchId = asText(raw(row, "MatchId"));
+			if (gameId === "" || page === "" || matchId === "") {
+				throw new Error(`${payload.file}: a game row needs GameId, MatchId and OverviewPage (got ${JSON.stringify({ gameId, matchId, page })})`);
+			}
+			const dateTimeUtc = asIsoDateTime(raw(row, "DateTime_UTC"));
+			rows.push({
+				page,
+				tournament: asText(raw(row, "Tournament")),
+				date: asDate(raw(row, "DateTime_UTC")),
+				dateTimeUtc,
+				gameId,
+				matchId,
+				winTeam: asText(raw(row, "WinTeam")),
+				winnerSide: asInteger(raw(row, "Winner")),
+				durationSeconds: asDurationSeconds(raw(row, "Gamelength")),
+				patch: asPatch(raw(row, "Patch")),
+				sides: [gameSide(row, "Team1", `${payload.file}: ${gameId}`), gameSide(row, "Team2", `${payload.file}: ${gameId}`)],
+				riotPlatformGameId: asText(raw(row, "RiotPlatformGameId")),
+				sourceFile: payload.file,
+			});
+		}
+	}
+	return dedupe(
+		rows,
+		(row) => row.gameId,
+		same,
+		"game",
+		(seen, row, id) => `${id}: ${seen.sourceFile} and ${row.sourceFile} disagree about the same game — one payload is stale`,
+	);
+}
+
+/** `MatchSchedule` rows: one per series, deduplicated by the source's `MatchId`. */
+export function normalizeMatches(payloads: CachedPayload[]): SourceMatch[] {
+	const rows: SourceMatch[] = [];
+	for (const payload of payloads) {
+		for (const row of parse(payload)) {
+			const matchId = asText(raw(row, "MatchId"));
+			const page = asText(raw(row, "OverviewPage"));
+			if (matchId === "" || page === "") {
+				throw new Error(`${payload.file}: a match row needs MatchId and OverviewPage (got ${JSON.stringify({ matchId, page })})`);
+			}
+			const winner = asText(raw(row, "Winner"));
+			rows.push({
+				page,
+				tournament: asText(raw(row, "Tournament")),
+				matchId,
+				date: asDate(raw(row, "DateTime_UTC")),
+				dateTimeUtc: asIsoDateTime(raw(row, "DateTime_UTC")),
+				sides: [asText(raw(row, "Team1")), asText(raw(row, "Team2"))],
+				winnerSide: winner === "" ? Number.NaN : Number(winner),
+				bestOf: optionalInteger(raw(row, "BestOf"), `${payload.file}: ${matchId}: BestOf`),
+				tab: asText(raw(row, "Tab")),
+				patch: asPatch(raw(row, "Patch")),
+				forfeit: Number(asText(raw(row, "FF"))) === 1,
+				isNullified: asText(raw(row, "IsNullified")) === "1",
+				seriesScore: [
+					optionalInteger(raw(row, "Team1Score"), `${payload.file}: ${matchId}: Team1Score`),
+					optionalInteger(raw(row, "Team2Score"), `${payload.file}: ${matchId}: Team2Score`),
+				],
+				sourceFile: payload.file,
+			});
+		}
+	}
+	return dedupe(
+		rows,
+		(row) => row.matchId,
+		same,
+		"match",
+		(seen, row, id) => `${id}: ${seen.sourceFile} and ${row.sourceFile} disagree about the same series — one payload is stale`,
+	);
+}
+
 /** Which normalizer reads which Cargo table. The cache layout names the table. */
 const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	Tournaments: normalizeTournaments,
@@ -380,6 +603,8 @@ const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	PlayerRedirects: normalizePlayerNames,
 	Champions: normalizeChampions,
 	ScoreboardPlayers: normalizeScoreboard,
+	ScoreboardGames: normalizeScoreboardGames,
+	MatchSchedule: normalizeMatches,
 };
 
 /** The tables this pipeline can read, for error messages and tests. */
@@ -415,5 +640,7 @@ export function normalizeSources(payloads: CachedPayload[]): SourceDataset {
 		playerNames: normalizePlayerNames(group("PlayerRedirects")),
 		champions: normalizeChampions(group("Champions")),
 		scoreboard: normalizeScoreboard(group("ScoreboardPlayers")),
+		games: normalizeScoreboardGames(group("ScoreboardGames")),
+		matches: normalizeMatches(group("MatchSchedule")),
 	};
 }

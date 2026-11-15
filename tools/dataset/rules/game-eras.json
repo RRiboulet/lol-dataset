@@ -1,0 +1,148 @@
+{
+	"$comment": "Spec R6/D4: coverage is judged against the fields that existed when the game was played, not against a single uniform field list. Otherwise a 2015 game is `partial` because void grubs were not invented yet, and a marker that fires on every row cannot catch the one row it exists for. An era is a contiguous window; a field that did not exist inside the window is ineligible and is excluded from the coverage computation. Eras are contiguous on purpose, so a field that was temporarily removed (the Chemtech Drake) is expressed by an era that omits it, with no extra mechanism. `cites` records where the boundary comes from: every date here was read off the League of Legends wiki's own patch page for the version named, not inferred from this dataset.",
+	"version": 1,
+	"groups": {
+		"team-stats": [
+			{
+				"id": "pre-herald",
+				"from": "2011-01-01",
+				"cites": "The dataset's declared era floor (spec objective): 2011. Before the Rift Herald, a team-stat row is kills, gold, towers, inhibitors, barons and a plain dragon count.",
+				"eligible": ["kills", "gold", "towers", "inhibitors", "barons", "dragons"]
+			},
+			{
+				"id": "herald",
+				"from": "2015-11-11",
+				"cites": "V5.22, released 2015-11-11 (wiki.leagueoflegends.com/en-us/V5.22): the Rift Herald enters the Baron pit.",
+				"eligible": ["kills", "gold", "towers", "inhibitors", "barons", "dragons", "riftHeralds"]
+			},
+			{
+				"id": "elemental-drakes",
+				"from": "2016-01-14",
+				"cites": "V6.1, released 2016-01-14 (wiki.leagueoflegends.com/en-us/V6.1): drakes become elemental (Cloud, Infernal, Mountain, Ocean) and the Elder Dragon appears.",
+				"eligible": [
+					"kills",
+					"gold",
+					"towers",
+					"inhibitors",
+					"barons",
+					"dragons",
+					"riftHeralds",
+					"dragonsClouds",
+					"dragonsInfernals",
+					"dragonsMountains",
+					"dragonsOceans",
+					"dragonsElders"
+				]
+			},
+			{
+				"id": "hextech-chemtech",
+				"from": "2021-11-18",
+				"cites": "V11.23, released 2021-11-18 (wiki.leagueoflegends.com/en-us/V11.23): the Hextech and Chemtech Drakes join the elemental set.",
+				"eligible": [
+					"kills",
+					"gold",
+					"towers",
+					"inhibitors",
+					"barons",
+					"dragons",
+					"riftHeralds",
+					"dragonsClouds",
+					"dragonsInfernals",
+					"dragonsMountains",
+					"dragonsOceans",
+					"dragonsElders",
+					"dragonsHextechs",
+					"dragonsChemtechs"
+				]
+			},
+			{
+				"id": "chemtech-withdrawn",
+				"from": "2022-01-19",
+				"cites": "V12.2, released 2022-01-19: the Chemtech Drake is withdrawn from the Rift, so a value for it cannot exist for games in this window.",
+				"eligible": [
+					"kills",
+					"gold",
+					"towers",
+					"inhibitors",
+					"barons",
+					"dragons",
+					"riftHeralds",
+					"dragonsClouds",
+					"dragonsInfernals",
+					"dragonsMountains",
+					"dragonsOceans",
+					"dragonsElders",
+					"dragonsHextechs"
+				]
+			},
+			{
+				"id": "chemtech-restored",
+				"from": "2022-11-16",
+				"cites": "V12.22, released 2022-11-16 (wiki.leagueoflegends.com/en-us/V12.22): the Chemtech Drake returns in a reworked form.",
+				"eligible": [
+					"kills",
+					"gold",
+					"towers",
+					"inhibitors",
+					"barons",
+					"dragons",
+					"riftHeralds",
+					"dragonsClouds",
+					"dragonsInfernals",
+					"dragonsMountains",
+					"dragonsOceans",
+					"dragonsElders",
+					"dragonsHextechs",
+					"dragonsChemtechs"
+				]
+			},
+			{
+				"id": "voidgrubs",
+				"from": "2024-01-10",
+				"cites": "V14.1, released 2024-01-10 (wiki.leagueoflegends.com/en-us/V14.1): Voidgrubs spawn in the top-side jungle.",
+				"eligible": [
+					"kills",
+					"gold",
+					"towers",
+					"inhibitors",
+					"barons",
+					"dragons",
+					"riftHeralds",
+					"dragonsClouds",
+					"dragonsInfernals",
+					"dragonsMountains",
+					"dragonsOceans",
+					"dragonsElders",
+					"dragonsHextechs",
+					"dragonsChemtechs",
+					"voidGrubs"
+				]
+			},
+			{
+				"id": "atakhan",
+				"from": "2025-01-09",
+				"cites": "V25.S1.1, released 2025-01-09 (wiki.leagueoflegends.com/en-us/V25.S1.1): Atakhan joins the epic monsters.",
+				"eligible": [
+					"kills",
+					"gold",
+					"towers",
+					"inhibitors",
+					"barons",
+					"dragons",
+					"riftHeralds",
+					"dragonsClouds",
+					"dragonsInfernals",
+					"dragonsMountains",
+					"dragonsOceans",
+					"dragonsElders",
+					"dragonsHextechs",
+					"dragonsChemtechs",
+					"voidGrubs",
+					"atakhans"
+				]
+			}
+		],
+		"player-stats": [],
+		"draft": []
+	}
+}

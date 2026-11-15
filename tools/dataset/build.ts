@@ -24,6 +24,10 @@ import type { AssembledDataset, EventRecord, SelectionRecord } from "./assemble.
 import { assembleDataset } from "./assemble.ts";
 import { readPayloads } from "./cache.ts";
 import { toJsonl } from "./emit.ts";
+import type { EraTable } from "./eras.ts";
+import { DEFAULT_ERA_FILE, loadEraTable } from "./eras.ts";
+import type { EventGamesRecord, GameRecord, MatchRecord, ScoreboardAssembly } from "./games.ts";
+import { assembleScoreboards } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
 import { normalizeSources } from "./normalize.ts";
@@ -38,6 +42,9 @@ import { assertValid } from "./validate.ts";
 export const OUTPUTS = {
 	"events.jsonl": { schema: "event.schema.json" },
 	"event-selection.jsonl": { schema: "event-selection.schema.json" },
+	"event-games.jsonl": { schema: "event-games.schema.json" },
+	"games.jsonl": { schema: "game.schema.json" },
+	"matches.jsonl": { schema: "match.schema.json" },
 	"teams.jsonl": { schema: "team.schema.json" },
 	"players.jsonl": { schema: "player.schema.json" },
 	"champions.jsonl": { schema: "champion.schema.json" },
@@ -54,6 +61,8 @@ export type BuildOptions = {
 	ruleFile?: string;
 	/** Declared renames the source does not record. Defaults to `rules/identity-aliases.json`. */
 	aliasFile?: string;
+	/** The era table that judges coverage. Defaults to `rules/game-eras.json`. */
+	eraFile?: string;
 	/** Directory holding the checked-in schemas. Defaults to `data/curated/schema/`. */
 	schemaDir?: string;
 };
@@ -63,8 +72,12 @@ export type BuildResult = AssembledDataset & {
 	files: Record<OutputFile, string>;
 	/** The teams, players, champions, alias table and unresolved report. */
 	identity: AssembledIdentity;
+	/** Games, matches and the per-event game report (ticket 03). */
+	scoreboards: ScoreboardAssembly;
 	/** The rule that produced the events, so a caller can explain a decision. */
 	rule: EventSelectionRule;
+	/** The era table coverage was judged against, for callers that explain a marker. */
+	eras: EraTable;
 };
 
 const TOOL_DIR = import.meta.dirname;
@@ -72,6 +85,7 @@ const REPO_ROOT = path.resolve(TOOL_DIR, "..", "..");
 
 export const DEFAULT_RULE_FILE = path.join(TOOL_DIR, "rules", "event-selection.json");
 export const DEFAULT_SCHEMA_DIR = path.join(REPO_ROOT, "data", "curated", "schema");
+export { DEFAULT_ERA_FILE };
 
 type Schema = Record<string, unknown>;
 
@@ -99,6 +113,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	const schemaDir = options.schemaDir ?? DEFAULT_SCHEMA_DIR;
 
 	const rule = await loadRule(ruleFile);
+	const eras = await loadEraTable(options.eraFile ?? DEFAULT_ERA_FILE);
 	const payloads = await readPayloads(options.rawDir);
 	if (payloads.length === 0) {
 		// An empty cache is a failed build, not an empty dataset: emitting zero rows
@@ -107,11 +122,24 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	}
 	const sources = normalizeSources(payloads);
 	const assembled = assembleDataset(rule, sources.tournaments);
+	// Identity first: games and matches reference teams, and their team strings are
+	// observations identity has to see before the join can resolve them.
 	const identity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE));
+	const scoreboards = assembleScoreboards({
+		games: sources.games,
+		matches: sources.matches,
+		events: assembled.events,
+		identity: identity.index,
+		eras,
+		payloads,
+	});
 
 	const files: Record<OutputFile, string> = {
 		"events.jsonl": toJsonl(assembled.events),
 		"event-selection.jsonl": toJsonl(assembled.selection),
+		"event-games.jsonl": toJsonl(scoreboards.eventGames),
+		"games.jsonl": toJsonl(scoreboards.games),
+		"matches.jsonl": toJsonl(scoreboards.matches),
 		"teams.jsonl": toJsonl(identity.teams),
 		"players.jsonl": toJsonl(identity.players),
 		"champions.jsonl": toJsonl(identity.champions),
@@ -123,7 +151,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		validateFile(file, files[file], await loadSchema(schemaDir, output.schema));
 	}
 
-	return { ...assembled, files, identity, rule };
+	return { ...assembled, files, identity, scoreboards, rule, eras };
 }
 
 /** Write the emitted bytes. The only stage that writes to the output directory. */
@@ -135,4 +163,4 @@ export async function writeDataset(result: Pick<BuildResult, "files">, outDir: s
 }
 
 /** Export the record types so callers and tests can name them. */
-export type { EventRecord, SelectionRecord };
+export type { EventRecord, EventGamesRecord, GameRecord, MatchRecord, SelectionRecord };

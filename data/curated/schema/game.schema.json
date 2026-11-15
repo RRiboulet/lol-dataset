@@ -1,0 +1,165 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:game:1",
+	"title": "Curated game",
+	"description": "One row of data/curated/games.jsonl: a single game from a selected event, with its two sides and the team statistics the source records (spec R2, R3). The grain is one game. `sides` is always exactly two entries and `winnerTeamId` is always one of them. A statistic the source did not record is an ABSENT KEY, never 0 and never null — a real 0 (a team that took no dragons) is stated as 0. There is no `deaths` field: the source's ScoreboardGames table has no Deaths column for either side (measured with `cargofields`), so a deaths figure could only be derived from the opponent's kills, and executions make that arithmetically false. `coverage.teamStats` is judged against the era table in tools/dataset/rules/game-eras.json, so a field that did not exist when the game was played (void grubs in 2015, elemental drakes in 2013) neither counts as absent nor marks the game partial. Contains no build timestamp (spec R8).",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"eventId",
+		"eventName",
+		"overviewPage",
+		"dateTimeUtc",
+		"era",
+		"coverage",
+		"sides",
+		"winnerTeamId",
+		"winnerTeamName",
+		"source"
+	],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^gm-[0-9a-f]{12}$",
+			"description": "Opaque surrogate key derived from the source's GameId (spec D3). Do not parse it: the source ids are carried in `source`."
+		},
+		"eventId": {
+			"type": "string",
+			"pattern": "^evt-[0-9a-f]{12}$",
+			"description": "The event this game belongs to. Always present: a game whose page no selected event covers is not emitted at all."
+		},
+		"eventName": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The event's display name, repeated so the row reads without a join (spec R12)."
+		},
+		"matchId": {
+			"type": "string",
+			"pattern": "^mt-[0-9a-f]{12}$",
+			"description": "The series this game belongs to, present only when the corpus also carries that match's MatchSchedule row. `source.matchId` is the source's own id and is always present."
+		},
+		"overviewPage": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source page the game row came from. The source splits an event across stage pages (…/Play-In, …/Main Event), which is why a game is attached to its event by page prefix."
+		},
+		"dateTimeUtc": {
+			"type": "string",
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+			"description": "The game's start instant in UTC, ISO-8601. One fixed representation across every era (spec R8)."
+		},
+		"patch": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The patch as the source states it, as text, and absent when the source records none. The source's column is numeric even though `cargofields` reports String, so it cannot distinguish 4.1 from 4.10: this carries the digits the source sent and never pads or infers them."
+		},
+		"durationSeconds": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "Game length in whole seconds, parsed from the source's exact `Gamelength` (`mm:ss`). Absent when the source states none. The source's `Gamelength_Number` is float minutes and is not used, because it cannot round-trip the seconds."
+		},
+		"era": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The id of the era in tools/dataset/rules/game-eras.json that governs this game's date, so the record states which era it is in (spec R6)."
+		},
+		"coverage": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["teamStats"],
+			"description": "Per-field-group presence, machine-readable (spec R6).",
+			"properties": {
+				"teamStats": {
+					"type": "string",
+					"enum": ["complete", "partial", "unavailable"],
+					"description": "`complete` when every field eligible in this game's era is stated for both sides; `partial` when some are; `unavailable` when none are. Ineligible fields are excluded, so 2015 stays `partial` for its missing inhibitors (a source gap) but is not blamed for void grubs (not invented yet)."
+				}
+			}
+		},
+		"sides": {
+			"type": "array",
+			"minItems": 2,
+			"maxItems": 2,
+			"description": "Exactly two sides. Blue is the source's Team1 and red its Team2; the source swaps which team is on which side between games of a series, so the side is a position and the team is a reference.",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["side", "teamId", "teamName", "sourceTeam"],
+				"properties": {
+					"side": {
+						"type": "string",
+						"enum": ["blue", "red"]
+					},
+					"teamId": {
+						"type": "string",
+						"pattern": "^tm-[0-9a-f]{12}$",
+						"description": "The canonical team, resolved through the identity tables so a rename does not split a team in two (spec R7)."
+					},
+					"teamName": {
+						"type": "string",
+						"minLength": 1,
+						"description": "The team's current display name, repeated so the row reads without a join (spec R12)."
+					},
+					"sourceTeam": {
+						"type": "string",
+						"minLength": 1,
+						"description": "The team string the source used for this game, verbatim (spec R7)."
+					},
+					"kills": { "type": "integer", "minimum": 0 },
+					"gold": { "type": "number", "minimum": 0 },
+					"towers": { "type": "integer", "minimum": 0 },
+					"inhibitors": { "type": "integer", "minimum": 0 },
+					"barons": { "type": "integer", "minimum": 0 },
+					"dragons": {
+						"type": "integer",
+						"minimum": 0,
+						"description": "Dragons taken, as the source states the total. Never recomputed from the per-element counts: before 2016 the total counts a non-elemental dragon, so the elements do not sum to it."
+					},
+					"dragonsClouds": { "type": "integer", "minimum": 0 },
+					"dragonsInfernals": { "type": "integer", "minimum": 0 },
+					"dragonsMountains": { "type": "integer", "minimum": 0 },
+					"dragonsOceans": { "type": "integer", "minimum": 0 },
+					"dragonsHextechs": { "type": "integer", "minimum": 0 },
+					"dragonsChemtechs": { "type": "integer", "minimum": 0 },
+					"dragonsElders": { "type": "integer", "minimum": 0 },
+					"riftHeralds": { "type": "integer", "minimum": 0 },
+					"voidGrubs": { "type": "integer", "minimum": 0 },
+					"atakhans": { "type": "integer", "minimum": 0 }
+				}
+			}
+		},
+		"winnerTeamId": {
+			"type": "string",
+			"pattern": "^tm-[0-9a-f]{12}$",
+			"description": "The winning team, which is always one of the two sides. The source's WinTeam string is what resolves here; its `Winner` integer must agree with the side it names or the build fails."
+		},
+		"winnerTeamName": {
+			"type": "string",
+			"minLength": 1
+		},
+		"source": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["gameId", "matchId"],
+			"description": "The source's own identifiers, so a row can be walked back to its payload by hand (spec R9, D7).",
+			"properties": {
+				"gameId": {
+					"type": "string",
+					"minLength": 1,
+					"description": "ScoreboardGames.GameId — page-scoped and 1:1 with a game (measured: 110 unique ids over 110 rows)."
+				},
+				"matchId": {
+					"type": "string",
+					"minLength": 1,
+					"description": "ScoreboardGames.MatchId — the series id, shared by every game of that series."
+				},
+				"riotPlatformGameId": {
+					"type": "string",
+					"minLength": 1,
+					"description": "Riot's platform game id, where the source records one. The ACS enrichment fields (RiotGameId, RiotHash) are absent on every recorded row."
+				}
+			}
+		}
+	}
+}

@@ -229,6 +229,12 @@ export type CachedPayload = {
 	/** The Cargo table the query read, from the directory. This is how the build routes it. */
 	table: string;
 	body: string;
+	/**
+	 * The query the sidecar records, when there is one. Never emitted and never hashed
+	 * into the output, which is why it can travel here: the game report has to tell "this
+	 * event came back empty" from "nobody asked for this event", and only the query says.
+	 */
+	query?: CargoQuery;
 };
 
 /**
@@ -265,7 +271,30 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
 		if (parts.length !== 4 || (parts[1] !== "cargoexport" && parts[1] !== "cargoquery")) {
 			throw new Error(`${relative}: expected <source>/<endpoint>/<table>/<key>.json`);
 		}
-		payloads.push({ file: relative, table: parts[2], body: await readFile(file, "utf8") });
+		payloads.push({ file: relative, table: parts[2], body: await readFile(file, "utf8"), ...(await queryOf(file)) });
 	}
 	return payloads;
+}
+
+/**
+ * The query an optional sidecar records, for reporting only.
+ *
+ * A sidecar is written by `record.ts`/`fetch.ts` and is not required: a scratch
+ * directory a test builds from bodies alone is legal, which is why this is optional
+ * rather than a second thing that has to exist before the build runs.
+ */
+async function queryOf(bodyFile: string): Promise<{ query?: CargoQuery }> {
+	const metaFile = bodyFile.replace(/\.json$/, ".meta.json");
+	const text = await readIfExists(metaFile);
+	if (text === undefined) return {};
+	try {
+		const meta = JSON.parse(text) as { query?: unknown };
+		const query = meta.query;
+		if (query === null || typeof query !== "object") return {};
+		const candidate = query as CargoQuery;
+		if (typeof candidate.tables !== "string" || typeof candidate.fields !== "string") return {};
+		return { query: candidate };
+	} catch {
+		return {};
+	}
 }

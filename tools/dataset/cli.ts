@@ -40,13 +40,33 @@ const REPO_ROOT = path.resolve(import.meta.dirname, "..", "..");
 
 function describe(result: BuildResult): string {
 	const lines: string[] = [];
-	const { events, selection, decisions, identity } = result;
+	const { events, selection, decisions, identity, scoreboards } = result;
 	const rejected = selection.length - events.length;
 	lines.push(`${events.length} event(s) selected, ${rejected} rejected, from ${selection.length} considered`);
 	lines.push(
 		`${identity.teams.length} team(s), ${identity.players.length} player(s), ${identity.champions.length} champion(s), ` +
 			`${identity.aliases.length} alias row(s), ${identity.unresolved.length} unresolved reference(s)`,
 	);
+	const states = new Map<string, number>();
+	for (const record of scoreboards.eventGames) states.set(record.state, (states.get(record.state) ?? 0) + 1);
+	const stateText = [...states.entries()]
+		.sort((a, b) => (a[0] < b[0] ? -1 : 1))
+		.map(([state, count]) => `${count} ${state}`)
+		.join(", ");
+	lines.push(`${scoreboards.games.length} game(s), ${scoreboards.matches.length} match(es) — events: ${stateText}`);
+	if (scoreboards.gamesWithoutMatch.length > 0) {
+		lines.push(`  ${scoreboards.gamesWithoutMatch.length} game(s) whose series the corpus does not carry — no canonical matchId`);
+	}
+	if (scoreboards.ignoredGames.length > 0 || scoreboards.ignoredMatches.length > 0) {
+		// A payload that covers a page the rule rejected is normal for a crawl window, but
+		// it must never be silently absorbed: these rows are counted, not emitted.
+		const pages = [...new Set([...scoreboards.ignoredGames, ...scoreboards.ignoredMatches])].sort();
+		lines.push(`  ignored ${scoreboards.ignoredGames.length} game(s) and ${scoreboards.ignoredMatches.length} match(es) from pages no selected event covers: ${pages.join(", ")}`);
+	}
+	for (const record of scoreboards.eventGames) {
+		if (record.state === "recorded") continue;
+		lines.push(`  ${record.eventName}: ${record.state} — ${record.overviewPage}`);
+	}
 	for (const record of identity.unresolved) {
 		const what = record.id === null ? `${record.candidates.join(", ")}` : record.id;
 		lines.push(`  unresolved ${record.kind} ${JSON.stringify(record.string)} (${record.reason}) -> ${what}`);
@@ -87,6 +107,7 @@ async function main(): Promise<void> {
 			out: { type: "string" },
 			rule: { type: "string" },
 			aliases: { type: "string" },
+			eras: { type: "string" },
 			schema: { type: "string" },
 			offline: { type: "boolean", default: false },
 			check: { type: "boolean", default: false },
@@ -145,6 +166,7 @@ async function main(): Promise<void> {
 		rawDir,
 		ruleFile: values.rule ?? DEFAULT_RULE_FILE,
 		aliasFile: values.aliases,
+		eraFile: values.eras,
 		schemaDir: values.schema ?? DEFAULT_SCHEMA_DIR,
 	}).catch((error: Error) => {
 		if (values.raw === undefined && /no recorded payloads/.test(error.message)) {

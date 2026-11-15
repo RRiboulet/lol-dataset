@@ -1,0 +1,110 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:match:1",
+	"title": "Curated match (series)",
+	"description": "One row of data/curated/matches.jsonl: a best-of series, the middle level of the event -> match -> game grain (spec D1). A match exists because the series score is a source fact that counting games cannot recover — a forfeited or nullified series breaks that arithmetic — so the score lives here and never on a game. `sides` is always exactly two entries, blue from the source's Team1 and red from its Team2. `isNullified` is always present; `forfeit` appears only when the source states one. The source's `Phase` and `Round` columns are null on every recorded match (measured, 65 of 65), so the round label is the source's `Tab`.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["id", "eventId", "eventName", "overviewPage", "dateTimeUtc", "isNullified", "sides", "source"],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^mt-[0-9a-f]{12}$",
+			"description": "Opaque surrogate key derived from the source's MatchId (spec D3). The source id is carried in `source`."
+		},
+		"eventId": {
+			"type": "string",
+			"pattern": "^evt-[0-9a-f]{12}$"
+		},
+		"eventName": {
+			"type": "string",
+			"minLength": 1
+		},
+		"overviewPage": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source page the match row came from."
+		},
+		"dateTimeUtc": {
+			"type": "string",
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+		},
+		"bestOf": {
+			"type": "integer",
+			"minimum": 1,
+			"description": "The series length the source declares (measured values: 1, 3 and 5). Absent when the source states none."
+		},
+		"tab": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source's round label (ScoreboardGames-adjacent `Tab`): `Round 1`…`Round 5`, `Quarterfinals`, `Semifinals`, `Finals`, `Group A`, `Qualifiers`. Absent when the source has none."
+		},
+		"patch": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The patch the source states for the series, as text. Same numeric-truncation caveat as the game's `patch`."
+		},
+		"forfeit": {
+			"type": "boolean",
+			"description": "Present and true only when the source records `FF`. Measured absent on every recorded match, which is why no forfeit fixture exists yet."
+		},
+		"isNullified": {
+			"type": "boolean",
+			"description": "The source's IsNullified as stated: a nullified series is not the same as an unplayed one."
+		},
+		"sides": {
+			"type": "array",
+			"minItems": 2,
+			"maxItems": 2,
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["side", "teamId", "teamName", "sourceTeam"],
+				"properties": {
+					"side": {
+						"type": "string",
+						"enum": ["blue", "red"]
+					},
+					"teamId": {
+						"type": "string",
+						"pattern": "^tm-[0-9a-f]{12}$"
+					},
+					"teamName": {
+						"type": "string",
+						"minLength": 1
+					},
+					"sourceTeam": {
+						"type": "string",
+						"minLength": 1
+					},
+					"seriesScore": {
+						"type": "integer",
+						"minimum": 0,
+						"description": "The series score for this side as the source states it. Absent when the source has no score."
+					}
+				}
+			}
+		},
+		"winnerTeamId": {
+			"type": "string",
+			"pattern": "^tm-[0-9a-f]{12}$",
+			"description": "Absent only when the source states no winner."
+		},
+		"winnerTeamName": {
+			"type": "string",
+			"minLength": 1
+		},
+		"source": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["matchId"],
+			"properties": {
+				"matchId": {
+					"type": "string",
+					"minLength": 1,
+					"description": "MatchSchedule.MatchId — page-scoped, and the same string a game row carries."
+				}
+			}
+		}
+	}
+}

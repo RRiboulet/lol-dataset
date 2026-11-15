@@ -1,0 +1,38 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:event-games:1",
+	"title": "Per-event game coverage report",
+	"description": "One row of data/curated/event-games.jsonl for every selected event, saying whether the corpus carries games for it. This is the file that keeps 'the source has no games for this event' from looking like 'nobody fetched this event': `recorded` means rows are present, `empty` means a recorded query addressed this event and the source returned none, and `missing` means no recorded query addressed it at all. A build over a partial crawl is therefore honest rather than silently thin. `games` and `matches` are counts of emitted rows, so a reader can reconcile them against the files.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["eventId", "eventName", "overviewPage", "state", "games", "matches"],
+	"properties": {
+		"eventId": {
+			"type": "string",
+			"pattern": "^evt-[0-9a-f]{12}$"
+		},
+		"eventName": {
+			"type": "string",
+			"minLength": 1
+		},
+		"overviewPage": {
+			"type": "string",
+			"minLength": 1
+		},
+		"state": {
+			"type": "string",
+			"enum": ["recorded", "empty", "missing"],
+			"description": "`recorded`: at least one game is emitted for this event. `empty`: a recorded ScoreboardGames query named this event (its page or its source tournament) and returned no rows — measured on World Cyber Games 2013. `missing`: no recorded query addressed this event."
+		},
+		"games": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "How many rows this event contributes to games.jsonl."
+		},
+		"matches": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "How many rows this event contributes to matches.jsonl."
+		}
+	}
+}
