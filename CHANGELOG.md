@@ -89,6 +89,21 @@ Added:
   routing by row shape would feed one stage's rows to another's parser; the recorded
   fixtures moved accordingly and the committed event files are unchanged.
 
+Fixed:
+
+- **The single-query form of the manual fetch command is accepted again, and stays
+  as strict as a plan file.** `tools/dataset/cli.ts` has always documented
+  `fetch --raw raw --query '{"endpoint":"cargoexport",…}'`, but `parsePlan` only
+  took an array or `{"queries":[…]}` and rejected that exact line with "expected a
+  non-empty array of queries" — so the first documented way to make a real fetch
+  failed before it reached the network, which is the command ticket 09 will use.
+  A bare query object is now a plan of one, because a hand-typed flag has no list
+  to put it in; a file keeps both envelope forms. It goes through the same
+  `planQuery` check, so the typo guard that keeps a dropped `orderBy` from
+  silently re-keying the cache still applies, and the error names the flag rather
+  than an index (`--query: unknown query field "orderBy"`). Found by the
+  independent review of the fetch layer, and the failing command is now a test.
+
 Maintenance:
 
 - **A subagent launch no longer names an extension copy this project excluded.** The
