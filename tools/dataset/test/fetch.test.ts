@@ -448,6 +448,12 @@ test("an explicit plan is parsed strictly, so a typo cannot silently change the 
 	const good = [{ endpoint: "cargoexport", tables: "Tournaments", fields: "Name" }];
 	assert.deepEqual(parsePlan(JSON.stringify(good), "test"), good);
 	assert.deepEqual(parsePlan(JSON.stringify({ queries: good }), "test"), good);
+	// The `--query` flag is typed by hand, so a bare query object is a plan of one.
+	// Without this the command the cli's own header documents is rejected.
+	assert.deepEqual(parsePlan(JSON.stringify(good[0]), "test"), good);
+	assert.throws(() => parsePlan(JSON.stringify({ ...good[0], orderBy: "x" }), "test"), /unknown query field "orderBy"/);
+	assert.throws(() => parsePlan("{}", "test"), /endpoint must be/);
+	assert.throws(() => parsePlan(JSON.stringify({ queries: [] }), "test"), /non-empty/);
 	assert.throws(() => parsePlan("[]", "test"), /non-empty/);
 	assert.throws(() => parsePlan(JSON.stringify([...good, { endpoint: "cargoexport", tables: "T", fields: "F", orderBy: "x" }]), "test"), /unknown query field "orderBy"/);
 	assert.throws(() => parsePlan(JSON.stringify([{ endpoint: "cargoquery", tables: "", fields: "F" }]), "test"), /tables must be a non-empty string/);

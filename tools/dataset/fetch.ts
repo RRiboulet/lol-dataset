@@ -299,11 +299,14 @@ function planQuery(value: unknown, where: string): CargoQuery {
 }
 
 /**
- * Parse an explicit plan: a JSON array of `CargoQuery`, or `{ "queries": [...] }`.
+ * Parse an explicit plan: a single `CargoQuery` object, an array of them, or
+ * `{ "queries": [...] }`.
  *
- * This is the manual command's input until ticket 10 builds the crawl plan. It
- * is intentionally strict: a misspelled `orderBy` would otherwise be dropped by
- * `queryUrl` and the cache key would silently describe a different query.
+ * The bare object is there for `--query`, which an operator types by hand and
+ * where the one-query case is the common one; the envelope forms are what a plan
+ * file uses. All three go through the same check, so `--query` is as strict as a
+ * file and a misspelled `orderBy` cannot be dropped by `queryUrl` and leave the
+ * cache key describing a different query.
  */
 export function parsePlan(text: string, source: string): CargoQuery[] {
 	let parsed: unknown;
@@ -312,9 +315,13 @@ export function parsePlan(text: string, source: string): CargoQuery[] {
 	} catch (error) {
 		throw new Error(`${source}: not JSON (${(error as Error).message})`);
 	}
-	const list = Array.isArray(parsed) ? parsed : (parsed as { queries?: unknown })?.queries;
+	const envelope = (parsed as { queries?: unknown } | null)?.queries;
+	const list = Array.isArray(parsed) ? parsed : envelope !== undefined ? envelope : null;
+	// No envelope and not an array: one hand-typed query, named by its flag rather
+	// than by an index it has no reason to carry.
+	if (list === null) return [planQuery(parsed, source)];
 	if (!Array.isArray(list) || list.length === 0) {
-		throw new Error(`${source}: expected a non-empty array of queries, or an object with a non-empty "queries" array`);
+		throw new Error(`${source}: expected a query object, a non-empty array of queries, or an object with a non-empty "queries" array`);
 	}
 	return list.map((query, index) => planQuery(query, `${source}: query ${index}`));
 }
