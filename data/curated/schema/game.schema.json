@@ -86,7 +86,7 @@
 			"type": "object",
 			"additionalProperties": false,
 			"required": ["fidelity", "sides"],
-			"description": "The champion draft of this game (spec R5). Picks and bans are canonical champion references beside the source string. `fidelity` is a fact about the source, never inferred from list position or role order.",
+			"description": "The champion draft of this game (spec R5). Picks and bans are canonical champion references beside the source string. `fidelity` is a fact about the source, never inferred from list position or role order. A champion occurs at most once across both sides' picks and bans.",
 			"properties": {
 				"fidelity": {
 					"type": "string",
@@ -106,7 +106,11 @@
 						"additionalProperties": false,
 						"required": ["side", "picks", "bans"],
 						"properties": {
-							"side": { "type": "string", "enum": ["blue", "red"] },
+							"side": {
+								"type": "string",
+								"enum": ["blue", "red"],
+								"description": "The game's source position (ScoreboardGames Team1 is blue, Team2 red), not a claim about which side the pick/ban table called Team1. When `switchedSides` is true the source says those positions were swapped; this label is deliberately not rewritten."
+							},
 							"picks": {
 								"type": "array",
 								"items": {

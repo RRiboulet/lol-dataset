@@ -1,0 +1,15 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Champions",
+    "fields": "Name,KeyInteger,ReleaseDate",
+    "order_by": "Name ASC",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Champions&fields=Name%2CKeyInteger%2CReleaseDate&order_by=Name+ASC&limit=500",
+  "fetchedAt": "2026-11-16T16:02:36.782Z",
+  "status": 200,
+  "bodySha256": "e9b13d9aa777a98cbc3d1af62506648569029af2d3872f12f690f467febb6595"
+}

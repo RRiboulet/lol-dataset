@@ -230,9 +230,11 @@ function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string):
 		if (found === null) throw new Error(`${where}: draft champion ${JSON.stringify(source)} resolves to no entity`);
 		return { championId: found.id, championName: found.name, sourceChampion: source };
 	};
-	const checkDuplicates = (entries: DraftEntry[], what: string): void => {
+	// A champion occurs at most once across both sides' picks and bans: one entity
+	// cannot be drafted twice in the same game, whichever column it arrived in.
+	const checkDuplicates = (entries: DraftEntry[]): void => {
 		const ids = new Set(entries.map((entry) => entry.championId));
-		if (ids.size !== entries.length) throw new Error(`${where}: the same champion appears twice in ${what} — a side cannot draft one champion twice`);
+		if (ids.size !== entries.length) throw new Error(`${where}: the same champion appears twice in this game's draft — picks and bans on both sides must be distinct`);
 	};
 	const cover = (sides: [DraftSideRecord, DraftSideRecord], ordered: boolean): Coverage => {
 		const complete = sides.every((side) =>
@@ -255,12 +257,16 @@ function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string):
 				slots.map((slot) => ({ ...resolveChampion(slot.champion), slot: slot.slot }));
 			const picks = toEntries(side.picks);
 			const bans = toEntries(side.bans);
-			checkDuplicates(picks, `side ${index + 1} picks`);
 			return { side: index === 0 ? "blue" : "red", picks, bans };
 		}) as [DraftSideRecord, DraftSideRecord];
 		const coverage = cover(sides, true);
-		if (coverage === "unavailable") return { coverage };
-		return {
+		checkDuplicates(sides.flatMap((side) => [...side.picks, ...side.bans]));
+		// An ordered row that states nothing is not evidence that the game had no draft:
+		// the list fields may still carry it. Fall through to them rather than emitting a
+		// false `unavailable` (R6).
+		if (coverage === "unavailable") {
+			// fall through to the unordered source below
+		} else return {
 			draft: {
 				fidelity: "ordered",
 				...(ordered.switchedSides === null ? {} : { switchedSides: ordered.switchedSides === 1 }),
@@ -273,10 +279,10 @@ function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string):
 	const sides: [DraftSideRecord, DraftSideRecord] = [0, 1].map((index) => {
 		const picks = game.picks[index].map(resolveChampion).sort((a, b) => (a.championId < b.championId ? -1 : a.championId > b.championId ? 1 : 0));
 		const bans = game.bans[index].map(resolveChampion).sort((a, b) => (a.championId < b.championId ? -1 : a.championId > b.championId ? 1 : 0));
-		checkDuplicates(picks, `side ${index + 1} picks`);
 		return { side: index === 0 ? "blue" : "red", picks, bans };
 	}) as [DraftSideRecord, DraftSideRecord];
 	const coverage = cover(sides, false);
+	checkDuplicates(sides.flatMap((side) => [...side.picks, ...side.bans]));
 	return coverage === "unavailable" ? { coverage } : { draft: { fidelity: "unordered", sides }, coverage };
 }
 
@@ -466,6 +472,15 @@ function wasAsked(payload: CachedPayload, event: EventRecord): boolean {
 	const where = payload.query?.where;
 	if (typeof where !== "string" || where === "") return false;
 	return whereLiterals(where, EVENT_COLUMNS).some((literal) => namesEvent(literal, event));
+}
+
+/** Game ids whose page belongs to a selected event, for identity's draft observations. */
+export function selectedGameIds(games: SourceGame[], events: EventRecord[]): Set<string> {
+	const ids = new Set<string>();
+	for (const game of games) {
+		if (eventForPage(game.page, events) !== undefined) ids.add(game.gameId);
+	}
+	return ids;
 }
 
 /** Games, matches, and the per-event report. Sorted, so a rebuild is byte-identical. */

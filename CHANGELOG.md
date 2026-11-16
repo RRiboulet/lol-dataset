@@ -30,11 +30,15 @@ Added:
   `PicksAndBansS7` payloads for the 2023 fixture, and sorted sets from
   `ScoreboardGames` list fields for 2015 — while `coverage.draft` says `partial`
   for the three-ban 2015 rows and `unavailable` when the corpus states no draft at
-  all. Source order is never inferred from role order or list position; a duplicate
-  champion in one side's picks stops the build. Draft picks are identity
-  observations, growing `champions.jsonl` from 44 to 116 and the unresolved report
-  accordingly. The side-switch case is tested from recorded bytes on a scratch copy
-  because the source's switched rows belong to an event with no game fixture.
+  all. Source order is never inferred from role order or list position; a champion
+  repeated anywhere in a game's picks or bans stops the build. Draft picks are
+  identity observations; a recorded full champion registry now gives all 173
+  champions Riot-anchored IDs instead of minting string-anchored placeholders, and
+  drafts from events the rule rejects mint nothing. Identical rows from overlapping
+  payloads collapse instead of failing as stale, an empty ordered row cannot hide
+  list picks, and unknown slot numbers or side-switch values stop the build. The
+  side-switch case is tested from recorded bytes on a scratch copy because the
+  source's switched rows belong to an event with no game fixture.
 - The dataset's game and match layers: `games.jsonl` with both sides and the team
   statistics the source records, `matches.jsonl` with the series score counting
   games cannot recover, and `event-games.jsonl` saying per selected event whether

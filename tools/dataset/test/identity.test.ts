@@ -114,10 +114,11 @@ test("the entity's ID does not change when its display name changes", async () =
 		// and 2012 rows already say `Nunu &amp; Willump`), so a display rename arrives as
 		// a coordinated rewrite of both the registry and the scoreboard. Identity is the
 		// Riot id, so neither side of that rewrite moves the ID.
-		const championsFile = await payloadFile(dir, "Champions");
-		const champions = await readRows(championsFile);
-		for (const row of champions) if (row.KeyInteger === 20) row.Name = "Nunu";
-		await writeFile(championsFile, JSON.stringify(champions), "utf8");
+		for (const championsFile of await payloadFiles(dir, "Champions")) {
+			const champions = await readRows(championsFile);
+			for (const row of champions) if (row.KeyInteger === 20) row.Name = "Nunu";
+			await writeFile(championsFile, JSON.stringify(champions), "utf8");
+		}
 		for (const file of await payloadFiles(dir, "ScoreboardPlayers")) {
 			const rows = await readRows(file);
 			for (const row of rows) if (row.Champion === "Nunu &amp; Willump") row.Champion = "Nunu";

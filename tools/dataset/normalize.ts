@@ -347,6 +347,17 @@ function dedupe<T extends { sourceFile: string }>(
 const same = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b);
 
 /**
+ * Two payloads may carry the same row; `sourceFile` is provenance, not data.
+ * Comparing it too would make every overlapping crawl window look like a stale
+ * disagreement, which is the one case deduplication exists to accept.
+ */
+const sameIgnoringSource = <T extends { sourceFile: string }>(a: T, b: T): boolean => {
+	const { sourceFile: _seen, ...left } = a;
+	const { sourceFile: _row, ...right } = b;
+	return same(left, right);
+};
+
+/**
  * Tournaments rows from every cached payload, deduplicated by page.
  *
  * Two payloads may overlap (a year window and a single-event query), so the same
@@ -586,7 +597,7 @@ export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[
 	return dedupe(
 		rows,
 		(row) => row.gameId,
-		same,
+		sameIgnoringSource,
 		"game",
 		(seen, row, id) => `${id}: ${seen.sourceFile} and ${row.sourceFile} disagree about the same game — one payload is stale`,
 	);
@@ -626,13 +637,25 @@ export function normalizeMatches(payloads: CachedPayload[]): SourceMatch[] {
 	return dedupe(
 		rows,
 		(row) => row.matchId,
-		same,
+		sameIgnoringSource,
 		"match",
 		(seen, row, id) => `${id}: ${seen.sourceFile} and ${row.sourceFile} disagree about the same series — one payload is stale`,
 	);
 }
 
 const DRAFT_SLOTS = 5;
+
+/** A source that grows past five slots is a change this stage must not silently drop. */
+function checkDraftSlots(row: Record<string, unknown>, where: string): void {
+	for (const key of Object.keys(row)) {
+		const slot = /^Team[12](?:Pick|Ban)(\d+)$/.exec(key);
+		if (slot === null) continue;
+		const number = Number(slot[1]);
+		if (!Number.isInteger(number) || number < 1 || number > DRAFT_SLOTS) {
+			throw new Error(`${where}: draft slot ${JSON.stringify(key)} is outside 1..${DRAFT_SLOTS} — a source change cannot be dropped silently`);
+		}
+	}
+}
 
 /**
  * `PicksAndBansS7` rows: the ordered draft (R5). Slots are read as numbered fields,
@@ -655,7 +678,11 @@ export function normalizePicksAndBans(payloads: CachedPayload[]): SourceDraft[] 
 		for (const row of parse(payload)) {
 			const gameId = asText(raw(row, "GameId"));
 			if (gameId === "") throw new Error(`${payload.file}: an ordered draft row without a GameId cannot be attached to a game`);
+			checkDraftSlots(row, `${payload.file}: ${gameId}`);
 			const switched = asText(raw(row, "SwitchedSides"));
+			if (switched !== "" && switched !== "0" && switched !== "1") {
+				throw new Error(`${payload.file}: ${gameId}: SwitchedSides ${JSON.stringify(switched)} is neither 0 nor 1 — a source change cannot be read as an absent flag`);
+			}
 			rows.push({
 				gameId,
 				switchedSides: switched === "1" ? 1 : switched === "0" ? 0 : null,
@@ -667,7 +694,7 @@ export function normalizePicksAndBans(payloads: CachedPayload[]): SourceDraft[] 
 	return dedupe(
 		rows,
 		(row) => row.gameId,
-		same,
+		sameIgnoringSource,
 		"ordered draft",
 		(seen, row, id) => `${id}: ${seen.sourceFile} and ${row.sourceFile} disagree about the same ordered draft — one payload is stale`,
 	);

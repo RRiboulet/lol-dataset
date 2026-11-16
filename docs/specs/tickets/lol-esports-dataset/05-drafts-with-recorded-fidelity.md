@@ -46,10 +46,19 @@ champion membership, and the crawl.
 - `ScoreboardGames.Team*Picks`/`Team*Bans` are in **role order**, so they are a set
   under R5: sorted by canonical champion id, with no slot key. The 2015 rows state
   three bans a side, so their `coverage.draft` is honestly `partial`, not `complete`.
-- Draft champion strings are identity observations. The recorded champion registry
-  names only part of the draft vocabulary, so unmatched picks are minted and reported
-  in `identity-unresolved.jsonl` rather than dropped. Draft rows for games the rule
-  does not select mint nothing.
+- Draft champion strings are identity observations. The first recorded registry named
+  only 44 champions, which would have minted string-anchored placeholders that a
+  later full registry would renumber, so a complete 173-row `Champions` payload is
+  recorded here and every draft champion is anchored on Riot's id. Any string the
+  registry still does not answer is reported in `identity-unresolved.jsonl` rather
+  than dropped, and drafts whose game is not in a selected event mint nothing.
+- An ordered row that states no slots is not evidence of no draft: the build falls
+  back to the source's list fields instead of emitting a false `unavailable`.
+  Identical rows from overlapping payloads deduplicate (provenance paths do not
+  count as data), while a sixth slot or an unrecognised `SwitchedSides` value stops
+  the build rather than being dropped silently. A champion repeated anywhere across
+  both sides' picks and bans fails the build, since one entity cannot be drafted
+  twice in a game.
 
 ## Validation
 

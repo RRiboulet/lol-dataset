@@ -278,7 +278,11 @@ function add<T>(map: Map<string, Set<T>>, key: string, value: T): void {
 	else set.add(value);
 }
 
-export function assembleIdentity(sources: SourceDataset, declaredAliases: DeclaredAlias[] = []): AssembledIdentity {
+export function assembleIdentity(
+	sources: SourceDataset,
+	declaredAliases: DeclaredAlias[] = [],
+	options: { draftGameIds?: ReadonlySet<string> } = {},
+): AssembledIdentity {
 	const key2 = (kind: EntityKind, string: string): string => `${kind}\u0000${string}`;
 	const key3 = (kind: EntityKind, string: string, id: string): string => `${kind}\u0000${string}\u0000${id}`;
 
@@ -549,18 +553,21 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 	// to resolve to one canonical entity before it goes on a game row. The unresolved
 	// report says which strings a future registry payload should answer.
 	const gameDates = new Map(sources.games.map((game) => [game.gameId, game.date]));
+	// The caller passes the games the selection rule admitted. A crawl also carries
+	// rejected events, whose draft strings are not references in this dataset and must
+	// not mint entities or unresolved rows.
+	const selected = (gameId: string): boolean => options.draftGameIds === undefined || options.draftGameIds.has(gameId);
 	for (const game of sources.games) {
 		for (const side of game.sides) observe("team", side.team, game.date);
 		observe("team", game.winTeam, game.date);
+		if (!selected(game.gameId)) continue;
 		for (const index of [0, 1] as const) {
 			for (const champion of [...game.picks[index], ...game.bans[index]]) observe("champion", champion, game.date);
 		}
 	}
 	for (const draft of sources.drafts) {
-		// A crawl can carry drafts for events the rule rejects. They are not references
-		// in this dataset, so they must not mint entities or unresolved rows.
 		const date = gameDates.get(draft.gameId);
-		if (date === undefined) continue;
+		if (date === undefined || !selected(draft.gameId)) continue;
 		for (const side of draft.sides) {
 			for (const slot of [...side.picks, ...side.bans]) observe("champion", slot.champion, date);
 		}
