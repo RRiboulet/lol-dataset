@@ -25,6 +25,19 @@ Changed:
 
 Added:
 
+- An invariant gate that runs inside every build, after the schemas: it refuses the
+  dataset when a game id repeats, a game's two sides are one team or it has no single
+  winner, any reference dangles across the files, a statistic is negative, a player's
+  kills or gold do not sum to the team's on a game claiming complete coverage, a
+  `complete` marker is not backed by the era's eligible fields, or an `unavailable`
+  marker denies values the record carries. Every violation is collected and reported
+  in one failure, each prefixed with the record it names, so a corruption in one file
+  does not hide the others. `tools/dataset/test/invariants.test.ts` breaks each rule
+  on purpose against a real build's records.
+- `node tools/check.ts`, the one command that answers "is the repo green": it links
+  pi's packages when needed and runs the dataset and scaffold suites, failing if
+  either does. It enumerates each suite's test files instead of passing a glob, since
+  a pattern matching nothing would otherwise report a green run that tested nothing.
 - Per-player game rows in `player-games.jsonl`: 1,290 rows over the two fixture
   events, ten per game, with kills, deaths, assists, CS, gold, damage, vision,
   items, trinket, summoner spells, keystone and runes carried as numbers or lists

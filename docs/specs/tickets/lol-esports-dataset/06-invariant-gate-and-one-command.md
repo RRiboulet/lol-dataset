@@ -1,7 +1,7 @@
 # 06: The invariant gate, and one command that runs everything
 
 **Blocked by:** 04, 05
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -21,16 +21,37 @@ use on real data to the crawl tickets.
 
 ## Acceptance criteria
 
-- [ ] Each corruption fixture fails the build with a message naming the specific
+- [x] Each corruption fixture fails the build with a message naming the specific
       record: duplicate game ID, unknown champion reference, player kills not
       summing to team kills, a game with two winners, a negative statistic, and a
       game claiming complete coverage while a required field is absent.
-- [ ] A clean dataset passes with no warnings.
-- [ ] The validator runs as part of the normal build, not behind an opt-in flag.
-- [ ] One documented command runs both the dataset suite and the scaffold suite,
+- [x] A clean dataset passes with no warnings.
+- [x] The validator runs as part of the normal build, not behind an opt-in flag.
+- [x] One documented command runs both the dataset suite and the scaffold suite,
       and is green on the branch.
-- [ ] A corruption in one file does not stop the other files' rules from being
+- [x] A corruption in one file does not stop the other files' rules from being
       checked in the same run.
+
+## Decisions made while building
+
+- The corruption fixtures are applied to a real build's **emitted records**, not to
+  payloads. A duplicate game id, a second winner or a negative statistic is already
+  refused by `normalize` or by the JSON Schema, so a payload-level fixture would test
+  those locks rather than the gate this ticket adds. What the gate uniquely catches is
+  a record that satisfies its schema and contradicts the row beside it — exactly what
+  a hand-edit to `data/curated/` or a future assembler regression produces.
+- `findInvariantViolations` returns every violation and `assertInvariants` throws
+  once with all of them, because stopping at the first would hide the rest of the
+  files' problems (criterion 5). Each message is prefixed with the record's file and
+  id, so the failure names the line to open.
+- The rules cover structure the schema cannot express (unique ids, two distinct
+  sides, exactly one winner), referential integrity across every file, arithmetic
+  (non-negative statistics, player sums against team totals, per-event counts), and
+  the coverage claims themselves: `complete` is checked against the era's eligible
+  fields, and `unavailable` against the absence of the values it denies.
+- `node tools/check.ts` enumerates each suite's `*.test.ts` files rather than passing
+  a glob. A glob that matches nothing exits successfully, which would make the one
+  command report a green run that tested nothing.
 
 ## Validation
 
