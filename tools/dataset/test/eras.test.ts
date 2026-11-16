@@ -83,13 +83,19 @@ test("coverage counts only the fields the era could hold", () => {
 		}),
 		"test",
 	);
+	const presence = (both: string[], any = both) => ({ both: new Set(both), any: new Set(any) });
 	const early = eraOn(eras, "team-stats", "2013-01-01");
-	assert.equal(coverageOf(early, new Set(["kills", "gold"])), "complete");
-	assert.equal(coverageOf(early, new Set(["kills", "gold", "voidGrubs"])), "complete", "an ineligible field is not counted either way");
-	assert.equal(coverageOf(early, new Set(["kills"])), "partial");
-	assert.equal(coverageOf(early, new Set<string>()), "unavailable");
+	assert.equal(coverageOf(early, presence(["kills", "gold"])), "complete");
+	assert.equal(coverageOf(early, presence(["kills", "gold", "voidGrubs"])), "complete", "an ineligible field is not counted either way");
+	assert.equal(coverageOf(early, presence(["kills"])), "partial");
+	assert.equal(coverageOf(early, presence([])), "unavailable");
+	// One side populated, the other blank: stated somewhere, so neither complete nor
+	// unavailable. Calling this `unavailable` would report a half-recorded game as empty.
+	assert.equal(coverageOf(early, presence([], ["kills", "gold"])), "partial");
+	assert.equal(coverageOf(early, presence(["kills"], ["kills", "gold"])), "partial");
 
 	const late = eraOn(eras, "team-stats", "2024-06-01");
-	assert.equal(coverageOf(late, new Set(["kills", "gold"])), "partial", "a field that could exist but is absent makes the group partial");
-	assert.equal(coverageOf(late, new Set(["kills", "gold", "voidGrubs"])), "complete");
+	assert.equal(coverageOf(late, presence(["kills", "gold"])), "partial", "a field that could exist but is absent makes the group partial");
+	assert.equal(coverageOf(late, presence(["kills", "gold", "voidGrubs"])), "complete");
+	assert.equal(coverageOf(late, presence(["kills", "gold"], ["kills", "gold", "voidGrubs"])), "partial", "both sides need it");
 });

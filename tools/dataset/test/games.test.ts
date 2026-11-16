@@ -278,6 +278,91 @@ test("a departed patch is an absent key, not an empty string", async () => {
 	}
 });
 
+test("a value the era table declares ineligible stops the build, naming the game", async () => {
+	// The era table is the dataset's authority for "could have been recorded", so a source
+	// row that contradicts it is not silently dropped: R10 wants the invariant in the build,
+	// not only in this suite, because a real crawl is validated by the build alone. Void
+	// grubs arrived in patch 14.1, so a 2015 game carrying them means either the game's date
+	// or the table is wrong.
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-era-"));
+	try {
+		const raw = path.join(dir, "raw");
+		await cp(FIXTURE_RAW, raw, { recursive: true });
+		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
+		for (const name of await readdir(tableDir)) {
+			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+			const file = path.join(tableDir, name);
+			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const target = rows.find((row) => String(row.DateTime_UTC ?? row["DateTime UTC"]).startsWith("2015-"));
+			if (target === undefined) continue;
+			target.Team1VoidGrubs = 2;
+			await writeFile(file, JSON.stringify(rows), "utf8");
+			break;
+		}
+		await assert.rejects(buildDataset({ rawDir: raw }), /states voidGrubs, which the era table declares ineligible in pre-herald/);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("a half-recorded game is partial, not unavailable", async () => {
+	// One side with every eligible field and the other with none is the case R6 calls out:
+	// "no game is silently half-empty". The marker must say `partial`, because `unavailable`
+	// would claim the source recorded nothing for a row that is half full.
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-half-"));
+	try {
+		const raw = path.join(dir, "raw");
+		await cp(FIXTURE_RAW, raw, { recursive: true });
+		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
+		let targetId = "";
+		for (const name of await readdir(tableDir)) {
+			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+			const file = path.join(tableDir, name);
+			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const target = rows.find((row) => String(row.DateTime_UTC ?? row["DateTime UTC"]).startsWith("2015-"));
+			if (target === undefined) continue;
+			targetId = String(target.GameId);
+			for (const key of Object.keys(target)) {
+				if (key.startsWith("Team2") && key !== "Team2" && key !== "Team2Players" && key !== "Team2Bans" && key !== "Team2Picks") {
+					target[key] = null;
+				}
+			}
+			await writeFile(file, JSON.stringify(rows), "utf8");
+			break;
+		}
+		const result = await buildDataset({ rawDir: raw });
+		const half = result.scoreboards.games.find((game) => game.source.gameId === targetId);
+		assert.ok(half !== undefined);
+		assert.equal(half.coverage.teamStats, "partial", "half a row is partial");
+		assert.ok(half.sides[0].kills !== undefined, "the populated side is still emitted");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("a Gamelength this stage cannot parse stops the build instead of vanishing", async () => {
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-length-"));
+	try {
+		const raw = path.join(dir, "raw");
+		await cp(FIXTURE_RAW, raw, { recursive: true });
+		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
+		for (const name of await readdir(tableDir)) {
+			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+			const file = path.join(tableDir, name);
+			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			if (rows.length === 0) continue;
+			// The source once answered float minutes here (`Gamelength_Number`); if its
+			// `mm:ss` column ever changed shape, every duration would go absent silently.
+			rows[0].Gamelength = "28.65";
+			await writeFile(file, JSON.stringify(rows), "utf8");
+			break;
+		}
+		await assert.rejects(buildDataset({ rawDir: raw }), /expected a Gamelength of mm:ss or h:mm:ss, got "28\.65"/);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
 test("the games are byte-identical across two builds", async () => {
 	const first = await build();
 	const second = await buildDataset({ rawDir: FIXTURE_RAW });

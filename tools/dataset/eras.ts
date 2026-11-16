@@ -37,6 +37,7 @@ export type Era = {
 };
 
 export type EraTable = {
+	/** Reserved for a migration: bump it when the meaning of an era changes, not the data. */
 	version: number;
 	groups: Record<EraGroup, Era[]>;
 };
@@ -134,13 +135,31 @@ export function eraOn(table: EraTable, group: EraGroup, date: string): Era {
 }
 
 /**
- * How covered one field group is, judged only against fields that could hold a
- * value in that era. `present` must name the fields the record actually carries.
+ * Which of an era's eligible fields a record actually carries.
+ *
+ * `both` is what a reader would call complete — the field is stated for each side —
+ * while `any` is what exists at all. Keeping the two apart is what stops a half-empty
+ * game from being reported as if the source had recorded nothing.
  */
-export function coverageOf(era: Era, present: ReadonlySet<string>): Coverage {
-	let hits = 0;
-	for (const field of era.eligible) if (present.has(field)) hits += 1;
-	if (hits === era.eligible.length) return "complete";
-	if (hits === 0) return "unavailable";
+export type FieldPresence = { both: ReadonlySet<string>; any: ReadonlySet<string> };
+
+/**
+ * How covered one field group is, judged only against fields that could hold a value
+ * in that era.
+ *
+ * `complete` needs both sides; `unavailable` needs the whole group empty on both sides.
+ * Everything in between is `partial`, including the asymmetrical case of one side
+ * populated and the other blank — that is the half-empty game R6 says must not be
+ * hidden, and calling it `unavailable` would be the lie the marker exists to prevent.
+ */
+export function coverageOf(era: Era, presence: FieldPresence): Coverage {
+	let both = 0;
+	let any = 0;
+	for (const field of era.eligible) {
+		if (presence.both.has(field)) both += 1;
+		if (presence.any.has(field)) any += 1;
+	}
+	if (both === era.eligible.length) return "complete";
+	if (any === 0) return "unavailable";
 	return "partial";
 }

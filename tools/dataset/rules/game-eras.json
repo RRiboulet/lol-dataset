@@ -1,5 +1,5 @@
 {
-	"$comment": "Spec R6/D4: coverage is judged against the fields that existed when the game was played, not against a single uniform field list. Otherwise a 2015 game is `partial` because void grubs were not invented yet, and a marker that fires on every row cannot catch the one row it exists for. An era is a contiguous window; a field that did not exist inside the window is ineligible and is excluded from the coverage computation. Eras are contiguous on purpose, so a field that was temporarily removed (the Chemtech Drake) is expressed by an era that omits it, with no extra mechanism. `cites` records where the boundary comes from: every date here was read off the League of Legends wiki's own patch page for the version named, not inferred from this dataset.",
+	"$comment": "Spec R6/D4: coverage is judged against the fields that existed when the game was played, not against a single uniform field list. Otherwise a 2015 game is `partial` because void grubs were not invented yet, and a marker that fires on every row cannot catch the one row it exists for. An era is a contiguous window; a field that did not exist inside the window is ineligible and is excluded from the coverage computation. Eras are contiguous on purpose, so a field that was temporarily removed (the Chemtech Drake) is expressed by an era that omits it, with no extra mechanism. `cites` records where the boundary comes from: six are wiki patch pages for the version named, and one is Riot's own announcement, because that withdrawal was a mid-patch disable rather than a patch. Nothing here is inferred from this dataset: a table derived from the corpus would make the one assertion worth making true by construction.",
 	"version": 1,
 	"groups": {
 		"team-stats": [
@@ -57,8 +57,8 @@
 			},
 			{
 				"id": "chemtech-withdrawn",
-				"from": "2022-01-19",
-				"cites": "V12.2, released 2022-01-19: the Chemtech Drake is withdrawn from the Rift, so a value for it cannot exist for games in this window.",
+				"from": "2022-01-25",
+				"cites": "Riot disabled the Chemtech Drake on 2022-01-25 ('Disabling the Chemtech Drake', leagueoflegends.com/en-us/news/game-updates/disabling-the-chemtech-drake/), two days after patch 12.2 shipped with it still live; the esports wiki records it as a 12.2 hotfix. Not a patch boundary, which is why no patch page carries it.",
 				"eligible": [
 					"kills",
 					"gold",

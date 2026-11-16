@@ -102,7 +102,7 @@
 				"matchId": {
 					"type": "string",
 					"minLength": 1,
-					"description": "MatchSchedule.MatchId — page-scoped, and the same string a game row carries."
+					"description": "MatchSchedule.MatchId. Like GameId it embeds its page (`2023 Season World Championship/Play-In_Round 1_4`), and it is the same string a game row carries, so a game and its series can be re-joined by hand."
 				}
 			}
 		}

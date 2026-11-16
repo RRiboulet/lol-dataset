@@ -73,7 +73,7 @@
 				"teamStats": {
 					"type": "string",
 					"enum": ["complete", "partial", "unavailable"],
-					"description": "`complete` when every field eligible in this game's era is stated for both sides; `partial` when some are; `unavailable` when none are. Ineligible fields are excluded, so 2015 stays `partial` for its missing inhibitors (a source gap) but is not blamed for void grubs (not invented yet)."
+					"description": "Judged only over the fields eligible in this game's era. `complete` needs every one of them stated for BOTH sides. `unavailable` needs the whole group empty on both sides. Everything else is `partial` — including one side populated and the other blank, which is the half-empty game that must not read as `unavailable`. Ineligible fields are excluded, so 2015 stays `partial` for its missing inhibitors (a source gap) but is not blamed for void grubs (not invented yet)."
 				}
 			}
 		},
@@ -147,7 +147,7 @@
 				"gameId": {
 					"type": "string",
 					"minLength": 1,
-					"description": "ScoreboardGames.GameId — page-scoped and 1:1 with a game (measured: 110 unique ids over 110 rows)."
+					"description": "ScoreboardGames.GameId. The source builds it from the page plus the series and game number (`2023 Season World Championship/Play-In_Round 1_1_1`), so it embeds its page and is unique as a bare string in the recorded corpus (measured: 110 unique ids over 110 rows, 19 over 19 in 2015)."
 				},
 				"matchId": {
 					"type": "string",

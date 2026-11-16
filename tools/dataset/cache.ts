@@ -293,6 +293,9 @@ async function queryOf(bodyFile: string): Promise<{ query?: CargoQuery }> {
 		if (query === null || typeof query !== "object") return {};
 		const candidate = query as CargoQuery;
 		if (typeof candidate.tables !== "string" || typeof candidate.fields !== "string") return {};
+		// `where` is read as text by the game report, so a sidecar holding a non-string there
+		// is dropped rather than handed on to fail later as `where.includes is not a function`.
+		if (candidate.where !== undefined && typeof candidate.where !== "string") return {};
 		return { query: candidate };
 	} catch {
 		return {};

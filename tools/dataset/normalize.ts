@@ -487,13 +487,17 @@ function asIsoDateTime(value: unknown): string {
  * The exact value is this string: `Gamelength_Number` is float *minutes* (measured
  * 28.65 for `28:39`), which cannot round-trip `:39` and is therefore not used.
  */
-function asDurationSeconds(value: unknown): number | null {
+function asDurationSeconds(value: unknown, where: string): number | null {
 	const text = asText(value);
 	if (text === "") return null;
 	const parts = text.split(":");
-	if (parts.length < 2 || parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) return null;
-	const seconds = parts.reduce((total, part) => total * 60 + Number(part), 0);
-	return seconds;
+	if (parts.length < 2 || parts.length > 3 || parts.some((part) => !/^\d+$/.test(part))) {
+		// Same rule as `optionalInteger`: a value that is present but not understood is a
+		// source change, and turning it into an absence would make every duration in a
+		// re-recorded corpus vanish quietly.
+		throw new Error(`${where}: expected a Gamelength of mm:ss or h:mm:ss, got ${JSON.stringify(text)}`);
+	}
+	return parts.reduce((total, part) => total * 60 + Number(part), 0);
 }
 
 /**
@@ -537,7 +541,7 @@ export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[
 				matchId,
 				winTeam: asText(raw(row, "WinTeam")),
 				winnerSide: asInteger(raw(row, "Winner")),
-				durationSeconds: asDurationSeconds(raw(row, "Gamelength")),
+				durationSeconds: asDurationSeconds(raw(row, "Gamelength"), `${payload.file}: ${gameId}: Gamelength`),
 				patch: asPatch(raw(row, "Patch")),
 				sides: [gameSide(row, "Team1", `${payload.file}: ${gameId}`), gameSide(row, "Team2", `${payload.file}: ${gameId}`)],
 				riotPlatformGameId: asText(raw(row, "RiotPlatformGameId")),

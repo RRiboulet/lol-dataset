@@ -59,6 +59,12 @@ and are recorded here rather than left in the diff:
 - **`ScoreboardGames` has no `Deaths` and no `Assists` column** for either side (69
   fields, measured with `cargofields`). R3's "deaths" can only be derived from the
   opponent's kills, and executions make that false, so it is not emitted at all.
+- **The match layer came with it.** The scope above names the game entity, but every
+  game row points at a series and spec D1 makes the match a level of the grain, so
+  `MatchSchedule` got a normalizer and `matches.jsonl` exists too: the series score is a
+  source fact that counting games cannot recover (a forfeit or a nullified series breaks
+  the arithmetic). The games carry a canonical `matchId` only when their series row was
+  recorded, so the reference never dangles.
 - **The `Patch` column is numerically lossy**: a 2014-07-20 row states `4.1` where the
   patch was 4.10, and `LegacyPatch` repeats it while `PatchSort` is null. The dataset
   therefore carries the digits the source sent, as text, and pads nothing.

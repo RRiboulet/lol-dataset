@@ -174,7 +174,12 @@ function gameSide(sideIndex: 0 | 1, side: SourceGame["sides"][number], identity:
 	return record;
 }
 
-function assembleGame(game: SourceGame, event: EventRecord, input: ScoreboardInput, matchIds: ReadonlySet<string>): GameRecord {
+function assembleGame(
+	game: SourceGame,
+	event: EventRecord,
+	input: ScoreboardInput,
+	matchEventIds: ReadonlyMap<string, string>,
+): GameRecord {
 	const where = `${game.sourceFile}: game ${JSON.stringify(game.gameId)}`;
 	const sides: [GameSideRecord, GameSideRecord] = [
 		gameSide(0, game.sides[0], input.identity, game.date, where),
@@ -203,23 +208,46 @@ function assembleGame(game: SourceGame, event: EventRecord, input: ScoreboardInp
 	}
 
 	const era = eraOn(input.eras, "team-stats", game.date);
-	const present = new Set<TeamStatField>();
+	// The era table is the dataset's authority for "could have been recorded", so a value
+	// it declares ineligible is a contradiction the build refuses — not something a test
+	// catches later over the fixtures while a real crawl (tickets 09/10) sails past it. R10
+	// asks for invariants that fail the build, not ones that are documented.
+	const eligible = new Set<string>(era.eligible);
+	const stated = new Set<string>();
+	const both = new Set<TeamStatField>();
 	for (const [field] of TEAM_STAT_FIELDS) {
-		if (sides.every((side) => side[field] !== undefined)) present.add(field);
+		const onSides = sides.filter((side) => side[field] !== undefined).length;
+		if (onSides > 0) stated.add(field);
+		if (onSides === sides.length) both.add(field);
+	}
+	for (const field of stated) {
+		if (!eligible.has(field)) {
+			throw new Error(
+				`${where}: the source states ${field}, which the era table declares ineligible in ${era.id} (${era.from}) — ` +
+					"either the game is dated wrong or rules/game-eras.json is, and silently dropping the value would hide which",
+			);
+		}
 	}
 
 	const matchId = surrogateId("mt", game.matchId);
+	const matchEvent = matchEventIds.get(game.matchId);
+	if (matchEvent !== undefined && matchEvent !== event.id) {
+		throw new Error(
+			`${where}: its series ${JSON.stringify(game.matchId)} belongs to another event (${matchEvent}, not ${event.id}) — ` +
+				"a game and its match cannot sit in different events",
+		);
+	}
 	return {
 		id: surrogateId("gm", game.gameId),
 		eventId: event.id,
 		eventName: event.name,
-		...(matchIds.has(game.matchId) ? { matchId } : {}),
+		...(matchEventIds.has(game.matchId) ? { matchId } : {}),
 		overviewPage: game.page,
 		dateTimeUtc: game.dateTimeUtc,
 		...(game.patch === null ? {} : { patch: game.patch }),
 		...(game.durationSeconds === null ? {} : { durationSeconds: game.durationSeconds }),
 		era: era.id,
-		coverage: { teamStats: coverageOf(era, present) },
+		coverage: { teamStats: coverageOf(era, { both, any: stated }) },
 		sides,
 		winnerTeamId: sides[winnerIndex].teamId,
 		winnerTeamName: sides[winnerIndex].teamName,
@@ -278,13 +306,23 @@ function assembleMatch(match: SourceMatch, event: EventRecord, input: Scoreboard
 function wasAsked(payload: CachedPayload, event: EventRecord): boolean {
 	if (payload.table !== "ScoreboardGames") return false;
 	const where = payload.query?.where;
-	if (where === undefined) return false;
-	return where.includes(event.overviewPage) || (event.name !== "" && where.includes(event.name));
+	if (typeof where !== "string" || where === "") return false;
+	// Two readings, because a recorded query names an event either as a page
+	// (`OverviewPage='2023 Mid-Season Invitational'`) or as a tournament label
+	// (`Tournament IN ('Worlds 2023',…)`), and the label is not always the event's
+	// display name. The literals catch the second shape exactly; the substring is the
+	// weaker net, so `missing` never contradicts a where clause that names the page.
+	const names = [event.overviewPage, event.name].filter((name) => name !== "");
+	if (!names.some((name) => where.includes(name))) {
+		const literals = [...where.matchAll(/'([^']*)'/g)].map((match) => match[1]);
+		if (!literals.some((literal) => names.includes(literal))) return false;
+	}
+	return true;
 }
 
 /** Games, matches, and the per-event report. Sorted, so a rebuild is byte-identical. */
 export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly {
-	const matchIds = new Set(input.matches.map((match) => match.matchId));
+	const matchEventIds = new Map<string, string>();
 	const games: GameRecord[] = [];
 	const matches: MatchRecord[] = [];
 	const ignoredGames: string[] = [];
@@ -304,6 +342,7 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 			continue;
 		}
 		matches.push(assembleMatch(match, event, input));
+		matchEventIds.set(match.matchId, event.id);
 		count(event.id, "matches");
 	}
 	for (const game of input.games) {
@@ -312,9 +351,9 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 			ignoredGames.push(game.page);
 			continue;
 		}
-		games.push(assembleGame(game, event, input, matchIds));
+		games.push(assembleGame(game, event, input, matchEventIds));
 		count(event.id, "games");
-		if (!matchIds.has(game.matchId)) gamesWithoutMatch.push(game.gameId);
+		if (!matchEventIds.has(game.matchId)) gamesWithoutMatch.push(game.gameId);
 	}
 
 	games.sort(byId);
@@ -322,8 +361,14 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 
 	const eventGames: EventGamesRecord[] = input.events.map((event) => {
 		const seen = perEvent.get(event.id) ?? { games: 0, matches: 0 };
+		// `recorded` means the corpus carries rows for this event, games or series: an event
+		// with match rows and no game rows is thin, not unfetched.
 		const state: EventGamesState =
-			seen.games > 0 ? "recorded" : input.payloads.some((payload) => wasAsked(payload, event)) ? "empty" : "missing";
+			seen.games > 0 || seen.matches > 0
+				? "recorded"
+				: input.payloads.some((payload) => wasAsked(payload, event))
+					? "empty"
+					: "missing";
 		return {
 			eventId: event.id,
 			eventName: event.name,
