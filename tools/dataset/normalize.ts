@@ -158,7 +158,6 @@ export type SourceSide = { team: string } & Record<TeamStatField, number | null>
  */
 export type SourceGame = {
 	page: string;
-	tournament: string;
 	/** UTC calendar date, `YYYY-MM-DD`. */
 	date: string;
 	/** UTC instant, `YYYY-MM-DDTHH:MM:SSZ`. */
@@ -178,10 +177,13 @@ export type SourceGame = {
 	sourceFile: string;
 };
 
-/** One `MatchSchedule` row: a series. `Team1`/`Team2` are sides here too. */
+/**
+ * One `MatchSchedule` row: a series. Unlike `ScoreboardGames`, its `Team1`/`Team2`
+ * are source column positions, not game sides — the two are unrelated across games of
+ * a side-swapped series, so no blue/red claim is made for a match.
+ */
 export type SourceMatch = {
 	page: string;
-	tournament: string;
 	matchId: string;
 	date: string;
 	dateTimeUtc: string;
@@ -534,7 +536,6 @@ export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[
 			const dateTimeUtc = asIsoDateTime(raw(row, "DateTime_UTC"));
 			rows.push({
 				page,
-				tournament: asText(raw(row, "Tournament")),
 				date: asDate(raw(row, "DateTime_UTC")),
 				dateTimeUtc,
 				gameId,
@@ -571,7 +572,6 @@ export function normalizeMatches(payloads: CachedPayload[]): SourceMatch[] {
 			const winner = asText(raw(row, "Winner"));
 			rows.push({
 				page,
-				tournament: asText(raw(row, "Tournament")),
 				matchId,
 				date: asDate(raw(row, "DateTime_UTC")),
 				dateTimeUtc: asIsoDateTime(raw(row, "DateTime_UTC")),

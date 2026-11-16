@@ -1,11 +1,20 @@
 // games: the game and match entities (spec R2/R3, ticket 03), plus the report that
 // says which selected events the corpus actually carries games for.
 //
-// Three decisions are measured rather than assumed, and each one is visible below:
+// Five decisions are measured rather than assumed, and each one is visible below:
 //
-//   - `Team1`/`Team2` are **sides**, not teams. On the recorded fixture a side-swapped
-//     series has the same team as `Team1` in games 1-2 and as `Team2` in game 3, so the
-//     side is blue/red by position while the team is a reference identity resolves.
+//   - `ScoreboardGames.Team1`/`Team2` are the game's **sides**. On the recorded fixture
+//     a side-swapped series has the same team as `Team1` in games 1-2 and as `Team2` in
+//     game 3, so blue/red is a position there while the team is a reference identity
+//     resolves.
+//   - `MatchSchedule.Team1`/`Team2` are **source positions, not sides**. They are the
+//     column order of one series row, and 52 of the 129 recorded game rows sit beside a
+//     series whose `Team1` is their `Team2` (11 series are the other way up in every
+//     game). A match therefore carries `sourceOrder` and claims no blue/red side; only a
+//     game does.
+//   - A game's teams must be its series' teams as a set. The match id alone is too weak:
+//     a retargeted game keeps a valid same-event match while landing in a series between
+//     two other teams, and a side swap means the order cannot be compared.
 //   - `Winner` (an integer) and `WinTeam` (a string) are cross-checks, not alternative
 //     sources of truth: the comparison is on **canonical IDs**, so an old spelling of a
 //     renamed team still agrees with the side it names, while a genuine contradiction
@@ -55,7 +64,11 @@ export type GameRecord = {
 };
 
 export type MatchSideRecord = {
-	side: "blue" | "red";
+	/**
+	 * The source's own column: `Team1` is 1 and `Team2` is 2. This is a position on the
+	 * `MatchSchedule` row, **not** a game side — the games of a series line up either way.
+	 */
+	sourceOrder: 1 | 2;
 	teamId: string;
 	teamName: string;
 	sourceTeam: string;
@@ -86,7 +99,8 @@ export type MatchRecord = {
  *
  * `empty` is the state that only exists because the source is trustworthy in a
  * specific way: a query for an event can come back with zero rows (measured on World
- * Cyber Games 2013), and that is not the same claim as "nobody fetched this event".
+ * Cyber Games 2013, and a `ScoreboardPlayers` query did the same for IPL 5), and that
+ * is not the same claim as "nobody fetched this event".
  */
 export type EventGamesState = "recorded" | "empty" | "missing";
 
@@ -174,11 +188,14 @@ function gameSide(sideIndex: 0 | 1, side: SourceGame["sides"][number], identity:
 	return record;
 }
 
+/** What a game needs to know about its series: which event it sits in, and its two teams. */
+type MatchSeries = { eventId: string; teamIds: [string, string] };
+
 function assembleGame(
 	game: SourceGame,
 	event: EventRecord,
 	input: ScoreboardInput,
-	matchEventIds: ReadonlyMap<string, string>,
+	seriesById: ReadonlyMap<string, MatchSeries>,
 ): GameRecord {
 	const where = `${game.sourceFile}: game ${JSON.stringify(game.gameId)}`;
 	const sides: [GameSideRecord, GameSideRecord] = [
@@ -230,18 +247,32 @@ function assembleGame(
 	}
 
 	const matchId = surrogateId("mt", game.matchId);
-	const matchEvent = matchEventIds.get(game.matchId);
-	if (matchEvent !== undefined && matchEvent !== event.id) {
+	const series = seriesById.get(game.matchId);
+	if (series !== undefined && series.eventId !== event.id) {
 		throw new Error(
-			`${where}: its series ${JSON.stringify(game.matchId)} belongs to another event (${matchEvent}, not ${event.id}) — ` +
+			`${where}: its series ${JSON.stringify(game.matchId)} belongs to another event (${series.eventId}, not ${event.id}) — ` +
 				"a game and its match cannot sit in different events",
 		);
+	}
+	// The id check above is not enough on its own: a game retargeted to another series of
+	// the same event keeps a valid match while landing between two other teams. The compare
+	// is on the set, because a side swap is legitimate — 11 recorded series have every game
+	// with `Team1` and `Team2` the other way up.
+	if (series !== undefined) {
+		const gameTeams = [sides[0].teamId, sides[1].teamId].sort();
+		const seriesTeams = [...series.teamIds].sort();
+		if (gameTeams[0] !== seriesTeams[0] || gameTeams[1] !== seriesTeams[1]) {
+			throw new Error(
+				`${where}: its teams (${sides.map((side) => `${side.teamId} ${side.teamName}`).join(" vs ")}) are not the teams of its series ` +
+					`${JSON.stringify(game.matchId)} (${series.teamIds.join(" vs ")}) — a game cannot sit in a series between two other teams`,
+			);
+		}
 	}
 	return {
 		id: surrogateId("gm", game.gameId),
 		eventId: event.id,
 		eventName: event.name,
-		...(matchEventIds.has(game.matchId) ? { matchId } : {}),
+		...(series === undefined ? {} : { matchId }),
 		overviewPage: game.page,
 		dateTimeUtc: game.dateTimeUtc,
 		...(game.patch === null ? {} : { patch: game.patch }),
@@ -266,7 +297,7 @@ function assembleMatch(match: SourceMatch, event: EventRecord, input: Scoreboard
 		const team = resolveTeam(input.identity, match.sides[sideIndex], match.date, `${where}: ${sideIndex === 0 ? "Team1" : "Team2"}`);
 		const score = match.seriesScore[sideIndex];
 		return {
-			side: sideIndex === 0 ? "blue" : "red",
+			sourceOrder: (sideIndex + 1) as 1 | 2,
 			teamId: team.id,
 			teamName: team.name,
 			sourceTeam: match.sides[sideIndex],
@@ -299,30 +330,55 @@ function assembleMatch(match: SourceMatch, event: EventRecord, input: Scoreboard
 }
 
 /**
- * Did a recorded query address this event? The sidecar's `where` names the page or the
- * source tournament, and either is enough: a query that asked for the event and came
- * back with no rows is a different fact from a query nobody made.
+ * Did a recorded query address this event's games?
+ *
+ * Only tables that can carry games or series answer this: a `Tournaments` row names an
+ * event without saying anything about whether it has games. The measure is the
+ * *literals* a Cargo `where` clause supplies for a page/name column — `OverviewPage='…'`,
+ * `Tournament IN ('…','…')` — so a `LIKE '%event%'` pattern is not mistaken for a query
+ * for the event, and a literal has to equal the event's page, a stage page under it, or
+ * its display name rather than merely contain it.
  */
+const GAME_TABLES: ReadonlySet<string> = new Set(["ScoreboardGames", "ScoreboardPlayers", "MatchSchedule"]);
+
+/** The Cargo columns a game-bearing table names an event by, lower-case: Cargo columns are not case-sensitive. */
+const EVENT_COLUMNS: ReadonlySet<string> = new Set(["overviewpage", "tournament"]);
+
+/**
+ * The string literals a Cargo `where` clause supplies for the named columns.
+ *
+ * Read structurally rather than by substring: `Column='text'` and `Column IN ('a','b')`
+ * are the two shapes the recorded queries use, `LIKE '%text%'` names no literal, and
+ * Cargo escapes a quote inside a literal by doubling it (`'Cho''Gath'`).
+ */
+function whereLiterals(where: string, columns: ReadonlySet<string>): string[] {
+	const found: string[] = [];
+	const clause = /\b([A-Za-z_][A-Za-z0-9_]*)\s*(?:=\s*|IN\s*)('(?:[^']|'')*'|\([^)]*\))/gi;
+	for (const match of where.matchAll(clause)) {
+		if (!columns.has(match[1].toLowerCase())) continue;
+		for (const literal of match[2].matchAll(/'((?:[^']|'')*)'/g)) found.push(literal[1].replace(/''/g, "'"));
+	}
+	return found;
+}
+
+/** Does a query literal name this event: its page, a stage page under it, or its name? */
+function namesEvent(literal: string, event: EventRecord): boolean {
+	if (literal === event.overviewPage || literal === event.name) return true;
+	// The source splits an event across stage pages (`…/Play-In`, `…/Main Event`), the same
+	// boundary `eventForPage` uses, so asking for a stage page is asking for the event.
+	return literal.startsWith(`${event.overviewPage}/`);
+}
+
 function wasAsked(payload: CachedPayload, event: EventRecord): boolean {
-	if (payload.table !== "ScoreboardGames") return false;
+	if (!GAME_TABLES.has(payload.table)) return false;
 	const where = payload.query?.where;
 	if (typeof where !== "string" || where === "") return false;
-	// Two readings, because a recorded query names an event either as a page
-	// (`OverviewPage='2023 Mid-Season Invitational'`) or as a tournament label
-	// (`Tournament IN ('Worlds 2023',…)`), and the label is not always the event's
-	// display name. The literals catch the second shape exactly; the substring is the
-	// weaker net, so `missing` never contradicts a where clause that names the page.
-	const names = [event.overviewPage, event.name].filter((name) => name !== "");
-	if (!names.some((name) => where.includes(name))) {
-		const literals = [...where.matchAll(/'([^']*)'/g)].map((match) => match[1]);
-		if (!literals.some((literal) => names.includes(literal))) return false;
-	}
-	return true;
+	return whereLiterals(where, EVENT_COLUMNS).some((literal) => namesEvent(literal, event));
 }
 
 /** Games, matches, and the per-event report. Sorted, so a rebuild is byte-identical. */
 export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly {
-	const matchEventIds = new Map<string, string>();
+	const seriesById = new Map<string, MatchSeries>();
 	const games: GameRecord[] = [];
 	const matches: MatchRecord[] = [];
 	const ignoredGames: string[] = [];
@@ -341,8 +397,9 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 			ignoredMatches.push(match.page);
 			continue;
 		}
-		matches.push(assembleMatch(match, event, input));
-		matchEventIds.set(match.matchId, event.id);
+		const record = assembleMatch(match, event, input);
+		matches.push(record);
+		seriesById.set(match.matchId, { eventId: event.id, teamIds: [record.sides[0].teamId, record.sides[1].teamId] });
 		count(event.id, "matches");
 	}
 	for (const game of input.games) {
@@ -351,9 +408,9 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 			ignoredGames.push(game.page);
 			continue;
 		}
-		games.push(assembleGame(game, event, input, matchEventIds));
+		games.push(assembleGame(game, event, input, seriesById));
 		count(event.id, "games");
-		if (!matchEventIds.has(game.matchId)) gamesWithoutMatch.push(game.gameId);
+		if (!seriesById.has(game.matchId)) gamesWithoutMatch.push(game.gameId);
 	}
 
 	games.sort(byId);
@@ -362,7 +419,8 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	const eventGames: EventGamesRecord[] = input.events.map((event) => {
 		const seen = perEvent.get(event.id) ?? { games: 0, matches: 0 };
 		// `recorded` means the corpus carries rows for this event, games or series: an event
-		// with match rows and no game rows is thin, not unfetched.
+		// with match rows and no game rows is thin, not unfetched. The wording of the schema
+		// and of `event-games.jsonl` says the same thing, so a reader can rely on it.
 		const state: EventGamesState =
 			seen.games > 0 || seen.matches > 0
 				? "recorded"

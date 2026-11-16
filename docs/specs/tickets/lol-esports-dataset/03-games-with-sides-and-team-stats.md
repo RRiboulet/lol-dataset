@@ -69,7 +69,9 @@ and are recorded here rather than left in the diff:
   patch was 4.10, and `LegacyPatch` repeats it while `PatchSort` is null. The dataset
   therefore carries the digits the source sent, as text, and pads nothing.
 
-Two decisions the source forced, both recorded where they are implemented: `Team1`/
-`Team2` are **sides** (a side-swapped series puts a team on both), and coverage is
-judged against `tools/dataset/rules/game-eras.json` so a 2015 game is not called
-`partial` for want of a void grub that did not exist until patch 14.1.
+Two decisions the source forced, both recorded where they are implemented:
+`ScoreboardGames.Team1`/`Team2` are **sides** (a side-swapped series puts a team on
+both), while `MatchSchedule.Team1`/`Team2` are only source column positions — a
+match carries `sourceOrder`, never a fabricated blue/red side. Coverage is judged
+against `tools/dataset/rules/game-eras.json` so a 2015 game is not called `partial`
+for want of a void grub that did not exist until patch 14.1.

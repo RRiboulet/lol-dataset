@@ -2,7 +2,7 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "urn:lol-dataset:schema:event-games:1",
 	"title": "Per-event game coverage report",
-	"description": "One row of data/curated/event-games.jsonl for every selected event, saying whether the corpus carries rows for it. It keeps 'the source has no games for this event' from looking like 'nobody fetched this event': `recorded` means rows are present (games or series), `empty` means no rows are present while a recorded ScoreboardGames query named this event and the source returned none, and `missing` means no recorded query named it. `missing` is a claim about the recorded queries, not about the outside world: a payload whose query names the event in a shape this report cannot read would read as `missing`, so the query text is the evidence to check by hand. `games` and `matches` are counts of emitted rows, so a reader can reconcile them against the files.",
+	"description": "One row of data/curated/event-games.jsonl for every selected event, saying whether the corpus carries rows for it. It keeps 'the source has no games for this event' from looking like 'nobody fetched this event': `recorded` means the corpus emits at least one row for this event, a game or a series; `empty` means no rows are emitted while a recorded query to a game-bearing table (`ScoreboardGames`, `ScoreboardPlayers`, `MatchSchedule`) named this event and the source returned none; and `missing` means no recorded query named it. `empty` is a claim about the recorded queries, not about the outside world: the query text is the evidence to check by hand. `games` and `matches` are counts of emitted rows, so a reader can reconcile them against the files.",
 	"type": "object",
 	"additionalProperties": false,
 	"required": ["eventId", "eventName", "overviewPage", "state", "games", "matches"],
@@ -22,7 +22,7 @@
 		"state": {
 			"type": "string",
 			"enum": ["recorded", "empty", "missing"],
-			"description": "`recorded`: at least one game is emitted for this event. `empty`: a recorded ScoreboardGames query named this event (its page or its source tournament) and returned no rows — measured on World Cyber Games 2013. `missing`: no recorded query addressed this event."
+			"description": "`recorded`: the corpus emits at least one row for this event, a game or a series. `empty`: a recorded query to a game-bearing table (`ScoreboardGames`, `ScoreboardPlayers`, `MatchSchedule`) named this event — its page, a stage page under it, or its display name, as an exact Cargo string literal rather than a substring or a `LIKE` pattern — and the source returned no rows; measured on World Cyber Games 2013 (`Tournament='World Cyber Games 2013'`) and IPL 5 (`ScoreboardPlayers`, `OverviewPage='IGN ProLeague Season 5'`). `missing`: no recorded query addressed this event's games."
 		},
 		"games": {
 			"type": "integer",

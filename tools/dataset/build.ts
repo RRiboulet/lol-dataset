@@ -20,13 +20,13 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 
-import type { AssembledDataset, EventRecord, SelectionRecord } from "./assemble.ts";
+import type { AssembledDataset } from "./assemble.ts";
 import { assembleDataset } from "./assemble.ts";
 import { readPayloads } from "./cache.ts";
 import { toJsonl } from "./emit.ts";
 import type { EraTable } from "./eras.ts";
 import { DEFAULT_ERA_FILE, loadEraTable } from "./eras.ts";
-import type { EventGamesRecord, GameRecord, MatchRecord, ScoreboardAssembly } from "./games.ts";
+import type { ScoreboardAssembly } from "./games.ts";
 import { assembleScoreboards } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
@@ -85,7 +85,6 @@ const REPO_ROOT = path.resolve(TOOL_DIR, "..", "..");
 
 export const DEFAULT_RULE_FILE = path.join(TOOL_DIR, "rules", "event-selection.json");
 export const DEFAULT_SCHEMA_DIR = path.join(REPO_ROOT, "data", "curated", "schema");
-export { DEFAULT_ERA_FILE };
 
 type Schema = Record<string, unknown>;
 
@@ -161,6 +160,3 @@ export async function writeDataset(result: Pick<BuildResult, "files">, outDir: s
 		await writeFile(path.join(outDir, file), body, "utf8");
 	}
 }
-
-/** Export the record types so callers and tests can name them. */
-export type { EventRecord, EventGamesRecord, GameRecord, MatchRecord, SelectionRecord };

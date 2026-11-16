@@ -21,6 +21,8 @@
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";
 
+import { TEAM_STAT_FIELDS } from "./normalize.ts";
+
 /** The field groups a record can declare coverage for. Only `team-stats` is filled today. */
 export const ERA_GROUPS = ["team-stats", "player-stats", "draft"] as const;
 export type EraGroup = (typeof ERA_GROUPS)[number];
@@ -46,12 +48,28 @@ export const DEFAULT_ERA_FILE = path.join(import.meta.dirname, "rules", "game-er
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+/**
+ * The names an era may declare for a group, derived from the emitter rather than
+ * retyped here.
+ *
+ * Only `team-stats` has one today. A name outside this list is not a style problem:
+ * the era still parses and `coverageOf` then asks about a field no record can carry,
+ * so every game in that era reports `partial` and the build exits 0 — the failure mode
+ * is silence, which is why the check belongs at load. `player-stats` and `draft` have no
+ * emitter yet, so their eras are not judged against this list.
+ */
+const CANONICAL_FIELDS: Partial<Record<EraGroup, ReadonlySet<string>>> = {
+	"team-stats": new Set(TEAM_STAT_FIELDS.map(([field]) => field)),
+};
+
 export type Coverage = "complete" | "partial" | "unavailable";
 
 /**
  * Parse and validate the committed table. Validation is strict on purpose: a table
  * that silently lost an era, or listed a date out of order, would mislabel every
- * record after the mistake and nothing else would notice.
+ * record after the mistake and nothing else would notice. The same holds for a field
+ * name: `eligible` is checked against the canonical names for the group, because a
+ * typo there turns the era's coverage to `partial` without failing anything.
  */
 export function parseEraTable(parsed: unknown, where: string): EraTable {
 	if (parsed === null || typeof parsed !== "object") throw new Error(`${where}: expected an object`);
@@ -66,6 +84,7 @@ export function parseEraTable(parsed: unknown, where: string): EraTable {
 		if (value === undefined) throw new Error(`${where}: group ${JSON.stringify(group)} is missing — declare it even when empty`);
 		if (!Array.isArray(value)) throw new Error(`${where}: group ${JSON.stringify(group)} must be an array`);
 		const eras: Era[] = [];
+		const canonical = CANONICAL_FIELDS[group];
 		for (const [index, entry] of value.entries()) {
 			const at = `${where}: ${group}[${index}]`;
 			if (entry === null || typeof entry !== "object") throw new Error(`${at}: expected an object`);
@@ -83,6 +102,12 @@ export function parseEraTable(parsed: unknown, where: string): EraTable {
 			for (const field of era.eligible) {
 				if (typeof field !== "string" || field.trim() === "") throw new Error(`${at}: \`eligible\` holds a non-string field name`);
 				if (eligible.includes(field)) throw new Error(`${at}: field ${JSON.stringify(field)} is listed twice`);
+				if (canonical !== undefined && !canonical.has(field)) {
+					throw new Error(
+						`${at}: era ${JSON.stringify(id)} lists eligible field ${JSON.stringify(field)}, which is not a ${group} field — ` +
+							`the canonical names are TEAM_STAT_FIELDS in tools/dataset/normalize.ts, and coverage would mark every game in this era \`partial\``,
+					);
+				}
 				eligible.push(field);
 			}
 			const previous = eras[eras.length - 1];
@@ -90,6 +115,19 @@ export function parseEraTable(parsed: unknown, where: string): EraTable {
 				throw new Error(`${at}: eras must be in ascending date order and never share a date (${previous.from} then ${era.from})`);
 			}
 			eras.push({ id, from: era.from, cites: era.cites.trim(), eligible });
+		}
+		// The last era is the window the present is judged against, so a canonical field
+		// missing from it makes every game from that boundary on `partial` — the same silent
+		// failure a typo causes, reached by omission (or by adding a field to
+		// `TEAM_STAT_FIELDS` without declaring when it became eligible).
+		const last = eras[eras.length - 1];
+		if (last !== undefined && canonical !== undefined) {
+			const missing = [...canonical].filter((field) => !last.eligible.includes(field));
+			if (missing.length > 0) {
+				throw new Error(
+					`${where}: ${group}[${eras.length - 1}]: era ${JSON.stringify(last.id)} must list every canonical field; missing ${missing.join(", ")} — a field absent from the final era would make every game from ${last.from} \`partial\``,
+				);
+			}
 		}
 		groups[group] = eras;
 	}

@@ -2,7 +2,7 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "urn:lol-dataset:schema:match:1",
 	"title": "Curated match (series)",
-	"description": "One row of data/curated/matches.jsonl: a best-of series, the middle level of the event -> match -> game grain (spec D1). A match exists because the series score is a source fact that counting games cannot recover — a forfeited or nullified series breaks that arithmetic — so the score lives here and never on a game. `sides` is always exactly two entries, blue from the source's Team1 and red from its Team2. `isNullified` is always present; `forfeit` appears only when the source states one. The source's `Phase` and `Round` columns are null on every recorded match (measured, 65 of 65), so the round label is the source's `Tab`.",
+	"description": "One row of data/curated/matches.jsonl: a best-of series, the middle level of the event -> match -> game grain (spec D1). A match exists because the series score is a source fact that counting games cannot recover — a forfeited or nullified series breaks that arithmetic — so the score lives here and never on a game. `sides` is always exactly two entries in the source's own column order: `sourceOrder` 1 is `MatchSchedule.Team1` and 2 is `Team2`. That is a position on the series row, **not** a game side: the recorded corpus has 52 game rows beside a series whose `Team1` is their `Team2`, so a match claims no blue/red side and only a game does. `isNullified` is always present; `forfeit` appears only when the source states one. The source's `Phase` and `Round` columns are null on every recorded match (measured, 65 of 65), so the round label is the source's `Tab`.",
 	"type": "object",
 	"additionalProperties": false,
 	"required": ["id", "eventId", "eventName", "overviewPage", "dateTimeUtc", "isNullified", "sides", "source"],
@@ -59,11 +59,12 @@
 			"items": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["side", "teamId", "teamName", "sourceTeam"],
+				"required": ["sourceOrder", "teamId", "teamName", "sourceTeam"],
 				"properties": {
-					"side": {
-						"type": "string",
-						"enum": ["blue", "red"]
+					"sourceOrder": {
+						"type": "integer",
+						"enum": [1, 2],
+						"description": "The source's column: 1 for `MatchSchedule.Team1`, 2 for `Team2`. A position on the series row, not a game side — never read it as blue/red."
 					},
 					"teamId": {
 						"type": "string",

@@ -36,8 +36,8 @@
 			},
 			{
 				"id": "hextech-chemtech",
-				"from": "2021-11-18",
-				"cites": "V11.23, released 2021-11-18 (wiki.leagueoflegends.com/en-us/V11.23): the Hextech and Chemtech Drakes join the elemental set.",
+				"from": "2021-11-17",
+				"cites": "V11.23 went live on 2021-11-17 (wiki.leagueoflegends.com/en-us/V11.23; Riot's patch notes are dated 2021-11-16 and the wiki's Season 2022 page dates the preseason start to 2021-11-17): the Hextech and Chemtech Drakes join the elemental set.",
 				"eligible": [
 					"kills",
 					"gold",
@@ -58,7 +58,7 @@
 			{
 				"id": "chemtech-withdrawn",
 				"from": "2022-01-25",
-				"cites": "Riot disabled the Chemtech Drake on 2022-01-25 ('Disabling the Chemtech Drake', leagueoflegends.com/en-us/news/game-updates/disabling-the-chemtech-drake/), two days after patch 12.2 shipped with it still live; the esports wiki records it as a 12.2 hotfix. Not a patch boundary, which is why no patch page carries it.",
+				"cites": "Riot announced the disable on 2022-01-24 and it took effect on 2022-01-25 ('Disabling the Chemtech Drake', leagueoflegends.com/en-us/news/game-updates/disabling-the-chemtech-drake/); patch 12.2 had shipped on 2022-01-20, so this was a mid-patch disable rather than a patch boundary, which is why no patch page carries it.",
 				"eligible": [
 					"kills",
 					"gold",

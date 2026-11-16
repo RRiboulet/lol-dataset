@@ -37,9 +37,12 @@
 // ScoreboardPlayers row and a Tournaments row both carry `OverviewPage`, so shape
 // sniffing would quietly feed one stage's rows to another's).
 //
-// The sidecar is provenance, not input: the build reads bodies, so a fixture and a
-// live payload are byte-compatible and the build cannot depend on when a payload
-// was fetched (spec R8 — no wall-clock in the data).
+// The sidecar is provenance, and the build's *data* output never depends on it: the
+// normalizers read bodies, so a fixture and a live payload are byte-compatible and the
+// emitted rows cannot depend on when a payload was fetched (spec R8 — no wall-clock in
+// the data). One report does read the recorded query text — the game report has to tell
+// "the source answered zero games" from "nobody asked" — so the sidecar is optional,
+// never hashed into the output, and never a second thing that has to exist.
 
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
@@ -222,7 +225,11 @@ export async function readPayload(root: string, query: CargoQuery): Promise<Cach
 	return { body, meta };
 }
 
-/** A recorded payload as the build sees it: the body is the input, never the sidecar. */
+/**
+ * A recorded payload as the build sees it: the body is the input. The sidecar is
+ * optional and read for reporting only — the game report's `wasAsked` needs the recorded
+ * query text, and nothing else here does — so a fixture with no sidecar still builds.
+ */
 export type CachedPayload = {
 	/** Path relative to the cache root, for error messages that name a file. */
 	file: string;

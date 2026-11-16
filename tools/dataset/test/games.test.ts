@@ -39,6 +39,33 @@ function gamesUnder(result: BuildResult, page: string): GameRecord[] {
 	return result.scoreboards.games.filter((game) => game.overviewPage.startsWith(page));
 }
 
+/**
+ * Build from a scratch copy of the recorded fixtures after `edit` changes one payload.
+ *
+ * The suite mutates recorded payloads rather than inventing rows: the row still carries
+ * everything the source said, and only the field under test differs.
+ */
+async function buildAfterEdit(edit: (raw: string) => Promise<void>): Promise<BuildResult> {
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-edit-"));
+	try {
+		const raw = path.join(dir, "raw");
+		await cp(FIXTURE_RAW, raw, { recursive: true });
+		await edit(raw);
+		return await buildDataset({ rawDir: raw });
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+}
+
+/** Every body file of one table in a scratch fixture tree, sidecars excluded. */
+async function payloadBodies(raw: string, table: string): Promise<string[]> {
+	const dir = path.join(raw, "lol-fandom", "cargoexport", table);
+	return (await readdir(dir))
+		.filter((name) => name.endsWith(".json") && !name.endsWith(".meta.json"))
+		.sort()
+		.map((name) => path.join(dir, name));
+}
+
 test("a recorded event yields exactly the games the source states, once each", async () => {
 	const result = await build();
 	const { games } = result.scoreboards;
@@ -189,6 +216,22 @@ test("matches: every series the source states, with the score the games cannot r
 		assert.equal(match.isNullified, false, `measured: no nullified series in the fixtures`);
 		assert.ok(!("forfeit" in match), "measured: no forfeit in the fixtures, so the key is absent rather than false");
 	}
+	// A match row is the source's column order, not a game side: `Team1`/`Team2` here are
+	// positions on one `MatchSchedule` row, and the games of a series may line up either
+	// way. Claiming `blue` on a match would be a fabricated fact (52 of the 129 recorded
+	// game rows sit beside a series whose `Team1` is their `Team2`); a match must therefore
+	// say only which column each team came from. Games keep their blue/red side above.
+	for (const match of matches) {
+		assert.deepEqual(
+			match.sides.map((side) => side.sourceOrder),
+			[1, 2],
+			`${match.source.matchId}: Team1 is source order 1 and Team2 is 2`,
+		);
+		for (const side of match.sides) {
+			assert.ok(!("side" in side), `${match.source.matchId}: a match side claims no blue/red side`);
+			assert.ok(!("side" in match), `${match.source.matchId}: nor does the match itself`);
+		}
+	}
 	// The series score is a match fact, and the fixtures carry the case that proves it:
 	// a five-game series ends 3-2, which is the source's number on the match row, not a
 	// count of anything on the game rows.
@@ -209,9 +252,20 @@ test("the per-event report separates 'no games in the source' from 'nobody asked
 	assert.equal(state.get(WORLDS)?.state, "recorded");
 	assert.equal(state.get(IEM)?.state, "recorded");
 	// Recorded query, zero rows — the fixture that keeps this state from collapsing into
-	// "missing", which would be a lie about what was fetched.
+	// "missing", which would be a lie about what was fetched. The query is a
+	// `ScoreboardGames` one here (`Tournament='World Cyber Games 2013'`), which is why
+	// `empty` is the same claim as "the source answered zero games".
 	assert.equal(state.get("2013 World Cyber Games")?.state, "empty");
 	assert.equal(state.get("2013 World Cyber Games")?.games, 0);
+	// A recorded `ScoreboardPlayers` query — a game-bearing table — names IPL 5's page
+	// exactly (`OverviewPage='IGN ProLeague Season 5'`), so the source was asked about this
+	// event and returned no game rows. Reading only `ScoreboardGames` used to call that
+	// `missing`, which was wrong: `missing` is a claim about the queries, not the table.
+	assert.equal(state.get("IGN ProLeague Season 5")?.state, "empty");
+	assert.equal(state.get("IGN ProLeague Season 5")?.games, 0);
+	// `missing` still means no game-bearing query named the event. A `Tournaments` query
+	// does name MSI 2023's page (`OverviewPage IN (…,'2023 Mid-Season Invitational',…)`),
+	// but that table carries no games, so it says nothing about whether games exist.
 	assert.equal(state.get("2023 Mid-Season Invitational")?.state, "missing");
 	// Counts reconcile with the emitted files.
 	const total = report.reduce((sum, row) => sum + row.games, 0);
@@ -219,6 +273,45 @@ test("the per-event report separates 'no games in the source' from 'nobody asked
 	assert.equal(
 		report.reduce((sum, row) => sum + row.matches, 0),
 		result.scoreboards.matches.length,
+	);
+});
+
+test("an event name that only appears inside a LIKE pattern is not a query for that event", async () => {
+	// The report must read the query structurally: `LIKE '%MSI 2023%'` names a shape, not
+	// the event, and substring matching used to turn it into `empty`. The body is untouched,
+	// so every other fact about the corpus is unchanged.
+	const result = await buildAfterEdit(async (raw) => {
+		const [body] = await payloadBodies(raw, "ScoreboardGames");
+		const metaFile = body.replace(/\.json$/, ".meta.json");
+		const meta = JSON.parse(await readFile(metaFile, "utf8")) as { query: Record<string, unknown> };
+		meta.query.where = "Tournament LIKE '%MSI 2023%'";
+		await writeFile(metaFile, JSON.stringify(meta), "utf8");
+	});
+	const state = new Map(result.scoreboards.eventGames.map((row) => [row.overviewPage, row.state]));
+	assert.equal(state.get("2023 Mid-Season Invitational"), "missing", "a LIKE pattern is not a literal that names the event");
+});
+
+test("a game whose teams are not its series' teams stops the build, naming both", async () => {
+	// A game belongs to a series between the same two teams. Retargeting one game to
+	// another series of the same event passes every id check — the match exists and its
+	// event is the same — so only the team set catches it. Side swaps are legitimate, which
+	// is why the comparison is a set: 11 recorded series have every game the other way up.
+	const SOURCE = "2023 Season World Championship/Play-In_Round 1_1";
+	const TARGET = "2023 Season World Championship/Play-In_Round 1_4";
+	const retargeted = buildAfterEdit(async (raw) => {
+		for (const file of await payloadBodies(raw, "ScoreboardGames")) {
+			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const row = rows.find((candidate) => candidate.MatchId === SOURCE);
+			if (row === undefined) continue;
+			row.MatchId = TARGET;
+			await writeFile(file, JSON.stringify(rows), "utf8");
+			return;
+		}
+		throw new Error(`the fixtures carry no game for ${SOURCE}`);
+	});
+	await assert.rejects(
+		retargeted,
+		/game "2023 Season World Championship\/Play-In_Round 1_1_\d": its teams .* are not the teams of its series "2023 Season World Championship\/Play-In_Round 1_4"/,
 	);
 });
 
@@ -249,6 +342,41 @@ test("a game for an event the rule does not select is ignored, not emitted", asy
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
+});
+
+test("a side-swapped series still resolves both of its teams", async () => {
+	// The measured case, and the reason a match carries no `side`: Play-In_Round 1_1 lists
+	// Movistar R7 as the source's `Team1`, while both of its games have PSG Talon in the
+	// `Team1` column. The series is still between those two teams, and the winner still
+	// resolves — what must not travel is a blue/red claim about the match row.
+	const result = await build();
+	const matchId = "2023 Season World Championship/Play-In_Round 1_1";
+	const match = result.scoreboards.matches.find((candidate) => candidate.source.matchId === matchId);
+	assert.ok(match !== undefined, `the fixtures carry ${matchId}`);
+	const games = result.scoreboards.games.filter((game) => game.matchId === match?.id);
+	assert.equal(games.length, 2, "the series has two recorded games");
+	for (const game of games) {
+		assert.deepEqual(
+			game.sides.map((side) => side.side),
+			["blue", "red"],
+			`${game.source.gameId}: a game keeps its own blue/red side`,
+		);
+		assert.equal(game.sides[0].teamName, "PSG Talon", `${game.source.gameId}: Team1 is the game's blue side`);
+	}
+	assert.deepEqual(
+		match.sides.map((side) => [side.sourceOrder, side.teamName]),
+		[
+			[1, "Movistar R7"],
+			[2, "PSG Talon"],
+		],
+		"the match states its columns, not the games' sides",
+	);
+	assert.deepEqual(
+		[...new Set(match.sides.map((side) => side.teamId))].sort(),
+		[...new Set(games.flatMap((game) => game.sides.map((side) => side.teamId)))].sort(),
+		"the series is between exactly the teams its games are",
+	);
+	assert.equal(match.winnerTeamName, "PSG Talon", "the winner still resolves across the swap");
 });
 
 test("a departed patch is an absent key, not an empty string", async () => {
