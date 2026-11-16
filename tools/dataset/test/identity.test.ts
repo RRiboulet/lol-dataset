@@ -379,13 +379,14 @@ test("every identity file satisfies its checked-in schema, and an empty file is 
 		for (const record of records) assert.deepEqual(validateAgainst(guard, record, name), []);
 	}
 	// A corpus with no unresolved references emits an empty file, not a stub row. The
-	// game payloads are removed for this case on purpose: their team strings have no
-	// registry page in the fixtures, so they would mint entities and leave the report
-	// non-empty for a reason that has nothing to do with the case being made here.
+	// game and draft payloads are removed for this case on purpose: their team and
+	// champion strings have no registry pages in the fixtures, so they would mint
+	// entities and leave the report non-empty for a reason unrelated to the case here.
 	const dir = await fixtureCopy();
 	try {
 		await rm(path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames"), { recursive: true, force: true });
 		await rm(path.join(dir, "lol-fandom", "cargoexport", "MatchSchedule"), { recursive: true, force: true });
+		await rm(path.join(dir, "lol-fandom", "cargoexport", "PicksAndBansS7"), { recursive: true, force: true });
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
 		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
@@ -538,12 +539,12 @@ test("a declared alias that points at nothing stops the build, and one without a
 test("a payload in a table with no normalizer stops the build instead of being skipped", async () => {
 	const dir = await fixtureCopy();
 	try {
-		// A real Cargo table, and one ticket 05 will give a normalizer: until then a payload
-		// for it is a table this stage does not understand, and guessing would be worse.
-		const stray = path.join(dir, "lol-fandom", "cargoexport", "PicksAndBansS7", "stray.json");
+		// A table no ticket reads: a payload for it is a table this stage does not
+		// understand, and guessing would be worse. PicksAndBansS7 has a normalizer now.
+		const stray = path.join(dir, "lol-fandom", "cargoexport", "NoSuchTable", "stray.json");
 		await mkdir(path.dirname(stray), { recursive: true });
 		await writeFile(stray, JSON.stringify([{ OverviewPage: "anything" }]), "utf8");
-		await assert.rejects(buildDataset({ rawDir: dir }), /table "PicksAndBansS7" has no normalizer/);
+		await assert.rejects(buildDataset({ rawDir: dir }), /table "NoSuchTable" has no normalizer/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

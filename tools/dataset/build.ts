@@ -127,6 +127,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	const scoreboards = assembleScoreboards({
 		games: sources.games,
 		matches: sources.matches,
+		drafts: sources.drafts,
 		events: assembled.events,
 		identity: identity.index,
 		eras,

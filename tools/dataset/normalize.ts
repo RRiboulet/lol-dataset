@@ -148,6 +148,26 @@ export type TeamStatField = (typeof TEAM_STAT_FIELDS)[number][0];
 /** One side of one game, as the source states it. `null` means the source recorded no value. */
 export type SourceSide = { team: string } & Record<TeamStatField, number | null>;
 
+/** A champion in one numbered draft slot, as the source states it. */
+export type DraftSlot = { slot: number; champion: string };
+
+/** One side of an ordered draft: each slot keeps its source number (R5). */
+export type SourceDraftSide = { picks: DraftSlot[]; bans: DraftSlot[] };
+
+/**
+ * One `PicksAndBansS7` row: the ordered draft of a 2017+ game.
+ *
+ * `SwitchedSides` is the source's own flag, kept as 0/1 or null when absent.
+ * Unmatched rows are possible (a crawl can cover events the rule rejects); they are
+ * left unused rather than silently attached to another game.
+ */
+export type SourceDraft = {
+	gameId: string;
+	switchedSides: 0 | 1 | null;
+	sides: [SourceDraftSide, SourceDraftSide];
+	sourceFile: string;
+};
+
 /**
  * One `ScoreboardGames` row: the game itself and its two sides.
  *
@@ -173,6 +193,9 @@ export type SourceGame = {
 	/** Patch as the source states it, as text: the column is numeric, so `4.10` arrives as `4.1`. */
 	patch: string | null;
 	sides: [SourceSide, SourceSide];
+	/** List-typed `Team*Picks`/`Team*Bans`: sets, not draft order (R5). */
+	picks: [string[], string[]];
+	bans: [string[], string[]];
 	riotPlatformGameId: string;
 	sourceFile: string;
 };
@@ -213,6 +236,8 @@ export type SourceDataset = {
 	/** Games and matches (ticket 03). Empty when the corpus carries no scoreboard payload. */
 	games: SourceGame[];
 	matches: SourceMatch[];
+	/** Ordered drafts (ticket 05). Empty before 2017 payloads are recorded. */
+	drafts: SourceDraft[];
 };
 
 /** Cargo returns list-typed fields as arrays; everything else as strings. */
@@ -220,6 +245,12 @@ function asText(value: unknown): string {
 	if (value === undefined || value === null) return "";
 	if (Array.isArray(value)) return value.map((item) => asText(item)).filter((item) => item !== "").join(", ");
 	return String(value).trim();
+}
+
+/** A Cargo list field: each element kept verbatim, with empty entries dropped. */
+function asList(value: unknown): string[] {
+	if (!Array.isArray(value)) return asText(value) === "" ? [] : [asText(value)];
+	return value.map((item) => asText(item)).filter((item) => item !== "");
 }
 
 /** `2023-10-10 07:00:00` -> `2023-10-10`; anything unparseable stays empty. */
@@ -545,6 +576,8 @@ export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[
 				durationSeconds: asDurationSeconds(raw(row, "Gamelength"), `${payload.file}: ${gameId}: Gamelength`),
 				patch: asPatch(raw(row, "Patch")),
 				sides: [gameSide(row, "Team1", `${payload.file}: ${gameId}`), gameSide(row, "Team2", `${payload.file}: ${gameId}`)],
+				picks: [asList(raw(row, "Team1Picks")), asList(raw(row, "Team2Picks"))],
+				bans: [asList(raw(row, "Team1Bans")), asList(raw(row, "Team2Bans"))],
 				riotPlatformGameId: asText(raw(row, "RiotPlatformGameId")),
 				sourceFile: payload.file,
 			});
@@ -599,6 +632,47 @@ export function normalizeMatches(payloads: CachedPayload[]): SourceMatch[] {
 	);
 }
 
+const DRAFT_SLOTS = 5;
+
+/**
+ * `PicksAndBansS7` rows: the ordered draft (R5). Slots are read as numbered fields,
+ * so their order is a source fact rather than an inference from list position.
+ */
+export function normalizePicksAndBans(payloads: CachedPayload[]): SourceDraft[] {
+	const rows: SourceDraft[] = [];
+	const side = (row: Record<string, unknown>, prefix: "Team1" | "Team2"): SourceDraftSide => {
+		const slots = (kind: "Pick" | "Ban"): DraftSlot[] => {
+			const found: DraftSlot[] = [];
+			for (let slot = 1; slot <= DRAFT_SLOTS; slot += 1) {
+				const champion = asText(raw(row, `${prefix}${kind}${slot}`));
+				if (champion !== "") found.push({ slot, champion });
+			}
+			return found;
+		};
+		return { picks: slots("Pick"), bans: slots("Ban") };
+	};
+	for (const payload of payloads) {
+		for (const row of parse(payload)) {
+			const gameId = asText(raw(row, "GameId"));
+			if (gameId === "") throw new Error(`${payload.file}: an ordered draft row without a GameId cannot be attached to a game`);
+			const switched = asText(raw(row, "SwitchedSides"));
+			rows.push({
+				gameId,
+				switchedSides: switched === "1" ? 1 : switched === "0" ? 0 : null,
+				sides: [side(row, "Team1"), side(row, "Team2")],
+				sourceFile: payload.file,
+			});
+		}
+	}
+	return dedupe(
+		rows,
+		(row) => row.gameId,
+		same,
+		"ordered draft",
+		(seen, row, id) => `${id}: ${seen.sourceFile} and ${row.sourceFile} disagree about the same ordered draft — one payload is stale`,
+	);
+}
+
 /** Which normalizer reads which Cargo table. The cache layout names the table. */
 const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	Tournaments: normalizeTournaments,
@@ -609,6 +683,7 @@ const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	ScoreboardPlayers: normalizeScoreboard,
 	ScoreboardGames: normalizeScoreboardGames,
 	MatchSchedule: normalizeMatches,
+	PicksAndBansS7: normalizePicksAndBans,
 };
 
 /** The tables this pipeline can read, for error messages and tests. */
@@ -646,5 +721,6 @@ export function normalizeSources(payloads: CachedPayload[]): SourceDataset {
 		scoreboard: normalizeScoreboard(group("ScoreboardPlayers")),
 		games: normalizeScoreboardGames(group("ScoreboardGames")),
 		matches: normalizeMatches(group("MatchSchedule")),
+		drafts: normalizePicksAndBans(group("PicksAndBansS7")),
 	};
 }

@@ -5,14 +5,15 @@ from the first tournament through the one being played right now (2026). It is
 the first step of a larger project, so the shape of the data matters more than
 speed: expect schema decisions to outlive the scrapers that fill them.
 
-**Current state: the event, identity and game layers, on top of the scaffold.** The
+**Current state: the event, identity, game and draft layers, on top of the scaffold.** The
 devcontainer, pi extensions, skills and templates are in place, and the project's
 own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
 holds what the build emits today — the selected events with the report of every
-rejection, the team, player, champion and alias identity tables, and the games and
-matches of the two events whose payloads have been recorded, with a per-event
-report of which events the corpus carries games for. Those two events are the only
+rejection, the team, player, champion and alias identity tables, the games and
+matches of the two events whose payloads have been recorded — each game now carrying
+its champion draft with the source's fidelity — and a per-event report of which events
+the corpus carries games for. Those two events are the only
 ones with games: tickets 09 and 10 are the crawl that fills the rest. There is no
 `README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
 a schema, a scraper or a README as a side effect of an unrelated task; those are

@@ -544,12 +544,26 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 	// the alias table where one answers, minted (and reported) where none does. Ticket
 	// 10's crawl fetches those Teams pages and the report shrinks on its own.
 	//
-	// Deliberately not observed here: the champion picks and bans a game carries. They
-	// are ticket 05's draft data, and observing them now would mint a champion entity per
-	// pick from a corpus whose champion registry is not the one being crawled.
+	// Draft champions are observations too (ticket 05): the recorded champion registry
+	// covers only part of the vocabulary, so a pick the registry does not name still has
+	// to resolve to one canonical entity before it goes on a game row. The unresolved
+	// report says which strings a future registry payload should answer.
+	const gameDates = new Map(sources.games.map((game) => [game.gameId, game.date]));
 	for (const game of sources.games) {
 		for (const side of game.sides) observe("team", side.team, game.date);
 		observe("team", game.winTeam, game.date);
+		for (const index of [0, 1] as const) {
+			for (const champion of [...game.picks[index], ...game.bans[index]]) observe("champion", champion, game.date);
+		}
+	}
+	for (const draft of sources.drafts) {
+		// A crawl can carry drafts for events the rule rejects. They are not references
+		// in this dataset, so they must not mint entities or unresolved rows.
+		const date = gameDates.get(draft.gameId);
+		if (date === undefined) continue;
+		for (const side of draft.sides) {
+			for (const slot of [...side.picks, ...side.bans]) observe("champion", slot.champion, date);
+		}
 	}
 	for (const match of sources.matches) {
 		observe("team", match.sides[0], match.date);

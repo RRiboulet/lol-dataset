@@ -2,7 +2,7 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"$id": "urn:lol-dataset:schema:game:1",
 	"title": "Curated game",
-	"description": "One row of data/curated/games.jsonl: a single game from a selected event, with its two sides and the team statistics the source records (spec R2, R3). The grain is one game. `sides` is always exactly two entries and `winnerTeamId` is always one of them. A statistic the source did not record is an ABSENT KEY, never 0 and never null — a real 0 (a team that took no dragons) is stated as 0. There is no `deaths` field: the source's ScoreboardGames table has no Deaths column for either side (measured with `cargofields`), so a deaths figure could only be derived from the opponent's kills, and executions make that arithmetically false. `coverage.teamStats` is judged against the era table in tools/dataset/rules/game-eras.json, so a field that did not exist when the game was played (void grubs in 2015, elemental drakes in 2013) neither counts as absent nor marks the game partial. Contains no build timestamp (spec R8).",
+	"description": "One row of data/curated/games.jsonl: a single game from a selected event, with its two sides and the team statistics the source records (spec R2, R3). The grain is one game. `sides` is always exactly two entries and `winnerTeamId` is always one of them. A statistic the source did not record is an ABSENT KEY, never 0 and never null — a real 0 (a team that took no dragons) is stated as 0. There is no `deaths` field: the source's ScoreboardGames table has no Deaths column for either side (measured with `cargofields`), so a deaths figure could only be derived from the opponent's kills, and executions make that arithmetically false. `coverage.teamStats` is judged against the era table in tools/dataset/rules/game-eras.json, so a field that did not exist when the game was played (void grubs in 2015, elemental drakes in 2013) neither counts as absent nor marks the game partial. Contains no build timestamp (spec R8). `draft`, when present, carries picks and bans with the source's fidelity: numbered slots when `PicksAndBansS7` recorded them, sorted sets otherwise; `coverage.draft` says `unavailable` when the corpus states no draft at all.",
 	"type": "object",
 	"additionalProperties": false,
 	"required": [
@@ -67,13 +67,76 @@
 		"coverage": {
 			"type": "object",
 			"additionalProperties": false,
-			"required": ["teamStats"],
+			"required": ["teamStats", "draft"],
 			"description": "Per-field-group presence, machine-readable (spec R6).",
 			"properties": {
 				"teamStats": {
 					"type": "string",
 					"enum": ["complete", "partial", "unavailable"],
 					"description": "Judged only over the fields eligible in this game's era. `complete` needs every one of them stated for BOTH sides. `unavailable` needs the whole group empty on both sides. Everything else is `partial` — including one side populated and the other blank, which is the half-empty game that must not read as `unavailable`. Ineligible fields are excluded, so 2015 stays `partial` for its missing inhibitors (a source gap) but is not blamed for void grubs (not invented yet)."
+				},
+				"draft": {
+					"type": "string",
+					"enum": ["complete", "partial", "unavailable"],
+					"description": "`complete` needs five picks and five bans on both sides, in numbered slots when fidelity is ordered. `partial` means some draft data was stated; `unavailable` means the corpus stated no draft, and no `draft` object is emitted. Absence is never written as five empty lists."
+				}
+			}
+		},
+		"draft": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["fidelity", "sides"],
+			"description": "The champion draft of this game (spec R5). Picks and bans are canonical champion references beside the source string. `fidelity` is a fact about the source, never inferred from list position or role order.",
+			"properties": {
+				"fidelity": {
+					"type": "string",
+					"enum": ["ordered", "unordered"],
+					"description": "`ordered` entries carry a `slot` number from PicksAndBansS7; `unordered` entries are a set sorted by champion id, with no slot key."
+				},
+				"switchedSides": {
+					"type": "boolean",
+					"description": "The source's SwitchedSides flag, present only on ordered drafts where the source recorded one."
+				},
+				"sides": {
+					"type": "array",
+					"minItems": 2,
+					"maxItems": 2,
+					"items": {
+						"type": "object",
+						"additionalProperties": false,
+						"required": ["side", "picks", "bans"],
+						"properties": {
+							"side": { "type": "string", "enum": ["blue", "red"] },
+							"picks": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"additionalProperties": false,
+									"required": ["championId", "championName", "sourceChampion"],
+									"properties": {
+										"slot": { "type": "integer", "minimum": 1, "maximum": 5 },
+										"championId": { "type": "string", "pattern": "^ch-[0-9a-f]{12}$" },
+										"championName": { "type": "string", "minLength": 1 },
+										"sourceChampion": { "type": "string", "minLength": 1 }
+									}
+								}
+							},
+							"bans": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"additionalProperties": false,
+									"required": ["championId", "championName", "sourceChampion"],
+									"properties": {
+										"slot": { "type": "integer", "minimum": 1, "maximum": 5 },
+										"championId": { "type": "string", "pattern": "^ch-[0-9a-f]{12}$" },
+										"championName": { "type": "string", "minLength": 1 },
+										"sourceChampion": { "type": "string", "minLength": 1 }
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		},
