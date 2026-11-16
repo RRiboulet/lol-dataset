@@ -27,7 +27,7 @@ import { toJsonl } from "./emit.ts";
 import type { EraTable } from "./eras.ts";
 import { DEFAULT_ERA_FILE, loadEraTable } from "./eras.ts";
 import type { ScoreboardAssembly } from "./games.ts";
-import { assembleScoreboards } from "./games.ts";
+import { assembleScoreboards, selectedGameIds } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
 import { normalizeSources } from "./normalize.ts";
@@ -122,11 +122,15 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	const sources = normalizeSources(payloads);
 	const assembled = assembleDataset(rule, sources.tournaments);
 	// Identity first: games and matches reference teams, and their team strings are
-	// observations identity has to see before the join can resolve them.
-	const identity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE));
+	// observations identity has to see before the join can resolve them. Draft champion
+	// observations are limited to games the selection rule admitted.
+	const identity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE), {
+		draftGameIds: selectedGameIds(sources.games, assembled.events),
+	});
 	const scoreboards = assembleScoreboards({
 		games: sources.games,
 		matches: sources.matches,
+		drafts: sources.drafts,
 		events: assembled.events,
 		identity: identity.index,
 		eras,

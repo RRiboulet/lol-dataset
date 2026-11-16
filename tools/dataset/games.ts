@@ -32,7 +32,7 @@ import type { Coverage, EraTable } from "./eras.ts";
 import { coverageOf, eraOn } from "./eras.ts";
 import type { IdentityIndex, Resolution } from "./identity.ts";
 import { AmbiguousIdentity, surrogateId } from "./identity.ts";
-import type { SourceGame, SourceMatch, TeamStatField } from "./normalize.ts";
+import type { SourceDraft, SourceGame, SourceMatch, TeamStatField } from "./normalize.ts";
 import { TEAM_STAT_FIELDS } from "./normalize.ts";
 
 /** One side of a game. Stats are present only where the source stated a value. */
@@ -43,6 +43,29 @@ export type GameSideRecord = {
 	/** The team string the source used, verbatim (spec R7). */
 	sourceTeam: string;
 } & Partial<Record<TeamStatField, number>>;
+
+/** One champion in a draft, with the source string kept beside the canonical entity. */
+export type DraftEntry = {
+	/** Source slot number, present only in ordered drafts (R5). */
+	slot?: number;
+	championId: string;
+	championName: string;
+	sourceChampion: string;
+};
+
+export type DraftSideRecord = {
+	side: "blue" | "red";
+	picks: DraftEntry[];
+	bans: DraftEntry[];
+};
+
+export type DraftRecord = {
+	/** `ordered` preserves source slots; `unordered` is a set and never implies order. */
+	fidelity: "ordered" | "unordered";
+	/** The source's side-switch flag, only where an ordered row states one. */
+	switchedSides?: boolean;
+	sides: [DraftSideRecord, DraftSideRecord];
+};
 
 export type GameRecord = {
 	id: string;
@@ -56,7 +79,9 @@ export type GameRecord = {
 	durationSeconds?: number;
 	/** The era whose field set judged this game's coverage. */
 	era: string;
-	coverage: { teamStats: Coverage };
+	coverage: { teamStats: Coverage; draft: Coverage };
+	/** Absent when the corpus states no draft at all; coverage.draft says `unavailable`. */
+	draft?: DraftRecord;
 	sides: [GameSideRecord, GameSideRecord];
 	winnerTeamId: string;
 	winnerTeamName: string;
@@ -127,6 +152,7 @@ export type ScoreboardAssembly = {
 export type ScoreboardInput = {
 	games: SourceGame[];
 	matches: SourceMatch[];
+	drafts: SourceDraft[];
 	events: EventRecord[];
 	identity: IdentityIndex;
 	eras: EraTable;
@@ -191,6 +217,75 @@ function gameSide(sideIndex: 0 | 1, side: SourceGame["sides"][number], identity:
 /** What a game needs to know about its series: which event it sits in, and its two teams. */
 type MatchSeries = { eventId: string; teamIds: [string, string] };
 
+/**
+ * The draft of one game, with fidelity taken from the source rather than inferred.
+ *
+ * A `PicksAndBansS7` row carries numbered slots and is emitted as `ordered`; only the
+ * list fields of `ScoreboardGames` are `unordered`, and those are sorted by canonical id
+ * so their list position never becomes an invented draft order (R5, R8).
+ */
+function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string): { draft?: DraftRecord; coverage: Coverage } {
+	const resolveChampion = (source: string): DraftEntry => {
+		const found = input.identity.resolve("champion", source, game.date);
+		if (found === null) throw new Error(`${where}: draft champion ${JSON.stringify(source)} resolves to no entity`);
+		return { championId: found.id, championName: found.name, sourceChampion: source };
+	};
+	// A champion occurs at most once across both sides' picks and bans: one entity
+	// cannot be drafted twice in the same game, whichever column it arrived in.
+	const checkDuplicates = (entries: DraftEntry[]): void => {
+		const ids = new Set(entries.map((entry) => entry.championId));
+		if (ids.size !== entries.length) throw new Error(`${where}: the same champion appears twice in this game's draft — picks and bans on both sides must be distinct`);
+	};
+	const cover = (sides: [DraftSideRecord, DraftSideRecord], ordered: boolean): Coverage => {
+		const complete = sides.every((side) =>
+			["picks", "bans"].every((group) => {
+				const entries = side[group as "picks" | "bans"];
+				return entries.length === 5 && (!ordered || entries.every((entry, index) => entry.slot === index + 1));
+			}),
+		);
+		if (complete) return "complete";
+		return sides.some((side) => side.picks.length > 0 || side.bans.length > 0) ? "partial" : "unavailable";
+	};
+
+	const ordered = input.drafts.find((draft) => draft.gameId === game.gameId);
+	if (ordered !== undefined) {
+		if (game.date < "2017-01-01") {
+			throw new Error(`${where}: an ordered draft is joined to a ${game.date} game, before the ordered-draft era`);
+		}
+		const sides: [DraftSideRecord, DraftSideRecord] = ordered.sides.map((side, index) => {
+			const toEntries = (slots: typeof side.picks): DraftEntry[] =>
+				slots.map((slot) => ({ ...resolveChampion(slot.champion), slot: slot.slot }));
+			const picks = toEntries(side.picks);
+			const bans = toEntries(side.bans);
+			return { side: index === 0 ? "blue" : "red", picks, bans };
+		}) as [DraftSideRecord, DraftSideRecord];
+		const coverage = cover(sides, true);
+		checkDuplicates(sides.flatMap((side) => [...side.picks, ...side.bans]));
+		// An ordered row that states nothing is not evidence that the game had no draft:
+		// the list fields may still carry it. Fall through to them rather than emitting a
+		// false `unavailable` (R6).
+		if (coverage === "unavailable") {
+			// fall through to the unordered source below
+		} else return {
+			draft: {
+				fidelity: "ordered",
+				...(ordered.switchedSides === null ? {} : { switchedSides: ordered.switchedSides === 1 }),
+				sides,
+			},
+			coverage,
+		};
+	}
+
+	const sides: [DraftSideRecord, DraftSideRecord] = [0, 1].map((index) => {
+		const picks = game.picks[index].map(resolveChampion).sort((a, b) => (a.championId < b.championId ? -1 : a.championId > b.championId ? 1 : 0));
+		const bans = game.bans[index].map(resolveChampion).sort((a, b) => (a.championId < b.championId ? -1 : a.championId > b.championId ? 1 : 0));
+		return { side: index === 0 ? "blue" : "red", picks, bans };
+	}) as [DraftSideRecord, DraftSideRecord];
+	const coverage = cover(sides, false);
+	checkDuplicates(sides.flatMap((side) => [...side.picks, ...side.bans]));
+	return coverage === "unavailable" ? { coverage } : { draft: { fidelity: "unordered", sides }, coverage };
+}
+
 function assembleGame(
 	game: SourceGame,
 	event: EventRecord,
@@ -246,6 +341,8 @@ function assembleGame(
 		}
 	}
 
+	const draft = assembleDraft(game, input, where);
+
 	const matchId = surrogateId("mt", game.matchId);
 	const series = seriesById.get(game.matchId);
 	if (series !== undefined && series.eventId !== event.id) {
@@ -278,7 +375,8 @@ function assembleGame(
 		...(game.patch === null ? {} : { patch: game.patch }),
 		...(game.durationSeconds === null ? {} : { durationSeconds: game.durationSeconds }),
 		era: era.id,
-		coverage: { teamStats: coverageOf(era, { both, any: stated }) },
+		coverage: { teamStats: coverageOf(era, { both, any: stated }), draft: draft.coverage },
+		...(draft.draft === undefined ? {} : { draft: draft.draft }),
 		sides,
 		winnerTeamId: sides[winnerIndex].teamId,
 		winnerTeamName: sides[winnerIndex].teamName,
@@ -374,6 +472,15 @@ function wasAsked(payload: CachedPayload, event: EventRecord): boolean {
 	const where = payload.query?.where;
 	if (typeof where !== "string" || where === "") return false;
 	return whereLiterals(where, EVENT_COLUMNS).some((literal) => namesEvent(literal, event));
+}
+
+/** Game ids whose page belongs to a selected event, for identity's draft observations. */
+export function selectedGameIds(games: SourceGame[], events: EventRecord[]): Set<string> {
+	const ids = new Set<string>();
+	for (const game of games) {
+		if (eventForPage(game.page, events) !== undefined) ids.add(game.gameId);
+	}
+	return ids;
 }
 
 /** Games, matches, and the per-event report. Sorted, so a rebuild is byte-identical. */
