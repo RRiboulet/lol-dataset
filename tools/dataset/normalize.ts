@@ -226,6 +226,36 @@ export type SourceMatch = {
 };
 
 /** Everything the stages below the cache hand to `assemble` / `identity`. */
+/** One `ScoreboardPlayers` row with statistics (ticket 04), not just an identity observation. */
+export type SourcePlayerGame = {
+	gameId: string;
+	date: string;
+	/** The player page: the identity, while `playerName` is the handle then displayed. */
+	playerLink: string;
+	playerName: string;
+	team: string;
+	champion: string;
+	/** The source's `Side`, 1 or 2; null when it did not state one. */
+	side: 1 | 2 | null;
+	/** The played position, preferring `IngameRole` over the source's `Role` label. */
+	role: string;
+	kills: number | null;
+	deaths: number | null;
+	assists: number | null;
+	cs: number | null;
+	gold: number | null;
+	damage: number | null;
+	vision: number | null;
+	items: string[];
+	trinket: string | null;
+	summonerSpells: string[];
+	keystone: string | null;
+	primaryTree: string | null;
+	secondaryTree: string | null;
+	runes: string[];
+	sourceFile: string;
+};
+
 export type SourceDataset = {
 	tournaments: SourceEvent[];
 	teams: SourceTeam[];
@@ -238,6 +268,8 @@ export type SourceDataset = {
 	matches: SourceMatch[];
 	/** Ordered drafts (ticket 05). Empty before 2017 payloads are recorded. */
 	drafts: SourceDraft[];
+	/** Per-player statistics for recorded games (ticket 04). */
+	playerGames: SourcePlayerGame[];
 };
 
 /** Cargo returns list-typed fields as arrays; everything else as strings. */
@@ -657,6 +689,72 @@ function checkDraftSlots(row: Record<string, unknown>, where: string): void {
 	}
 }
 
+/** A comma-separated Cargo string is a list, not a free-text blob. */
+function asNameList(value: unknown): string[] {
+	if (Array.isArray(value)) return asList(value);
+	return asText(value)
+		.split(",")
+		.map((item) => item.trim())
+		.filter((item) => item !== "");
+}
+
+/**
+ * `ScoreboardPlayers` rows that carry statistics. The earlier identity-only fixture
+ * queries name some of the same players, so a row with none of the stat keys is an
+ * identity observation, not a second statement about the same player-game.
+ */
+const PLAYER_STAT_KEYS = [
+	"Kills", "Deaths", "Assists", "CS", "Gold", "DamageToChampions", "VisionScore",
+	"Items", "Trinket", "SummonerSpells", "KeystoneRune", "Runes", "Role", "IngameRole", "Side",
+] as const;
+
+export function normalizePlayerGames(payloads: CachedPayload[]): SourcePlayerGame[] {
+	const rows: SourcePlayerGame[] = [];
+	for (const payload of payloads) {
+		for (const row of parse(payload)) {
+			if (!PLAYER_STAT_KEYS.some((key) => key in row)) continue;
+			const gameId = asText(raw(row, "GameId"));
+			const playerLink = asText(raw(row, "Link"));
+			if (gameId === "" || playerLink === "") {
+				throw new Error(`${payload.file}: a player-game row needs GameId and Link (got ${JSON.stringify({ gameId, playerLink })})`);
+			}
+			const side = asInteger(raw(row, "Side"));
+			rows.push({
+				gameId,
+				date: asDate(raw(row, "DateTime_UTC")),
+				playerLink,
+				playerName: asText(raw(row, "Name")),
+				team: asText(raw(row, "Team")),
+				champion: asText(raw(row, "Champion")),
+				side: side === 1 || side === 2 ? side : null,
+				role: asText(raw(row, "IngameRole")) || asText(raw(row, "Role")),
+				kills: optionalInteger(raw(row, "Kills"), `${payload.file}: ${gameId}: ${playerLink}: Kills`),
+				deaths: optionalInteger(raw(row, "Deaths"), `${payload.file}: ${gameId}: ${playerLink}: Deaths`),
+				assists: optionalInteger(raw(row, "Assists"), `${payload.file}: ${gameId}: ${playerLink}: Assists`),
+				cs: optionalInteger(raw(row, "CS"), `${payload.file}: ${gameId}: ${playerLink}: CS`),
+				gold: optionalInteger(raw(row, "Gold"), `${payload.file}: ${gameId}: ${playerLink}: Gold`),
+				damage: optionalInteger(raw(row, "DamageToChampions"), `${payload.file}: ${gameId}: ${playerLink}: DamageToChampions`),
+				vision: optionalInteger(raw(row, "VisionScore"), `${payload.file}: ${gameId}: ${playerLink}: VisionScore`),
+				items: asList(raw(row, "Items")),
+				trinket: asText(raw(row, "Trinket")) || null,
+				summonerSpells: asList(raw(row, "SummonerSpells")),
+				keystone: asText(raw(row, "KeystoneRune")) || null,
+				primaryTree: asText(raw(row, "PrimaryTree")) || null,
+				secondaryTree: asText(raw(row, "SecondaryTree")) || null,
+				runes: asNameList(raw(row, "Runes")),
+				sourceFile: payload.file,
+			});
+		}
+	}
+	return dedupe(
+		rows,
+		(row) => `${row.gameId}\u0000${row.playerLink}`,
+		sameIgnoringSource,
+		"player-game",
+		(seen, row) => `${row.gameId}: player ${row.playerLink} appears twice in this game (${seen.sourceFile} and ${row.sourceFile}) — a duplicate row would double the player's contribution`,
+	);
+}
+
 /**
  * `PicksAndBansS7` rows: the ordered draft (R5). Slots are read as numbered fields,
  * so their order is a source fact rather than an inference from list position.
@@ -749,5 +847,6 @@ export function normalizeSources(payloads: CachedPayload[]): SourceDataset {
 		games: normalizeScoreboardGames(group("ScoreboardGames")),
 		matches: normalizeMatches(group("MatchSchedule")),
 		drafts: normalizePicksAndBans(group("PicksAndBansS7")),
+		playerGames: normalizePlayerGames(group("ScoreboardPlayers")),
 	};
 }

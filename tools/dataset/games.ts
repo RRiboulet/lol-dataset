@@ -79,7 +79,7 @@ export type GameRecord = {
 	durationSeconds?: number;
 	/** The era whose field set judged this game's coverage. */
 	era: string;
-	coverage: { teamStats: Coverage; draft: Coverage };
+	coverage: { teamStats: Coverage; draft: Coverage; playerStats: Coverage };
 	/** Absent when the corpus states no draft at all; coverage.draft says `unavailable`. */
 	draft?: DraftRecord;
 	sides: [GameSideRecord, GameSideRecord];
@@ -375,7 +375,7 @@ function assembleGame(
 		...(game.patch === null ? {} : { patch: game.patch }),
 		...(game.durationSeconds === null ? {} : { durationSeconds: game.durationSeconds }),
 		era: era.id,
-		coverage: { teamStats: coverageOf(era, { both, any: stated }), draft: draft.coverage },
+		coverage: { teamStats: coverageOf(era, { both, any: stated }), draft: draft.coverage, playerStats: "unavailable" },
 		...(draft.draft === undefined ? {} : { draft: draft.draft }),
 		sides,
 		winnerTeamId: sides[winnerIndex].teamId,

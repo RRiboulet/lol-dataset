@@ -281,7 +281,7 @@ function add<T>(map: Map<string, Set<T>>, key: string, value: T): void {
 export function assembleIdentity(
 	sources: SourceDataset,
 	declaredAliases: DeclaredAlias[] = [],
-	options: { draftGameIds?: ReadonlySet<string> } = {},
+	options: { selectedGameIds?: ReadonlySet<string> } = {},
 ): AssembledIdentity {
 	const key2 = (kind: EntityKind, string: string): string => `${kind}\u0000${string}`;
 	const key3 = (kind: EntityKind, string: string, id: string): string => `${kind}\u0000${string}\u0000${id}`;
@@ -556,7 +556,7 @@ export function assembleIdentity(
 	// The caller passes the games the selection rule admitted. A crawl also carries
 	// rejected events, whose draft strings are not references in this dataset and must
 	// not mint entities or unresolved rows.
-	const selected = (gameId: string): boolean => options.draftGameIds === undefined || options.draftGameIds.has(gameId);
+	const selected = (gameId: string): boolean => options.selectedGameIds === undefined || options.selectedGameIds.has(gameId);
 	for (const game of sources.games) {
 		for (const side of game.sides) observe("team", side.team, game.date);
 		observe("team", game.winTeam, game.date);
@@ -571,6 +571,18 @@ export function assembleIdentity(
 		for (const side of draft.sides) {
 			for (const slot of [...side.picks, ...side.bans]) observe("champion", slot.champion, date);
 		}
+	}
+	// Player-game rows are observations as well: their handles, team strings and
+	// champions must resolve to the same entities the emitted rows reference.
+	for (const row of sources.playerGames) {
+		if (!selected(row.gameId)) continue;
+		const playerId = observe("player", row.playerLink, row.date);
+		if (playerId !== null && row.playerName !== "") {
+			register("player", row.playerName, playerId, "alias", "handle");
+			recordObservation("player", row.playerName, playerId, row.date);
+		}
+		observe("team", row.team, row.date);
+		observe("champion", row.champion, row.date);
 	}
 	for (const match of sources.matches) {
 		observe("team", match.sides[0], match.date);

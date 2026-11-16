@@ -67,7 +67,7 @@
 		"coverage": {
 			"type": "object",
 			"additionalProperties": false,
-			"required": ["teamStats", "draft"],
+			"required": ["teamStats", "draft", "playerStats"],
 			"description": "Per-field-group presence, machine-readable (spec R6).",
 			"properties": {
 				"teamStats": {
@@ -79,6 +79,11 @@
 					"type": "string",
 					"enum": ["complete", "partial", "unavailable"],
 					"description": "`complete` needs five picks and five bans on both sides, in numbered slots when fidelity is ordered. `partial` means some draft data was stated; `unavailable` means the corpus stated no draft, and no `draft` object is emitted. Absence is never written as five empty lists."
+				},
+				"playerStats": {
+					"type": "string",
+					"enum": ["complete", "partial", "unavailable"],
+					"description": "Presence-based (ticket 04): `complete` means ten player rows all state every R4 field and reconcile with the game's team totals; `partial` means some fields are missing (2015 has no damage, vision, keystone or runes); `unavailable` means the corpus carries no player rows for this game. The game's `era` is still carried separately."
 				}
 			}
 		},

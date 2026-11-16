@@ -31,6 +31,8 @@ import { assembleScoreboards, selectedGameIds } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
 import { normalizeSources } from "./normalize.ts";
+import { assemblePlayerGames } from "./playerGames.ts";
+import type { PlayerGamesAssembly } from "./playerGames.ts";
 import type { EventSelectionRule } from "./rule.ts";
 import { loadRule } from "./rule.ts";
 import { assertValid } from "./validate.ts";
@@ -45,6 +47,7 @@ export const OUTPUTS = {
 	"event-games.jsonl": { schema: "event-games.schema.json" },
 	"games.jsonl": { schema: "game.schema.json" },
 	"matches.jsonl": { schema: "match.schema.json" },
+	"player-games.jsonl": { schema: "player-game.schema.json" },
 	"teams.jsonl": { schema: "team.schema.json" },
 	"players.jsonl": { schema: "player.schema.json" },
 	"champions.jsonl": { schema: "champion.schema.json" },
@@ -74,6 +77,8 @@ export type BuildResult = AssembledDataset & {
 	identity: AssembledIdentity;
 	/** Games, matches and the per-event game report (ticket 03). */
 	scoreboards: ScoreboardAssembly;
+	/** One row per player per game (ticket 04). */
+	playerGames: PlayerGamesAssembly;
 	/** The rule that produced the events, so a caller can explain a decision. */
 	rule: EventSelectionRule;
 	/** The era table coverage was judged against, for callers that explain a marker. */
@@ -124,8 +129,9 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	// Identity first: games and matches reference teams, and their team strings are
 	// observations identity has to see before the join can resolve them. Draft champion
 	// observations are limited to games the selection rule admitted.
+	const selected = selectedGameIds(sources.games, assembled.events);
 	const identity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE), {
-		draftGameIds: selectedGameIds(sources.games, assembled.events),
+		selectedGameIds: selected,
 	});
 	const scoreboards = assembleScoreboards({
 		games: sources.games,
@@ -137,12 +143,20 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		payloads,
 	});
 
+	const playerGames = assemblePlayerGames({
+		source: sources.playerGames,
+		games: scoreboards.games,
+		identity: identity.index,
+	});
+	for (const game of scoreboards.games) game.coverage.playerStats = playerGames.coverageByGame.get(game.id) ?? "unavailable";
+
 	const files: Record<OutputFile, string> = {
 		"events.jsonl": toJsonl(assembled.events),
 		"event-selection.jsonl": toJsonl(assembled.selection),
 		"event-games.jsonl": toJsonl(scoreboards.eventGames),
 		"games.jsonl": toJsonl(scoreboards.games),
 		"matches.jsonl": toJsonl(scoreboards.matches),
+		"player-games.jsonl": toJsonl(playerGames.rows),
 		"teams.jsonl": toJsonl(identity.teams),
 		"players.jsonl": toJsonl(identity.players),
 		"champions.jsonl": toJsonl(identity.champions),
@@ -154,7 +168,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		validateFile(file, files[file], await loadSchema(schemaDir, output.schema));
 	}
 
-	return { ...assembled, files, identity, scoreboards, rule, eras };
+	return { ...assembled, files, identity, scoreboards, playerGames, rule, eras };
 }
 
 /** Write the emitted bytes. The only stage that writes to the output directory. */

@@ -1,0 +1,70 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:player-game:1",
+	"title": "Curated player-game",
+	"description": "One row of data/curated/player-games.jsonl: one player's statistics in one game (spec R4, ticket 04). The grain is game x player; team totals live on the game row and are reconciled with these rows where player coverage is complete. A statistic the source did not state is an ABSENT KEY, never 0 and never null. Role is the position actually played (`IngameRole`), not the source's label when the two disagree. Items, summoner spells and runes are lists of source names, not a serialized blob.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"id",
+		"gameId",
+		"eventId",
+		"eventName",
+		"playerId",
+		"playerName",
+		"sourcePlayer",
+		"teamId",
+		"teamName",
+		"sourceTeam",
+		"championId",
+		"championName",
+		"sourceChampion",
+		"side",
+		"role",
+		"source"
+	],
+	"properties": {
+		"id": {
+			"type": "string",
+			"pattern": "^pg-[0-9a-f]{12}$",
+			"description": "Opaque surrogate key derived from the game and the player's source link (spec D3)."
+		},
+		"gameId": { "type": "string", "pattern": "^gm-[0-9a-f]{12}$" },
+		"eventId": { "type": "string", "pattern": "^evt-[0-9a-f]{12}$" },
+		"eventName": { "type": "string", "minLength": 1 },
+		"playerId": { "type": "string", "pattern": "^pl-[0-9a-f]{12}$" },
+		"playerName": { "type": "string", "minLength": 1 },
+		"sourcePlayer": { "type": "string", "minLength": 1 },
+		"teamId": { "type": "string", "pattern": "^tm-[0-9a-f]{12}$" },
+		"teamName": { "type": "string", "minLength": 1 },
+		"sourceTeam": { "type": "string", "minLength": 1 },
+		"championId": { "type": "string", "pattern": "^ch-[0-9a-f]{12}$" },
+		"championName": { "type": "string", "minLength": 1 },
+		"sourceChampion": { "type": "string", "minLength": 1 },
+		"side": { "type": "string", "enum": ["blue", "red"] },
+		"role": { "type": "string", "minLength": 1 },
+		"kills": { "type": "integer", "minimum": 0 },
+		"deaths": { "type": "integer", "minimum": 0 },
+		"assists": { "type": "integer", "minimum": 0 },
+		"cs": { "type": "integer", "minimum": 0 },
+		"gold": { "type": "number", "minimum": 0 },
+		"damage": { "type": "integer", "minimum": 0 },
+		"vision": { "type": "integer", "minimum": 0 },
+		"items": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+		"trinket": { "type": "string", "minLength": 1 },
+		"summonerSpells": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+		"keystone": { "type": "string", "minLength": 1 },
+		"primaryTree": { "type": "string", "minLength": 1 },
+		"secondaryTree": { "type": "string", "minLength": 1 },
+		"runes": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+		"source": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["gameId", "playerLink"],
+			"properties": {
+				"gameId": { "type": "string", "minLength": 1 },
+				"playerLink": { "type": "string", "minLength": 1 }
+			}
+		}
+	}
+}
