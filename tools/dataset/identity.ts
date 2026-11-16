@@ -538,6 +538,24 @@ export function assembleIdentity(sources: SourceDataset, declaredAliases: Declar
 		observe("champion", row.champion, row.date);
 	}
 
+	// ---- games and matches: the team references ticket 03 joins on ------------------
+	// A `ScoreboardGames` row names its two sides as display strings, so they are
+	// observations exactly like a player scoreboard's: resolved through the registry and
+	// the alias table where one answers, minted (and reported) where none does. Ticket
+	// 10's crawl fetches those Teams pages and the report shrinks on its own.
+	//
+	// Deliberately not observed here: the champion picks and bans a game carries. They
+	// are ticket 05's draft data, and observing them now would mint a champion entity per
+	// pick from a corpus whose champion registry is not the one being crawled.
+	for (const game of sources.games) {
+		for (const side of game.sides) observe("team", side.team, game.date);
+		observe("team", game.winTeam, game.date);
+	}
+	for (const match of sources.matches) {
+		observe("team", match.sides[0], match.date);
+		observe("team", match.sides[1], match.date);
+	}
+
 	// ---- emit --------------------------------------------------------------------
 	const aliases: AliasRecord[] = [];
 	for (const [compound, found] of evidence) {

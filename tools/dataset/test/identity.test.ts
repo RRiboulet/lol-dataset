@@ -27,7 +27,10 @@ import type { BuildResult } from "../build.ts";
 import { validateAgainst } from "../validate.ts";
 import { CURATED_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
 
-const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2015-10-01", currentSeen: "2023-10-19" } as const;
+// The windows are the observed use in the whole recorded corpus, and ticket 03 makes
+// games observations too: `T1` is dated by the 2023 scoreboard row and by the Worlds
+// final on 2023-11-19, so its era is the span the corpus saw it in.
+const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2015-10-01", currentSeen: "2023-11-19" } as const;
 
 async function fixtureBuild(): Promise<BuildResult> {
 	return buildDataset({ rawDir: FIXTURE_RAW });
@@ -73,7 +76,9 @@ test("a team rebrand in the fixtures is one entity carrying both strings and the
 	assert.ok(old, `the entity must carry its old display string ${TEAM_RENAME.from}`);
 	assert.ok(current, "the entity must carry its current display string");
 	assert.deepEqual([old.firstSeen, old.lastSeen], [TEAM_RENAME.fromSeen, TEAM_RENAME.fromSeen]);
-	assert.deepEqual([current.firstSeen, current.lastSeen], [TEAM_RENAME.currentSeen, TEAM_RENAME.currentSeen]);
+	// A span, not a point: the name is dated by the 2023 scoreboard row and again by the
+	// Worlds final the games payload carries (ticket 03).
+	assert.deepEqual([current.firstSeen, current.lastSeen], ["2023-10-19", TEAM_RENAME.currentSeen]);
 	assert.ok(old.evidence.includes("rename"), "the old page is evidenced by the source's own RenamedTo edge");
 	assert.ok(old.evidence.includes("observed"), "the old name is evidenced by a recorded scoreboard row");
 })
@@ -198,11 +203,11 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 		assert.ok(mintedTeam, "the fabricated team must exist");
 		assert.equal(mintedTeam.overviewPage, null, "nothing registers that team, so it has no source page");
 		assert.ok(grown.identity.players.some((player) => player.name === "Fabricated Player"));
-		assert.deepEqual(
-			grown.identity.unresolved.filter((row) => row.reason === "no-source-identity").map((row) => row.string).sort(),
-			["Fabricated Five", "Fabricated Player", "The Bandits Prime"],
-			"both fabricated strings are reported, and the recorded one stays",
-		);
+		const reported = new Set(grown.identity.unresolved.map((row) => row.string));
+		for (const string of ["Fabricated Five", "Fabricated Player", "The Bandits Prime"]) {
+			assert.ok(reported.has(string), `${string} must stay in the unresolved report`);
+		}
+		assert.ok(grown.identity.unresolved.length >= baseline.identity.unresolved.length, "adding material never empties the report");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
@@ -235,8 +240,8 @@ test("two players with the same display string stay two entities, and a bare han
 
 test("an unresolved source string mints an entity and is reported, rather than failing or vanishing", async () => {
 	const { identity } = await fixtureBuild();
-	const [report, ...rest] = identity.unresolved;
-	assert.equal(rest.length, 0, `expected exactly one unresolved reference, got ${identity.unresolved.length}`);
+	const report = identity.unresolved.find((row) => row.string === "The Bandits Prime");
+	assert.ok(report, `the report must name the minted string, got ${identity.unresolved.map((row) => row.string).join(", ")}`);
 	assert.equal(report.kind, "team");
 	assert.equal(report.string, "The Bandits Prime");
 	assert.equal(report.reason, "no-source-identity");
@@ -246,6 +251,12 @@ test("an unresolved source string mints an entity and is reported, rather than f
 	assert.ok(entity, "the report must point at a real entity");
 	assert.equal(entity.name, "The Bandits Prime", "the minted entity carries the source string as its display name");
 	assert.equal(entity.overviewPage, null, "no registry page exists, and inventing one would hide that");
+	// Games reference teams as display strings too (ticket 03), and the recorded corpus
+	// carries a Teams page for almost none of them, so they are minted and reported the
+	// same way. That is a corpus gap the full crawl closes, not an identity failure.
+	const fromGames = identity.unresolved.filter((row) => row.kind === "team" && row.string !== "The Bandits Prime");
+	assert.ok(fromGames.length > 0, "the game payloads contribute minted teams");
+	assert.ok(fromGames.some((row) => row.string === "T1") === false, "a team with a registry page is not reported");
 	// The string resolves from then on, so a later payload citing it joins the same entity.
 	assert.equal(identity.index.resolve("team", "The Bandits Prime")?.id, report.id);
 	// And a registry page that later appears under that exact name keeps the ID.
@@ -260,8 +271,18 @@ test("an unresolved source string mints an entity and is reported, rather than f
 		const now = resolved.identity.teams.find((team) => team.name === "The Bandits Prime");
 		assert.equal(now?.id, entity.id, "registering the page later must not renumber the entity");
 		assert.equal(now?.overviewPage, "The Bandits Prime");
-		assert.equal(resolved.identity.unresolved.length, 0, "a resolved string leaves the report");
-		assert.ok(baseline.identity.unresolved.length === 1);
+		// Only the registered string leaves the report; the game-minted teams have no page
+		// in this corpus and must stay, which is what keeps the report from emptying itself.
+		assert.equal(
+			resolved.identity.unresolved.some((row) => row.string === "The Bandits Prime"),
+			false,
+			"a resolved string leaves the report",
+		);
+		assert.equal(
+			resolved.identity.unresolved.length,
+			baseline.identity.unresolved.length - 1,
+			"and only that one",
+		);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
@@ -357,9 +378,14 @@ test("every identity file satisfies its checked-in schema, and an empty file is 
 		assert.ok(records.length > 0, `${name}: the fixtures must carry rows to validate`);
 		for (const record of records) assert.deepEqual(validateAgainst(guard, record, name), []);
 	}
-	// A corpus with no unresolved references emits an empty file, not a stub row.
+	// A corpus with no unresolved references emits an empty file, not a stub row. The
+	// game payloads are removed for this case on purpose: their team strings have no
+	// registry page in the fixtures, so they would mint entities and leave the report
+	// non-empty for a reason that has nothing to do with the case being made here.
 	const dir = await fixtureCopy();
 	try {
+		await rm(path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames"), { recursive: true, force: true });
+		await rm(path.join(dir, "lol-fandom", "cargoexport", "MatchSchedule"), { recursive: true, force: true });
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
 		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
@@ -512,10 +538,12 @@ test("a declared alias that points at nothing stops the build, and one without a
 test("a payload in a table with no normalizer stops the build instead of being skipped", async () => {
 	const dir = await fixtureCopy();
 	try {
-		const stray = path.join(dir, "lol-fandom", "cargoexport", "MatchSchedule", "stray.json");
+		// A real Cargo table, and one ticket 05 will give a normalizer: until then a payload
+		// for it is a table this stage does not understand, and guessing would be worse.
+		const stray = path.join(dir, "lol-fandom", "cargoexport", "PicksAndBansS7", "stray.json");
 		await mkdir(path.dirname(stray), { recursive: true });
 		await writeFile(stray, JSON.stringify([{ OverviewPage: "anything" }]), "utf8");
-		await assert.rejects(buildDataset({ rawDir: dir }), /table "MatchSchedule" has no normalizer/);
+		await assert.rejects(buildDataset({ rawDir: dir }), /table "PicksAndBansS7" has no normalizer/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

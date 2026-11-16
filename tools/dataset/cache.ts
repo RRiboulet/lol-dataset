@@ -37,9 +37,12 @@
 // ScoreboardPlayers row and a Tournaments row both carry `OverviewPage`, so shape
 // sniffing would quietly feed one stage's rows to another's).
 //
-// The sidecar is provenance, not input: the build reads bodies, so a fixture and a
-// live payload are byte-compatible and the build cannot depend on when a payload
-// was fetched (spec R8 — no wall-clock in the data).
+// The sidecar is provenance, and the build's *data* output never depends on it: the
+// normalizers read bodies, so a fixture and a live payload are byte-compatible and the
+// emitted rows cannot depend on when a payload was fetched (spec R8 — no wall-clock in
+// the data). One report does read the recorded query text — the game report has to tell
+// "the source answered zero games" from "nobody asked" — so the sidecar is optional,
+// never hashed into the output, and never a second thing that has to exist.
 
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
@@ -222,13 +225,23 @@ export async function readPayload(root: string, query: CargoQuery): Promise<Cach
 	return { body, meta };
 }
 
-/** A recorded payload as the build sees it: the body is the input, never the sidecar. */
+/**
+ * A recorded payload as the build sees it: the body is the input. The sidecar is
+ * optional and read for reporting only — the game report's `wasAsked` needs the recorded
+ * query text, and nothing else here does — so a fixture with no sidecar still builds.
+ */
 export type CachedPayload = {
 	/** Path relative to the cache root, for error messages that name a file. */
 	file: string;
 	/** The Cargo table the query read, from the directory. This is how the build routes it. */
 	table: string;
 	body: string;
+	/**
+	 * The query the sidecar records, when there is one. Never emitted and never hashed
+	 * into the output, which is why it can travel here: the game report has to tell "this
+	 * event came back empty" from "nobody asked for this event", and only the query says.
+	 */
+	query?: CargoQuery;
 };
 
 /**
@@ -265,7 +278,33 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
 		if (parts.length !== 4 || (parts[1] !== "cargoexport" && parts[1] !== "cargoquery")) {
 			throw new Error(`${relative}: expected <source>/<endpoint>/<table>/<key>.json`);
 		}
-		payloads.push({ file: relative, table: parts[2], body: await readFile(file, "utf8") });
+		payloads.push({ file: relative, table: parts[2], body: await readFile(file, "utf8"), ...(await queryOf(file)) });
 	}
 	return payloads;
+}
+
+/**
+ * The query an optional sidecar records, for reporting only.
+ *
+ * A sidecar is written by `record.ts`/`fetch.ts` and is not required: a scratch
+ * directory a test builds from bodies alone is legal, which is why this is optional
+ * rather than a second thing that has to exist before the build runs.
+ */
+async function queryOf(bodyFile: string): Promise<{ query?: CargoQuery }> {
+	const metaFile = bodyFile.replace(/\.json$/, ".meta.json");
+	const text = await readIfExists(metaFile);
+	if (text === undefined) return {};
+	try {
+		const meta = JSON.parse(text) as { query?: unknown };
+		const query = meta.query;
+		if (query === null || typeof query !== "object") return {};
+		const candidate = query as CargoQuery;
+		if (typeof candidate.tables !== "string" || typeof candidate.fields !== "string") return {};
+		// `where` is read as text by the game report, so a sidecar holding a non-string there
+		// is dropped rather than handed on to fail later as `where.includes is not a function`.
+		if (candidate.where !== undefined && typeof candidate.where !== "string") return {};
+		return { query: candidate };
+	} catch {
+		return {};
+	}
 }

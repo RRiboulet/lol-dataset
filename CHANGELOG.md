@@ -25,6 +25,20 @@ Changed:
 
 Added:
 
+- The dataset's game and match layers: `games.jsonl` with both sides and the team
+  statistics the source records, `matches.jsonl` with the series score counting
+  games cannot recover, and `event-games.jsonl` saying per selected event whether
+  the corpus carries games for it, whether a query came back empty, or whether
+  nobody asked. Two events are recorded — Worlds 2023 (110 games, complete team
+  statistics) and IEM Season IX World Championship 2015 (19 games, thin) — plus a
+  query for World Cyber Games 2013 that the source answered with zero rows, kept
+  because "the source has no games here" and "nobody fetched this" must not look
+  alike. An absent statistic is an absent key, never `0`; a real `0` stays `0`.
+- Era-aware coverage in `tools/dataset/rules/game-eras.json`: named eras from 2011
+  to 2025 with the fields that could exist in each, each boundary citing the patch
+  page it was read from, so a 2015 game is not marked partial for want of a void
+  grub that arrived in patch 14.1. `games.test.ts` checks the recorded data against
+  the table from the other side.
 - The devcontainer's review-triage policy is committed rather than living only on
   the private volume: `.devcontainer/pi/review-triage.json` holds the judge and
   the four `opencode-go` reviewers, and `postCreate.sh` installs it when the
@@ -34,7 +48,6 @@ Added:
   a fresh volume could not resolve it; a host without network or provider keys
   still gets a usable container, with a warning naming the missing judge instead
   of a triage that silently falls back to its most expensive profile.
-
 - Agent scaffold copied from `RRiboulet/my-agent-setup`: the devcontainer, the
   pi extensions, skills and templates, `bin/devc`, and the test suite that
   guards them. No dataset yet, and no `README.md` yet by design.

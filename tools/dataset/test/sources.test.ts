@@ -19,7 +19,18 @@ import { readPayloads, sha256 } from "../cache.ts";
 import { DATASET_DIR, FIXTURE_RAW, REPO_ROOT } from "./helpers.ts";
 
 /** Modules below the cache. `record.ts` and `cli.ts` are above it / users of it. */
-const PIPELINE = ["cache.ts", "normalize.ts", "rule.ts", "assemble.ts", "identity.ts", "emit.ts", "validate.ts", "build.ts"];
+const PIPELINE = [
+	"cache.ts",
+	"normalize.ts",
+	"rule.ts",
+	"eras.ts",
+	"assemble.ts",
+	"games.ts",
+	"identity.ts",
+	"emit.ts",
+	"validate.ts",
+	"build.ts",
+];
 
 test("no pipeline module can reach the network", async () => {
 	const forbidden = [/\bfetch\s*\(/, /node:https?/, /node:net/, /XMLHttpRequest/, /undici/, /\baxios\b/, /WebSocket/];
