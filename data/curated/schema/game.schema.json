@@ -83,7 +83,7 @@
 				"playerStats": {
 					"type": "string",
 					"enum": ["complete", "partial", "unavailable"],
-					"description": "Presence-based (ticket 04): `complete` means ten player rows all state every R4 field and reconcile with the game's team totals; `partial` means some fields are missing (2015 has no damage, vision, keystone or runes); `unavailable` means the corpus carries no player rows for this game. The game's `era` is still carried separately."
+					"description": "Presence-based (ticket 04): `complete` means ten player rows — five per side with one played role each — all state every R4 field and reconcile with the game's team totals; `partial` means structure or fields are missing (2015 has no damage, vision, keystone or runes); `unavailable` means the corpus carries no player rows for this game. The game's `era` is still carried separately."
 				}
 			}
 		},

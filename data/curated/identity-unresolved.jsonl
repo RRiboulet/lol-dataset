@@ -1,195 +1,124 @@
-{"kind":"player","string":"007x","name":"007x","id":"pl-5e941e4caf0e","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"0N","name":"0N","id":"pl-17576d04a48f","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"369","name":"369","id":"pl-5f193b350c8a","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"AN","name":"AN","id":"pl-5ac4d5d4c2d3","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Adam (Adam Maanane)","name":"Adam (Adam Maanane)","id":"pl-6729a8a79e7d","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Aiming","name":"Aiming","id":"pl-7686b834266d","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Albis","name":"Albis","id":"pl-041de6931d4d","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Aluka","name":"Aluka","id":"pl-30d6a49cfa0c","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Aphromoo","name":"Aphromoo","id":"pl-c9db4af88d94","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Aria (Lee Ga-eul)","name":"Aria (Lee Ga-eul)","id":"pl-f7e4772830f8","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Artemis (Trần Quốc Hưng)","name":"Artemis (Trần Quốc Hưng)","id":"pl-14fab91aa21e","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Azhi","name":"Azhi","id":"pl-4b494dc78064","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Balls","name":"Balls","id":"pl-0cd48bab889c","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Balls","name":"Balls","id":"pl-0cd48bab889c","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Bdd","name":"Bdd","id":"pl-acdca2630bc3","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"BeanJ","name":"BeanJ","id":"pl-164e299203d2","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Bebe (Friedrich Knaub)","name":"Bebe (Friedrich Knaub)","id":"pl-e87d83126d88","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Berserker (Kim Min-cheol)","name":"Berserker (Kim Min-cheol)","id":"pl-fcce0232eec8","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Betsy","name":"Betsy","id":"pl-788540c6f017","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Bie","name":"Bie","id":"pl-0e7d8b8f16d4","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Bin (Chen Ze-Bin)","name":"Bin (Chen Ze-Bin)","id":"pl-5baa07e91ebc","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Bjergsen","name":"Bjergsen","id":"pl-52d54c389563","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Bjergsen","name":"Bjergsen","id":"pl-52d54c389563","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Blaber","name":"Blaber","id":"pl-bb0a1078d808","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Bong (Cho Bo-woong)","name":"Bong (Cho Bo-woong)","id":"pl-ff2354b0c7a0","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"BrokenBlade","name":"BrokenBlade","id":"pl-729945178258","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Cabochard","name":"Cabochard","id":"pl-ae1590027ee5","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Cabochard","name":"Cabochard","id":"pl-ae1590027ee5","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Canna","name":"Canna","id":"pl-34af2eba65bf","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Canyon","name":"Canyon","id":"pl-5ab895c8cc30","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"CaoMei","name":"CaoMei","id":"pl-24519255db39","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Caps","name":"Caps","id":"pl-bd9b6abb3981","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Carzzy","name":"Carzzy","id":"pl-cf3a57628428","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Ceo","name":"Ceo","id":"pl-c131cf2ffc9d","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Ceos","name":"Ceos","id":"pl-ac8b1bd24aea","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Chasy","name":"Chasy","id":"pl-f45540cfe7c6","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Chawy","name":"Chawy","id":"pl-0c5739d70c93","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Chelby","name":"Chelby","id":"pl-90e13b13c676","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Chovy","name":"Chovy","id":"pl-65b2bb5d8420","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Clearlove","name":"Clearlove","id":"pl-1ad96d5e2ff5","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"CoCo","name":"CoCo","id":"pl-a5ab491a9511","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Conan","name":"Conan","id":"pl-333c50f47c9a","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Contractz","name":"Contractz","id":"pl-5f77185975f7","firstSeen":"2023-11-02","lastSeen":"2023-11-02","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Creaton","name":"Creaton","id":"pl-03f75bf209ea","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Crisp","name":"Crisp","id":"pl-36cda857e1b1","firstSeen":"2023-11-19","lastSeen":"2023-11-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Croc","name":"Croc","id":"pl-1acb5d8e4238","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Crownie","name":"Crownie","id":"pl-34aae5fa20fa","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Crumbzz","name":"Crumbzz","id":"pl-b29e87bc8a82","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Cuzz","name":"Cuzz","id":"pl-0c0f58a08ada","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Deft","name":"Deft","id":"pl-d4036e87f095","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Delight","name":"Delight","id":"pl-1643635c12ca","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Dhokla","name":"Dhokla","id":"pl-e6ad910e1dd9","firstSeen":"2023-11-02","lastSeen":"2023-11-02","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Diamondprox","name":"Diamondprox","id":"pl-2f2697c08a6e","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Dodo8","name":"Dodo8","id":"pl-26f098087a5f","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Diamondprox","name":"Diamondprox","id":"pl-2f2697c08a6e","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Doran (Choi Hyeon-jun)","name":"Doran (Choi Hyeon-jun)","id":"pl-73b6bb25f732","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"EMENES","name":"EMENES","id":"pl-46d2b0e8bc76","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Edward","name":"Edward","id":"pl-34405d46cb25","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Edward","name":"Edward","id":"pl-34405d46cb25","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Elk","name":"Elk","id":"pl-9b55fa90a42c","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Elyoya","name":"Elyoya","id":"pl-d7faf3da4ae5","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"FBI","name":"FBI","id":"pl-c6cd4cf936fd","firstSeen":"2023-11-02","lastSeen":"2023-11-02","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"FORG1VENGRE","name":"FORG1VENGRE","id":"pl-470cd746d66c","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Fox (Hampus Myhre)","name":"Fox (Hampus Myhre)","id":"pl-766cd1e20555","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Froggen","name":"Froggen","id":"pl-25478da9e18c","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Fudge","name":"Fudge","id":"pl-73e7938dd46a","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Fzzf","name":"Fzzf","id":"pl-48f116f1fdb8","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"G4","name":"G4","id":"pl-978425f80785","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"GALA","name":"GALA","id":"pl-1df6af42bc6e","firstSeen":"2023-11-05","lastSeen":"2023-11-05","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Gamsu","name":"Gamsu","id":"pl-992109ec6986","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Gemini","name":"Gemini","id":"pl-f6ece80b88d6","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Gloryy","name":"Gloryy","id":"pl-99ebf15c6908","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"GorillA","name":"GorillA","id":"pl-148d5881d19f","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"GreenTea","name":"GreenTea","id":"pl-c398964320b5","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Hai","name":"Hai","id":"pl-81a8afcae90a","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Hai","name":"Hai","id":"pl-81a8afcae90a","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Hang","name":"Hang","id":"pl-a25e0d0cec87","firstSeen":"2023-11-05","lastSeen":"2023-11-05","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Hans Sama","name":"Hans Sama","id":"pl-36e7db6a24db","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Harp","name":"Harp","id":"pl-0f4b5ea26038","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"HolyPhoenix","name":"HolyPhoenix","id":"pl-90fc4f006a51","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Humanoid","name":"Humanoid","id":"pl-d2253641722e","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Hylissang","name":"Hylissang","id":"pl-e2b03393c436","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"IgNar","name":"IgNar","id":"pl-ce120fd6a35e","firstSeen":"2023-11-02","lastSeen":"2023-11-02","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Jankos","name":"Jankos","id":"pl-829eda468186","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Jay (Li Chieh)","name":"Jay (Li Chieh)","id":"pl-9c744f5b3a56","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"JimieN","name":"JimieN","id":"pl-40a375d8d94b","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"JunJia","name":"JunJia","id":"pl-ca4dd0ca2cde","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Junnie","name":"Junnie","id":"pl-ff1606a8ec0d","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Kami (Gabriel Bohm Santos)","name":"Kami (Gabriel Bohm Santos)","id":"pl-87a2895d36a5","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Kanavi","name":"Kanavi","id":"pl-f14a87d7f36e","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Karsa","name":"Karsa","id":"pl-9952c46db200","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Karsa","name":"Karsa","id":"pl-9952c46db200","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Kati","name":"Kati","id":"pl-1cb93156743c","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Kellin","name":"Kellin","id":"pl-9da632e02ae1","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Kenste","name":"Kenste","id":"pl-9a9dfaedac27","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"KiWiKiD","name":"KiWiKiD","id":"pl-63ea8a3f4b75","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Kiaya","name":"Kiaya","id":"pl-9692f5d3e143","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Kiin","name":"Kiin","id":"pl-a4828757cdd1","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Kikis","name":"Kikis","id":"pl-17f95bfbd052","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Koro1","name":"Koro1","id":"pl-cef99eb073bc","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Labrov","name":"Labrov","id":"pl-521952344656","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Lactea","name":"Lactea","id":"pl-9a61ed54aaef","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Lasagna","name":"Lasagna","id":"pl-37db35e08aa0","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Lee","name":"Lee","id":"pl-e7da824a74f6","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Lehends","name":"Lehends","id":"pl-72db4b55f1e8","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Leko","name":"Leko","id":"pl-b6d75eba3214","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"LemonNation","name":"LemonNation","id":"pl-2674a570564d","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"LemonNation","name":"LemonNation","id":"pl-2674a570564d","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Levi","name":"Levi","id":"pl-8b49a459569b","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Light (Wang Guang-Yu)","name":"Light (Wang Guang-Yu)","id":"pl-c1fbca4d55a8","firstSeen":"2023-11-19","lastSeen":"2023-11-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Link","name":"Link","id":"pl-a6a32dbc5618","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Lloyd","name":"Lloyd","id":"pl-99ce5e0b2a2d","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Lovida","name":"Lovida","id":"pl-b4ef1537ed39","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Lupin (Kim Do-yeop)","name":"Lupin (Kim Do-yeop)","id":"pl-fa98af338233","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Lyonz","name":"Lyonz","id":"pl-08a0278714aa","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"MISSING","name":"MISSING","id":"pl-8af1d328d75e","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Madlife","name":"Madlife","id":"pl-2700c2ef34db","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Maple (Huang Yi-Tang)","name":"Maple (Huang Yi-Tang)","id":"pl-0ce3ac5ab599","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Maplestreet","name":"Maplestreet","id":"pl-aa551a7575d8","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Maz","name":"Maz","id":"pl-094f3c0f9d3c","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Meteos","name":"Meteos","id":"pl-7d8018cdc0ae","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Meziljie","name":"Meziljie","id":"pl-bb782cc88b33","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Meteos","name":"Meteos","id":"pl-7d8018cdc0ae","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Mikyx","name":"Mikyx","id":"pl-98c99431d6fa","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Mireu","name":"Mireu","id":"pl-6174850a63e3","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Morning","name":"Morning","id":"pl-e9376a281aac","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Mystic","name":"Mystic","id":"pl-734da8ec3147","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"NL (Hsiung Wen-An)","name":"NL (Hsiung Wen-An)","id":"pl-1e921f71c3df","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"NaMei","name":"NaMei","id":"pl-6c3afbacc140","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Ninja","name":"Ninja","id":"pl-90547a1e8264","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"NL (Hsiung Wen-An)","name":"NL (Hsiung Wen-An)","id":"pl-1e921f71c3df","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Nisqy","name":"Nisqy","id":"pl-7fef4c558fbe","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Nixwater","name":"Nixwater","id":"pl-19729307ea3c","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"NoXiAK","name":"NoXiAK","id":"pl-bbb1eac3afae","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Noah (Oh Hyeon-taek)","name":"Noah (Oh Hyeon-taek)","id":"pl-0891d3b7aebd","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Nyph","name":"Nyph","id":"pl-42d56e5db53e","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"ON","name":"ON","id":"pl-e8a01133b135","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Oddie","name":"Oddie","id":"pl-238880bb94a6","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Olleh","name":"Olleh","id":"pl-b989748a4f40","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Oscarinin","name":"Oscarinin","id":"pl-c0d4303098dc","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Overpow","name":"Overpow","id":"pl-cb16271c592a","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"P1noy","name":"P1noy","id":"pl-6771975ba298","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"P1noy","name":"P1noy","id":"pl-6771975ba298","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Palafox","name":"Palafox","id":"pl-cf05b58284a8","firstSeen":"2023-11-02","lastSeen":"2023-11-02","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Palette","name":"Palette","id":"pl-85794effd6e8","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Peanut","name":"Peanut","id":"pl-532e896395d0","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Peyz","name":"Peyz","id":"pl-9820bfd30f22","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Porky (Gerardo Cuamea)","name":"Porky (Gerardo Cuamea)","id":"pl-bda1627fd149","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Porky (Nikolo Tayag)","name":"Porky (Nikolo Tayag)","id":"pl-c5343213955b","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"PowerOfEvil","name":"PowerOfEvil","id":"pl-fcf166edc62f","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"PraY","name":"PraY","id":"pl-cfac2dfc6b09","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Prince (Mai Nguyễn Minh Thắng)","name":"Prince (Mai Nguyễn Minh Thắng)","id":"pl-d65d8dfc0872","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Razork","name":"Razork","id":"pl-b11a946eb07e","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Rekkles","name":"Rekkles","id":"pl-fe55ff0b9934","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Rest","name":"Rest","id":"pl-05863ec2c378","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Robo","name":"Robo","id":"pl-0f7d46d154f5","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Route","name":"Route","id":"pl-adc74704d65d","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Ruler","name":"Ruler","id":"pl-b2eb0fa2b016","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Safety","name":"Safety","id":"pl-726d11bd5b23","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Santorin","name":"Santorin","id":"pl-81c77d101baf","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Santorin","name":"Santorin","id":"pl-81c77d101baf","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Scout","name":"Scout","id":"pl-8a1db462be75","firstSeen":"2023-11-05","lastSeen":"2023-11-05","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Seeiya","name":"Seeiya","id":"pl-be4e4b50d3d9","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Sheo","name":"Sheo","id":"pl-0f7ec5b4cd52","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"ShiauC","name":"ShiauC","id":"pl-b78567af9da0","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Shiphtur","name":"Shiphtur","id":"pl-fd97fc983006","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Shook","name":"Shook","id":"pl-3eb3ad7872dc","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"ShowMaker","name":"ShowMaker","id":"pl-fe04ca019dbc","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Shunn","name":"Shunn","id":"pl-ab120dedda64","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Shy","name":"Shy","id":"pl-b71b1c6ff5f9","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Sin (Yeon Hyeong-mo)","name":"Sin (Yeon Hyeong-mo)","id":"pl-86cf35b82c48","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"SirT","name":"SirT","id":"pl-6cbcc5db354b","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Slayder","name":"Slayder","id":"pl-e008695bfdbf","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Smeb","name":"Smeb","id":"pl-06caf9f960e3","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Sneaky","name":"Sneaky","id":"pl-771139a20b81","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Sneaky","name":"Sneaky","id":"pl-771139a20b81","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Space (Seon Ho-san)","name":"Space (Seon Ho-san)","id":"pl-4dd5ba8d4c3f","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Sparda","name":"Sparda","id":"pl-ecb29e5be82a","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Spirit","name":"Spirit","id":"pl-57e39463d863","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Steak","name":"Steak","id":"pl-1df249fb3a6c","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"Steak","name":"Steak","id":"pl-1df249fb3a6c","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Steal (Mun Geon-yeong)","name":"Steal (Mun Geon-yeong)","id":"pl-861ff0d995de","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Svenskeren","name":"Svenskeren","id":"pl-98d90ef4f896","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"SwordArt","name":"SwordArt","id":"pl-6d448481baff","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"SwordArt","name":"SwordArt","id":"pl-6d448481baff","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Tarzan (Lee Seung-yong)","name":"Tarzan (Lee Seung-yong)","id":"pl-6f1b618950f1","firstSeen":"2023-11-05","lastSeen":"2023-11-05","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Thaldrin","name":"Thaldrin","id":"pl-c22c382223b4","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"TheShy","name":"TheShy","id":"pl-b487de76c47d","firstSeen":"2023-11-19","lastSeen":"2023-11-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Theokoles","name":"Theokoles","id":"pl-aa2736963787","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Thinkcard","name":"Thinkcard","id":"pl-8231d8cbf85b","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Thyak","name":"Thyak","id":"pl-e0c2b4306691","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Trymbi","name":"Trymbi","id":"pl-0a5641ab7fe2","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Tsu","name":"Tsu","id":"pl-e68cf3b3664b","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"U","name":"U","id":"pl-a25513c7e0f6","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Valen","name":"Valen","id":"pl-939b706c1b6f","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"VandeR","name":"VandeR","id":"pl-b3107c0e0a87","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Vardags","name":"Vardags","id":"pl-2dca661bbd4f","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Vizicsacsi","name":"Vizicsacsi","id":"pl-82fc074cf24e","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Wako","name":"Wako","id":"pl-48c0044b8eb3","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"WarL0cK","name":"WarL0cK","id":"pl-f717b18fac90","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"WeiXiao","name":"WeiXiao","id":"pl-b835549c4411","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Weiwei","name":"Weiwei","id":"pl-7f09c61fd473","firstSeen":"2023-11-19","lastSeen":"2023-11-19","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Wickd","name":"Wickd","id":"pl-9ffa3ea1a599","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"WildTurtle","name":"WildTurtle","id":"pl-5d6d3596abd6","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Winds","name":"Winds","id":"pl-00cc2954ad6e","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
+{"kind":"player","string":"WildTurtle","name":"WildTurtle","id":"pl-5d6d3596abd6","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Woody","name":"Woody","id":"pl-08bb39b964dc","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Woolite","name":"Woolite","id":"pl-82a6ef3dff5f","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"XUN","name":"XUN","id":"pl-88ea9837b0ef","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Xiaohu","name":"Xiaohu","id":"pl-3b47125e9a17","firstSeen":"2023-11-19","lastSeen":"2023-11-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Yagao","name":"Yagao","id":"pl-77c409bcc4a7","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
@@ -197,60 +126,40 @@
 {"kind":"player","string":"YuZhe","name":"YuZhe","id":"pl-41ea8213a2a8","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Yutapon","name":"Yutapon","id":"pl-0d544b2a250f","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Zika","name":"Zika","id":"pl-46005cad7fa5","firstSeen":"2023-11-05","lastSeen":"2023-11-05","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"Ziv (Chen Yi)","name":"Ziv (Chen Yi)","id":"pl-9c500daa7ca0","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"Zven","name":"Zven","id":"pl-ec44ccc0ab19","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"apaMEN","name":"apaMEN","id":"pl-725b9746d1c4","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"avenuee","name":"avenuee","id":"pl-8cfbe8f9828a","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"fredy122","name":"fredy122","id":"pl-d6e377fca42e","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"knight (Zhuo Ding)","name":"knight (Zhuo Ding)","id":"pl-52fd64b5e32c","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"kurO","name":"kurO","id":"pl-3f277a126c6b","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"masterwork","name":"masterwork","id":"pl-086d37e47480","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"nRated","name":"nRated","id":"pl-94e2aee2caf6","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"niQ","name":"niQ","id":"pl-6144a748bd66","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"nuc","name":"nuc","id":"pl-9535deb12f7d","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"tinowns","name":"tinowns","id":"pl-cdf549ee3f38","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
-{"kind":"player","string":"westdoor","name":"westdoor","id":"pl-cd8623f0b665","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
 {"kind":"player","string":"xiye","name":"xiye","id":"pl-aada38f2f3a3","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Aces High Esports Club","name":"Aces High Esports Club","id":"tm-84fa3a656a48","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Alliance","name":"Alliance","id":"tm-afe3c1947d3b","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Avant Garde","name":"Avant Garde","id":"tm-fc120e056ef1","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Bangkok Titans","name":"Bangkok Titans","id":"tm-c7fd5f1d7017","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Bilibili Gaming","name":"Bilibili Gaming","id":"tm-3c8aa94cea87","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"CJ Entus","name":"CJ Entus","id":"tm-0ee1d7d7c31a","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"CTBC Flying Oyster","name":"CTBC Flying Oyster","id":"tm-aecf2932501d","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Cloud9","name":"Cloud9","id":"tm-c6640c0ccfe4","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Counter Logic Gaming","name":"Counter Logic Gaming","id":"tm-be1c5136689c","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"DetonatioN FocusMe","name":"DetonatioN FocusMe","id":"tm-94fa0eac3812","firstSeen":"2023-10-11","lastSeen":"2023-10-11","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Dignitas","name":"Dignitas","id":"tm-16eb5486accd","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Dolphins of Wall Street","name":"Dolphins of Wall Street","id":"tm-1bdffb90862e","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Dplus Kia","name":"Dplus Kia","id":"tm-b5f2d1b32dc6","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"EDward Gaming","name":"EDward Gaming","id":"tm-e9f98466e300","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Fnatic","name":"Fnatic","id":"tm-b54099fc2014","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"G2 Esports","name":"G2 Esports","id":"tm-a491a98abe90","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"GAM Esports","name":"GAM Esports","id":"tm-dcd83f572277","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"GE Tigers","name":"GE Tigers","id":"tm-afd7b9c84ca6","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Gambit Gaming","name":"Gambit Gaming","id":"tm-fea9d39f1fb4","firstSeen":"2014-12-20","lastSeen":"2014-12-20","reason":"no-source-identity","candidates":[]}
+{"kind":"team","string":"Gambit Gaming","name":"Gambit Gaming","id":"tm-fea9d39f1fb4","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Gen.G","name":"Gen.G","id":"tm-00ac0e66d991","firstSeen":"2023-11-03","lastSeen":"2023-11-03","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"JD Gaming","name":"JD Gaming","id":"tm-e0ac3973ed3e","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"KT Rolster","name":"KT Rolster","id":"tm-25b9b1c91296","firstSeen":"2023-11-04","lastSeen":"2023-11-04","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"LNG Esports","name":"LNG Esports","id":"tm-8a3085fd91e5","firstSeen":"2023-11-05","lastSeen":"2023-11-05","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"LOUD","name":"LOUD","id":"tm-3a76b34e3c82","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Lyon Gaming (2013 Latin American Team)","name":"Lyon Gaming (2013 Latin American Team)","id":"tm-b8bca1021cd5","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"MAD Lions","name":"MAD Lions","id":"tm-58e97303f1c9","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Movistar R7","name":"Movistar R7","id":"tm-e250744641c3","firstSeen":"2023-10-10","lastSeen":"2023-10-10","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"NRG","name":"NRG","id":"tm-816e45e1dd85","firstSeen":"2023-11-02","lastSeen":"2023-11-02","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"PSG Talon","name":"PSG Talon","id":"tm-b894b9da44f7","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"SK Gaming","name":"SK Gaming","id":"tm-3bcb9efd5846","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Saigon Jokers","name":"Saigon Jokers","id":"tm-3a97a5d4aef2","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"TSM","name":"TSM","id":"tm-cb15b056a5ad","firstSeen":"2014-12-07","lastSeen":"2014-12-07","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Taipei Assassins","name":"Taipei Assassins","id":"tm-c94b01026f88","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
+{"kind":"team","string":"TSM","name":"TSM","id":"tm-cb15b056a5ad","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Team BDS","name":"Team BDS","id":"tm-64248513e110","firstSeen":"2023-10-19","lastSeen":"2023-10-19","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Team ROCCAT","name":"Team ROCCAT","id":"tm-c821eb9ba976","firstSeen":"2014-12-19","lastSeen":"2014-12-19","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Team WE","name":"Team WE","id":"tm-f5665c13ca53","firstSeen":"2014-07-20","lastSeen":"2014-07-20","reason":"no-source-identity","candidates":[]}
+{"kind":"team","string":"Team WE","name":"Team WE","id":"tm-f5665c13ca53","firstSeen":"2015-03-15","lastSeen":"2015-03-15","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Team Whales","name":"Team Whales","id":"tm-d8c2d4d2eca5","firstSeen":"2023-10-15","lastSeen":"2023-10-15","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"The Bandits Prime","name":"The Bandits Prime","id":"tm-fb205a4a7874","firstSeen":"2026-10-13","lastSeen":"2026-10-13","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"Unicorns of Love","name":"Unicorns of Love","id":"tm-87d2c66de97e","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
 {"kind":"team","string":"Weibo Gaming","name":"Weibo Gaming","id":"tm-50038f5deaa0","firstSeen":"2023-11-19","lastSeen":"2023-11-19","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"ahq eSports Club","name":"ahq eSports Club","id":"tm-6e23c14207fd","firstSeen":"2015-01-29","lastSeen":"2015-01-29","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"paiN Gaming","name":"paiN Gaming","id":"tm-b466e4fea16e","firstSeen":"2014-12-06","lastSeen":"2014-12-06","reason":"no-source-identity","candidates":[]}
-{"kind":"team","string":"yoe Flash Wolves","name":"yoe Flash Wolves","id":"tm-3c91264e4622","firstSeen":"2015-01-28","lastSeen":"2015-01-28","reason":"no-source-identity","candidates":[]}
+{"kind":"team","string":"yoe Flash Wolves","name":"yoe Flash Wolves","id":"tm-3c91264e4622","firstSeen":"2015-03-13","lastSeen":"2015-03-13","reason":"no-source-identity","candidates":[]}

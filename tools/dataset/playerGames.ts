@@ -50,9 +50,6 @@ export type PlayerGamesAssembly = {
 	coverageByGame: Map<string, "complete" | "partial" | "unavailable">;
 };
 
-/** Fields that must be stated on every player before a game's stats count as complete. */
-const REQUIRED = ["kills", "deaths", "assists", "cs", "gold", "damage", "vision", "items", "trinket", "summonerSpells", "keystone", "runes", "role"] as const;
-
 function resolve(identity: IdentityIndex, kind: "player" | "team" | "champion", source: string, date: string, where: string) {
 	if (source === "") throw new Error(`${where}: an empty ${kind} reference cannot be resolved`);
 	let found;
@@ -99,6 +96,9 @@ export function assemblePlayerGames(input: {
 			const team = resolve(input.identity, "team", player.team, player.date, `${where}: ${player.playerLink}: Team`);
 			const sideIndex = sideTeams.indexOf(team.id);
 			if (sideIndex === -1) throw new Error(`${where}: ${player.playerLink}'s team ${player.team} is not one of the game's sides`);
+			if (player.side !== null && player.side !== sideIndex + 1) {
+				throw new Error(`${where}: ${player.playerLink}'s source Side is ${player.side}, but its team ${player.team} is side ${sideIndex + 1} — the source contradicts itself`);
+			}
 			const champion = resolve(input.identity, "champion", player.champion, player.date, `${where}: ${player.playerLink}: Champion`);
 			if (player.role === "") throw new Error(`${where}: ${player.playerLink} has no played role`);
 			rows.push({
@@ -134,7 +134,14 @@ export function assemblePlayerGames(input: {
 				source: { gameId: sourceGameId, playerLink: player.playerLink },
 			});
 		}
-		const complete = players.length === 10 && players.every((player) =>
+		const structure = (["blue", "red"] as const).every((side) => {
+			const sideRows = players.filter((player) => {
+				const team = input.identity.resolve("team", player.team, player.date);
+				return team !== null && game.sides[side === "blue" ? 0 : 1].teamId === team.id;
+			});
+			return sideRows.length === 5 && new Set(sideRows.map((player) => player.role)).size === 5;
+		});
+		const complete = structure && players.length === 10 && players.every((player) =>
 			player.kills !== null && player.deaths !== null && player.assists !== null && player.cs !== null &&
 			player.gold !== null && player.damage !== null && player.vision !== null && player.trinket !== null &&
 			player.keystone !== null && player.items.length > 0 && player.summonerSpells.length > 0 &&

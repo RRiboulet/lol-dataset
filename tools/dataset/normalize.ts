@@ -103,6 +103,8 @@ export type SourceChampion = {
  * the scoreboard displayed (a string that denotes that entity on that date).
  */
 export type SourceScoreboardRow = {
+	/** Source GameId when the payload carries one. Empty for the older identity-only queries. */
+	gameId: string;
 	page: string;
 	/** UTC calendar date of the game, `YYYY-MM-DD`, empty when the source has none. */
 	date: string;
@@ -518,6 +520,7 @@ export function normalizeScoreboard(payloads: CachedPayload[]): SourceScoreboard
 	for (const payload of payloads) {
 		for (const row of parse(payload)) {
 			rows.push({
+				gameId: asText(raw(row, "GameId")),
 				page: asText(row.OverviewPage),
 				date: asDate(raw(row, "DateTime_UTC")),
 				playerName: asText(row.Name),
@@ -718,7 +721,21 @@ export function normalizePlayerGames(payloads: CachedPayload[]): SourcePlayerGam
 			if (gameId === "" || playerLink === "") {
 				throw new Error(`${payload.file}: a player-game row needs GameId and Link (got ${JSON.stringify({ gameId, playerLink })})`);
 			}
-			const side = asInteger(raw(row, "Side"));
+			const where = `${payload.file}: ${gameId}: ${playerLink}`;
+			const sideText = asText(raw(row, "Side"));
+			if (sideText !== "" && sideText !== "1" && sideText !== "2") {
+				throw new Error(`${where}: Side ${JSON.stringify(sideText)} is neither 1 nor 2 — a source change cannot be read as an absent side`);
+			}
+			const dateText = asText(raw(row, "DateTime_UTC"));
+			if (dateText !== "" && !/^\d{4}-\d{2}-\d{2}/.test(dateText)) {
+				throw new Error(`${where}: DateTime_UTC ${JSON.stringify(dateText)} is not a timestamp — a source change cannot become an undated observation`);
+			}
+			for (const field of ["Items", "SummonerSpells"] as const) {
+				const value = raw(row, field);
+				if (value !== undefined && value !== null && !Array.isArray(value) && asText(value) !== "") {
+					throw new Error(`${where}: ${field} ${JSON.stringify(value)} is not a Cargo list — a source change cannot be read as a one-item list`);
+				}
+			}
 			rows.push({
 				gameId,
 				date: asDate(raw(row, "DateTime_UTC")),
@@ -726,7 +743,7 @@ export function normalizePlayerGames(payloads: CachedPayload[]): SourcePlayerGam
 				playerName: asText(raw(row, "Name")),
 				team: asText(raw(row, "Team")),
 				champion: asText(raw(row, "Champion")),
-				side: side === 1 || side === 2 ? side : null,
+				side: sideText === "1" ? 1 : sideText === "2" ? 2 : null,
 				role: asText(raw(row, "IngameRole")) || asText(raw(row, "Role")),
 				kills: optionalInteger(raw(row, "Kills"), `${payload.file}: ${gameId}: ${playerLink}: Kills`),
 				deaths: optionalInteger(raw(row, "Deaths"), `${payload.file}: ${gameId}: ${playerLink}: Deaths`),
@@ -746,13 +763,30 @@ export function normalizePlayerGames(payloads: CachedPayload[]): SourcePlayerGam
 			});
 		}
 	}
-	return dedupe(
-		rows,
-		(row) => `${row.gameId}\u0000${row.playerLink}`,
-		sameIgnoringSource,
-		"player-game",
-		(seen, row) => `${row.gameId}: player ${row.playerLink} appears twice in this game (${seen.sourceFile} and ${row.sourceFile}) — a duplicate row would double the player's contribution`,
-	);
+	// Identical rows from different payloads are normal overlap and collapse. Two
+	// rows from the SAME payload for the same (game, player) are a duplicate the
+	// ticket says must fail — even when their bytes are identical.
+	const byKey = new Map<string, SourcePlayerGame[]>();
+	for (const row of rows) {
+		const key = `${row.gameId}\u0000${row.playerLink}`;
+		const seen = byKey.get(key) ?? [];
+		if (seen.some((other) => other.sourceFile === row.sourceFile)) {
+			throw new Error(`${row.gameId}: player ${row.playerLink} appears twice in ${row.sourceFile} — a duplicate row would double the player's contribution`);
+		}
+		seen.push(row);
+		byKey.set(key, seen);
+	}
+	const result: SourcePlayerGame[] = [];
+	for (const group of byKey.values()) {
+		const first = group[0];
+		for (const other of group.slice(1)) {
+			if (!sameIgnoringSource(first, other)) {
+				throw new Error(`${first.gameId}: player ${first.playerLink} has disagreeing rows in ${first.sourceFile} and ${other.sourceFile} — one payload is stale`);
+			}
+		}
+		result.push(first);
+	}
+	return result;
 }
 
 /**

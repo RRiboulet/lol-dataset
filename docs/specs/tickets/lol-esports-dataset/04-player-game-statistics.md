@@ -36,22 +36,33 @@ Leaves for later tickets: ordered drafts, the full invariant gate.
 
 ## Decisions made while building
 
-- `coverage.playerStats` is **presence-based**: complete means ten rows all state
-  every R4 field, partial means at least one field is missing, and unavailable
+- `coverage.playerStats` is **presence-based**: complete means ten rows — five per
+  side with one played role each — all state every R4 field and reconcile to the
+  team totals; partial means structure or a field is missing, and unavailable
   means the corpus carries no player rows. The game's `era` label is still emitted
   separately. The 2015 rows state no damage, vision, keystone or runes and are
   therefore honestly `partial`; a full era-aware player field table is left for a
   later ticket rather than guessed from patch dates.
 - A full `ScoreboardPlayers` payload was recorded in one CargoExport request using
   the exact fields from `cargofields`. It covers 171 games, including 42 IEM IX
-  events the rule rejects; only player rows joining an emitted game become rows or
-  identity observations. The earlier identity-only payloads remain as identity
-  evidence and are not reread as statistics.
+  events the rule rejects; a row that names a game the rule rejected contributes
+  neither a player row nor an identity observation. The earlier identity-only
+  payloads carry no GameId and remain as identity evidence, not statistics.
+  Without that filter those rejected events minted 15 teams, 76 players, 100
+  aliases and 91 unresolved rows; the build now stays at 36 teams, 193 players,
+  502 aliases and 165 unresolved rows.
 - Role uses `IngameRole` (the played position) over `Role` (the source's label).
   No recorded row disagrees, so the case is tested on a scratch copy.
 - Items, summoner spells and runes are lists of source names; canonical item/spell
-  entities are a later concern. A repeated player link in one game, or a sum that
-  disagrees with a team total on a complete game, stops the build naming the game.
+  entities are a later concern. A repeated player link in one game — even an
+  identical copy — stops the build naming the game; the same row arriving from two
+  overlapping payloads still collapses, as overlap is normal for a crawl. A sum
+  that disagrees with a team total on a complete game also stops the build.
+- A present-but-unparseable `Side`, `DateTime_UTC` or scalar-instead-of-list
+  `Items`/`SummonerSpells` stops the build rather than becoming an absence or a
+  one-item list. Rows for rejected events are still fully validated before the
+  selection filter: fail-loud is preferred to silently ignoring malformed bytes.
+  The source's `Side` is cross-checked against the team resolved from the game.
 
 ## Validation
 

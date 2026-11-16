@@ -529,7 +529,13 @@ export function assembleIdentity(
 		return id;
 	};
 
+	// The caller passes the games the selection rule admitted. A broad crawl also
+	// carries scoreboard rows for rejected events: when such a row names its game it
+	// is not a reference in this dataset and must not mint entities or unresolved
+	// rows. The older identity-only payloads carry no GameId and stay as evidence.
+	const selected = (gameId: string): boolean => options.selectedGameIds === undefined || options.selectedGameIds.has(gameId);
 	for (const row of sources.scoreboard) {
+		if (row.gameId !== "" && !selected(row.gameId)) continue;
 		observe("team", row.team, row.date);
 		observe("team", row.opponent, row.date);
 		const playerId = observe("player", row.playerLink, row.date);
@@ -553,10 +559,6 @@ export function assembleIdentity(
 	// to resolve to one canonical entity before it goes on a game row. The unresolved
 	// report says which strings a future registry payload should answer.
 	const gameDates = new Map(sources.games.map((game) => [game.gameId, game.date]));
-	// The caller passes the games the selection rule admitted. A crawl also carries
-	// rejected events, whose draft strings are not references in this dataset and must
-	// not mint entities or unresolved rows.
-	const selected = (gameId: string): boolean => options.selectedGameIds === undefined || options.selectedGameIds.has(gameId);
 	for (const game of sources.games) {
 		for (const side of game.sides) observe("team", side.team, game.date);
 		observe("team", game.winTeam, game.date);

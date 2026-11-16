@@ -168,3 +168,91 @@ test("two builds emit byte-identical player rows", async () => {
 	const second = await buildDataset({ rawDir: FIXTURE_RAW });
 	assert.equal(first.files["player-games.jsonl"], second.files["player-games.jsonl"]);
 });
+
+test("rejected IEM games mint no teams, players or unresolved references", async () => {
+	const result = await build();
+	for (const name of ["Dignitas", "007x", "CaoMei"]) {
+		assert.ok(!result.identity.teams.some((team) => team.name === name), `${name} is not a team in this dataset`);
+		assert.ok(!result.identity.players.some((player) => player.name === name), `${name} is not a player in this dataset`);
+		assert.ok(!result.identity.unresolved.some((row) => row.string === name), `${name} is not unresolved either`);
+	}
+	assert.equal(result.playerGames.rows.length, 1290, "filtering identity observations does not remove real player rows");
+});
+
+test("a game with duplicate roles is partial, not complete", async () => {
+	const base = await build();
+	const target = base.playerGames.rows.find((row) => "damage" in row);
+	assert.ok(target);
+	const sameSide = base.playerGames.rows.filter((row) => row.gameId === target.gameId && row.side === target.side && row.id !== target.id);
+	assert.ok(sameSide.length > 0);
+	const dir = await scratch();
+	try {
+		const file = await broadFile(dir);
+		const source = await rows(file);
+		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === sameSide[0].sourcePlayer);
+		assert.ok(row);
+		row.IngameRole = target.role;
+		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		const result = await buildDataset({ rawDir: dir });
+		const game = result.scoreboards.games.find((candidate) => candidate.source.gameId === target.source.gameId);
+		assert.equal(game?.coverage.playerStats, "partial", "the coverage marker does not claim an impossible complete draft of roles");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("an identical duplicate player row in one payload fails the build", async () => {
+	const base = await build();
+	const target = base.playerGames.rows.find((row) => "damage" in row);
+	assert.ok(target);
+	const dir = await scratch();
+	try {
+		const file = await broadFile(dir);
+		const source = await rows(file);
+		const original = source.find((row) => row.GameId === target.source.gameId && row.Link === target.sourcePlayer);
+		assert.ok(original);
+		source.push({ ...original });
+		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await assert.rejects(buildDataset({ rawDir: dir }), (error: Error) =>
+			error.message.includes(target.source.gameId) && /appears twice/.test(error.message),
+		);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("present-but-unparseable source values stop the build", async () => {
+	for (const [field, value, expected] of [
+		["Side", "blue", /Side "blue"/],
+		["Items", 5, /Items 5 is not a Cargo list/],
+		["DateTime_UTC", "yesterday", /DateTime_UTC "yesterday"/],
+	] as const) {
+		const dir = await scratch();
+		try {
+			const file = await broadFile(dir);
+			const source = await rows(file);
+			const row = source.find((candidate) => typeof candidate.Kills === "number");
+			assert.ok(row);
+			row[field] = value;
+			await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+			await assert.rejects(buildDataset({ rawDir: dir }), expected);
+		} finally {
+			await rm(dir, { recursive: true, force: true });
+		}
+	}
+});
+
+test("a malformed row in a rejected event still fails loudly", async () => {
+	const dir = await scratch();
+	try {
+		const file = await broadFile(dir);
+		const source = await rows(file);
+		const row = source.find((candidate) => String(candidate.OverviewPage).startsWith("IEM Season IX - Cologne"));
+		assert.ok(row);
+		row.Kills = "abc";
+		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await assert.rejects(buildDataset({ rawDir: dir }), /expected a number, got "abc"/);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
