@@ -183,7 +183,7 @@ tree: `.pi/settings.json` excludes both, and the image bakes
 under `/opt/pi-packages/my-agent-setup`. `postCreate.sh` declares that baked path
 in the container's own agent settings and fails when the running image carries a
 different tag than the checkout pins. The pin tracks the latest
-`my-agent-setup` release (currently `v1.13.0`); a new tag there is followed by a
+`my-agent-setup` release (currently `v1.14.0`); a new tag there is followed by a
 bump here, not by letting the image fall behind. To bump: change
 `.devcontainer/pi-agent-setup.version`, change the `ARG PI_AGENT_SETUP_TAG=` line
 in the Dockerfile, run `sh .devcontainer/check-pi-agent-setup.sh`, then

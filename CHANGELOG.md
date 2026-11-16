@@ -39,6 +39,15 @@ Added:
   page it was read from, so a 2015 game is not marked partial for want of a void
   grub that arrived in patch 14.1. `games.test.ts` checks the recorded data against
   the table from the other side.
+- The devcontainer's review-triage policy is committed rather than living only on
+  the private volume: `.devcontainer/pi/review-triage.json` holds the judge and
+  the four `opencode-go` reviewers, and `postCreate.sh` installs it when the
+  agent dir has none, never over an existing file, so an edit made in a running
+  container survives a rebuild. `postCreate.sh` also refreshes pi's model
+  catalogues, because the policy's judge is newer than the list pi ships with and
+  a fresh volume could not resolve it; a host without network or provider keys
+  still gets a usable container, with a warning naming the missing judge instead
+  of a triage that silently falls back to its most expensive profile.
 - Agent scaffold copied from `RRiboulet/my-agent-setup`: the devcontainer, the
   pi extensions, skills and templates, `bin/devc`, and the test suite that
   guards them. No dataset yet, and no `README.md` yet by design.
