@@ -281,7 +281,14 @@ function add<T>(map: Map<string, Set<T>>, key: string, value: T): void {
 export function assembleIdentity(
 	sources: SourceDataset,
 	declaredAliases: DeclaredAlias[] = [],
-	options: { draftGameIds?: ReadonlySet<string> } = {},
+	options: {
+		/** Games the selection rule admitted; every other named game is a rejected event. */
+		selectedGameIds?: ReadonlySet<string>;
+		/** Event pages the rule selected. */
+		selectedPages?: readonly string[];
+		/** Pages of events the rule considered and rejected, for rows that name no game. */
+		rejectedPages?: ReadonlySet<string>;
+	} = {},
 ): AssembledIdentity {
 	const key2 = (kind: EntityKind, string: string): string => `${kind}\u0000${string}`;
 	const key3 = (kind: EntityKind, string: string, id: string): string => `${kind}\u0000${string}\u0000${id}`;
@@ -529,7 +536,33 @@ export function assembleIdentity(
 		return id;
 	};
 
+	// The caller passes the games the selection rule admitted. A broad crawl also
+	// carries scoreboard rows for rejected events: when such a row names its game it
+	// is not a reference in this dataset and must not mint entities or unresolved
+	// rows. The older identity-only payloads carry no GameId, so a row without one is
+	// judged by its page — but only against events the rule *explicitly rejected*. A
+	// page the rule never considered is curated identity evidence (ticket 02's rename
+	// and duplicate cases), not a crawl artifact, and dropping it would erase the eras
+	// those fixtures establish.
+	const selected = (gameId: string): boolean => options.selectedGameIds === undefined || options.selectedGameIds.has(gameId);
+	const underAny = (page: string, bases: ReadonlySet<string> | readonly string[]): boolean => {
+		for (const base of bases) {
+			if (page === base || page.startsWith(`${base}/`)) return true;
+		}
+		return false;
+	};
+	// A page under a *selected* event is kept even when the rule rejected the page as an
+	// event of its own: `Worlds 2023 Main Event` is rejected as a stage subpage, yet its
+	// games are that selected event's games. Only a page under no selected event and
+	// under a rejected one is excluded.
+	const pageRejected = (page: string): boolean =>
+		page !== "" &&
+		options.rejectedPages !== undefined &&
+		underAny(page, options.rejectedPages) &&
+		!(options.selectedPages !== undefined && underAny(page, options.selectedPages));
 	for (const row of sources.scoreboard) {
+		if (row.gameId !== "" ? !selected(row.gameId) : pageRejected(row.page)) continue;
+
 		observe("team", row.team, row.date);
 		observe("team", row.opponent, row.date);
 		const playerId = observe("player", row.playerLink, row.date);
@@ -553,14 +586,10 @@ export function assembleIdentity(
 	// to resolve to one canonical entity before it goes on a game row. The unresolved
 	// report says which strings a future registry payload should answer.
 	const gameDates = new Map(sources.games.map((game) => [game.gameId, game.date]));
-	// The caller passes the games the selection rule admitted. A crawl also carries
-	// rejected events, whose draft strings are not references in this dataset and must
-	// not mint entities or unresolved rows.
-	const selected = (gameId: string): boolean => options.draftGameIds === undefined || options.draftGameIds.has(gameId);
 	for (const game of sources.games) {
+		if (!selected(game.gameId)) continue;
 		for (const side of game.sides) observe("team", side.team, game.date);
 		observe("team", game.winTeam, game.date);
-		if (!selected(game.gameId)) continue;
 		for (const index of [0, 1] as const) {
 			for (const champion of [...game.picks[index], ...game.bans[index]]) observe("champion", champion, game.date);
 		}
@@ -572,7 +601,22 @@ export function assembleIdentity(
 			for (const slot of [...side.picks, ...side.bans]) observe("champion", slot.champion, date);
 		}
 	}
+	// Player-game rows are observations as well: their handles, team strings and
+	// champions must resolve to the same entities the emitted rows reference.
+	for (const row of sources.playerGames) {
+		if (!selected(row.gameId)) continue;
+		const playerId = observe("player", row.playerLink, row.date);
+		if (playerId !== null && row.playerName !== "") {
+			register("player", row.playerName, playerId, "alias", "handle");
+			recordObservation("player", row.playerName, playerId, row.date);
+		}
+		observe("team", row.team, row.date);
+		observe("champion", row.champion, row.date);
+	}
 	for (const match of sources.matches) {
+		// A series belongs to an event by its page, exactly like a game: a match under no
+		// selected event is a rejected event's row and is not a reference here.
+		if (options.selectedPages !== undefined && !underAny(match.page, options.selectedPages)) continue;
 		observe("team", match.sides[0], match.date);
 		observe("team", match.sides[1], match.date);
 	}

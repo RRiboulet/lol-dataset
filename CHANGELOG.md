@@ -25,6 +25,23 @@ Changed:
 
 Added:
 
+- Per-player game rows in `player-games.jsonl`: 1,290 rows over the two fixture
+  events, ten per game, with kills, deaths, assists, CS, gold, damage, vision,
+  items, trinket, summoner spells, keystone and runes carried as numbers or lists
+  rather than free-text blobs. `coverage.playerStats` is presence-based: 110 games
+  are complete (five per side, one played role each) and reconcile to the team
+  totals emitted in ticket 03, while the 19 IEM 2015 games are partial because the
+  source states no damage, vision, keystone or runes and are never invented. A
+  repeated player, a broken sum, a duplicated role in a supposedly complete game,
+  or a present-but-unparseable side, date or list fails the build naming the game.
+  A recorded full `ScoreboardPlayers` payload supplies the statistics; rows naming
+  an event the rule rejected contribute neither a player row nor an identity
+  observation, including rows that name no game but sit on a rejected event's page,
+  and games and series under a rejected event mint no teams either. Identity grows
+  to 193 players and 165 unresolved references, which ticket 10's crawl is expected
+  to shrink. Player roles are compared case-insensitively, dates must be real
+  calendar instants, and the scoreboard dedupe key carries the game id so file order
+  cannot decide whether a row is evidence.
 - Champion drafts on every game: `draft` carries bans and picks with the source's
   fidelity — numbered slots and the `SwitchedSides` flag from two recorded
   `PicksAndBansS7` payloads for the 2023 fixture, and sorted sets from

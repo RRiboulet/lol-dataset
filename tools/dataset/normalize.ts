@@ -103,6 +103,8 @@ export type SourceChampion = {
  * the scoreboard displayed (a string that denotes that entity on that date).
  */
 export type SourceScoreboardRow = {
+	/** Source GameId when the payload carries one. Empty for the older identity-only queries. */
+	gameId: string;
 	page: string;
 	/** UTC calendar date of the game, `YYYY-MM-DD`, empty when the source has none. */
 	date: string;
@@ -226,6 +228,36 @@ export type SourceMatch = {
 };
 
 /** Everything the stages below the cache hand to `assemble` / `identity`. */
+/** One `ScoreboardPlayers` row with statistics (ticket 04), not just an identity observation. */
+export type SourcePlayerGame = {
+	gameId: string;
+	date: string;
+	/** The player page: the identity, while `playerName` is the handle then displayed. */
+	playerLink: string;
+	playerName: string;
+	team: string;
+	champion: string;
+	/** The source's `Side`, 1 or 2; null when it did not state one. */
+	side: 1 | 2 | null;
+	/** The played position, preferring `IngameRole` over the source's `Role` label. */
+	role: string;
+	kills: number | null;
+	deaths: number | null;
+	assists: number | null;
+	cs: number | null;
+	gold: number | null;
+	damage: number | null;
+	vision: number | null;
+	items: string[];
+	trinket: string | null;
+	summonerSpells: string[];
+	keystone: string | null;
+	primaryTree: string | null;
+	secondaryTree: string | null;
+	runes: string[];
+	sourceFile: string;
+};
+
 export type SourceDataset = {
 	tournaments: SourceEvent[];
 	teams: SourceTeam[];
@@ -238,6 +270,8 @@ export type SourceDataset = {
 	matches: SourceMatch[];
 	/** Ordered drafts (ticket 05). Empty before 2017 payloads are recorded. */
 	drafts: SourceDraft[];
+	/** Per-player statistics for recorded games (ticket 04). */
+	playerGames: SourcePlayerGame[];
 };
 
 /** Cargo returns list-typed fields as arrays; everything else as strings. */
@@ -486,6 +520,7 @@ export function normalizeScoreboard(payloads: CachedPayload[]): SourceScoreboard
 	for (const payload of payloads) {
 		for (const row of parse(payload)) {
 			rows.push({
+				gameId: asText(raw(row, "GameId")),
 				page: asText(row.OverviewPage),
 				date: asDate(raw(row, "DateTime_UTC")),
 				playerName: asText(row.Name),
@@ -497,9 +532,13 @@ export function normalizeScoreboard(payloads: CachedPayload[]): SourceScoreboard
 			});
 		}
 	}
+	// `gameId` is part of the key because it decides whether the row is evidence at all
+	// (a rejected event's row is not). Without it, an identity-only overlapping payload
+	// whose file sorts first could replace a stat row and blank its GameId, which would
+	// make the output depend on file order (R7/R8).
 	return dedupe(
 		rows,
-		(row) => [row.page, row.date, row.playerLink, row.team, row.opponent, row.champion].join("\u0000"),
+		(row) => [row.gameId, row.page, row.date, row.playerLink, row.team, row.opponent, row.champion].join("\u0000"),
 		() => true,
 		"scoreboard row",
 	);
@@ -658,6 +697,121 @@ function checkDraftSlots(row: Record<string, unknown>, where: string): void {
 }
 
 /**
+ * A timestamp the source states must be a real calendar instant, not merely
+ * date-shaped: `2023-13-45 99:99:99` passes a prefix test and would then drive
+ * date-sensitive identity resolution with an impossible day. An absent value stays
+ * absent; a stated-but-blank one is a source anomaly and stops the build.
+ */
+function assertTimestamp(text: string, stated: boolean, where: string): void {
+	if (text === "") {
+		if (stated) throw new Error(`${where}: present but empty — a stated timestamp cannot become an undated observation`);
+		return;
+	}
+	const match = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?$/.exec(text);
+	if (match === null) throw new Error(`${where}: ${JSON.stringify(text)} is not a timestamp`);
+	const [, year, month, day, hour = "0", minute = "0", second = "0"] = match.map((part) => Number(part ?? 0));
+	const months = [31, (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+	const valid =
+		month >= 1 && month <= 12 && day >= 1 && day <= months[month - 1] && hour <= 23 && minute <= 59 && second <= 59;
+	if (!valid) throw new Error(`${where}: ${JSON.stringify(text)} is not a real calendar instant`);
+}
+
+/** A comma-separated Cargo string is a list, not a free-text blob. */
+function asNameList(value: unknown): string[] {
+	if (Array.isArray(value)) return asList(value);
+	return asText(value)
+		.split(",")
+		.map((item) => item.trim())
+		.filter((item) => item !== "");
+}
+
+/**
+ * `ScoreboardPlayers` rows that carry statistics. The earlier identity-only fixture
+ * queries name some of the same players, so a row with none of the stat keys is an
+ * identity observation, not a second statement about the same player-game.
+ */
+const PLAYER_STAT_KEYS = [
+	"Kills", "Deaths", "Assists", "CS", "Gold", "DamageToChampions", "VisionScore",
+	"Items", "Trinket", "SummonerSpells", "KeystoneRune", "Runes", "Role", "IngameRole", "Side",
+] as const;
+
+export function normalizePlayerGames(payloads: CachedPayload[]): SourcePlayerGame[] {
+	const rows: SourcePlayerGame[] = [];
+	for (const payload of payloads) {
+		for (const row of parse(payload)) {
+			if (!PLAYER_STAT_KEYS.some((key) => key in row)) continue;
+			const gameId = asText(raw(row, "GameId"));
+			const playerLink = asText(raw(row, "Link"));
+			if (gameId === "" || playerLink === "") {
+				throw new Error(`${payload.file}: a player-game row needs GameId and Link (got ${JSON.stringify({ gameId, playerLink })})`);
+			}
+			const where = `${payload.file}: ${gameId}: ${playerLink}`;
+			const sideText = asText(raw(row, "Side"));
+			if (sideText !== "" && sideText !== "1" && sideText !== "2") {
+				throw new Error(`${where}: Side ${JSON.stringify(sideText)} is neither 1 nor 2 — a source change cannot be read as an absent side`);
+			}
+			const dateText = asText(raw(row, "DateTime_UTC"));
+			assertTimestamp(dateText, raw(row, "DateTime_UTC") !== undefined, `${where}: DateTime_UTC`);
+			for (const field of ["Items", "SummonerSpells"] as const) {
+				const value = raw(row, field);
+				if (value !== undefined && value !== null && !Array.isArray(value) && asText(value) !== "") {
+					throw new Error(`${where}: ${field} ${JSON.stringify(value)} is not a Cargo list — a source change cannot be read as a one-item list`);
+				}
+			}
+			rows.push({
+				gameId,
+				date: asDate(raw(row, "DateTime_UTC")),
+				playerLink,
+				playerName: asText(raw(row, "Name")),
+				team: asText(raw(row, "Team")),
+				champion: asText(raw(row, "Champion")),
+				side: sideText === "1" ? 1 : sideText === "2" ? 2 : null,
+				role: asText(raw(row, "IngameRole")) || asText(raw(row, "Role")),
+				kills: optionalInteger(raw(row, "Kills"), `${payload.file}: ${gameId}: ${playerLink}: Kills`),
+				deaths: optionalInteger(raw(row, "Deaths"), `${payload.file}: ${gameId}: ${playerLink}: Deaths`),
+				assists: optionalInteger(raw(row, "Assists"), `${payload.file}: ${gameId}: ${playerLink}: Assists`),
+				cs: optionalInteger(raw(row, "CS"), `${payload.file}: ${gameId}: ${playerLink}: CS`),
+				gold: optionalInteger(raw(row, "Gold"), `${payload.file}: ${gameId}: ${playerLink}: Gold`),
+				damage: optionalInteger(raw(row, "DamageToChampions"), `${payload.file}: ${gameId}: ${playerLink}: DamageToChampions`),
+				vision: optionalInteger(raw(row, "VisionScore"), `${payload.file}: ${gameId}: ${playerLink}: VisionScore`),
+				items: asList(raw(row, "Items")),
+				trinket: asText(raw(row, "Trinket")) || null,
+				summonerSpells: asList(raw(row, "SummonerSpells")),
+				keystone: asText(raw(row, "KeystoneRune")) || null,
+				primaryTree: asText(raw(row, "PrimaryTree")) || null,
+				secondaryTree: asText(raw(row, "SecondaryTree")) || null,
+				runes: asNameList(raw(row, "Runes")),
+				sourceFile: payload.file,
+			});
+		}
+	}
+	// Identical rows from different payloads are normal overlap and collapse. Two
+	// rows from the SAME payload for the same (game, player) are a duplicate the
+	// ticket says must fail — even when their bytes are identical.
+	const byKey = new Map<string, SourcePlayerGame[]>();
+	for (const row of rows) {
+		const key = `${row.gameId}\u0000${row.playerLink}`;
+		const seen = byKey.get(key) ?? [];
+		if (seen.some((other) => other.sourceFile === row.sourceFile)) {
+			throw new Error(`${row.gameId}: player ${row.playerLink} appears twice in ${row.sourceFile} — a duplicate row would double the player's contribution`);
+		}
+		seen.push(row);
+		byKey.set(key, seen);
+	}
+	const result: SourcePlayerGame[] = [];
+	for (const group of byKey.values()) {
+		const first = group[0];
+		for (const other of group.slice(1)) {
+			if (!sameIgnoringSource(first, other)) {
+				throw new Error(`${first.gameId}: player ${first.playerLink} has disagreeing rows in ${first.sourceFile} and ${other.sourceFile} — one payload is stale`);
+			}
+		}
+		result.push(first);
+	}
+	return result;
+}
+
+/**
  * `PicksAndBansS7` rows: the ordered draft (R5). Slots are read as numbered fields,
  * so their order is a source fact rather than an inference from list position.
  */
@@ -749,5 +903,6 @@ export function normalizeSources(payloads: CachedPayload[]): SourceDataset {
 		games: normalizeScoreboardGames(group("ScoreboardGames")),
 		matches: normalizeMatches(group("MatchSchedule")),
 		drafts: normalizePicksAndBans(group("PicksAndBansS7")),
+		playerGames: normalizePlayerGames(group("ScoreboardPlayers")),
 	};
 }

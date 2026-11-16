@@ -47,6 +47,15 @@ function describe(result: BuildResult): string {
 		`${identity.teams.length} team(s), ${identity.players.length} player(s), ${identity.champions.length} champion(s), ` +
 			`${identity.aliases.length} alias row(s), ${identity.unresolved.length} unresolved reference(s)`,
 	);
+	const playerStates = new Map<string, number>();
+	for (const game of scoreboards.games) {
+		const state = game.coverage.playerStats;
+		playerStates.set(state, (playerStates.get(state) ?? 0) + 1);
+	}
+	lines.push(
+		`${result.playerGames.rows.length} player-game row(s): ` +
+			[...playerStates.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)).map(([state, count]) => `${count} ${state}`).join(", "),
+	);
 	const states = new Map<string, number>();
 	for (const record of scoreboards.eventGames) states.set(record.state, (states.get(record.state) ?? 0) + 1);
 	const stateText = [...states.entries()]
