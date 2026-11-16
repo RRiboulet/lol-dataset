@@ -89,6 +89,8 @@ export function assemblePlayerGames(input: {
 		const where = `${game.source.gameId}: player game`;
 		const seen = new Set<string>();
 		const sideTeams = game.sides.map((side) => side.teamId);
+		/** Each player's source string resolved once, for both the row and the structure check. */
+		const teamIdByPlayer = new Map<string, string>();
 		for (const player of players) {
 			const found = resolve(input.identity, "player", player.playerLink, player.date, `${where}: ${player.playerLink}`);
 			if (seen.has(found.id)) throw new Error(`${where}: player ${player.playerLink} resolves to ${found.id}, which appears twice in this game`);
@@ -96,6 +98,7 @@ export function assemblePlayerGames(input: {
 			const team = resolve(input.identity, "team", player.team, player.date, `${where}: ${player.playerLink}: Team`);
 			const sideIndex = sideTeams.indexOf(team.id);
 			if (sideIndex === -1) throw new Error(`${where}: ${player.playerLink}'s team ${player.team} is not one of the game's sides`);
+			teamIdByPlayer.set(player.playerLink, team.id);
 			if (player.side !== null && player.side !== sideIndex + 1) {
 				throw new Error(`${where}: ${player.playerLink}'s source Side is ${player.side}, but its team ${player.team} is side ${sideIndex + 1} — the source contradicts itself`);
 			}
@@ -134,12 +137,12 @@ export function assemblePlayerGames(input: {
 				source: { gameId: sourceGameId, playerLink: player.playerLink },
 			});
 		}
+		// Five players and five distinct positions per side. Roles are compared case- and
+		// space-insensitively, because `Top` and `top` are one position, not two.
 		const structure = (["blue", "red"] as const).every((side) => {
-			const sideRows = players.filter((player) => {
-				const team = input.identity.resolve("team", player.team, player.date);
-				return team !== null && game.sides[side === "blue" ? 0 : 1].teamId === team.id;
-			});
-			return sideRows.length === 5 && new Set(sideRows.map((player) => player.role)).size === 5;
+			const sideRows = players.filter((player) => teamIdByPlayer.get(player.playerLink) === game.sides[side === "blue" ? 0 : 1].teamId);
+			const roles = new Set(sideRows.map((player) => player.role.trim().toLowerCase()));
+			return sideRows.length === 5 && roles.size === 5;
 		});
 		const complete = structure && players.length === 10 && players.every((player) =>
 			player.kills !== null && player.deaths !== null && player.assists !== null && player.cs !== null &&

@@ -130,8 +130,16 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	// observations identity has to see before the join can resolve them. Draft champion
 	// observations are limited to games the selection rule admitted.
 	const selected = selectedGameIds(sources.games, assembled.events);
+	const selectedPages = assembled.events.map((event) => event.overviewPage);
+	const rejectedPages = new Set(
+		assembled.selection
+			.filter((record) => record.decision === "rejected" && record.overviewPage !== "")
+			.map((record) => record.overviewPage),
+	);
 	const identity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE), {
 		selectedGameIds: selected,
+		selectedPages,
+		rejectedPages,
 	});
 	const scoreboards = assembleScoreboards({
 		games: sources.games,

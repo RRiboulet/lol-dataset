@@ -225,7 +225,9 @@ test("present-but-unparseable source values stop the build", async () => {
 	for (const [field, value, expected] of [
 		["Side", "blue", /Side "blue"/],
 		["Items", 5, /Items 5 is not a Cargo list/],
-		["DateTime_UTC", "yesterday", /DateTime_UTC "yesterday"/],
+		["DateTime_UTC", "yesterday", /DateTime_UTC: "yesterday" is not a timestamp/],
+		["DateTime_UTC", "2023-13-45 99:99:99", /not a real calendar instant/],
+		["DateTime_UTC", "   ", /present but empty/],
 	] as const) {
 		const dir = await scratch();
 		try {
@@ -252,6 +254,138 @@ test("a malformed row in a rejected event still fails loudly", async () => {
 		row.Kills = "abc";
 		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
 		await assert.rejects(buildDataset({ rawDir: dir }), /expected a number, got "abc"/);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("an identity-only payload for a rejected event mints nothing, while a stage page of a selected event still counts", async () => {
+	const dir = await scratch();
+	try {
+		const rejected = path.join(dir, ...PLAYERS_DIR.split(path.sep), "0000rejected.json");
+		await writeFile(
+			rejected,
+			JSON.stringify([
+				{
+					Name: "ProbeRejectedPlayer",
+					Link: "ProbeRejectedPlayer",
+					Team: "ProbeRejectedTeam",
+					TeamVs: "Other Probe Team",
+					Champion: "Annie",
+					OverviewPage: "IEM Season IX - Cologne",
+					"DateTime UTC": "2014-12-19 17:00:00",
+				},
+			]),
+			"utf8",
+		);
+		const built = await buildDataset({ rawDir: dir });
+		assert.ok(!built.identity.players.some((player) => player.name === "ProbeRejectedPlayer"));
+		assert.ok(!built.identity.teams.some((team) => team.name === "ProbeRejectedTeam"));
+		assert.ok(!built.identity.unresolved.some((row) => row.string === "ProbeRejectedPlayer"));
+		// A stage page under a selected event is that event's games, not a rejected event.
+		assert.ok(built.identity.players.some((player) => player.name === "TheShy"), "Worlds Main Event players survive");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("games and matches under a rejected event mint no teams", async () => {
+	const dir = await scratch();
+	try {
+		const gamesFile = path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames", "probe-rejected.json");
+		const gameSource = await rows(path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames", "2c56284940e4601ab472b28c.json"));
+		const template = gameSource[0];
+		await writeFile(
+			gamesFile,
+			JSON.stringify([
+				{
+					...template,
+					GameId: "IEM Season IX - Cologne_Probe_1_1",
+					MatchId: "IEM Season IX - Cologne_Probe_1",
+					OverviewPage: "IEM Season IX - Cologne",
+					Team1: "ProbeGameTeam",
+					Team2: "ProbeGameTeamTwo",
+					WinTeam: "ProbeGameTeam",
+				},
+			]),
+			"utf8",
+		);
+		const matchFile = path.join(dir, "lol-fandom", "cargoexport", "MatchSchedule", "probe-rejected.json");
+		const matchSource = await rows(path.join(dir, "lol-fandom", "cargoexport", "MatchSchedule", "fe0b28d45f0561129ca42fb9.json"));
+		await writeFile(
+			matchFile,
+			JSON.stringify([
+				{
+					...matchSource[0],
+					MatchId: "IEM Season IX - Cologne_Probe_1",
+					OverviewPage: "IEM Season IX - Cologne",
+					Team1: "ProbeMatchTeam",
+					Team2: "ProbeMatchTeamTwo",
+				},
+			]),
+			"utf8",
+		);
+		const built = await buildDataset({ rawDir: dir });
+		for (const name of ["ProbeGameTeam", "ProbeGameTeamTwo", "ProbeMatchTeam", "ProbeMatchTeamTwo"]) {
+			assert.ok(!built.identity.teams.some((team) => team.name === name), `${name} must not be minted`);
+		}
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("a role differing only in case still counts as one played position", async () => {
+	const base = await build();
+	const target = base.playerGames.rows.find((row) => "damage" in row);
+	assert.ok(target);
+	const sameSide = base.playerGames.rows.filter((row) => row.gameId === target.gameId && row.side === target.side && row.id !== target.id);
+	assert.ok(sameSide.length > 0);
+	const dir = await scratch();
+	try {
+		const file = await broadFile(dir);
+		const source = await rows(file);
+		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === sameSide[0].sourcePlayer);
+		assert.ok(row);
+		row.IngameRole = String(target.role).toLowerCase();
+		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		const result = await buildDataset({ rawDir: dir });
+		const game = result.scoreboards.games.find((candidate) => candidate.source.gameId === target.source.gameId);
+		assert.equal(game?.coverage.playerStats, "partial");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("an identity-only row cannot blank a stat row's GameId through deduplication", async () => {
+	const base = await build();
+	const target = base.playerGames.rows.find((row) => "damage" in row);
+	assert.ok(target);
+	const dir = await scratch();
+	try {
+		// File names are read in sorted order, so a payload named earlier wins a dedupe
+		// tie. The identity-only copy must not erase the stat row's GameId.
+		const overlap = path.join(dir, ...PLAYERS_DIR.split(path.sep), "000000000000000000000000.json");
+		await writeFile(
+			overlap,
+			JSON.stringify([
+				{
+					Name: target.playerName,
+					Link: target.sourcePlayer,
+					Team: target.sourceTeam,
+					TeamVs: "someone",
+					Champion: target.sourceChampion,
+					OverviewPage: "2023 Season World Championship/Main Event",
+					"DateTime UTC": "2023-11-19 08:00:00",
+				},
+			]),
+			"utf8",
+		);
+		const result = await buildDataset({ rawDir: dir });
+		assert.equal(result.playerGames.rows.length, 1290, "the stat rows survive the overlapping identity copy");
+		assert.ok(
+			result.playerGames.rows.some((row) => row.id === target.id && "damage" in row),
+			"the stat row is still a stat row",
+		);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

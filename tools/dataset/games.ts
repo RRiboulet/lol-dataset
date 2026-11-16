@@ -189,11 +189,15 @@ function resolveTeam(identity: IdentityIndex, source: string, date: string, wher
  * games. A page under no selected event belongs to an event the rule excluded, and it
  * is returned to the caller rather than emitted.
  */
+/** Is `page` the event's own page, or a stage page under it? The rule selects the event page. */
+export function pageUnderEvent(page: string, overviewPage: string): boolean {
+	return page === overviewPage || page.startsWith(`${overviewPage}/`);
+}
+
 function eventForPage(page: string, events: EventRecord[]): EventRecord | undefined {
 	let found: EventRecord | undefined;
 	for (const event of events) {
-		const inside = page === event.overviewPage || page.startsWith(`${event.overviewPage}/`);
-		if (!inside) continue;
+		if (!pageUnderEvent(page, event.overviewPage)) continue;
 		if (found === undefined || event.overviewPage.length > found.overviewPage.length) found = event;
 	}
 	return found;

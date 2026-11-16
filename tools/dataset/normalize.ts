@@ -532,9 +532,13 @@ export function normalizeScoreboard(payloads: CachedPayload[]): SourceScoreboard
 			});
 		}
 	}
+	// `gameId` is part of the key because it decides whether the row is evidence at all
+	// (a rejected event's row is not). Without it, an identity-only overlapping payload
+	// whose file sorts first could replace a stat row and blank its GameId, which would
+	// make the output depend on file order (R7/R8).
 	return dedupe(
 		rows,
-		(row) => [row.page, row.date, row.playerLink, row.team, row.opponent, row.champion].join("\u0000"),
+		(row) => [row.gameId, row.page, row.date, row.playerLink, row.team, row.opponent, row.champion].join("\u0000"),
 		() => true,
 		"scoreboard row",
 	);
@@ -692,6 +696,26 @@ function checkDraftSlots(row: Record<string, unknown>, where: string): void {
 	}
 }
 
+/**
+ * A timestamp the source states must be a real calendar instant, not merely
+ * date-shaped: `2023-13-45 99:99:99` passes a prefix test and would then drive
+ * date-sensitive identity resolution with an impossible day. An absent value stays
+ * absent; a stated-but-blank one is a source anomaly and stops the build.
+ */
+function assertTimestamp(text: string, stated: boolean, where: string): void {
+	if (text === "") {
+		if (stated) throw new Error(`${where}: present but empty — a stated timestamp cannot become an undated observation`);
+		return;
+	}
+	const match = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?$/.exec(text);
+	if (match === null) throw new Error(`${where}: ${JSON.stringify(text)} is not a timestamp`);
+	const [, year, month, day, hour = "0", minute = "0", second = "0"] = match.map((part) => Number(part ?? 0));
+	const months = [31, (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+	const valid =
+		month >= 1 && month <= 12 && day >= 1 && day <= months[month - 1] && hour <= 23 && minute <= 59 && second <= 59;
+	if (!valid) throw new Error(`${where}: ${JSON.stringify(text)} is not a real calendar instant`);
+}
+
 /** A comma-separated Cargo string is a list, not a free-text blob. */
 function asNameList(value: unknown): string[] {
 	if (Array.isArray(value)) return asList(value);
@@ -727,9 +751,7 @@ export function normalizePlayerGames(payloads: CachedPayload[]): SourcePlayerGam
 				throw new Error(`${where}: Side ${JSON.stringify(sideText)} is neither 1 nor 2 — a source change cannot be read as an absent side`);
 			}
 			const dateText = asText(raw(row, "DateTime_UTC"));
-			if (dateText !== "" && !/^\d{4}-\d{2}-\d{2}/.test(dateText)) {
-				throw new Error(`${where}: DateTime_UTC ${JSON.stringify(dateText)} is not a timestamp — a source change cannot become an undated observation`);
-			}
+			assertTimestamp(dateText, raw(row, "DateTime_UTC") !== undefined, `${where}: DateTime_UTC`);
 			for (const field of ["Items", "SummonerSpells"] as const) {
 				const value = raw(row, field);
 				if (value !== undefined && value !== null && !Array.isArray(value) && asText(value) !== "") {
