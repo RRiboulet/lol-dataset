@@ -27,6 +27,7 @@ import { FIXTURE_RAW, savePayloadBody, writeTempRule } from "./helpers.ts";
 
 const WORLDS = "2023 Season World Championship";
 const IEM = "IEM Season IX - World Championship";
+const IPL = "IGN ProLeague Season 5";
 
 /** One build for the whole file; each test asserts a different property of it. */
 let built: Promise<BuildResult> | undefined;
@@ -69,9 +70,10 @@ async function payloadBodies(raw: string, table: string): Promise<string[]> {
 test("a recorded event yields exactly the games the source states, once each", async () => {
 	const result = await build();
 	const { games } = result.scoreboards;
-	assert.equal(games.length, 205, "110 Worlds 2023 + 76 MSI 2023 + 19 IEM 2015 games");
+	assert.equal(games.length, 277, "110 Worlds 2023 + 76 MSI 2023 + 19 IEM 2015 + 72 IPL 5 games");
 	assert.equal(gamesUnder(result, WORLDS).length, 110);
 	assert.equal(gamesUnder(result, IEM).length, 19);
+	assert.equal(gamesUnder(result, IPL).length, 72);
 	assert.equal(new Set(games.map((game) => game.id)).size, games.length, "no duplicate game ids");
 	// Exactly once means exactly: the source's own ids are unique too, and every game is
 	// attached to a selected event rather than floating.
@@ -203,16 +205,32 @@ test("the source identifiers travel with the row, wherever the source provided t
 test("matches: every series the source states, with the score the games cannot recover", async () => {
 	const result = await build();
 	const { matches, games } = result.scoreboards;
-	assert.equal(matches.length, 90, "52 Worlds 2023 + 25 MSI 2023 + 13 IEM 2015 series");
+	assert.equal(
+		matches.length,
+		132,
+		"52 Worlds 2023 + 25 MSI 2023 + 13 IEM 2015 + 42 IPL 5 series (IPL 5 has 48 rows; 6 are contradicted by every game naming them, ticket 14)",
+	);
 	const byId = new Map(matches.map((match) => [match.id, match]));
 	for (const game of games) {
-		assert.ok(game.matchId !== undefined, `${game.source.gameId}: its series is in the corpus`);
+		if (game.matchId === undefined) {
+			// Detached on purpose: the series row names two other teams (ticket 14). The
+			// exact set is asserted in series-rows.test.ts.
+			assert.ok(result.scoreboards.detachedGames.some((detached) => detached.gameId === game.source.gameId), `${game.source.gameId}: a game without a matchId is in the detachment report`);
+			continue;
+		}
 		assert.ok(byId.has(game.matchId), `${game.source.gameId}: the canonical series id resolves`);
 	}
+	// One recorded Indian Pro League qualifier series states no result at all: the source
+	// has the row (and no game for it), so no winner is the honest answer, not a gap here.
+	const NO_WINNER = "IGN ProLeague Season 5/Qualifiers/Wildcard Qualifiers_Group Stage_6";
 	for (const match of matches) {
 		assert.equal(match.sides.length, 2);
-		assert.ok(match.winnerTeamId !== undefined, `${match.source.matchId}: the source states a winner`);
-		assert.ok(match.sides.some((side) => side.teamId === match.winnerTeamId));
+		if (match.source.matchId === NO_WINNER) {
+			assert.equal(match.winnerTeamId, undefined, "measured: the one series the source left without a result");
+		} else {
+			assert.ok(match.winnerTeamId !== undefined, `${match.source.matchId}: the source states a winner`);
+			assert.ok(match.sides.some((side) => side.teamId === match.winnerTeamId));
+		}
 		assert.equal(match.isNullified, false, `measured: no nullified series in the fixtures`);
 		assert.ok(!("forfeit" in match), "measured: no forfeit in the fixtures, so the key is absent rather than false");
 	}
@@ -257,13 +275,14 @@ test("the per-event report separates 'no games in the source' from 'nobody asked
 	// `empty` is the same claim as "the source answered zero games".
 	assert.equal(state.get("2013 World Cyber Games")?.state, "empty");
 	assert.equal(state.get("2013 World Cyber Games")?.games, 0);
-	// IPL 5 is `missing`, not `empty`: the only recorded query for it is a
-	// `ScoreboardPlayers` one, and that came back with **ten rows**. Rows in a player
-	// table say nothing about whether the event has games, so they cannot establish
-	// emptiness — a game table asking and returning nothing can. (Ticket 09 measured 72
-	// IPL 5 games at the source; they are deliberately not committed, see ticket 14.)
-	assert.equal(state.get("IGN ProLeague Season 5")?.state, "missing");
-	assert.equal(state.get("IGN ProLeague Season 5")?.games, 0);
+	// IPL 5 is `recorded` now that ticket 14 settled its series rows: the four recorded
+	// payloads carry 72 games and 48 series, 6 of which are contradicted and not emitted.
+	// Before that change the only recorded query for it was a `ScoreboardPlayers` one, and
+	// rows in a player table say nothing about whether the event has games — which is why
+	// the event used to read `missing` rather than `empty`.
+	assert.equal(state.get(IPL)?.state, "recorded");
+	assert.equal(state.get(IPL)?.games, 72);
+	assert.equal(state.get(IPL)?.matches, 42);
 	// MSI 2023 was crawled for real in this ticket: it carries games, so it is recorded.
 	assert.equal(state.get("2023 Mid-Season Invitational")?.state, "recorded");
 	// WCG 2011 is the earliest era: a real `LIKE '2011 World Cyber Games%'` query came
@@ -297,14 +316,18 @@ test("an event name that only appears inside a LIKE pattern is not a query for t
 	assert.equal(state.get("2025 First Stand"), "missing", "a substring LIKE pattern is not a literal that names the event");
 });
 
-test("a game whose teams are not its series' teams stops the build, naming both", async () => {
+test("a game whose teams are not its series' teams is detached and reported, not attached", async () => {
 	// A game belongs to a series between the same two teams. Retargeting one game to
 	// another series of the same event passes every id check — the match exists and its
 	// event is the same — so only the team set catches it. Side swaps are legitimate, which
 	// is why the comparison is a set: 11 recorded series have every game the other way up.
+	//
+	// Ticket 14 decides what catching it means: the game keeps its own data and loses the
+	// link (the source's own IPL 5 does this systematically), and the gate still refuses an
+	// emitted record that claims such a series — see invariants.test.ts.
 	const SOURCE = "2023 Season World Championship/Play-In_Round 1_1";
 	const TARGET = "2023 Season World Championship/Play-In_Round 1_4";
-	const retargeted = buildAfterEdit(async (raw) => {
+	const retargeted = await buildAfterEdit(async (raw) => {
 		for (const file of await payloadBodies(raw, "ScoreboardGames")) {
 			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
 			const row = rows.find((candidate) => candidate.MatchId === SOURCE);
@@ -315,10 +338,15 @@ test("a game whose teams are not its series' teams stops the build, naming both"
 		}
 		throw new Error(`the fixtures carry no game for ${SOURCE}`);
 	});
-	await assert.rejects(
-		retargeted,
-		/game "2023 Season World Championship\/Play-In_Round 1_1_\d": its teams .* are not the teams of its series "2023 Season World Championship\/Play-In_Round 1_4"/,
-	);
+	const detached = retargeted.scoreboards.detachedGames.filter((game) => game.matchId === TARGET);
+	assert.equal(detached.length, 1, "exactly the retargeted game is detached");
+	const game = retargeted.scoreboards.games.find((candidate) => candidate.source.gameId === detached[0].gameId);
+	assert.ok(game);
+	assert.equal(game.matchId, undefined, "the game is emitted without a series, not between two other teams");
+	assert.equal(game.source.matchId, TARGET, "the source's own id is preserved on the row (spec R7)");
+	// The series itself is still emitted: its own games (there are others, from the recorded
+	// payload) still name it, so only the link is contradicted.
+	assert.ok(retargeted.scoreboards.matches.some((match) => match.source.matchId === TARGET));
 });
 
 test("a game for an event the rule does not select is ignored, not emitted", async () => {
@@ -344,7 +372,7 @@ test("a game for an event the rule does not select is ignored, not emitted", asy
 		assert.ok(result.scoreboards.games.every((game) => !game.overviewPage.startsWith(WORLDS)));
 		assert.equal(result.scoreboards.ignoredGames.length, 110, "the 110 Worlds games are counted as ignored");
 		assert.equal(result.scoreboards.ignoredMatches.length, 52);
-		assert.equal(result.scoreboards.games.length, 95, "MSI 2023 and IEM 2015 still contribute games");
+		assert.equal(result.scoreboards.games.length, 167, "MSI 2023, IEM 2015 and IPL 5 still contribute games");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
@@ -386,27 +414,33 @@ test("a side-swapped series still resolves both of its teams", async () => {
 });
 
 test("a departed patch is an absent key, not an empty string", async () => {
-	// The recorded fixtures all state a patch, so the absence has to be made by deleting
-	// the field from a copy of a real payload. That is a mapping test, not invented data:
-	// the row still carries everything else the source said.
+	// A patch is absent in the recorded corpus already: no IPL 5 2012 row states one, which
+	// is the era, not a defect. The mutation makes the same absence on a 2023 row, so the
+	// mapping is tested as well: the row still carries everything else the source said.
 	const dir = await mkdtemp(path.join(tmpdir(), "dataset-patch-"));
 	try {
 		const raw = path.join(dir, "raw");
 		await cp(FIXTURE_RAW, raw, { recursive: true });
 		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
+		let edited = "";
 		for (const name of await readdir(tableDir)) {
 			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
 			const file = path.join(tableDir, name);
 			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
-			if (rows.length === 0) continue;
-			delete rows[0].Patch;
+			const row = rows.find((candidate) => candidate.Patch !== null && candidate.Patch !== undefined);
+			if (row === undefined) continue;
+			delete row.Patch;
+			edited = String(row.GameId);
 			await savePayloadBody(file, JSON.stringify(rows));
 			break;
 		}
+		assert.notEqual(edited, "", "the fixtures carry a game with a stated patch");
 		const result = await buildDataset({ rawDir: raw });
 		const bare = result.scoreboards.games.filter((game) => !("patch" in game));
-		assert.equal(bare.length, 1, "exactly one game lost its patch");
-		assert.equal(bare[0].coverage.teamStats, "complete", "the patch is not part of the team-statistics coverage group");
+		const changed = bare.find((game) => game.source.gameId === edited);
+		assert.ok(changed, `the edited game (${edited}) states no patch, as an absent key`);
+		assert.equal(changed.coverage.teamStats, "complete", "the patch is not part of the team-statistics coverage group");
+		assert.equal(new Set(bare.map((game) => game.source.gameId)).size, bare.length, "one record per game, absent patch or not");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

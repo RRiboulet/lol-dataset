@@ -75,6 +75,20 @@ function describe(result: BuildResult): string {
 	if (scoreboards.gamesWithoutMatch.length > 0) {
 		lines.push(`  ${scoreboards.gamesWithoutMatch.length} game(s) whose series the corpus does not carry — no canonical matchId`);
 	}
+	if (scoreboards.detachedGames.length > 0) {
+		// Not the same thing as an absent series row: the corpus carries one, and it names two
+		// other teams. The game is kept, the link is refused (ticket 14).
+		lines.push(
+			`  ${scoreboards.detachedGames.length} game(s) whose series row names other teams — emitted without a canonical matchId ` +
+				`(${[...new Set(scoreboards.detachedGames.map((game) => game.matchId))].sort().join(", ")})`,
+		);
+	}
+	if (scoreboards.contradictedMatches.length > 0) {
+		lines.push(
+			`  ${scoreboards.contradictedMatches.length} series row(s) every game naming them contradicts — not emitted ` +
+				`(${scoreboards.contradictedMatches.join(", ")})`,
+		);
+	}
 	if (scoreboards.ignoredGames.length > 0 || scoreboards.ignoredMatches.length > 0) {
 		// A payload that covers a page the rule rejected is normal for a crawl window, but
 		// it must never be silently absorbed: these rows are counted, not emitted.

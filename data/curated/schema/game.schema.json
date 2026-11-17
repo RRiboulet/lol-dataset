@@ -37,7 +37,7 @@
 		"matchId": {
 			"type": "string",
 			"pattern": "^mt-[0-9a-f]{12}$",
-			"description": "The series this game belongs to, present only when the corpus also carries that match's MatchSchedule row. `source.matchId` is the source's own id and is always present."
+			"description": "The series this game belongs to, present only when the corpus also carries that match's MatchSchedule row **and that row names the same two teams**. A game whose series row names two other teams is emitted without it, because the source contradicts itself about the link and the game's own data is not in doubt (measured on IPL 5's swapped `MatchId`s, ticket 14). `source.matchId` is the source's own id and is always present."
 		},
 		"overviewPage": {
 			"type": "string",

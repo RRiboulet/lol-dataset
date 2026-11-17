@@ -14,7 +14,13 @@
 //     game does.
 //   - A game's teams must be its series' teams as a set. The match id alone is too weak:
 //     a retargeted game keeps a valid same-event match while landing in a series between
-//     two other teams, and a side swap means the order cannot be compared.
+//     two other teams, and a side swap means the order cannot be compared. Where the two
+//     disagree the game is emitted **without** a `matchId` and counted (ticket 14): the
+//     source's own `MatchSchedule` swaps three pairs of IPL 5 `MatchId`s, so both records
+//     are real and only their link is wrong. The invariant gate refuses any emitted
+//     record that *does* claim a series between two other teams, so a hand-edit or a bad
+//     merge still fails — what changed is where the source's contradiction lands, not
+//     whether a game may sit in someone else's series.
 //   - `Winner` (an integer) and `WinTeam` (a string) are cross-checks, not alternative
 //     sources of truth: the comparison is on **canonical IDs**, so an old spelling of a
 //     renamed team still agrees with the side it names, while a genuine contradiction
@@ -147,6 +153,19 @@ export type ScoreboardAssembly = {
 	ignoredMatches: string[];
 	/** Games whose series the corpus does not carry, so no canonical `matchId` is set. */
 	gamesWithoutMatch: string[];
+	/**
+	 * Games the corpus *does* carry a series row for, but whose teams are not that row's
+	 * teams. They are emitted with no `matchId` rather than refused or force-fitted: the
+	 * source says two things that cannot both be true, and the game's own data is not in
+	 * doubt (only the link is). Each entry names both source ids so the report is checkable.
+	 */
+	detachedGames: { gameId: string; matchId: string }[];
+	/**
+	 * Series rows every game naming them contradicts. Not emitted: a match row with no
+	 * games cannot be told apart from a series whose games were not crawled, so shipping
+	 * it would read as "games missing" rather than "this row is contradicted".
+	 */
+	contradictedMatches: string[];
 };
 
 export type ScoreboardInput = {
@@ -290,12 +309,18 @@ function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string):
 	return coverage === "unavailable" ? { coverage } : { draft: { fidelity: "unordered", sides }, coverage };
 }
 
+type GameAssembly = {
+	record: GameRecord;
+	/** False when the corpus carries the game's series row but it names two other teams. */
+	attached: boolean;
+};
+
 function assembleGame(
 	game: SourceGame,
 	event: EventRecord,
 	input: ScoreboardInput,
 	seriesById: ReadonlyMap<string, MatchSeries>,
-): GameRecord {
+): GameAssembly {
 	const where = `${game.sourceFile}: game ${JSON.stringify(game.gameId)}`;
 	const sides: [GameSideRecord, GameSideRecord] = [
 		gameSide(0, game.sides[0], input.identity, game.date, where),
@@ -359,36 +384,44 @@ function assembleGame(
 	// the same event keeps a valid match while landing between two other teams. The compare
 	// is on the set, because a side swap is legitimate — 11 recorded series have every game
 	// with `Team1` and `Team2` the other way up.
+	//
+	// A disagreement detaches the game instead of stopping the build (ticket 14). IPL 5's
+	// `MatchSchedule` swaps the `MatchId`s of three pairs of series, so the games and the
+	// series rows are both real data and only their *link* is wrong; refusing the event
+	// would throw 72 games away over three swapped keys, and trusting the link would attach
+	// a game to a series between two other teams. The emitted game therefore carries no
+	// `matchId`, the summary counts it, and the invariant gate still refuses any record
+	// that *does* claim such a match — so nothing is loosened, only the honest record is
+	// written.
+	let attached = series !== undefined;
 	if (series !== undefined) {
 		const gameTeams = [sides[0].teamId, sides[1].teamId].sort();
 		const seriesTeams = [...series.teamIds].sort();
-		if (gameTeams[0] !== seriesTeams[0] || gameTeams[1] !== seriesTeams[1]) {
-			throw new Error(
-				`${where}: its teams (${sides.map((side) => `${side.teamId} ${side.teamName}`).join(" vs ")}) are not the teams of its series ` +
-					`${JSON.stringify(game.matchId)} (${series.teamIds.join(" vs ")}) — a game cannot sit in a series between two other teams`,
-			);
-		}
+		attached = gameTeams[0] === seriesTeams[0] && gameTeams[1] === seriesTeams[1];
 	}
 	return {
-		id: surrogateId("gm", game.gameId),
-		eventId: event.id,
-		eventName: event.name,
-		...(series === undefined ? {} : { matchId }),
-		overviewPage: game.page,
-		dateTimeUtc: game.dateTimeUtc,
-		...(game.patch === null ? {} : { patch: game.patch }),
-		...(game.durationSeconds === null ? {} : { durationSeconds: game.durationSeconds }),
-		era: era.id,
-		coverage: { teamStats: coverageOf(era, { both, any: stated }), draft: draft.coverage, playerStats: "unavailable" },
-		...(draft.draft === undefined ? {} : { draft: draft.draft }),
-		sides,
-		winnerTeamId: sides[winnerIndex].teamId,
-		winnerTeamName: sides[winnerIndex].teamName,
-		source: {
-			gameId: game.gameId,
-			matchId: game.matchId,
-			...(game.riotPlatformGameId === "" ? {} : { riotPlatformGameId: game.riotPlatformGameId }),
-			...(game.riotHash === "" ? {} : { riotHash: game.riotHash }),
+		attached,
+		record: {
+			id: surrogateId("gm", game.gameId),
+			eventId: event.id,
+			eventName: event.name,
+			...(attached ? { matchId } : {}),
+			overviewPage: game.page,
+			dateTimeUtc: game.dateTimeUtc,
+			...(game.patch === null ? {} : { patch: game.patch }),
+			...(game.durationSeconds === null ? {} : { durationSeconds: game.durationSeconds }),
+			era: era.id,
+			coverage: { teamStats: coverageOf(era, { both, any: stated }), draft: draft.coverage, playerStats: "unavailable" },
+			...(draft.draft === undefined ? {} : { draft: draft.draft }),
+			sides,
+			winnerTeamId: sides[winnerIndex].teamId,
+			winnerTeamName: sides[winnerIndex].teamName,
+			source: {
+				gameId: game.gameId,
+				matchId: game.matchId,
+				...(game.riotPlatformGameId === "" ? {} : { riotPlatformGameId: game.riotPlatformGameId }),
+				...(game.riotHash === "" ? {} : { riotHash: game.riotHash }),
+			},
 		},
 	};
 }
@@ -533,6 +566,8 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	const ignoredGames: string[] = [];
 	const ignoredMatches: string[] = [];
 	const gamesWithoutMatch: string[] = [];
+	const detachedGames: { gameId: string; matchId: string }[] = [];
+	const contradictedMatches: string[] = [];
 	const perEvent = new Map<string, { games: number; matches: number }>();
 	const count = (eventId: string, field: "games" | "matches"): void => {
 		const seen = perEvent.get(eventId) ?? { games: 0, matches: 0 };
@@ -540,6 +575,17 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 		perEvent.set(eventId, seen);
 	};
 
+	/**
+	 * For each series a game names, how many of those games it actually holds. Presence is
+	 * what says a game named it at all; zero is the case ticket 14 is about.
+	 */
+	const held = new Map<string, number>();
+
+	// Series first, because a game needs to know whether its series' teams are its own. A
+	// series is held back until every game has been compared: one that every game naming
+	// it contradicts is not those games' series, and emitting it would look like a series
+	// whose games were not crawled.
+	const candidates: { match: SourceMatch; event: EventRecord; record: MatchRecord }[] = [];
 	for (const match of input.matches) {
 		const event = eventForPage(match.page, input.events);
 		if (event === undefined) {
@@ -547,9 +593,8 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 			continue;
 		}
 		const record = assembleMatch(match, event, input);
-		matches.push(record);
+		candidates.push({ match, event, record });
 		seriesById.set(match.matchId, { eventId: event.id, teamIds: [record.sides[0].teamId, record.sides[1].teamId] });
-		count(event.id, "matches");
 	}
 	for (const game of input.games) {
 		const event = eventForPage(game.page, input.events);
@@ -557,9 +602,26 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 			ignoredGames.push(game.page);
 			continue;
 		}
-		games.push(assembleGame(game, event, input, seriesById));
+		const { record, attached } = assembleGame(game, event, input, seriesById);
+		games.push(record);
 		count(event.id, "games");
-		if (!seriesById.has(game.matchId)) gamesWithoutMatch.push(game.gameId);
+		if (!seriesById.has(game.matchId)) {
+			gamesWithoutMatch.push(game.gameId);
+			continue;
+		}
+		held.set(game.matchId, (held.get(game.matchId) ?? 0) + (attached ? 1 : 0));
+		if (!attached) detachedGames.push({ gameId: game.gameId, matchId: game.matchId });
+	}
+	for (const candidate of candidates) {
+		const agreed = held.get(candidate.match.matchId);
+		// `agreed === undefined` is a series no game names at all: the corpus states it and
+		// says nothing against it, so it is emitted as it always was.
+		if (agreed === 0) {
+			contradictedMatches.push(candidate.match.matchId);
+			continue;
+		}
+		matches.push(candidate.record);
+		count(candidate.event.id, "matches");
 	}
 
 	games.sort(byId);
@@ -587,5 +649,5 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	});
 	eventGames.sort((a, b) => (a.eventId < b.eventId ? -1 : a.eventId > b.eventId ? 1 : 0));
 
-	return { games, matches, eventGames, ignoredGames, ignoredMatches, gamesWithoutMatch };
+	return { games, matches, eventGames, ignoredGames, ignoredMatches, gamesWithoutMatch, detachedGames, contradictedMatches };
 }

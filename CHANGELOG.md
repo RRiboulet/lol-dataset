@@ -4,6 +4,25 @@
 
 Changed:
 
+- A game whose `MatchSchedule` row names two other teams is now emitted **without** a
+  canonical `matchId` and counted in the build's summary, instead of stopping the build;
+  a series row that **every** game naming it contradicts is not emitted at all and is
+  counted with its source id. The game↔series team check moved into the invariant gate,
+  which refuses any emitted game whose `matchId` names a series between two other teams,
+  so the promise "a game never sits in someone else's series" now also covers a
+  hand-edited file or a bad merge — what changed is where the source's own contradiction
+  lands, not whether it can be committed. IPL 5 2012 is the case that forced the
+  decision: three pairs of its series rows have swapped `MatchId`s, so eight games name a
+  series between two other teams (ticket 14).
+- `tools/dataset/rules/identity-aliases.json` can declare an alias by the source string
+  it denotes (`aliasOf`) instead of a page or Riot id, for an entity the corpus has no
+  registry row for at all. The target resolves through the registries first, mints the
+  target string's provisional id only when nothing answers, and refuses to chain onto
+  another declaration, so the resolution never depends on read order.
+- `data/curated/schema/game.schema.json`'s `matchId` and the match and event-report
+  descriptions state the two new facts: a `matchId` requires a series row naming the
+  same two teams, a match may legitimately have zero games, and IPL 5 is no longer an
+  example of an event nothing had asked about.
 - `build --check` now compares the provenance manifest as well as the entity
   files: it fails when the committed manifest does not name a payload the build
   actually read, when a payload's hash or query changed, or when an entity
@@ -53,6 +72,28 @@ Changed:
 
 Added:
 
+- **IPL 5 2012**, the earliest event the source still carries games for, in the
+  committed dataset: 72 games, 720 player rows, 48 series rows of which 42 are emitted.
+  Its four recorded payloads moved out of `tools/dataset/fixtures/pending/` (which is
+  gone, not kept as a second cache the build ignores) into the fixture cache the build
+  reads, so the manifest pins them and a game's source ids lead to its bytes. Team
+  statistics are `unavailable` — the 2012 rows state none — drafts are unordered sets
+  with three bans a side, and player rows are `partial`: kills, deaths, assists and CS,
+  with no gold, damage, vision, keystone or runes. Committed totals go from 205 to 277
+  games, 90 to 132 matches and 2,050 to 2,770 player rows.
+- The legacy team name IPL 5 spells two ways resolves as one team: `CLG Prime` on the
+  six series rows and `Counter Logic Gaming` on the 12 games in them are one canonical
+  team, declared in `rules/identity-aliases.json` because that crawl recorded no
+  `Teams` payload to anchor a page on. Both source strings stay on their rows (spec
+  R7), and the alias row carries `declared` and `observed` evidence with the window the
+  corpus used it.
+- `ScoreboardAssembly.detachedGames` and `.contradictedMatches`, and the CLI summary
+  prints both counts with the series ids, so a crawl cannot absorb either silently.
+- `tools/dataset/test/series-rows.test.ts`, which derives the classification from the
+  recorded payloads on every run: 20 pairings whose source strings disagree, split into
+  12 legacy-name games (6 series) and 8 cross-match games (3 reciprocal `MatchId` swaps),
+  and asserts that the class decides the handling. Ticket 09's figure of 11 pairings
+  (9 + 3) does not reproduce on these bytes; the derived counts are what the test pins.
 - A provenance manifest at `data/curated/manifest.json`, written by the build: every
   cached payload the build read, sorted by cache-relative path, with its table,
   endpoint, recorded query, fetch time, HTTP status and sha256 of the body; plus a

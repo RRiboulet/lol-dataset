@@ -45,6 +45,14 @@ async function rows(file: string): Promise<Record<string, unknown>[]> {
 	return JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
 }
 
+/** The recorded payload of `table` that carries a row `matches` accepts. */
+async function payloadWith(root: string, table: string, matches: (row: Record<string, unknown>) => boolean): Promise<string> {
+	for (const file of await bodies(root, table)) {
+		if ((await rows(file)).some(matches)) return file;
+	}
+	throw new Error(`no recorded ${table} payload carries that row`);
+}
+
 async function save(file: string, values: Record<string, unknown>[]): Promise<void> {
 	await savePayloadBody(file, `${JSON.stringify(values)}\n`);
 }
@@ -61,24 +69,31 @@ test("2023 games carry ordered slots, 2015 games carry unordered sets, and all c
 	const ordered = games.filter((game) => game.draft?.fidelity === "ordered");
 	const unordered = games.filter((game) => game.draft?.fidelity === "unordered");
 	assert.equal(ordered.length, 186, "the recorded PicksAndBansS7 rows join every 2023 game (Worlds 110 + MSI 76)");
-	assert.equal(unordered.length, 19, "the pre-2017 games fall back to the list fields");
+	assert.equal(
+		unordered.length,
+		91,
+		"the pre-2017 games fall back to the list fields: 19 IEM 2015 and 72 IPL 5 (whose PicksAndBansS7 query returned zero rows)",
+	);
 	const championById = new Map(result.identity.champions.map((champion) => [champion.id, champion]));
 	const championIds = new Set(championById.keys());
 	// The source writes `None` for an unused draft slot (measured on one MSI 2023 ban), and
 	// that slot must be absent rather than a champion called `None`. It is the only
 	// ordered game whose draft is therefore partial, which is the honest marker.
 	const NONE_SLOT_GAME = "2023 Mid-Season Invitational_Bracket Round 1_4_3";
+	// The same placeholder in the unordered path, measured on an IPL 5 2012 row: this game's
+	// `Team2Bans` ends with `None`, so its red side carries two bans rather than three.
+	const NONE_UNORDERED_GAME = "IGN ProLeague Season 5_Loser's Round 2 (1)_2_1";
 	for (const game of games) {
-		// The 2015 rows state five picks and three bans a side, so R6 calls them partial:
-		// a coverage marker that called them complete would hide the missing ban slots.
+		// The pre-2017 rows state five picks and at most three bans a side, so R6 calls them
+		// partial: a coverage marker that called them complete would hide the missing slots.
 		const expectedCoverage = game.source.gameId === NONE_SLOT_GAME ? "partial" : game.draft?.fidelity === "ordered" ? "complete" : "partial";
 		assert.equal(game.coverage.draft, expectedCoverage, `${game.source.gameId}: honest draft coverage`);
 		assert.ok(game.draft, `${game.source.gameId}: a draft is present`);
 		assert.deepEqual(game.draft.sides.map((side) => side.side), ["blue", "red"]);
 		for (const side of game.draft.sides) {
 			for (const group of ["picks", "bans"] as const) {
-				const short = game.source.gameId === NONE_SLOT_GAME && side.side === "red" && group === "bans";
-				const expected = game.draft.fidelity === "ordered" ? (short ? 4 : 5) : group === "picks" ? 5 : 3;
+				const placeholder = side.side === "red" && group === "bans" && (game.source.gameId === NONE_SLOT_GAME || game.source.gameId === NONE_UNORDERED_GAME);
+				const expected = game.draft.fidelity === "ordered" ? (placeholder ? 4 : 5) : group === "picks" ? 5 : placeholder ? 2 : 3;
 				assert.equal(side[group].length, expected, `${game.source.gameId}: the source's ${group} count per side`);
 				for (const entry of side[group]) {
 					assert.ok(championIds.has(entry.championId), `${game.source.gameId}: ${entry.sourceChampion} has a canonical entity`);
@@ -302,19 +317,24 @@ test("a champion repeated anywhere in a draft fails the build, naming the game",
 
 test("two payloads carrying identical rows are one draft and one game, not a stale conflict", async () => {
 	const dir = await scratch();
-	const metaPath = (await bodies(dir, "draft"))[0].replace(/\.json$/, ".meta.json");
+	const OVERLAP_GAME = "2023 Season World Championship/Main Event_Finals_1_1";
+	// The fixtures carry several payloads per table since IPL 5 was committed, so the
+	// overlap is built from the payload that actually holds this game, not the first one.
+	const draftFile = await payloadWith(dir, "draft", (row) => row.GameId === OVERLAP_GAME);
+	const metaPath = draftFile.replace(/\.json$/, ".meta.json");
 	const meta = JSON.parse(await readFile(metaPath, "utf8")) as { query: Record<string, unknown> };
-	const draftRows = await rows((await bodies(dir, "draft"))[0]);
-	const overlapGameId = "2023 Season World Championship/Main Event_Finals_1_1";
+	const draftRows = await rows(draftFile);
+	const overlapGameId = OVERLAP_GAME;
 	const query = { ...meta.query, where: `GameId='${overlapGameId}'`, limit: 1 } as CargoQuery;
 	await writePayload(dir, query, `${JSON.stringify([draftRows.find((row) => row.GameId === overlapGameId)])}\n`, {
 		url: "https://lol.fandom.com/wiki/Special:CargoExport?overlap=1",
 		fetchedAt: new Date().toISOString(),
 		status: 200,
 	});
-	const gameMetaPath = (await bodies(dir, "game"))[0].replace(/\.json$/, ".meta.json");
+	const gameFile = await payloadWith(dir, "game", (row) => row.GameId === OVERLAP_GAME);
+	const gameMetaPath = gameFile.replace(/\.json$/, ".meta.json");
 	const gameMeta = JSON.parse(await readFile(gameMetaPath, "utf8")) as { query: Record<string, unknown> };
-	const gameRows = await rows((await bodies(dir, "game"))[0]);
+	const gameRows = await rows(gameFile);
 	const overlapGame = gameRows.find((row) => row.GameId === overlapGameId);
 	assert.ok(overlapGame);
 	await writePayload(dir, { ...gameMeta.query, where: `GameId='${overlapGameId}'`, limit: 1 } as CargoQuery, `${JSON.stringify([overlapGame])}\n`, {
@@ -323,14 +343,14 @@ test("two payloads carrying identical rows are one draft and one game, not a sta
 		status: 200,
 	});
 	const result = await buildDataset({ rawDir: dir });
-	assert.equal(result.scoreboards.games.length, 205, "the overlapping rows did not duplicate a game");
+	assert.equal(result.scoreboards.games.length, 277, "the overlapping rows did not duplicate a game");
 	assert.equal(result.scoreboards.games.filter((game) => game.coverage.draft === "complete").length, 185, "185 of 186 ordered games; one MSI ban slot is the source's `None`");
 });
 
 test("a draft from a rejected event mints no champion or unresolved entity", async () => {
 	const dir = await scratch();
 	const gameId = "LCK 2023 Spring/Summer_1_1";
-	const sourceRows = await rows((await bodies(dir, "game"))[0]);
+	const sourceRows = await rows(await payloadWith(dir, "game", (row) => String(row.OverviewPage).startsWith("2023 Season World Championship")));
 	const source = sourceRows.find((row) => String(row.OverviewPage).startsWith("2023 Season World Championship"));
 	assert.ok(source);
 	await writeFile(path.join(dir, ...GAME_DIR.split(path.sep), "rejected.json"), JSON.stringify([{ ...source, GameId: gameId, OverviewPage: "LCK 2023 Spring/Summer", MatchId: "LCK 2023 Spring/Summer_1" }]), "utf8");
@@ -369,7 +389,8 @@ test("the source's None placeholder is absent in both draft paths", async () => 
 	// MSI 2023 writes `None` for an unused slot in TWO places: the numbered
 	// `PicksAndBansS7` ban field and the `ScoreboardGames` ban list. Handling only the
 	// ordered path mints an entity named `None` and lets the unordered fallback emit a
-	// "complete" draft containing it.
+	// "complete" draft containing it. IPL 5 2012 states the same placeholder in the
+	// unordered list path, so the filter is load-bearing in both eras, not only in 2023.
 	const result = await build();
 	assert.ok(!result.identity.champions.some((champion) => champion.name === "None"), "no champion entity is named None");
 	assert.ok(!result.identity.unresolved.some((row) => row.string === "None"), "None is not reported as unresolved either");

@@ -1,45 +1,45 @@
 {"kind":"champion","string":"Aatrox","entityId":"ch-49ea57cd196a","entityName":"Aatrox","firstSeen":"2023-05-05","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Ahri","entityId":"ch-7c9709f61f91","entityName":"Ahri","firstSeen":"2015-03-13","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Akali","entityId":"ch-30dbb04a9bf0","entityName":"Akali","firstSeen":"2023-10-10","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Ahri","entityId":"ch-7c9709f61f91","entityName":"Ahri","firstSeen":"2012-11-30","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Akali","entityId":"ch-30dbb04a9bf0","entityName":"Akali","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Akshan","entityId":"ch-28667a82df96","entityName":"Akshan","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Alistar","entityId":"ch-486309ec2ff8","entityName":"Alistar","firstSeen":"2015-10-01","lastSeen":"2023-11-12","evidence":["registry","observed"]}
+{"kind":"champion","string":"Alistar","entityId":"ch-486309ec2ff8","entityName":"Alistar","firstSeen":"2012-11-30","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Ambessa","entityId":"ch-9b1e7681d4dc","entityName":"Ambessa","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Amumu","entityId":"ch-3099838c52e4","entityName":"Amumu","firstSeen":"2011-06-18","lastSeen":"2023-05-03","evidence":["registry","observed"]}
-{"kind":"champion","string":"Anivia","entityId":"ch-27049826f521","entityName":"Anivia","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Anivia","entityId":"ch-27049826f521","entityName":"Anivia","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Annie","entityId":"ch-813fa9100589","entityName":"Annie","firstSeen":"2011-06-18","lastSeen":"2023-05-21","evidence":["registry","observed"]}
 {"kind":"champion","string":"Aphelios","entityId":"ch-f6025682d2e0","entityName":"Aphelios","firstSeen":"2023-05-02","lastSeen":"2023-11-11","evidence":["registry","observed"]}
-{"kind":"champion","string":"Ashe","entityId":"ch-3eb8a4f545ea","entityName":"Ashe","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Ashe","entityId":"ch-3eb8a4f545ea","entityName":"Ashe","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Aurelion Sol","entityId":"ch-bd5174fc916a","entityName":"Aurelion Sol","firstSeen":"2023-05-03","lastSeen":"2023-05-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Aurora","entityId":"ch-2dd8f20c4091","entityName":"Aurora","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Azir","entityId":"ch-b5466bf84aa2","entityName":"Azir","firstSeen":"2015-10-01","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Bard","entityId":"ch-b3bb94f84fe9","entityName":"Bard","firstSeen":"2023-10-22","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Bel'Veth","entityId":"ch-33979b22892a","entityName":"Bel'Veth","firstSeen":"2023-05-04","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Blitzcrank","entityId":"ch-6b85ab67b186","entityName":"Blitzcrank","firstSeen":"2023-05-02","lastSeen":"2023-11-12","evidence":["registry","observed"]}
+{"kind":"champion","string":"Blitzcrank","entityId":"ch-6b85ab67b186","entityName":"Blitzcrank","firstSeen":"2012-11-29","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Brand","entityId":"ch-a3538dc325f1","entityName":"Brand","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Braum","entityId":"ch-6f23ff6ab975","entityName":"Braum","firstSeen":"2015-10-01","lastSeen":"2023-11-03","evidence":["registry","observed"]}
 {"kind":"champion","string":"Briar","entityId":"ch-0b41211e7c71","entityName":"Briar","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Caitlyn","entityId":"ch-c66cabcee8a9","entityName":"Caitlyn","firstSeen":"2015-03-13","lastSeen":"2023-11-12","evidence":["registry","observed"]}
+{"kind":"champion","string":"Caitlyn","entityId":"ch-c66cabcee8a9","entityName":"Caitlyn","firstSeen":"2012-11-29","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Camille","entityId":"ch-a28358099942","entityName":"Camille","firstSeen":"2023-10-21","lastSeen":"2023-10-21","evidence":["registry","observed"]}
-{"kind":"champion","string":"Cassiopeia","entityId":"ch-4fae1e4f33d3","entityName":"Cassiopeia","firstSeen":"2023-05-05","lastSeen":"2023-10-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Cassiopeia","entityId":"ch-4fae1e4f33d3","entityName":"Cassiopeia","firstSeen":"2012-11-29","lastSeen":"2023-10-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Cho'Gath","entityId":"ch-735b0d547ef3","entityName":"Cho'Gath","firstSeen":"2012-11-29","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Corki","entityId":"ch-8ffe2d0d51f1","entityName":"Corki","firstSeen":"2012-11-29","lastSeen":"2015-03-14","evidence":["registry","observed"]}
-{"kind":"champion","string":"Darius","entityId":"ch-0db0da815a48","entityName":"Darius","firstSeen":"2023-05-02","lastSeen":"2023-10-23","evidence":["registry","observed"]}
-{"kind":"champion","string":"Diana","entityId":"ch-606a0c34d626","entityName":"Diana","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["registry","observed"]}
-{"kind":"champion","string":"Dr. Mundo","entityId":"ch-a4336f61ff51","entityName":"Dr. Mundo","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["registry","observed"]}
-{"kind":"champion","string":"Draven","entityId":"ch-2380c353cad4","entityName":"Draven","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Darius","entityId":"ch-0db0da815a48","entityName":"Darius","firstSeen":"2012-11-29","lastSeen":"2023-10-23","evidence":["registry","observed"]}
+{"kind":"champion","string":"Diana","entityId":"ch-606a0c34d626","entityName":"Diana","firstSeen":"2012-11-29","lastSeen":"2015-03-15","evidence":["registry","observed"]}
+{"kind":"champion","string":"Dr. Mundo","entityId":"ch-a4336f61ff51","entityName":"Dr. Mundo","firstSeen":"2012-11-29","lastSeen":"2015-03-13","evidence":["registry","observed"]}
+{"kind":"champion","string":"Draven","entityId":"ch-2380c353cad4","entityName":"Draven","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Ekko","entityId":"ch-2f2d83b1b827","entityName":"Ekko","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Elise","entityId":"ch-5c3a228d9609","entityName":"Elise","firstSeen":"2015-10-01","lastSeen":"2023-05-13","evidence":["registry","observed"]}
-{"kind":"champion","string":"Evelynn","entityId":"ch-49271a76381b","entityName":"Evelynn","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Ezreal","entityId":"ch-45ccbcaf1dca","entityName":"Ezreal","firstSeen":"2015-03-13","lastSeen":"2023-11-02","evidence":["registry","observed"]}
+{"kind":"champion","string":"Elise","entityId":"ch-5c3a228d9609","entityName":"Elise","firstSeen":"2012-11-29","lastSeen":"2023-05-13","evidence":["registry","observed"]}
+{"kind":"champion","string":"Evelynn","entityId":"ch-49271a76381b","entityName":"Evelynn","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["registry","observed"]}
+{"kind":"champion","string":"Ezreal","entityId":"ch-45ccbcaf1dca","entityName":"Ezreal","firstSeen":"2012-11-29","lastSeen":"2023-11-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Fiddlesticks","entityId":"ch-79fe82f8253e","entityName":"Fiddlesticks","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Fiora","entityId":"ch-9bc077a0ef78","entityName":"Fiora","firstSeen":"2015-10-01","lastSeen":"2023-05-21","evidence":["registry","observed"]}
 {"kind":"champion","string":"Fizz","entityId":"ch-21c6b1d69b1c","entityName":"Fizz","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Galio","entityId":"ch-91e35535a70d","entityName":"Galio","firstSeen":"2023-05-06","lastSeen":"2023-05-20","evidence":["registry","observed"]}
+{"kind":"champion","string":"Galio","entityId":"ch-91e35535a70d","entityName":"Galio","firstSeen":"2012-12-01","lastSeen":"2023-05-20","evidence":["registry","observed"]}
 {"kind":"champion","string":"Gangplank","entityId":"ch-1642df326df8","entityName":"Gangplank","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Garen","entityId":"ch-6efac4ff7f2f","entityName":"Garen","firstSeen":"2023-10-15","lastSeen":"2023-10-23","evidence":["registry","observed"]}
 {"kind":"champion","string":"Gnar","entityId":"ch-fc45acd92dda","entityName":"Gnar","firstSeen":"2015-03-13","lastSeen":"2023-11-11","evidence":["registry","observed"]}
-{"kind":"champion","string":"Gragas","entityId":"ch-2195d2b0a636","entityName":"Gragas","firstSeen":"2015-10-01","lastSeen":"2023-11-04","evidence":["registry","observed"]}
-{"kind":"champion","string":"Graves","entityId":"ch-70e9ce0e1eba","entityName":"Graves","firstSeen":"2015-03-13","lastSeen":"2023-11-11","evidence":["registry","observed"]}
+{"kind":"champion","string":"Gragas","entityId":"ch-2195d2b0a636","entityName":"Gragas","firstSeen":"2012-11-29","lastSeen":"2023-11-04","evidence":["registry","observed"]}
+{"kind":"champion","string":"Graves","entityId":"ch-70e9ce0e1eba","entityName":"Graves","firstSeen":"2012-11-29","lastSeen":"2023-11-11","evidence":["registry","observed"]}
 {"kind":"champion","string":"Gwen","entityId":"ch-75f565126734","entityName":"Gwen","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Hecarim","entityId":"ch-b5ad2a6c0368","entityName":"Hecarim","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["registry","observed"]}
 {"kind":"champion","string":"Heimerdinger","entityId":"ch-df762f6ffc62","entityName":"Heimerdinger","firstSeen":"2023-05-14","lastSeen":"2023-11-11","evidence":["registry","observed"]}
@@ -48,55 +48,55 @@
 {"kind":"champion","string":"Irelia","entityId":"ch-9b85c436dcf4","entityName":"Irelia","firstSeen":"2011-06-18","lastSeen":"2023-05-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Ivern","entityId":"ch-8ad6015ece44","entityName":"Ivern","firstSeen":"2023-10-11","lastSeen":"2023-10-29","evidence":["registry","observed"]}
 {"kind":"champion","string":"Janna","entityId":"ch-de0942215aa1","entityName":"Janna","firstSeen":"2011-06-18","lastSeen":"2023-05-16","evidence":["registry","observed"]}
-{"kind":"champion","string":"Jarvan IV","entityId":"ch-028a48ac2577","entityName":"Jarvan IV","firstSeen":"2015-03-13","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Jarvan IV","entityId":"ch-028a48ac2577","entityName":"Jarvan IV","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Jax","entityId":"ch-9fa2e63d35b5","entityName":"Jax","firstSeen":"2012-11-29","lastSeen":"2023-11-11","evidence":["registry","observed"]}
-{"kind":"champion","string":"Jayce","entityId":"ch-93fca10c9ec4","entityName":"Jayce","firstSeen":"2023-05-02","lastSeen":"2026-10-13","evidence":["registry","observed"]}
+{"kind":"champion","string":"Jayce","entityId":"ch-93fca10c9ec4","entityName":"Jayce","firstSeen":"2012-11-29","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Jhin","entityId":"ch-f741268a320b","entityName":"Jhin","firstSeen":"2023-11-12","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Jinx","entityId":"ch-c49d2799d6f2","entityName":"Jinx","firstSeen":"2023-05-02","lastSeen":"2023-11-04","evidence":["registry","observed"]}
 {"kind":"champion","string":"K'Sante","entityId":"ch-29b29f6f5579","entityName":"K'Sante","firstSeen":"2023-05-02","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Kai'Sa","entityId":"ch-aae255815c47","entityName":"Kai'Sa","firstSeen":"2023-05-07","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Kalista","entityId":"ch-370e11d46c76","entityName":"Kalista","firstSeen":"2015-03-14","lastSeen":"2026-10-13","evidence":["registry","observed"]}
-{"kind":"champion","string":"Karma","entityId":"ch-f5026eef9190","entityName":"Karma","firstSeen":"2023-05-07","lastSeen":"2023-11-02","evidence":["registry","observed"]}
-{"kind":"champion","string":"Karthus","entityId":"ch-f077031d4227","entityName":"Karthus","firstSeen":"2011-06-18","lastSeen":"2012-11-29","evidence":["registry","observed"]}
+{"kind":"champion","string":"Karma","entityId":"ch-f5026eef9190","entityName":"Karma","firstSeen":"2012-11-29","lastSeen":"2023-11-02","evidence":["registry","observed"]}
+{"kind":"champion","string":"Karthus","entityId":"ch-f077031d4227","entityName":"Karthus","firstSeen":"2011-06-18","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Kassadin","entityId":"ch-7b3d8273758c","entityName":"Kassadin","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Katarina","entityId":"ch-75880768dcbc","entityName":"Katarina","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Katarina","entityId":"ch-75880768dcbc","entityName":"Katarina","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Kayle","entityId":"ch-3badce680268","entityName":"Kayle","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Kayn","entityId":"ch-bc10ceb95382","entityName":"Kayn","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Kennen","entityId":"ch-299f85b68247","entityName":"Kennen","firstSeen":"2015-03-13","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Kha'Zix","entityId":"ch-5f30074e07ef","entityName":"Kha'Zix","firstSeen":"2023-05-04","lastSeen":"2023-10-20","evidence":["registry","observed"]}
+{"kind":"champion","string":"Kha'Zix","entityId":"ch-5f30074e07ef","entityName":"Kha'Zix","firstSeen":"2012-11-29","lastSeen":"2023-10-20","evidence":["registry","observed"]}
 {"kind":"champion","string":"Kindred","entityId":"ch-bb47fba40e68","entityName":"Kindred","firstSeen":"2023-05-03","lastSeen":"2023-10-23","evidence":["registry","observed"]}
 {"kind":"champion","string":"Kled","entityId":"ch-13cd18f6bd47","entityName":"Kled","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Kog'Maw","entityId":"ch-a9e776eabfa3","entityName":"Kog'Maw","firstSeen":"2015-03-13","lastSeen":"2023-10-29","evidence":["registry","observed"]}
+{"kind":"champion","string":"Kog'Maw","entityId":"ch-a9e776eabfa3","entityName":"Kog'Maw","firstSeen":"2012-11-29","lastSeen":"2023-10-29","evidence":["registry","observed"]}
 {"kind":"champion","string":"LeBlanc","entityId":"ch-c8f4d10d0778","entityName":"LeBlanc","firstSeen":"2015-03-13","lastSeen":"2023-10-26","evidence":["registry","observed"]}
 {"kind":"champion","string":"Lee Sin","entityId":"ch-910b6ad4b21e","entityName":"Lee Sin","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Leona","entityId":"ch-c2187f28ed10","entityName":"Leona","firstSeen":"2015-03-13","lastSeen":"2023-10-27","evidence":["registry","observed"]}
+{"kind":"champion","string":"Leona","entityId":"ch-c2187f28ed10","entityName":"Leona","firstSeen":"2012-11-29","lastSeen":"2023-10-27","evidence":["registry","observed"]}
 {"kind":"champion","string":"Lillia","entityId":"ch-efe49a38b544","entityName":"Lillia","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Lissandra","entityId":"ch-1f36e4f34c28","entityName":"Lissandra","firstSeen":"2015-03-13","lastSeen":"2023-10-29","evidence":["registry","observed"]}
 {"kind":"champion","string":"Locke","entityId":"ch-c62cb8d43363","entityName":"Locke","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Lucian","entityId":"ch-0c7a585070be","entityName":"Lucian","firstSeen":"2015-03-13","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Lulu","entityId":"ch-f4419988dc95","entityName":"Lulu","firstSeen":"2012-11-29","lastSeen":"2023-11-12","evidence":["registry","observed"]}
-{"kind":"champion","string":"Lux","entityId":"ch-8187030b4048","entityName":"Lux","firstSeen":"2023-10-23","lastSeen":"2023-11-11","evidence":["registry","observed"]}
-{"kind":"champion","string":"Malphite","entityId":"ch-217e747bd333","entityName":"Malphite","firstSeen":"2023-05-02","lastSeen":"2023-10-23","evidence":["registry","observed"]}
+{"kind":"champion","string":"Lux","entityId":"ch-8187030b4048","entityName":"Lux","firstSeen":"2012-11-29","lastSeen":"2023-11-11","evidence":["registry","observed"]}
+{"kind":"champion","string":"Malphite","entityId":"ch-217e747bd333","entityName":"Malphite","firstSeen":"2012-11-29","lastSeen":"2023-10-23","evidence":["registry","observed"]}
 {"kind":"champion","string":"Malzahar","entityId":"ch-0efdd83b5b27","entityName":"Malzahar","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Maokai","entityId":"ch-7baf60689d41","entityName":"Maokai","firstSeen":"2015-03-13","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Master Yi","entityId":"ch-ec9f120f445b","entityName":"Master Yi","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Maokai","entityId":"ch-7baf60689d41","entityName":"Maokai","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Master Yi","entityId":"ch-ec9f120f445b","entityName":"Master Yi","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Mel","entityId":"ch-1a2e21c4b71d","entityName":"Mel","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Milio","entityId":"ch-68dddbcc1c0c","entityName":"Milio","firstSeen":"2023-10-29","lastSeen":"2026-10-13","evidence":["registry","observed"]}
-{"kind":"champion","string":"Miss Fortune","entityId":"ch-52cc91b436d4","entityName":"Miss Fortune","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","observed"]}
+{"kind":"champion","string":"Miss Fortune","entityId":"ch-52cc91b436d4","entityName":"Miss Fortune","firstSeen":"2011-06-18","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Mordekaiser","entityId":"ch-cb61ec3f7c79","entityName":"Mordekaiser","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Morgana","entityId":"ch-cc82a4b45f77","entityName":"Morgana","firstSeen":"2015-03-13","lastSeen":"2023-05-04","evidence":["registry","observed"]}
+{"kind":"champion","string":"Morgana","entityId":"ch-cc82a4b45f77","entityName":"Morgana","firstSeen":"2012-11-29","lastSeen":"2023-05-04","evidence":["registry","observed"]}
 {"kind":"champion","string":"Naafiri","entityId":"ch-c2520a6e7ddf","entityName":"Naafiri","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Nami","entityId":"ch-1b3e82769223","entityName":"Nami","firstSeen":"2015-03-13","lastSeen":"2023-05-17","evidence":["registry","observed"]}
 {"kind":"champion","string":"Nasus","entityId":"ch-b04097aedbb0","entityName":"Nasus","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Nautilus","entityId":"ch-fd31ef9235c6","entityName":"Nautilus","firstSeen":"2023-05-02","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Neeko","entityId":"ch-5b6e0b58b47b","entityName":"Neeko","firstSeen":"2023-10-10","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Nidalee","entityId":"ch-635d4eca2d29","entityName":"Nidalee","firstSeen":"2015-03-13","lastSeen":"2023-10-28","evidence":["registry","observed"]}
+{"kind":"champion","string":"Nidalee","entityId":"ch-635d4eca2d29","entityName":"Nidalee","firstSeen":"2012-12-02","lastSeen":"2023-10-28","evidence":["registry","observed"]}
 {"kind":"champion","string":"Nilah","entityId":"ch-199bc2d80a8a","entityName":"Nilah","firstSeen":"2023-10-22","lastSeen":"2023-11-05","evidence":["registry","observed"]}
-{"kind":"champion","string":"Nocturne","entityId":"ch-238731b0e0dd","entityName":"Nocturne","firstSeen":"2023-05-04","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Nocturne","entityId":"ch-238731b0e0dd","entityName":"Nocturne","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Nunu","entityId":"ch-f93dac5db740","entityName":"Nunu & Willump","firstSeen":"2009-02-21","lastSeen":null,"evidence":["declared"]}
-{"kind":"champion","string":"Nunu &amp; Willump","entityId":"ch-f93dac5db740","entityName":"Nunu & Willump","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","observed"]}
-{"kind":"champion","string":"Olaf","entityId":"ch-1a3ad80c596f","entityName":"Olaf","firstSeen":"2023-05-02","lastSeen":"2023-10-29","evidence":["registry","observed"]}
-{"kind":"champion","string":"Orianna","entityId":"ch-607acddc0484","entityName":"Orianna","firstSeen":"2023-05-03","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Nunu &amp; Willump","entityId":"ch-f93dac5db740","entityName":"Nunu & Willump","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["registry","observed"]}
+{"kind":"champion","string":"Olaf","entityId":"ch-1a3ad80c596f","entityName":"Olaf","firstSeen":"2012-11-29","lastSeen":"2023-10-29","evidence":["registry","observed"]}
+{"kind":"champion","string":"Orianna","entityId":"ch-607acddc0484","entityName":"Orianna","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Ornn","entityId":"ch-88a007e9644d","entityName":"Ornn","firstSeen":"2023-05-07","lastSeen":"2023-11-11","evidence":["registry","observed"]}
 {"kind":"champion","string":"Pantheon","entityId":"ch-64a7667f7da8","entityName":"Pantheon","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Poppy","entityId":"ch-41bcc2d90da4","entityName":"Poppy","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
@@ -108,25 +108,25 @@
 {"kind":"champion","string":"Rek'Sai","entityId":"ch-3b8428b1520e","entityName":"Rek'Sai","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["registry","observed"]}
 {"kind":"champion","string":"Rell","entityId":"ch-db39a1c9d0ae","entityName":"Rell","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Renata Glasc","entityId":"ch-6e5a3a3ed10b","entityName":"Renata Glasc","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Renekton","entityId":"ch-57c126fca96f","entityName":"Renekton","firstSeen":"2023-05-02","lastSeen":"2023-11-12","evidence":["registry","observed"]}
+{"kind":"champion","string":"Renekton","entityId":"ch-57c126fca96f","entityName":"Renekton","firstSeen":"2012-12-02","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Rengar","entityId":"ch-8311cb7997ed","entityName":"Rengar","firstSeen":"2012-11-29","lastSeen":"2023-05-12","evidence":["registry","observed"]}
-{"kind":"champion","string":"Riven","entityId":"ch-3e54a829b995","entityName":"Riven","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Rumble","entityId":"ch-e29c323fabff","entityName":"Rumble","firstSeen":"2015-03-13","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Ryze","entityId":"ch-4eefbce3b523","entityName":"Ryze","firstSeen":"2023-05-06","lastSeen":"2023-10-29","evidence":["registry","observed"]}
+{"kind":"champion","string":"Riven","entityId":"ch-3e54a829b995","entityName":"Riven","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","observed"]}
+{"kind":"champion","string":"Rumble","entityId":"ch-e29c323fabff","entityName":"Rumble","firstSeen":"2012-11-29","lastSeen":"2023-11-19","evidence":["registry","observed"]}
+{"kind":"champion","string":"Ryze","entityId":"ch-4eefbce3b523","entityName":"Ryze","firstSeen":"2012-11-29","lastSeen":"2023-10-29","evidence":["registry","observed"]}
 {"kind":"champion","string":"Samira","entityId":"ch-9d1b8c4421c6","entityName":"Samira","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Sejuani","entityId":"ch-c04f9a9ad95f","entityName":"Sejuani","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Senna","entityId":"ch-beea8c680d96","entityName":"Senna","firstSeen":"2023-10-10","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Seraphine","entityId":"ch-d8f47926f97f","entityName":"Seraphine","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Sett","entityId":"ch-9567bf055458","entityName":"Sett","firstSeen":"2023-05-03","lastSeen":"2023-10-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Shaco","entityId":"ch-1e31c331c8e3","entityName":"Shaco","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Shen","entityId":"ch-8e86e941642e","entityName":"Shen","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Shyvana","entityId":"ch-4cbfcaec9534","entityName":"Shyvana","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Shen","entityId":"ch-8e86e941642e","entityName":"Shen","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["registry","observed"]}
+{"kind":"champion","string":"Shyvana","entityId":"ch-4cbfcaec9534","entityName":"Shyvana","firstSeen":"2012-11-30","lastSeen":"2012-11-30","evidence":["registry","observed"]}
 {"kind":"champion","string":"Singed","entityId":"ch-dffa18f54d9b","entityName":"Singed","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","observed"]}
 {"kind":"champion","string":"Sion","entityId":"ch-0a56cd6ed480","entityName":"Sion","firstSeen":"2015-03-13","lastSeen":"2023-10-15","evidence":["registry","observed"]}
 {"kind":"champion","string":"Sivir","entityId":"ch-a2c028767552","entityName":"Sivir","firstSeen":"2015-03-13","lastSeen":"2023-11-04","evidence":["registry","observed"]}
-{"kind":"champion","string":"Skarner","entityId":"ch-65d5aaa00f3e","entityName":"Skarner","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Skarner","entityId":"ch-65d5aaa00f3e","entityName":"Skarner","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Smolder","entityId":"ch-c1f0499ec4fd","entityName":"Smolder","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Sona","entityId":"ch-fb06392484a8","entityName":"Sona","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Sona","entityId":"ch-fb06392484a8","entityName":"Sona","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["registry","observed"]}
 {"kind":"champion","string":"Soraka","entityId":"ch-07ce834c13e3","entityName":"Soraka","firstSeen":"2011-06-18","lastSeen":"2023-10-26","evidence":["registry","observed"]}
 {"kind":"champion","string":"Swain","entityId":"ch-e09bc55583fb","entityName":"Swain","firstSeen":"2023-05-05","lastSeen":"2023-05-05","evidence":["registry","observed"]}
 {"kind":"champion","string":"Sylas","entityId":"ch-d260923b40ba","entityName":"Sylas","firstSeen":"2023-05-03","lastSeen":"2023-11-19","evidence":["registry","observed"]}
@@ -134,16 +134,16 @@
 {"kind":"champion","string":"Tahm Kench","entityId":"ch-ffe0b3686ab9","entityName":"Tahm Kench","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Taliyah","entityId":"ch-640a42466a0a","entityName":"Taliyah","firstSeen":"2023-05-03","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Talon","entityId":"ch-3ce9a0e3e72c","entityName":"Talon","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Taric","entityId":"ch-6f4296c779ad","entityName":"Taric","firstSeen":"2023-10-14","lastSeen":"2023-10-14","evidence":["registry","observed"]}
+{"kind":"champion","string":"Taric","entityId":"ch-6f4296c779ad","entityName":"Taric","firstSeen":"2012-11-30","lastSeen":"2023-10-14","evidence":["registry","observed"]}
 {"kind":"champion","string":"Teemo","entityId":"ch-81822d18a826","entityName":"Teemo","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Thresh","entityId":"ch-4aab1dd189ec","entityName":"Thresh","firstSeen":"2015-03-13","lastSeen":"2023-10-23","evidence":["registry","observed"]}
-{"kind":"champion","string":"Tristana","entityId":"ch-318fdd9ba2a1","entityName":"Tristana","firstSeen":"2015-10-01","lastSeen":"2023-11-02","evidence":["registry","observed"]}
+{"kind":"champion","string":"Tristana","entityId":"ch-318fdd9ba2a1","entityName":"Tristana","firstSeen":"2012-11-30","lastSeen":"2023-11-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Trundle","entityId":"ch-ba96383b1040","entityName":"Trundle","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Tryndamere","entityId":"ch-b3c82c422ebb","entityName":"Tryndamere","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Twisted Fate","entityId":"ch-2ff9fe46d270","entityName":"Twisted Fate","firstSeen":"2012-11-29","lastSeen":"2023-05-10","evidence":["registry","observed"]}
-{"kind":"champion","string":"Twitch","entityId":"ch-0d315ed8d3cd","entityName":"Twitch","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","observed"]}
+{"kind":"champion","string":"Twitch","entityId":"ch-0d315ed8d3cd","entityName":"Twitch","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["registry","observed"]}
 {"kind":"champion","string":"Udyr","entityId":"ch-0c1169d43be4","entityName":"Udyr","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Urgot","entityId":"ch-ef76ee3c83f5","entityName":"Urgot","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Urgot","entityId":"ch-ef76ee3c83f5","entityName":"Urgot","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["registry","observed"]}
 {"kind":"champion","string":"Varus","entityId":"ch-d3c3883fedaf","entityName":"Varus","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Vayne","entityId":"ch-b3163d69ac2d","entityName":"Vayne","firstSeen":"2011-06-18","lastSeen":"2023-05-21","evidence":["registry","observed"]}
 {"kind":"champion","string":"Veigar","entityId":"ch-d3bf9280bd1c","entityName":"Veigar","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
@@ -152,16 +152,16 @@
 {"kind":"champion","string":"Vi","entityId":"ch-8f2b1592a60e","entityName":"Vi","firstSeen":"2015-03-13","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Viego","entityId":"ch-fe193330f121","entityName":"Viego","firstSeen":"2023-05-02","lastSeen":"2023-11-04","evidence":["registry","observed"]}
 {"kind":"champion","string":"Viktor","entityId":"ch-f2d6088139dd","entityName":"Viktor","firstSeen":"2015-03-13","lastSeen":"2023-10-15","evidence":["registry","observed"]}
-{"kind":"champion","string":"Vladimir","entityId":"ch-49594002e001","entityName":"Vladimir","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Vladimir","entityId":"ch-49594002e001","entityName":"Vladimir","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"champion","string":"Volibear","entityId":"ch-1098c7ed303b","entityName":"Volibear","firstSeen":"2023-10-23","lastSeen":"2023-10-23","evidence":["registry","observed"]}
 {"kind":"champion","string":"Warwick","entityId":"ch-478f808fc478","entityName":"Warwick","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","observed"]}
 {"kind":"champion","string":"Wukong","entityId":"ch-7dd4256a5ccb","entityName":"Wukong","firstSeen":"2023-05-02","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"champion","string":"Xayah","entityId":"ch-4849e2d6efd2","entityName":"Xayah","firstSeen":"2023-05-02","lastSeen":"2023-11-19","evidence":["registry","observed"]}
 {"kind":"champion","string":"Xerath","entityId":"ch-f2c012630900","entityName":"Xerath","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["registry","observed"]}
-{"kind":"champion","string":"Xin Zhao","entityId":"ch-f0850b1b0fe8","entityName":"Xin Zhao","firstSeen":"2023-05-02","lastSeen":"2023-05-18","evidence":["registry","observed"]}
+{"kind":"champion","string":"Xin Zhao","entityId":"ch-f0850b1b0fe8","entityName":"Xin Zhao","firstSeen":"2012-11-29","lastSeen":"2023-05-18","evidence":["registry","observed"]}
 {"kind":"champion","string":"Yasuo","entityId":"ch-b09cfe612243","entityName":"Yasuo","firstSeen":"2015-03-14","lastSeen":"2023-10-23","evidence":["registry","observed"]}
 {"kind":"champion","string":"Yone","entityId":"ch-38091199d65e","entityName":"Yone","firstSeen":"2023-05-12","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"Yorick","entityId":"ch-50f3e6784315","entityName":"Yorick","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Yorick","entityId":"ch-50f3e6784315","entityName":"Yorick","firstSeen":"2012-12-01","lastSeen":"2012-12-01","evidence":["registry","observed"]}
 {"kind":"champion","string":"Yunara","entityId":"ch-467149d7aec8","entityName":"Yunara","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Yuumi","entityId":"ch-6ed039eb7594","entityName":"Yuumi","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"champion","string":"Zaahen","entityId":"ch-3c7f3b376b0e","entityName":"Zaahen","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
@@ -169,10 +169,11 @@
 {"kind":"champion","string":"Zed","entityId":"ch-998873c53490","entityName":"Zed","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["registry","observed"]}
 {"kind":"champion","string":"Zeri","entityId":"ch-4b9f017582ba","entityName":"Zeri","firstSeen":"2023-05-02","lastSeen":"2023-11-12","evidence":["registry","observed"]}
 {"kind":"champion","string":"Ziggs","entityId":"ch-2ed9ee7444ff","entityName":"Ziggs","firstSeen":"2023-10-19","lastSeen":"2023-11-02","evidence":["registry","observed"]}
-{"kind":"champion","string":"Zilean","entityId":"ch-aea8a5e7f55b","entityName":"Zilean","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Zilean","entityId":"ch-aea8a5e7f55b","entityName":"Zilean","firstSeen":"2012-11-30","lastSeen":"2012-11-30","evidence":["registry","observed"]}
 {"kind":"champion","string":"Zoe","entityId":"ch-bfe7d9a2568a","entityName":"Zoe","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
-{"kind":"champion","string":"Zyra","entityId":"ch-730c18927405","entityName":"Zyra","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"champion","string":"Zyra","entityId":"ch-730c18927405","entityName":"Zyra","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["registry","observed"]}
 {"kind":"player","string":"0N","entityId":"pl-17576d04a48f","entityName":"0N","firstSeen":"2023-10-19","lastSeen":"2023-10-19","evidence":["handle","observed"]}
+{"kind":"player","string":"228","entityId":"pl-9d693eeee1d1","entityName":"228","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"2lift","entityId":"pl-66010cfcb7f8","entityName":"Doublelift","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"369","entityId":"pl-5f193b350c8a","entityName":"369","firstSeen":"2023-05-12","lastSeen":"2023-11-12","evidence":["handle","observed"]}
 {"kind":"player","string":"A Wolf","entityId":"pl-9bfdb75e8ab9","entityName":"Wolf","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
@@ -182,10 +183,13 @@
 {"kind":"player","string":"Adam (Adam Maanane)","entityId":"pl-6729a8a79e7d","entityName":"Adam (Adam Maanane)","firstSeen":"2023-10-11","lastSeen":"2023-10-23","evidence":["observed"]}
 {"kind":"player","string":"Aiming","entityId":"pl-7686b834266d","entityName":"Aiming","firstSeen":"2023-10-19","lastSeen":"2023-11-04","evidence":["handle","observed"]}
 {"kind":"player","string":"Aki no Ki","entityId":"pl-6ca85288811d","entityName":"Yeon","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"player","string":"Alex Ich","entityId":"pl-e13c198e8ad1","entityName":"Alex Ich","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Aluka","entityId":"pl-30d6a49cfa0c","entityName":"Aluka","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["handle","observed"]}
 {"kind":"player","string":"Always plan ahea","entityId":"pl-29a4b2e61911","entityName":"APA","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Always think ahe","entityId":"pl-29a4b2e61911","entityName":"APA","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Ambition","entityId":"pl-352086c0b39c","entityName":"Ambition","firstSeen":"2012-11-29","lastSeen":"2015-03-14","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Angush","entityId":"pl-046a36995f64","entityName":"Angush","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
+{"kind":"player","string":"Aphromoo","entityId":"pl-c9db4af88d94","entityName":"Aphromoo","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Aria","entityId":"pl-f7e4772830f8","entityName":"Aria (Lee Ga-eul)","firstSeen":"2023-05-02","lastSeen":"2023-10-13","evidence":["handle"]}
 {"kind":"player","string":"Aria (Lee Ga-eul)","entityId":"pl-f7e4772830f8","entityName":"Aria (Lee Ga-eul)","firstSeen":"2023-05-02","lastSeen":"2023-10-13","evidence":["observed"]}
 {"kind":"player","string":"Artemis","entityId":"pl-14fab91aa21e","entityName":"Artemis (Trần Quốc Hưng)","firstSeen":"2023-10-11","lastSeen":"2023-10-15","evidence":["handle"]}
@@ -216,6 +220,7 @@
 {"kind":"player","string":"Cabochard","entityId":"pl-ae1590027ee5","entityName":"Cabochard","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
 {"kind":"player","string":"Canna","entityId":"pl-34af2eba65bf","entityName":"Canna","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["handle","observed"]}
 {"kind":"player","string":"Canyon","entityId":"pl-5ab895c8cc30","entityName":"Canyon","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["handle","observed"]}
+{"kind":"player","string":"Caomei","entityId":"pl-b52811f1cf6d","entityName":"Caomei","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"Caps","entityId":"pl-bd9b6abb3981","entityName":"Caps","firstSeen":"2023-05-02","lastSeen":"2023-10-29","evidence":["handle","observed"]}
 {"kind":"player","string":"Captain Jack","entityId":"pl-b7314e5c0937","entityName":"Cpt Jack","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"CaptainJack","entityId":"pl-b7314e5c0937","entityName":"Cpt Jack","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
@@ -225,75 +230,93 @@
 {"kind":"player","string":"CaviaVampier","entityId":"pl-e48cd72e6441","entityName":"CaviaVampier","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"Ceo","entityId":"pl-c131cf2ffc9d","entityName":"Ceo","firstSeen":"2023-05-03","lastSeen":"2023-10-13","evidence":["handle","observed"]}
 {"kind":"player","string":"Ceos","entityId":"pl-ac8b1bd24aea","entityName":"Ceos","firstSeen":"2023-05-02","lastSeen":"2023-10-14","evidence":["handle","observed"]}
+{"kind":"player","string":"Chaox","entityId":"pl-b2ae814e289e","entityName":"Chaox","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Chasy","entityId":"pl-f45540cfe7c6","entityName":"Chasy","firstSeen":"2023-05-10","lastSeen":"2023-10-26","evidence":["handle","observed"]}
+{"kind":"player","string":"Chauster","entityId":"pl-8608a0596d8e","entityName":"Chauster","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
+{"kind":"player","string":"Chawy","entityId":"pl-0c5739d70c93","entityName":"Chawy","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Chovy","entityId":"pl-65b2bb5d8420","entityName":"Chovy","firstSeen":"2023-05-09","lastSeen":"2023-11-03","evidence":["handle","observed"]}
+{"kind":"player","string":"ClearLove","entityId":"pl-d1c97b3df8d5","entityName":"ClearLove","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"CoCo","entityId":"pl-a5ab491a9511","entityName":"CoCo","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Contractz","entityId":"pl-5f77185975f7","entityName":"Contractz","firstSeen":"2023-10-19","lastSeen":"2023-11-02","evidence":["handle","observed"]}
+{"kind":"player","string":"Cop","entityId":"pl-fb8f3c31ab70","entityName":"Cop","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Core","entityId":"pl-8d6fa0c30bff","entityName":"CoreJJ","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Core JJ","entityId":"pl-8d6fa0c30bff","entityName":"CoreJJ","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"CoreJJ","entityId":"pl-8d6fa0c30bff","entityName":"CoreJJ","firstSeen":"2023-10-19","lastSeen":"2023-10-23","evidence":["registry","handle","observed"]}
-{"kind":"player","string":"Cpt Jack","entityId":"pl-b7314e5c0937","entityName":"Cpt Jack","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Cpt Jack","entityId":"pl-b7314e5c0937","entityName":"Cpt Jack","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Cpt Jacky","entityId":"pl-b7314e5c0937","entityName":"Cpt Jack","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"player","string":"Creaton","entityId":"pl-03f75bf209ea","entityName":"Creaton","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Crisp","entityId":"pl-36cda857e1b1","entityName":"Crisp","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["handle","observed"]}
 {"kind":"player","string":"Croc","entityId":"pl-1acb5d8e4238","entityName":"Croc","firstSeen":"2023-05-02","lastSeen":"2023-10-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Crownie","entityId":"pl-34aae5fa20fa","entityName":"Crownie","firstSeen":"2023-10-11","lastSeen":"2023-10-23","evidence":["handle","observed"]}
 {"kind":"player","string":"Cuzz","entityId":"pl-0c0f58a08ada","entityName":"Cuzz","firstSeen":"2023-10-19","lastSeen":"2023-11-04","evidence":["handle","observed"]}
+{"kind":"player","string":"Cyanide","entityId":"pl-6f9b60f11683","entityName":"Cyanide","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"Dan Dinh","entityId":"pl-cf9686dcccb9","entityName":"Dan Dinh","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Daniel Dinh","entityId":"pl-cf9686dcccb9","entityName":"Dan Dinh","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"player","string":"Darien","entityId":"pl-58f8b23cffde","entityName":"Darien","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Darshan","entityId":"pl-a5c4062e7b79","entityName":"Darshan","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"Deft","entityId":"pl-d4036e87f095","entityName":"Deft","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["handle","observed"]}
 {"kind":"player","string":"Delight","entityId":"pl-1643635c12ca","entityName":"Delight","firstSeen":"2023-05-09","lastSeen":"2023-11-03","evidence":["handle","observed"]}
 {"kind":"player","string":"Denizz","entityId":"pl-a8f20d31f75a","entityName":"Denizzz","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Denizzz","entityId":"pl-a8f20d31f75a","entityName":"Denizzz","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"Dhokla","entityId":"pl-e6ad910e1dd9","entityName":"Dhokla","firstSeen":"2023-10-19","lastSeen":"2023-11-02","evidence":["handle","observed"]}
-{"kind":"player","string":"Diamondprox","entityId":"pl-2f2697c08a6e","entityName":"Diamondprox","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
-{"kind":"player","string":"DontMashMe","entityId":"pl-bae224b7be9c","entityName":"Mash","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["handle","observed"]}
+{"kind":"player","string":"Diamondprox","entityId":"pl-2f2697c08a6e","entityName":"Diamondprox","firstSeen":"2012-11-29","lastSeen":"2015-03-13","evidence":["handle","observed"]}
+{"kind":"player","string":"DontMashMe","entityId":"pl-bae224b7be9c","entityName":"Mash","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Dontmashme","entityId":"pl-bae224b7be9c","entityName":"Mash","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Doran","entityId":"pl-73b6bb25f732","entityName":"Doran (Choi Hyeon-jun)","firstSeen":"2023-05-09","lastSeen":"2023-11-03","evidence":["handle"]}
 {"kind":"player","string":"Doran (Choi Hyeon-jun)","entityId":"pl-73b6bb25f732","entityName":"Doran (Choi Hyeon-jun)","firstSeen":"2023-05-09","lastSeen":"2023-11-03","evidence":["observed"]}
-{"kind":"player","string":"Doublelift","entityId":"pl-66010cfcb7f8","entityName":"Doublelift","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Doublelift","entityId":"pl-66010cfcb7f8","entityName":"Doublelift","firstSeen":"2011-06-18","lastSeen":"2012-12-02","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Dreilix","entityId":"pl-273916e38c1f","entityName":"Dreilix","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Dyrus","entityId":"pl-49101179ee26","entityName":"Dyrus","firstSeen":"2011-06-18","lastSeen":"2015-03-15","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"EMENES","entityId":"pl-46d2b0e8bc76","entityName":"EMENES","firstSeen":"2023-05-11","lastSeen":"2023-10-26","evidence":["handle","observed"]}
 {"kind":"player","string":"Edward","entityId":"pl-34405d46cb25","entityName":"Edward","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
+{"kind":"player","string":"Eliade","entityId":"pl-9283eed2fd14","entityName":"Eliade","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Elk","entityId":"pl-9b55fa90a42c","entityName":"Elk","firstSeen":"2023-05-03","lastSeen":"2023-11-11","evidence":["handle","observed"]}
 {"kind":"player","string":"Elyoya","entityId":"pl-d7faf3da4ae5","entityName":"Elyoya","firstSeen":"2023-05-10","lastSeen":"2023-10-26","evidence":["handle","observed"]}
+{"kind":"player","string":"EquivocaL","entityId":"pl-5f9052293c69","entityName":"EquivocaL","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
+{"kind":"player","string":"Extinkt","entityId":"pl-fe75e9b28961","entityName":"Extinkt","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"FBI","entityId":"pl-c6cd4cf936fd","entityName":"FBI","firstSeen":"2023-10-19","lastSeen":"2023-11-02","evidence":["handle","observed"]}
 {"kind":"player","string":"FL4MER","entityId":"pl-51788e5dee25","entityName":"Flamer","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"FORG1VENGRE","entityId":"pl-470cd746d66c","entityName":"FORG1VENGRE","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Faker","entityId":"pl-a9073fde3cbe","entityName":"Faker","firstSeen":"2015-10-01","lastSeen":"2023-11-19","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Fenry","entityId":"pl-fe61053241f2","entityName":"Fenry","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"Finale","entityId":"pl-436bedb688e4","entityName":"Gumayusi","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
-{"kind":"player","string":"Flame","entityId":"pl-dfb0f521ab24","entityName":"Flame","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Flame","entityId":"pl-dfb0f521ab24","entityName":"Flame","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Flamer","entityId":"pl-51788e5dee25","entityName":"Flamer","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Fox","entityId":"pl-766cd1e20555","entityName":"Fox (Hampus Myhre)","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle"]}
 {"kind":"player","string":"Fox (Hampus Myhre)","entityId":"pl-766cd1e20555","entityName":"Fox (Hampus Myhre)","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["observed"]}
+{"kind":"player","string":"Froggen","entityId":"pl-25478da9e18c","entityName":"Froggen","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Fudge","entityId":"pl-73e7938dd46a","entityName":"Fudge","firstSeen":"2023-05-11","lastSeen":"2023-10-26","evidence":["handle","observed"]}
+{"kind":"player","string":"Fzzf","entityId":"pl-48f116f1fdb8","entityName":"Fzzf","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"GALA","entityId":"pl-1df6af42bc6e","entityName":"GALA","firstSeen":"2023-10-19","lastSeen":"2023-11-05","evidence":["handle","observed"]}
 {"kind":"player","string":"Gemini","entityId":"pl-f6ece80b88d6","entityName":"Gemini","firstSeen":"2023-10-11","lastSeen":"2023-10-14","evidence":["handle","observed"]}
+{"kind":"player","string":"Genja","entityId":"pl-100790398d79","entityName":"Genja","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Gloryy","entityId":"pl-99ebf15c6908","entityName":"Gloryy","firstSeen":"2023-10-11","lastSeen":"2023-10-15","evidence":["handle","observed"]}
+{"kind":"player","string":"GoSu Pepper","entityId":"pl-cca33893a80c","entityName":"GoSu Pepper","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Goldtec","entityId":"pl-dfb0f521ab24","entityName":"Flame","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Gori","entityId":"pl-5259efb749c2","entityName":"Gori","firstSeen":"2023-05-03","lastSeen":"2023-05-14","evidence":["handle","observed"]}
 {"kind":"player","string":"GorillA","entityId":"pl-148d5881d19f","entityName":"GorillA","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Gumayushi","entityId":"pl-436bedb688e4","entityName":"Gumayusi","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Gumayusi","entityId":"pl-436bedb688e4","entityName":"Gumayusi","firstSeen":"2023-05-10","lastSeen":"2023-11-19","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"H0NEST","entityId":"pl-784959c309d1","entityName":"Honest","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"player","string":"HaRleLuYaR","entityId":"pl-c8ff2fe4ed1f","entityName":"HaRleLuYaR","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Hai","entityId":"pl-81a8afcae90a","entityName":"Hai","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
 {"kind":"player","string":"Hang","entityId":"pl-a25e0d0cec87","entityName":"Hang","firstSeen":"2023-10-19","lastSeen":"2023-11-05","evidence":["handle","observed"]}
 {"kind":"player","string":"Hans Sama","entityId":"pl-36e7db6a24db","entityName":"Hans Sama","firstSeen":"2023-05-02","lastSeen":"2023-10-29","evidence":["handle","observed"]}
 {"kind":"player","string":"Harp","entityId":"pl-0f4b5ea26038","entityName":"Harp","firstSeen":"2023-05-02","lastSeen":"2023-10-13","evidence":["handle","observed"]}
-{"kind":"player","string":"Helios","entityId":"pl-4eba474eb02c","entityName":"Helios","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["handle"]}
-{"kind":"player","string":"Helios (Shin Dong-jin)","entityId":"pl-4eba474eb02c","entityName":"Helios","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","observed"]}
+{"kind":"player","string":"Helios","entityId":"pl-4eba474eb02c","entityName":"Helios","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle"]}
+{"kind":"player","string":"Helios (Shin Dong-jin)","entityId":"pl-4eba474eb02c","entityName":"Helios","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","observed"]}
 {"kind":"player","string":"Hjarnaan","entityId":"pl-ae555504cfda","entityName":"Hjarnan","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Hjarnan","entityId":"pl-ae555504cfda","entityName":"Hjarnan","firstSeen":"2015-10-01","lastSeen":"2015-10-01","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Hjärnanbakomallt","entityId":"pl-ae555504cfda","entityName":"Hjarnan","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Honest","entityId":"pl-784959c309d1","entityName":"Honest","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"HotshotGG","entityId":"pl-7312234a47d4","entityName":"HotshotGG","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Humanoid","entityId":"pl-d2253641722e","entityName":"Humanoid","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["handle","observed"]}
 {"kind":"player","string":"Hylissang","entityId":"pl-e2b03393c436","entityName":"Hylissang","firstSeen":"2023-05-10","lastSeen":"2023-10-26","evidence":["handle","observed"]}
 {"kind":"player","string":"I Love BB Muffin","entityId":"pl-fec5b667d0a0","entityName":"Bbmuffin","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"IgNar","entityId":"pl-ce120fd6a35e","entityName":"IgNar","firstSeen":"2023-10-19","lastSeen":"2023-11-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Infinity","entityId":"pl-ae555504cfda","entityName":"Hjarnan","firstSeen":null,"lastSeen":null,"evidence":["handle"]}
 {"kind":"player","string":"Infinity (Petter Freyschuss)","entityId":"pl-ae555504cfda","entityName":"Hjarnan","firstSeen":null,"lastSeen":null,"evidence":["redirect"]}
+{"kind":"player","string":"Insta","entityId":"pl-fc8b4388595e","entityName":"Insta","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Jack Sparrowoo","entityId":"pl-b7314e5c0937","entityName":"Cpt Jack","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"JangTa","entityId":"pl-4ab0fbb7fb06","entityName":"Bengi","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"JimieN","entityId":"pl-40a375d8d94b","entityName":"JimieN","firstSeen":"2023-10-11","lastSeen":"2023-10-14","evidence":["handle","observed"]}
@@ -307,18 +330,24 @@
 {"kind":"player","string":"Kiaya","entityId":"pl-9692f5d3e143","entityName":"Kiaya","firstSeen":"2023-05-03","lastSeen":"2023-10-27","evidence":["handle","observed"]}
 {"kind":"player","string":"Kiin","entityId":"pl-a4828757cdd1","entityName":"Kiin","firstSeen":"2023-10-19","lastSeen":"2023-11-04","evidence":["handle","observed"]}
 {"kind":"player","string":"KimChi","entityId":"pl-231a8c82e108","entityName":"Summit","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"player","string":"Krepo","entityId":"pl-22ade83ec679","entityName":"Krepo","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Kujaa","entityId":"pl-874d343e2a21","entityName":"Kujaa","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"LEElS","entityId":"pl-a9073fde3cbe","entityName":"Faker","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Labrov","entityId":"pl-521952344656","entityName":"Labrov","firstSeen":"2023-10-11","lastSeen":"2023-10-23","evidence":["handle","observed"]}
 {"kind":"player","string":"Lee","entityId":"pl-e7da824a74f6","entityName":"Lee","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Lehends","entityId":"pl-72db4b55f1e8","entityName":"Lehends","firstSeen":"2023-10-19","lastSeen":"2023-11-04","evidence":["handle","observed"]}
 {"kind":"player","string":"LemonNation","entityId":"pl-2674a570564d","entityName":"LemonNation","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
+{"kind":"player","string":"Lemongod","entityId":"pl-df2dffe1a94e","entityName":"Lemongod","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Levi","entityId":"pl-8b49a459569b","entityName":"Levi","firstSeen":"2023-05-03","lastSeen":"2023-10-27","evidence":["handle","observed"]}
+{"kind":"player","string":"Licken","entityId":"pl-ba0d6b649165","entityName":"Licken","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Licorice","entityId":"pl-8bbe219b3dba","entityName":"Licorice","firstSeen":"2023-05-03","lastSeen":"2023-05-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Liftlift","entityId":"pl-66010cfcb7f8","entityName":"Doublelift","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Light","entityId":"pl-c1fbca4d55a8","entityName":"Light (Wang Guang-Yu)","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["handle"]}
 {"kind":"player","string":"Light (Wang Guang-Yu)","entityId":"pl-c1fbca4d55a8","entityName":"Light (Wang Guang-Yu)","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["observed"]}
+{"kind":"player","string":"LightSludge","entityId":"pl-dbf762de41c2","entityName":"LightSludge","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
+{"kind":"player","string":"Lilballz","entityId":"pl-af531e758f09","entityName":"Lilballz","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Linak","entityId":"pl-2892dc360f6c","entityName":"Linak","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Locodoco","entityId":"pl-e0430684decb","entityName":"Locodoco","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Loulex","entityId":"pl-2261f3b72b2d","entityName":"Loulex","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"Love BB Muffin","entityId":"pl-fec5b667d0a0","entityName":"Bbmuffin","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Luncafoer","entityId":"pl-564c201ceb75","entityName":"Luncafoer","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","handle","observed"]}
@@ -329,26 +358,33 @@
 {"kind":"player","string":"MISSING","entityId":"pl-8af1d328d75e","entityName":"MISSING","firstSeen":"2023-05-14","lastSeen":"2023-11-12","evidence":["handle","observed"]}
 {"kind":"player","string":"MaRin","entityId":"pl-815ce7e3242d","entityName":"MaRin","firstSeen":"2015-10-01","lastSeen":"2015-10-01","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Madlife","entityId":"pl-2700c2ef34db","entityName":"Madlife","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
+{"kind":"player","string":"Malunoo","entityId":"pl-e6ea94509514","entityName":"Malunoo","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Maple","entityId":"pl-0ce3ac5ab599","entityName":"Maple (Huang Yi-Tang)","firstSeen":"2015-03-13","lastSeen":"2023-10-15","evidence":["handle"]}
 {"kind":"player","string":"Maple (Huang Yi-Tang)","entityId":"pl-0ce3ac5ab599","entityName":"Maple (Huang Yi-Tang)","firstSeen":"2015-03-13","lastSeen":"2023-10-15","evidence":["observed"]}
 {"kind":"player","string":"Mash","entityId":"pl-bae224b7be9c","entityName":"Mash","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"Meteos","entityId":"pl-7d8018cdc0ae","entityName":"Meteos","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
+{"kind":"player","string":"MiSTakE","entityId":"pl-fff507a8ff48","entityName":"MiSTakE","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Mikyx","entityId":"pl-98c99431d6fa","entityName":"Mikyx","firstSeen":"2023-05-02","lastSeen":"2023-10-29","evidence":["handle","observed"]}
 {"kind":"player","string":"Mireu","entityId":"pl-6174850a63e3","entityName":"Mireu","firstSeen":"2023-05-03","lastSeen":"2023-10-13","evidence":["handle","observed"]}
+{"kind":"player","string":"Misaya","entityId":"pl-f4248fd0e7b0","entityName":"Misaya","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"Missing","entityId":"pl-8af1d328d75e","entityName":"MISSING","firstSeen":"2023-05-12","lastSeen":"2023-05-12","evidence":["handle","observed"]}
 {"kind":"player","string":"MoMa","entityId":"pl-097d84eb5f9c","entityName":"MoMa","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Muffinqt","entityId":"pl-2de6a50f48a3","entityName":"Muffinqt","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Mystic","entityId":"pl-734da8ec3147","entityName":"Mystic","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["handle","observed"]}
 {"kind":"player","string":"NDudeX","entityId":"pl-3d5309045116","entityName":"NintendudeX","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"NL","entityId":"pl-1e921f71c3df","entityName":"NL (Hsiung Wen-An)","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle"]}
 {"kind":"player","string":"NL (Hsiung Wen-An)","entityId":"pl-1e921f71c3df","entityName":"NL (Hsiung Wen-An)","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["observed"]}
+{"kind":"player","string":"NLgnz","entityId":"pl-a2379d4ac571","entityName":"NLgnz","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"NOTTILTEDAD","entityId":"pl-e48cd72e6441","entityName":"CaviaVampier","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["redirect","handle","observed"]}
 {"kind":"player","string":"Nintendude","entityId":"pl-3d5309045116","entityName":"NintendudeX","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
-{"kind":"player","string":"NintendudeX","entityId":"pl-3d5309045116","entityName":"NintendudeX","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"NintendudeX","entityId":"pl-3d5309045116","entityName":"NintendudeX","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Nio","entityId":"pl-7d7d12e2285a","entityName":"Nio","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Nio3","entityId":"pl-7d7d12e2285a","entityName":"Nio","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Nisqy","entityId":"pl-7fef4c558fbe","entityName":"Nisqy","firstSeen":"2023-05-10","lastSeen":"2023-10-26","evidence":["handle","observed"]}
+{"kind":"player","string":"Nk Inc","entityId":"pl-ad14fe03cdcb","entityName":"Nk Inc","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Noah","entityId":"pl-0891d3b7aebd","entityName":"Noah (Oh Hyeon-taek)","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["handle"]}
 {"kind":"player","string":"Noah (Oh Hyeon-taek)","entityId":"pl-0891d3b7aebd","entityName":"Noah (Oh Hyeon-taek)","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["observed"]}
+{"kind":"player","string":"Nyjacky","entityId":"pl-2b4e63011142","entityName":"Nyjacky","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"ON","entityId":"pl-e8a01133b135","entityName":"ON","firstSeen":"2023-05-03","lastSeen":"2023-11-11","evidence":["handle","observed"]}
 {"kind":"player","string":"Oddie","entityId":"pl-238880bb94a6","entityName":"Oddie","firstSeen":"2023-05-03","lastSeen":"2023-10-13","evidence":["handle","observed"]}
 {"kind":"player","string":"Odoamne","entityId":"pl-1c27d71dfb68","entityName":"Odoamne","firstSeen":"2015-10-01","lastSeen":"2015-10-01","evidence":["registry","handle","observed"]}
@@ -358,16 +394,24 @@
 {"kind":"player","string":"P1noy","entityId":"pl-6771975ba298","entityName":"P1noy","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
 {"kind":"player","string":"Palafox","entityId":"pl-cf05b58284a8","entityName":"Palafox","firstSeen":"2023-10-19","lastSeen":"2023-11-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Palette","entityId":"pl-85794effd6e8","entityName":"Palette","firstSeen":"2023-10-10","lastSeen":"2023-10-27","evidence":["handle","observed"]}
+{"kind":"player","string":"Patoy","entityId":"pl-1f23a5071faa","entityName":"Patoy","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Peanut","entityId":"pl-532e896395d0","entityName":"Peanut","firstSeen":"2023-05-09","lastSeen":"2023-11-03","evidence":["handle","observed"]}
 {"kind":"player","string":"Peyz","entityId":"pl-9820bfd30f22","entityName":"Peyz","firstSeen":"2023-05-09","lastSeen":"2023-11-03","evidence":["handle","observed"]}
-{"kind":"player","string":"Pixel","entityId":"pl-5817280a2398","entityName":"Pixel","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Pixel","entityId":"pl-5817280a2398","entityName":"Pixel","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Pixel3","entityId":"pl-5817280a2398","entityName":"Pixel","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"player","string":"Pobelter","entityId":"pl-4e5fc04987a2","entityName":"Pobelter","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
+{"kind":"player","string":"Porschkub","entityId":"pl-9009de8a4c2f","entityName":"Porschkub","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"PraY","entityId":"pl-cfac2dfc6b09","entityName":"PraY","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Pyosik","entityId":"pl-206ae5da084f","entityName":"Pyosik","firstSeen":"2023-10-19","lastSeen":"2023-10-23","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"RYU","entityId":"pl-c375f5f7e214","entityName":"Keria","firstSeen":null,"lastSeen":null,"evidence":["handle"]}
 {"kind":"player","string":"RYU (Ryu Min-seok)","entityId":"pl-c375f5f7e214","entityName":"Keria","firstSeen":null,"lastSeen":null,"evidence":["redirect"]}
 {"kind":"player","string":"Razork","entityId":"pl-b11a946eb07e","entityName":"Razork","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["handle","observed"]}
+{"kind":"player","string":"ReD","entityId":"pl-c1efceb33747","entityName":"ReD (Lee Siu Hin)","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle"]}
+{"kind":"player","string":"ReD (Lee Siu Hin)","entityId":"pl-c1efceb33747","entityName":"ReD (Lee Siu Hin)","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["observed"]}
+{"kind":"player","string":"Reginald","entityId":"pl-bc11bb97614b","entityName":"Reginald","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
+{"kind":"player","string":"Rekkles","entityId":"pl-fe55ff0b9934","entityName":"Rekkles","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"Rest","entityId":"pl-05863ec2c378","entityName":"Rest","firstSeen":"2023-10-11","lastSeen":"2023-10-14","evidence":["handle","observed"]}
+{"kind":"player","string":"Rhux","entityId":"pl-f13f53485693","entityName":"Rhux","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"River","entityId":"pl-01ef75ee8852","entityName":"River (Kim Dong-woo)","firstSeen":"2023-05-03","lastSeen":"2023-05-14","evidence":["handle"]}
 {"kind":"player","string":"River (Kim Dong-woo)","entityId":"pl-01ef75ee8852","entityName":"River (Kim Dong-woo)","firstSeen":"2023-05-03","lastSeen":"2023-05-14","evidence":["observed"]}
 {"kind":"player","string":"Robo","entityId":"pl-0f7d46d154f5","entityName":"Robo","firstSeen":"2023-05-02","lastSeen":"2023-10-14","evidence":["handle","observed"]}
@@ -376,6 +420,7 @@
 {"kind":"player","string":"Ryu","entityId":"pl-b50988561c5b","entityName":"Ryu","firstSeen":"2015-10-01","lastSeen":"2015-10-01","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"S LEE","entityId":"pl-a9073fde3cbe","entityName":"Faker","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"SOAZ","entityId":"pl-4717e665617d","entityName":"SOAZ","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
+{"kind":"player","string":"Saintvicious","entityId":"pl-dfdbfbbca188","entityName":"Saintvicious","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Salce","entityId":"pl-f65a0114681c","entityName":"Salce","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Santorin","entityId":"pl-81c77d101baf","entityName":"Santorin","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["handle","observed"]}
 {"kind":"player","string":"Scout","entityId":"pl-8a1db462be75","entityName":"Scout","firstSeen":"2023-10-19","lastSeen":"2023-11-05","evidence":["handle","observed"]}
@@ -387,29 +432,38 @@
 {"kind":"player","string":"Slayder","entityId":"pl-e008695bfdbf","entityName":"Slayder","firstSeen":"2023-10-10","lastSeen":"2023-10-27","evidence":["handle","observed"]}
 {"kind":"player","string":"Smeb","entityId":"pl-06caf9f960e3","entityName":"Smeb","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Sneaky","entityId":"pl-771139a20b81","entityName":"Sneaky","firstSeen":"2015-03-13","lastSeen":"2015-03-13","evidence":["handle","observed"]}
+{"kind":"player","string":"Snoopeh","entityId":"pl-b9e346599dab","entityName":"Snoopeh","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Space","entityId":"pl-4dd5ba8d4c3f","entityName":"Space (Seon Ho-san)","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle"]}
 {"kind":"player","string":"Space (Seon Ho-san)","entityId":"pl-4dd5ba8d4c3f","entityName":"Space (Seon Ho-san)","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["observed"]}
 {"kind":"player","string":"Sparda","entityId":"pl-ecb29e5be82a","entityName":"Sparda","firstSeen":"2023-10-11","lastSeen":"2023-10-15","evidence":["handle","observed"]}
 {"kind":"player","string":"Spirit","entityId":"pl-57e39463d863","entityName":"Spirit","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["handle","observed"]}
+{"kind":"player","string":"Stanley","entityId":"pl-f4537f49d815","entityName":"Stanley","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Steak","entityId":"pl-1df249fb3a6c","entityName":"Steak","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Steal","entityId":"pl-861ff0d995de","entityName":"Steal (Mun Geon-yeong)","firstSeen":"2023-05-02","lastSeen":"2023-10-13","evidence":["handle"]}
 {"kind":"player","string":"Steal (Mun Geon-yeong)","entityId":"pl-861ff0d995de","entityName":"Steal (Mun Geon-yeong)","firstSeen":"2023-05-02","lastSeen":"2023-10-13","evidence":["observed"]}
 {"kind":"player","string":"Stixxay","entityId":"pl-57eb7d5f745b","entityName":"Stixxay","firstSeen":"2023-05-03","lastSeen":"2023-05-14","evidence":["handle","observed"]}
 {"kind":"player","string":"Sty1e","entityId":"pl-820dff74d122","entityName":"Sty1e","firstSeen":"2023-05-03","lastSeen":"2023-05-05","evidence":["handle","observed"]}
 {"kind":"player","string":"Summit","entityId":"pl-231a8c82e108","entityName":"Summit","firstSeen":"2023-10-19","lastSeen":"2023-10-23","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"SuperCat","entityId":"pl-babb4fa57cc8","entityName":"SuperCat","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Svenskeren","entityId":"pl-98d90ef4f896","entityName":"Svenskeren","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"SwordArt","entityId":"pl-6d448481baff","entityName":"SwordArt","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
-{"kind":"player","string":"TakashiX","entityId":"pl-f9ab7e6bbab9","entityName":"TakashiX","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"TakashiX","entityId":"pl-f9ab7e6bbab9","entityName":"TakashiX","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Tarzan","entityId":"pl-6f1b618950f1","entityName":"Tarzan (Lee Seung-yong)","firstSeen":"2023-10-19","lastSeen":"2023-11-05","evidence":["handle"]}
 {"kind":"player","string":"Tarzan (Lee Seung-yong)","entityId":"pl-6f1b618950f1","entityName":"Tarzan (Lee Seung-yong)","firstSeen":"2023-10-19","lastSeen":"2023-11-05","evidence":["observed"]}
+{"kind":"player","string":"TheOddOne","entityId":"pl-ae3c5e3d14f5","entityName":"TheOddOne","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"TheShy","entityId":"pl-b487de76c47d","entityName":"TheShy","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["handle","observed"]}
+{"kind":"player","string":"TkSing","entityId":"pl-5f50848cc087","entityName":"TkSing","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
+{"kind":"player","string":"Toyz","entityId":"pl-7404beae16f8","entityName":"Toyz","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"Trailblazer","entityId":"pl-5fa14b286733","entityName":"Trailblazer","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["handle"]}
 {"kind":"player","string":"Trailblazer (Oskar Moreno)","entityId":"pl-5fa14b286733","entityName":"Trailblazer","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","observed"]}
 {"kind":"player","string":"Trymbi","entityId":"pl-0a5641ab7fe2","entityName":"Trymbi","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["handle","observed"]}
+{"kind":"player","string":"Voyboy","entityId":"pl-f6fc15ed916b","entityName":"Voyboy","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"W CHOI","entityId":"pl-0ff0ef099ecb","entityName":"Zeus","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"Wako","entityId":"pl-48c0044b8eb3","entityName":"Wako","firstSeen":"2023-05-02","lastSeen":"2023-10-15","evidence":["handle","observed"]}
 {"kind":"player","string":"Weiwei","entityId":"pl-7f09c61fd473","entityName":"Weiwei","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["handle","observed"]}
+{"kind":"player","string":"Weixiao","entityId":"pl-d86f8d4bc706","entityName":"Weixiao","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"Westrice","entityId":"pl-19642f162d1f","entityName":"Westrice","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","handle","observed"]}
+{"kind":"player","string":"Wickd","entityId":"pl-9ffa3ea1a599","entityName":"Wickd","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"WildTurtle","entityId":"pl-5d6d3596abd6","entityName":"WildTurtle","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["handle","observed"]}
 {"kind":"player","string":"Wolf","entityId":"pl-3c725e8d5b01","entityName":"Wolf","firstSeen":null,"lastSeen":null,"evidence":["handle"]}
 {"kind":"player","string":"Wolf","entityId":"pl-54f48e941f53","entityName":"Wolf","firstSeen":null,"lastSeen":null,"evidence":["handle"]}
@@ -433,6 +487,9 @@
 {"kind":"player","string":"Wooje","entityId":"pl-0ff0ef099ecb","entityName":"Zeus","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"XUN","entityId":"pl-88ea9837b0ef","entityName":"XUN","firstSeen":"2023-05-03","lastSeen":"2023-11-11","evidence":["handle","observed"]}
 {"kind":"player","string":"Xiaohu","entityId":"pl-3b47125e9a17","entityName":"Xiaohu","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["handle","observed"]}
+{"kind":"player","string":"Xllyra","entityId":"pl-e740caa83eef","entityName":"Xllyra","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
+{"kind":"player","string":"Xmithie","entityId":"pl-48f9d1a48eb1","entityName":"Xmithie","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
+{"kind":"player","string":"Xpecial","entityId":"pl-249333b189a5","entityName":"Xpecial","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"Yagao","entityId":"pl-77c409bcc4a7","entityName":"Yagao","firstSeen":"2023-05-03","lastSeen":"2023-11-11","evidence":["handle","observed"]}
 {"kind":"player","string":"YellOwStaR","entityId":"pl-428ba3eadb03","entityName":"YellOwStaR","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"player","string":"YellowS","entityId":"pl-428ba3eadb03","entityName":"YellOwStaR","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
@@ -447,11 +504,16 @@
 {"kind":"player","string":"Zeus","entityId":"pl-0ff0ef099ecb","entityName":"Zeus","firstSeen":"2023-05-10","lastSeen":"2023-11-19","evidence":["registry","handle","observed"]}
 {"kind":"player","string":"Zika","entityId":"pl-46005cad7fa5","entityName":"Zika","firstSeen":"2023-10-19","lastSeen":"2023-11-05","evidence":["handle","observed"]}
 {"kind":"player","string":"Zin","entityId":"pl-775553aedc9a","entityName":"Zin","firstSeen":"2023-05-03","lastSeen":"2023-05-05","evidence":["handle","observed"]}
-{"kind":"player","string":"ZionSpartan","entityId":"pl-a5c4062e7b79","entityName":"Darshan","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["handle","observed"]}
+{"kind":"player","string":"ZionSpartan","entityId":"pl-a5c4062e7b79","entityName":"Darshan","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Zionspartan","entityId":"pl-a5c4062e7b79","entityName":"Darshan","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"player","string":"Zuna","entityId":"pl-2d05d2cf5155","entityName":"Zuna","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
 {"kind":"player","string":"Zven","entityId":"pl-ec44ccc0ab19","entityName":"Zven","firstSeen":"2023-05-11","lastSeen":"2023-10-26","evidence":["handle","observed"]}
 {"kind":"player","string":"apaMEN","entityId":"pl-725b9746d1c4","entityName":"apaMEN","firstSeen":"2023-10-11","lastSeen":"2023-10-13","evidence":["handle","observed"]}
 {"kind":"player","string":"bbmuffin","entityId":"pl-fec5b667d0a0","entityName":"Bbmuffin","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["handle","observed"]}
+{"kind":"player","string":"bebe","entityId":"pl-3c28c16ba44a","entityName":"bebe (Chang Bo-Wei)","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle"]}
+{"kind":"player","string":"bebe (Chang Bo-Wei)","entityId":"pl-3c28c16ba44a","entityName":"bebe (Chang Bo-Wei)","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["observed"]}
+{"kind":"player","string":"bigfatlp","entityId":"pl-e6866653e1ff","entityName":"bigfatlp","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
+{"kind":"player","string":"d4rkness","entityId":"pl-ef8f76f1c064","entityName":"d4rkness","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
 {"kind":"player","string":"denizzz","entityId":"pl-a8f20d31f75a","entityName":"Denizzz","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["handle","observed"]}
 {"kind":"player","string":"fredy122","entityId":"pl-d6e377fca42e","entityName":"fredy122","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"huhi","entityId":"pl-797fa488b0eb","entityName":"huhi","firstSeen":"2023-05-03","lastSeen":"2023-05-14","evidence":["handle","observed"]}
@@ -461,27 +523,38 @@
 {"kind":"player","string":"kujaa","entityId":"pl-874d343e2a21","entityName":"Kujaa","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["handle","observed"]}
 {"kind":"player","string":"kurO","entityId":"pl-3f277a126c6b","entityName":"kurO","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"loulex","entityId":"pl-2261f3b72b2d","entityName":"Loulex","firstSeen":"2015-10-01","lastSeen":"2015-10-01","evidence":["handle","observed"]}
-{"kind":"player","string":"nRated","entityId":"pl-94e2aee2caf6","entityName":"nRated","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["handle","observed"]}
+{"kind":"player","string":"ly4ly4ly4","entityId":"pl-549d07070555","entityName":"ly4ly4ly4","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
+{"kind":"player","string":"mancloud","entityId":"pl-4cc6356be38b","entityName":"mancloud","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["handle","observed"]}
+{"kind":"player","string":"nRated","entityId":"pl-94e2aee2caf6","entityName":"nRated","firstSeen":"2012-11-29","lastSeen":"2015-03-14","evidence":["handle","observed"]}
 {"kind":"player","string":"nuc","entityId":"pl-9535deb12f7d","entityName":"nuc","firstSeen":"2023-10-11","lastSeen":"2023-10-23","evidence":["handle","observed"]}
-{"kind":"player","string":"sOAZ","entityId":"pl-4717e665617d","entityName":"SOAZ","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["handle","observed"]}
+{"kind":"player","string":"sOAZ","entityId":"pl-4717e665617d","entityName":"SOAZ","firstSeen":"2011-06-18","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"tinowns","entityId":"pl-cdf549ee3f38","entityName":"tinowns","firstSeen":"2023-05-02","lastSeen":"2023-10-14","evidence":["handle","observed"]}
 {"kind":"player","string":"tol2","entityId":"pl-de212bda9856","entityName":"tol2","firstSeen":"2023-05-02","lastSeen":"2023-05-05","evidence":["handle","observed"]}
 {"kind":"player","string":"ubao","entityId":"pl-052c973a8796","entityName":"ubao","firstSeen":"2023-05-02","lastSeen":"2023-05-07","evidence":["handle","observed"]}
+{"kind":"player","string":"xHazzard","entityId":"pl-7a6a548cb1b8","entityName":"xHazzard","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["handle","observed"]}
+{"kind":"player","string":"xPeke","entityId":"pl-e5c5bba009e9","entityName":"xPeke","firstSeen":"2012-11-29","lastSeen":"2012-12-03","evidence":["handle","observed"]}
 {"kind":"player","string":"xiye","entityId":"pl-aada38f2f3a3","entityName":"xiye","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["handle","observed"]}
+{"kind":"player","string":"yellowpete","entityId":"pl-922e51bf2e53","entityName":"yellowpete","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["handle","observed"]}
 {"kind":"player","string":"이민형","entityId":"pl-436bedb688e4","entityName":"Gumayusi","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
 {"kind":"player","string":"코어","entityId":"pl-8d6fa0c30bff","entityName":"CoreJJ","firstSeen":null,"lastSeen":null,"evidence":["redirect","handle"]}
+{"kind":"team","string":"Absolute Legends NA","entityId":"tm-503f8cb57765","entityName":"Absolute Legends NA","firstSeen":"2012-11-14","lastSeen":"2012-11-17","evidence":["observed"]}
 {"kind":"team","string":"Against All authority","entityId":"tm-fa32a4bab6cd","entityName":"against All authority","firstSeen":null,"lastSeen":null,"evidence":["registry","redirect"]}
-{"kind":"team","string":"Azubu Blaze","entityId":"tm-bc44d3ff4d27","entityName":"Azubu Blaze","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","redirect","observed"]}
+{"kind":"team","string":"Azubu Blaze","entityId":"tm-bc44d3ff4d27","entityName":"Azubu Blaze","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["registry","redirect","observed"]}
 {"kind":"team","string":"Bilibili Gaming","entityId":"tm-3c8aa94cea87","entityName":"Bilibili Gaming","firstSeen":"2023-05-03","lastSeen":"2023-11-11","evidence":["observed"]}
+{"kind":"team","string":"Blackbean","entityId":"tm-ffeb9af2caae","entityName":"Blackbean","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["observed"]}
 {"kind":"team","string":"CJ Entus","entityId":"tm-0ee1d7d7c31a","entityName":"CJ Entus","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["observed"]}
+{"kind":"team","string":"CLG Prime","entityId":"tm-be1c5136689c","entityName":"Counter Logic Gaming","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["observed","declared"]}
 {"kind":"team","string":"CTBC Flying Oyster","entityId":"tm-aecf2932501d","entityName":"CTBC Flying Oyster","firstSeen":"2023-10-11","lastSeen":"2023-10-14","evidence":["observed"]}
 {"kind":"team","string":"Cloud9","entityId":"tm-c6640c0ccfe4","entityName":"Cloud9","firstSeen":"2015-03-13","lastSeen":"2023-10-26","evidence":["observed"]}
+{"kind":"team","string":"Counter Logic Gaming","entityId":"tm-be1c5136689c","entityName":"Counter Logic Gaming","firstSeen":"2012-11-16","lastSeen":"2012-12-02","evidence":["observed","declared"]}
+{"kind":"team","string":"Counter Logic Gaming Europe","entityId":"tm-4fc0614f3ef7","entityName":"Counter Logic Gaming Europe","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["observed"]}
 {"kind":"team","string":"DKB XPERION NXT","entityId":"tm-38fe94c67f67","entityName":"DKB XPERION NXT","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["registry","redirect","observed"]}
 {"kind":"team","string":"DetonatioN FocusMe","entityId":"tm-94fa0eac3812","entityName":"DetonatioN FocusMe","firstSeen":"2023-05-02","lastSeen":"2023-10-13","evidence":["observed"]}
+{"kind":"team","string":"Dignitas","entityId":"tm-16eb5486accd","entityName":"Dignitas","firstSeen":"2012-11-16","lastSeen":"2012-11-17","evidence":["observed"]}
 {"kind":"team","string":"Dplus Kia","entityId":"tm-b5f2d1b32dc6","entityName":"Dplus Kia","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["observed"]}
 {"kind":"team","string":"EPIK Gamer","entityId":"tm-eb2eec43fa28","entityName":"EPIK Gamer","firstSeen":null,"lastSeen":null,"evidence":["registry"]}
 {"kind":"team","string":"Epik Gamer","entityId":"tm-eb2eec43fa28","entityName":"EPIK Gamer","firstSeen":"2011-06-18","lastSeen":"2011-06-18","evidence":["registry","redirect","observed"]}
-{"kind":"team","string":"Fnatic","entityId":"tm-b54099fc2014","entityName":"Fnatic","firstSeen":"2023-10-19","lastSeen":"2023-10-29","evidence":["observed"]}
+{"kind":"team","string":"Fnatic","entityId":"tm-b54099fc2014","entityName":"Fnatic","firstSeen":"2012-11-29","lastSeen":"2023-10-29","evidence":["observed"]}
 {"kind":"team","string":"G2 Esports","entityId":"tm-a491a98abe90","entityName":"G2 Esports","firstSeen":"2023-05-02","lastSeen":"2023-10-29","evidence":["observed"]}
 {"kind":"team","string":"GAM Esports","entityId":"tm-dcd83f572277","entityName":"GAM Esports","firstSeen":"2023-05-03","lastSeen":"2023-10-27","evidence":["observed"]}
 {"kind":"team","string":"GE Tigers","entityId":"tm-afd7b9c84ca6","entityName":"GE Tigers","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["observed"]}
@@ -489,24 +562,33 @@
 {"kind":"team","string":"Gen.G","entityId":"tm-00ac0e66d991","entityName":"Gen.G","firstSeen":"2023-05-09","lastSeen":"2023-11-03","evidence":["observed"]}
 {"kind":"team","string":"Golden Guardians","entityId":"tm-d3b6d66f7710","entityName":"Golden Guardians","firstSeen":"2023-05-03","lastSeen":"2023-05-14","evidence":["observed"]}
 {"kind":"team","string":"H2k-Gaming","entityId":"tm-7e5eb06d8646","entityName":"H2k-Gaming","firstSeen":"2015-10-01","lastSeen":"2015-10-01","evidence":["registry","redirect","observed"]}
+{"kind":"team","string":"IceLanD","entityId":"tm-f8a350bee7a9","entityName":"IceLanD","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["observed"]}
 {"kind":"team","string":"JD Gaming","entityId":"tm-e0ac3973ed3e","entityName":"JD Gaming","firstSeen":"2023-05-12","lastSeen":"2023-11-12","evidence":["observed"]}
 {"kind":"team","string":"KT Rolster","entityId":"tm-25b9b1c91296","entityName":"KT Rolster","firstSeen":"2023-10-19","lastSeen":"2023-11-04","evidence":["observed"]}
 {"kind":"team","string":"LNG Esports","entityId":"tm-8a3085fd91e5","entityName":"LNG Esports","firstSeen":"2023-10-19","lastSeen":"2023-11-05","evidence":["observed"]}
 {"kind":"team","string":"LOUD","entityId":"tm-3a76b34e3c82","entityName":"LOUD","firstSeen":"2023-05-02","lastSeen":"2023-10-14","evidence":["observed"]}
 {"kind":"team","string":"MAD Lions","entityId":"tm-58e97303f1c9","entityName":"MAD Lions","firstSeen":"2023-05-10","lastSeen":"2023-10-26","evidence":["observed"]}
+{"kind":"team","string":"Meat Playground","entityId":"tm-71d9f0e83524","entityName":"Meat Playground","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["observed"]}
+{"kind":"team","string":"Moscow Five","entityId":"tm-e603064f4a0f","entityName":"Moscow Five","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["observed"]}
 {"kind":"team","string":"Movistar R7","entityId":"tm-e250744641c3","entityName":"Movistar R7","firstSeen":"2023-05-03","lastSeen":"2023-10-13","evidence":["observed"]}
 {"kind":"team","string":"NRG","entityId":"tm-816e45e1dd85","entityName":"NRG","firstSeen":"2023-10-19","lastSeen":"2023-11-02","evidence":["observed"]}
 {"kind":"team","string":"PSG Talon","entityId":"tm-b894b9da44f7","entityName":"PSG Talon","firstSeen":"2023-05-02","lastSeen":"2023-10-15","evidence":["observed"]}
+{"kind":"team","string":"Quantic Gaming","entityId":"tm-70d121e8f3b3","entityName":"Quantic Gaming","firstSeen":"2012-11-14","lastSeen":"2012-11-16","evidence":["observed"]}
 {"kind":"team","string":"SK Gaming","entityId":"tm-3bcb9efd5846","entityName":"SK Gaming","firstSeen":"2015-03-13","lastSeen":"2015-03-14","evidence":["observed"]}
 {"kind":"team","string":"SK Telecom","entityId":"tm-9a4fde0c4aad","entityName":"T1","firstSeen":null,"lastSeen":null,"evidence":["redirect"]}
 {"kind":"team","string":"SK Telecom T1","entityId":"tm-9a4fde0c4aad","entityName":"T1","firstSeen":"2015-10-01","lastSeen":"2015-10-01","evidence":["rename","redirect","observed"]}
 {"kind":"team","string":"SKT T1","entityId":"tm-9a4fde0c4aad","entityName":"T1","firstSeen":null,"lastSeen":null,"evidence":["redirect"]}
+{"kind":"team","string":"Singapore Sentinels","entityId":"tm-8785e1bcf241","entityName":"Singapore Sentinels","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["observed"]}
 {"kind":"team","string":"T1","entityId":"tm-9a4fde0c4aad","entityName":"T1","firstSeen":"2023-05-10","lastSeen":"2023-11-19","evidence":["registry","redirect","observed"]}
-{"kind":"team","string":"TSM","entityId":"tm-cb15b056a5ad","entityName":"TSM","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["observed"]}
+{"kind":"team","string":"TSM","entityId":"tm-cb15b056a5ad","entityName":"TSM","firstSeen":"2012-11-29","lastSeen":"2015-03-15","evidence":["observed"]}
+{"kind":"team","string":"Taipei Assassins","entityId":"tm-c94b01026f88","entityName":"Taipei Assassins","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["observed"]}
 {"kind":"team","string":"Team BDS","entityId":"tm-64248513e110","entityName":"Team BDS","firstSeen":"2023-10-11","lastSeen":"2023-10-23","evidence":["observed"]}
-{"kind":"team","string":"Team Dynamic","entityId":"tm-3bb658d12868","entityName":"Team Dynamic","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","redirect","observed"]}
+{"kind":"team","string":"Team Curse","entityId":"tm-1c6a25914979","entityName":"Team Curse","firstSeen":"2012-11-29","lastSeen":"2012-12-02","evidence":["observed"]}
+{"kind":"team","string":"Team Curse Europe","entityId":"tm-478a97e49e4b","entityName":"Team Curse Europe","firstSeen":"2012-11-29","lastSeen":"2012-12-01","evidence":["observed"]}
+{"kind":"team","string":"Team Dynamic","entityId":"tm-3bb658d12868","entityName":"Team Dynamic","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["registry","redirect","observed"]}
+{"kind":"team","string":"Team FeaR","entityId":"tm-60eac80615ba","entityName":"Team FeaR","firstSeen":"2012-11-29","lastSeen":"2012-11-30","evidence":["observed"]}
 {"kind":"team","string":"Team Liquid","entityId":"tm-1c1de8fe17aa","entityName":"Team Liquid","firstSeen":"2023-10-19","lastSeen":"2023-10-23","evidence":["registry","redirect","observed"]}
-{"kind":"team","string":"Team WE","entityId":"tm-f5665c13ca53","entityName":"Team WE","firstSeen":"2015-03-13","lastSeen":"2015-03-15","evidence":["observed"]}
+{"kind":"team","string":"Team WE","entityId":"tm-f5665c13ca53","entityName":"Team WE","firstSeen":"2012-11-29","lastSeen":"2015-03-15","evidence":["observed"]}
 {"kind":"team","string":"Team Whales","entityId":"tm-d8c2d4d2eca5","entityName":"Team Whales","firstSeen":"2023-10-11","lastSeen":"2023-10-15","evidence":["observed"]}
 {"kind":"team","string":"The Bandits Prime","entityId":"tm-fb205a4a7874","entityName":"The Bandits Prime","firstSeen":"2026-10-13","lastSeen":"2026-10-13","evidence":["observed"]}
 {"kind":"team","string":"Weibo Gaming","entityId":"tm-50038f5deaa0","entityName":"Weibo Gaming","firstSeen":"2023-10-19","lastSeen":"2023-11-19","evidence":["observed"]}

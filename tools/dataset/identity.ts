@@ -53,6 +53,15 @@
 // source already knows. A silent *merge* is what must never happen, so ambiguity is
 // reported with its candidates and mints nothing.
 //
+// A declaration in `rules/identity-aliases.json` is the one statement that arrives
+// before any payload is read, so it is registered before the scoreboard observations:
+// a declared string therefore resolves instead of minting, and two judged spellings
+// become one entity rather than two. Its target is a page or a Riot id when the
+// registries carry the entity, and another observed source string (`aliasOf`) when they
+// do not — the provisional id is then the target string's hash, which is exactly what an
+// undeclared observation would have minted, and the pair is never reported as two
+// unresolved strings a future crawl should chase.
+//
 // Every emitted record carries the entity's display name beside its ID (spec R12):
 // the entity files do, and so does every alias row, so a reader joins on an ID
 // without having to decode it.
@@ -205,6 +214,18 @@ export type DeclaredAlias = {
 	/** Which entity the string denotes: a page for team/player, Riot's id for a champion. */
 	page?: string;
 	riotKey?: number;
+	/**
+	 * Which entity the string denotes, named as another source string instead of a page.
+	 *
+	 * This is for an entity the source's registries carry **nothing** for, so `page` and
+	 * `riotKey` have no target to point at: the declaration then says "these two observed
+	 * strings are one entity", and the entity's provisional ID is derived from the target
+	 * string (exactly what an undeclared observed string would mint), never from the
+	 * alias's own string, so the answer does not depend on read order. When the target
+	 * string *is* something the registries state, resolving it wins, and a declaration that
+	 * chains onto another declaration is refused rather than being order-dependent.
+	 */
+	aliasOf?: string;
 	/** The declared era, used only where the corpus never dates the string itself. */
 	from?: string | null;
 	until?: string | null;
@@ -243,20 +264,39 @@ export async function loadDeclaredAliases(file: string = DEFAULT_ALIAS_FILE): Pr
 			if (typeof value !== "string" || !DATE.test(value)) throw new Error(`${where}: ${bound} must be a YYYY-MM-DD date or null`);
 		}
 		const declared: DeclaredAlias = { kind, string, reason };
-		if (kind === "champion") {
+		const aliasOf = typeof alias.aliasOf === "string" ? alias.aliasOf.trim() : "";
+		if (aliasOf !== "") {
+			if (aliasOf === string) throw new Error(`${where}: a declared alias cannot name itself`);
+			if (alias.page !== undefined || alias.riotKey !== undefined) {
+				throw new Error(`${where}: a declared alias names one target — \`aliasOf\`, not \`page\` or \`riotKey\` as well`);
+			}
+			declared.aliasOf = aliasOf;
+		} else if (kind === "champion") {
 			if (!Number.isInteger(alias.riotKey) || (alias.riotKey as number) <= 0) {
-				throw new Error(`${where}: a champion alias needs Riot's numeric riotKey, not a display name`);
+				throw new Error(`${where}: a champion alias needs Riot's numeric riotKey, not a display name (or an \`aliasOf\` source string)`);
 			}
 			declared.riotKey = alias.riotKey as number;
 		} else {
 			if (typeof alias.page !== "string" || alias.page.trim() === "") {
-				throw new Error(`${where}: a ${kind} alias needs the target \`page\``);
+				throw new Error(`${where}: a ${kind} alias needs the target \`page\`, or an \`aliasOf\` source string`);
 			}
 			declared.page = alias.page.trim();
 		}
 		declared.from = (alias.from as string | null | undefined) ?? null;
 		declared.until = (alias.until as string | null | undefined) ?? null;
 		aliases.push(declared);
+	}
+	// A declaration that targets another declaration would resolve by file order, which
+	// is exactly the read-order dependence the canonical IDs exist to avoid.
+	const declaredStrings = new Set(aliases.map((alias) => `${alias.kind}\u0000${alias.string}`));
+	for (const alias of aliases) {
+		if (alias.aliasOf === undefined) continue;
+		if (declaredStrings.has(`${alias.kind}\u0000${alias.aliasOf}`)) {
+			throw new Error(
+				`${file}: alias ${JSON.stringify(alias.string)} targets the declared string ${JSON.stringify(alias.aliasOf)} — ` +
+					"one declaration cannot chain onto another, because the answer would depend on file order",
+			);
+		}
 	}
 	return aliases;
 }
@@ -444,12 +484,54 @@ export function assembleIdentity(
 		player: sources.playerNames.length > 0,
 		champion: sources.champions.length > 0,
 	};
+	/**
+	 * The entity a string only ever appeared as, with no registry identity to point at.
+	 *
+	 * Its ID is the string's hash, which is the same provisional ID an undeclared
+	 * observation would mint — so a declaration can name it without inventing a second
+	 * anchoring scheme. `why` is what put the string here: a declaration says so before any
+	 * payload has been observed, and a later observation adds `observed` beside it.
+	 */
+	const mint = (kind: EntityKind, string: string, why: AliasEvidence = "observed"): string => {
+		const id = surrogateId(KIND_PREFIX[kind], string);
+		if (kind === "team") teams.push({ id, name: displayName(string), overviewPage: null, region: "" });
+		else if (kind === "player") players.push({ id, name: displayName(string), overviewPage: null });
+		else champions.push({ id, name: displayName(string), riotKey: null });
+		names.set(id, displayName(string));
+		register(kind, string, id, "identity", why);
+		return id;
+	};
+
+	/** Which entity a declaration's `aliasOf` string denotes, resolving it the way the source would. */
+	const entityForDeclaredTarget = (declared: DeclaredAlias): string => {
+		const target = declared.aliasOf as string;
+		let found: Resolution | null;
+		try {
+			found = lookup(declared.kind, target);
+		} catch (error) {
+			if (!(error instanceof AmbiguousIdentity)) throw error;
+			throw new Error(`declared alias ${JSON.stringify(declared.string)}: its target ${JSON.stringify(target)} is ambiguous — ${error.message}`);
+		}
+		return found === null ? mint(declared.kind, target, "declared") : found.id;
+	};
+
 	for (const declared of declaredAliases) {
-		if (!registryPresent[declared.kind]) continue;
+		// A `page`/`riotKey` declaration needs its registry in the corpus to have a target at
+		// all, so it is skipped when that registry is absent (a fixture set that only carries
+		// events has no champion for `Nunu` to denote). An `aliasOf` declaration targets no
+		// registry, so it applies either way: whether a `Teams` payload happens to be in the
+		// corpus must not decide whether two observed strings are one team.
+		if (declared.aliasOf === undefined && !registryPresent[declared.kind]) continue;
+		// A declaration states what the registries do not, so it is registered in the alias
+		// tier: when a registry *does* answer for the string, `lookup` prefers the registry
+		// and the declaration is inert. That is the documented order, and it is the right
+		// one — the source adopting a string is not a contradiction to fail on.
 		const id =
-			declared.kind === "champion"
-				? championIdByRiotKey.get(declared.riotKey as number)
-				: (declared.kind === "team" ? teamIdByPage : playerIdByPage).get(declared.page as string);
+			declared.aliasOf !== undefined
+				? entityForDeclaredTarget(declared)
+				: declared.kind === "champion"
+					? championIdByRiotKey.get(declared.riotKey as number)
+					: (declared.kind === "team" ? teamIdByPage : playerIdByPage).get(declared.page as string);
 		if (id === undefined) {
 			const target = declared.kind === "champion" ? `riotKey ${declared.riotKey}` : `page ${JSON.stringify(declared.page)}`;
 			throw new Error(
@@ -501,16 +583,6 @@ export function assembleIdentity(
 			if (seen.firstSeen === null || date < seen.firstSeen) seen.firstSeen = date;
 			if (seen.lastSeen === null || date > seen.lastSeen) seen.lastSeen = date;
 		}
-	};
-
-	const mint = (kind: EntityKind, string: string): string => {
-		const id = surrogateId(KIND_PREFIX[kind], string);
-		if (kind === "team") teams.push({ id, name: displayName(string), overviewPage: null, region: "" });
-		else if (kind === "player") players.push({ id, name: displayName(string), overviewPage: null });
-		else champions.push({ id, name: displayName(string), riotKey: null });
-		names.set(id, displayName(string));
-		register(kind, string, id, "identity", "observed");
-		return id;
 	};
 
 	/** Resolve one reference, minting an entity (and reporting it) when nothing answers. */

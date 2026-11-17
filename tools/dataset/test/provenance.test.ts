@@ -664,16 +664,23 @@ test("every emitted record resolves to a recorded payload row, and that payload 
 	}
 
 	// Declared aliases are the one identity row the source does not carry: they come
-	// from `rules/identity-aliases.json`, and the row says so through `evidence`.
+	// from `rules/identity-aliases.json`, and the row says so through `evidence`. A
+	// declaration names its entity either directly (`page`/`riotKey`) or, when the corpus
+	// has no registry row for it at all, through another source string (`aliasOf`) — that
+	// target is itself a string the payloads carry, so the same walk-back applies to it.
 	const declared = JSON.parse(await readFile(path.join(DATASET_DIR, "rules", "identity-aliases.json"), "utf8")) as {
-		aliases?: { string?: string }[];
+		aliases?: { string?: string; aliasOf?: string }[];
 	};
 	const declaredStrings = new Set((declared.aliases ?? []).map((alias) => alias.string ?? ""));
+	const declaredTargets = new Set((declared.aliases ?? []).map((alias) => alias.aliasOf ?? ""));
 	const allScalars = scalars(payloads.map((payload) => rowsOf(payload)));
 	for (const alias of result.identity.aliases) {
 		if (alias.evidence.includes("declared")) {
-			assert.ok(declaredStrings.has(alias.string), `alias ${JSON.stringify(alias.string)}: declared evidence needs a row in rules/identity-aliases.json`);
-			continue;
+			assert.ok(
+				declaredStrings.has(alias.string) || declaredTargets.has(alias.string),
+				`alias ${JSON.stringify(alias.string)}: declared evidence needs a row in rules/identity-aliases.json`,
+			);
+			if (declaredStrings.has(alias.string)) continue;
 		}
 		assert.ok(
 			stringsInColumns(byTable, IDENTITY_COLUMNS[alias.kind]).has(alias.string),
