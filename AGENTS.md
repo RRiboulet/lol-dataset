@@ -5,7 +5,7 @@ from the first tournament through the one being played right now (2026). It is
 the first step of a larger project, so the shape of the data matters more than
 speed: expect schema decisions to outlive the scrapers that fill them.
 
-**Current state: the event, identity, game, draft and player layers, on top of the scaffold.** The
+**Current state: the event, identity, game, draft and player layers, with an invariant gate, on top of the scaffold.** The
 devcontainer, pi extensions, skills and templates are in place, and the project's
 own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
@@ -14,7 +14,10 @@ rejection, the team, player, champion and alias identity tables, the games and
 matches of the two events whose payloads have been recorded — each game now carrying
 its champion draft with the source's fidelity and a player row per participant, with
 kills and gold reconciled against the team totals — and a per-event report of which
-events the corpus carries games for. Those two events are the only
+events the corpus carries games for. A build also runs an invariant gate over the
+emitted records, so a hand-edit or a bad merge that contradicts the data fails before
+anything is written, and `node tools/check.ts` runs both suites. Those two events are
+the only
 ones with games: tickets 09 and 10 are the crawl that fills the rest. There is no
 `README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
 a schema, a scraper or a README as a side effect of an unrelated task; those are
@@ -310,11 +313,17 @@ commissioned, hand the trail to that one reviewer alongside the diff.
 ## Tests
 
 ```bash
+node tools/check.ts                                        # everything: dataset + scaffold suites
 bash .pi/extensions/subagent/test/setup-deps.sh              # once: link pi's packages
 node --test .pi/extensions/subagent/test/*.test.ts
 node --test tools/dataset/test/*.test.ts                 # dataset: recorded fixtures, no network
 (cd .pi/extensions/opencode-go-provider && node --test)  # provider package tests (separate tree)
 ```
+
+`node tools/check.ts` is the one command that answers "is the repo green": it links
+pi's packages if needed and runs both suites, exiting non-zero if either fails. The
+individual commands below stay for a single suite while iterating. The provider tests
+are a separate tree and are not part of `check.ts`.
 
 Run it with `bash` (or `sh`), not as `./setup-deps.sh` — see "Line endings"
 below. Node runs the TypeScript directly; there is no build step. See

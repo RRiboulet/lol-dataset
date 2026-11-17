@@ -31,6 +31,7 @@ import { assembleScoreboards, selectedGameIds } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
 import { normalizeSources } from "./normalize.ts";
+import { assertInvariants } from "./invariants.ts";
 import { assemblePlayerGames } from "./playerGames.ts";
 import type { PlayerGamesAssembly } from "./playerGames.ts";
 import type { EventSelectionRule } from "./rule.ts";
@@ -175,6 +176,19 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	for (const [file, output] of Object.entries(OUTPUTS) as [OutputFile, (typeof OUTPUTS)[OutputFile]][]) {
 		validateFile(file, files[file], await loadSchema(schemaDir, output.schema));
 	}
+
+	// Structure first, then truth: a record can satisfy its schema and still contradict
+	// the row beside it, and only this gate sees that (spec R10, ticket 06).
+	assertInvariants({
+		events: assembled.events,
+		selection: assembled.selection,
+		identity,
+		games: scoreboards.games,
+		matches: scoreboards.matches,
+		eventGames: scoreboards.eventGames,
+		playerGames: playerGames.rows,
+		eras,
+	});
 
 	return { ...assembled, files, identity, scoreboards, playerGames, rule, eras };
 }
