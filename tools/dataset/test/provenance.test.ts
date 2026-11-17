@@ -34,9 +34,10 @@ import type { BuildResult, OutputFile } from "../build.ts";
 import { buildDataset, OUTPUTS } from "../build.ts";
 import type { CargoQuery, CachedPayload } from "../cache.ts";
 import { readPayloads, sha256, writePayload } from "../cache.ts";
-import { compareManifest, entityDigestOf, MANIFEST_FILE } from "../manifest.ts";
-import { displayName } from "../normalize.ts";
-import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW } from "./helpers.ts";
+import { compareManifest, entityDigestOf, MANIFEST_FILE, MANIFEST_SCHEMA_FILE, TABLE_CONSUMERS, assertTableConsumersMatchNormalizers } from "../manifest.ts";
+import { displayName, KNOWN_TABLES } from "../normalize.ts";
+import { validateAgainst } from "../validate.ts";
+import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
 
 const run = promisify(execFile);
 
@@ -208,6 +209,41 @@ test("the manifest digests every entity file in a documented order, and the comm
 		result.manifestText,
 		`data/curated/${MANIFEST_FILE} is stale — rebuild it with: node tools/dataset/cli.ts build --raw tools/dataset/fixtures/raw`,
 	);
+});
+
+test("the manifest's shape is the checked-in schema, and both the committed and the built manifest satisfy it", async () => {
+	const schema = JSON.parse(await readFile(path.join(SCHEMA_DIR, MANIFEST_SCHEMA_FILE), "utf8")) as Record<string, unknown>;
+	const committed = JSON.parse(await readFile(path.join(CURATED_DIR, MANIFEST_FILE), "utf8")) as unknown;
+	assert.deepEqual(validateAgainst(schema, committed, MANIFEST_SCHEMA_FILE), []);
+
+	const result = await build();
+	assert.deepEqual(validateAgainst(schema, JSON.parse(result.manifestText), MANIFEST_SCHEMA_FILE), []);
+
+	// The contract is strict, not decorative: what `readManifest` used to ignore is a
+	// schema violation, so `--check` cannot compare a manifest it only partly understood.
+	const withUnknown = JSON.parse(JSON.stringify(committed)) as Record<string, unknown>;
+	withUnknown.extraField = true;
+	assert.ok(
+		validateAgainst(schema, withUnknown, MANIFEST_SCHEMA_FILE).some((error) => error.message === 'unexpected field "extraField"'),
+		"the manifest schema must reject an unknown field",
+	);
+
+	// The format marker is a constant, not free text: a reader must be able to refuse a
+	// version it does not know even when every other field happens to parse.
+	const wrongFormat = { ...(committed as Record<string, unknown>), format: "lol-dataset-provenance/2" };
+	assert.ok(
+		validateAgainst(schema, wrongFormat, MANIFEST_SCHEMA_FILE).some((error) => error.path === "format" && /expected the constant/.test(error.message)),
+		"the manifest schema must pin the format marker",
+	);
+});
+
+test("TABLE_CONSUMERS and normalize.ts's normalizers route exactly the same tables", () => {
+	assert.deepEqual(Object.keys(TABLE_CONSUMERS).sort(), KNOWN_TABLES);
+	assert.throws(
+		() => assertTableConsumersMatchNormalizers({ ...TABLE_CONSUMERS, Extra: ["events.jsonl"] }),
+		/update both TABLE_CONSUMERS in manifest\.ts and NORMALIZERS in normalize\.ts/,
+	);
+	assert.throws(() => assertTableConsumersMatchNormalizers({}, ["Tournaments"]), /normalize\.ts normalizes Tournaments/);
 });
 
 test("no entity file carries a fetch time: the manifest is the only place a timestamp lives", async () => {
@@ -422,6 +458,97 @@ test("`--check` passes when only a payload's fetchedAt differs, and fails when a
 	});
 	assert.equal(noManifest.code, 1);
 	assert.match(noManifest.output, /does not list events\.jsonl/, noManifest.output);
+});
+
+test("`--check` rejects a manifest whose entities list is out of order, duplicated, or the wrong length", async () => {
+	const reversed = await checkWith((manifest) => {
+		(manifest.entities as unknown[]).reverse();
+	});
+	assert.equal(reversed.code, 1);
+	assert.match(reversed.output, /entity files are out of order at position 1/, reversed.output);
+	assert.match(reversed.output, /entityDigest does not match its own entities list/, reversed.output);
+
+	const duplicated = await checkWith((manifest) => {
+		const entities = manifest.entities as Record<string, unknown>[];
+		entities.push({ ...entities[0] });
+	});
+	assert.equal(duplicated.code, 1);
+	assert.match(duplicated.output, /lists events\.jsonl more than once among entities/, duplicated.output);
+
+	const missing = await checkWith((manifest) => {
+		(manifest.entities as unknown[]).splice(0, 1);
+	});
+	assert.equal(missing.code, 1);
+	assert.match(missing.output, /lists 10 entity file\(s\), the build emits 11/, missing.output);
+	assert.match(missing.output, /does not list events\.jsonl/, missing.output);
+});
+
+test("`--check` rejects a duplicated payload entry even when its last copy is valid", async () => {
+	// A Map is last-wins. Before the duplicate was refused, a first copy with a wrong
+	// hash was invisible because the second, valid copy overwrote it.
+	const duplicated = await checkWith((manifest) => {
+		const payloads = manifest.payloads as Record<string, unknown>[];
+		const valid = { ...payloads[0] };
+		payloads[0] = { ...payloads[0], bodySha256: "0".repeat(64) };
+		payloads.push(valid);
+	});
+	assert.equal(duplicated.code, 1);
+	assert.match(duplicated.output, /lists .*\.json more than once among payloads/, duplicated.output);
+});
+
+test("`--check` refuses a manifest field or shape the schema does not allow", async () => {
+	const unknownField = await checkWith((manifest) => {
+		manifest.extraField = true;
+	});
+	assert.equal(unknownField.code, 1);
+	assert.match(unknownField.output, /unexpected field "extraField"/, unknownField.output);
+
+	const payloadUrl = await checkWith((manifest) => {
+		(manifest.payloads as Record<string, unknown>[])[0].url = "https://example.invalid";
+	});
+	assert.equal(payloadUrl.code, 1);
+	assert.match(payloadUrl.output, /payloads\[0\]: unexpected field "url"/, payloadUrl.output);
+
+	const shortHash = await checkWith((manifest) => {
+		(manifest.entities as Record<string, unknown>[])[0].sha256 = "abc";
+	});
+	assert.equal(shortHash.code, 1);
+	assert.match(shortHash.output, /does not match \^\[0-9a-f\]\{64\}\$/, shortHash.output);
+
+	const badQuery = await checkWith((manifest) => {
+		(manifest.payloads as Record<string, unknown>[])[0].query = "not an object";
+	});
+	assert.equal(badQuery.code, 1);
+	assert.match(badQuery.output, /query: expected object, got string/, badQuery.output);
+
+	const badFetchedAt = await checkWith((manifest) => {
+		(manifest.payloads as Record<string, unknown>[])[0].fetchedAt = "yesterday";
+	});
+	assert.equal(badFetchedAt.code, 1);
+	assert.match(badFetchedAt.output, /fetchedAt: .* does not match/, badFetchedAt.output);
+});
+
+test("`--check` reports one cause once when an entity file changed, and names a cache-only change honestly", async () => {
+	// A changed entity digest used to print both the per-file line and the aggregate
+	// `entityDigest is ...` line, which makes one cause look like two.
+	const changedEntity = await checkWith((manifest) => {
+		const entities = manifest.entities as { file: string; records: number; sha256: string }[];
+		entities[0] = { ...entities[0], sha256: "0".repeat(64) };
+		manifest.entityDigest = createHash("sha256")
+			.update(entities.map((entity) => `${entity.file}\t${entity.sha256}\t${entity.records}\n`).join(""))
+			.digest("hex");
+	});
+	assert.equal(changedEntity.code, 1);
+	assert.match(changedEntity.output, /events\.jsonl is [0-9a-f]{64}, committed as 0{64}/, changedEntity.output);
+	assert.doesNotMatch(changedEntity.output, /entityDigest is /, changedEntity.output);
+
+	// The other direction: the entity files are fine and only the cache set moved, so the
+	// report should say exactly that instead of leaving it to be inferred from payload pins.
+	const cacheOnly = await checkWith((manifest) => {
+		(manifest.payloads as unknown[]).splice(0, 1);
+	});
+	assert.equal(cacheOnly.code, 1);
+	assert.match(cacheOnly.output, /the entity files are identical; only the cache set changed — regenerate the manifest/, cacheOnly.output);
 });
 
 // ---------------------------------------------------------------------------

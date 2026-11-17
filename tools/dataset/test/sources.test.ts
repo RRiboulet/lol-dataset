@@ -70,6 +70,107 @@ test("a payload outside <source>/<endpoint>/<table>/ is an error, not silently s
 	}
 });
 
+// ---------------------------------------------------------------------------
+// Sidecar strictness: a sidecar that exists must be readable, complete and
+// honest, because the manifest pins what it says verbatim (spec D7, ticket 07).
+// ---------------------------------------------------------------------------
+
+/** One recorded payload, the way `record.ts`/`fetch.ts` would leave it, in a scratch cache. */
+async function scratchPayload(
+	t: { after: (fn: () => Promise<void> | void) => void },
+	override: Record<string, unknown> = {},
+): Promise<{ dir: string; bodyFile: string }> {
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-sidecar-"));
+	t.after(() => rm(dir, { recursive: true, force: true }));
+	const body = JSON.stringify([{ Name: "scratch", OverviewPage: "scratch" }]);
+	const bodyFile = path.join(dir, "lol-fandom", "cargoexport", "Tournaments", "0000aaaa.json");
+	await mkdir(path.dirname(bodyFile), { recursive: true });
+	await writeFile(bodyFile, body, "utf8");
+	const record: Record<string, unknown> = {
+		source: "lol-fandom",
+		endpoint: "cargoexport",
+		query: { endpoint: "cargoexport", tables: "Tournaments", fields: "Name,OverviewPage", limit: 10 },
+		url: "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Tournaments&fields=Name%2COverviewPage&limit=10",
+		fetchedAt: "2026-11-12T00:00:00.000Z",
+		status: 200,
+		bodySha256: sha256(body),
+	};
+	for (const [key, value] of Object.entries(override)) {
+		if (value === undefined) delete record[key];
+		else record[key] = value;
+	}
+	await writeFile(bodyFile.replace(/\.json$/, ".meta.json"), `${JSON.stringify(record, null, 2)}\n`, "utf8");
+	return { dir, bodyFile };
+}
+
+function assertSidecarError(error: unknown, file: string, pattern: RegExp): void {
+	assert.ok(error instanceof Error);
+	assert.match(error.message, new RegExp(`${file.replace(/\./g, "\\.")}\\.meta\.json`), "the error must name the sidecar file");
+	assert.match(error.message, pattern);
+	assert.match(error.message, /re-run record\.ts or fetch\.ts for this query, or restore the payload from the recording/, "the error must carry a remedy");
+}
+
+test("a fully-formed sidecar reads back as provenance", async (t) => {
+	const { dir } = await scratchPayload(t);
+	const [payload] = await readPayloads(dir);
+	assert.ok(payload.meta !== undefined, "a sidecar that exists must be handed to the build");
+	assert.equal(payload.meta.source, "lol-fandom");
+	assert.equal(payload.meta.status, 200);
+	assert.ok(payload.query !== undefined);
+	assert.equal(payload.query.tables, "Tournaments");
+});
+
+test("a sidecar whose fetchedAt is not a parseable ISO-8601 instant is refused", async (t) => {
+	for (const fetchedAt of ["not-a-date", "November 12, 2026"]) {
+		const { dir, bodyFile } = await scratchPayload(t, { fetchedAt });
+		try {
+			await readPayloads(dir);
+			assert.fail(`fetchedAt ${JSON.stringify(fetchedAt)} was accepted`);
+		} catch (error) {
+			assertSidecarError(error, path.basename(bodyFile), /fetchedAt .* is not a parseable ISO-8601 instant/);
+		}
+	}
+});
+
+test("a sidecar that omits the url or the source D7 records is refused", async (t) => {
+	for (const field of ["url", "source"] as const) {
+		const { dir, bodyFile } = await scratchPayload(t, { [field]: undefined });
+		try {
+			await readPayloads(dir);
+			assert.fail(`a sidecar without ${field} was accepted`);
+		} catch (error) {
+			assertSidecarError(error, path.basename(bodyFile), new RegExp(`sidecar states no ${field}`));
+		}
+	}
+});
+
+test("a sidecar query with an unknown field is refused, so the pin cannot drop it silently", async (t) => {
+	const { dir, bodyFile } = await scratchPayload(t, {
+		query: { endpoint: "cargoexport", tables: "Tournaments", fields: "Name", orderBy: "Name ASC" },
+	});
+	try {
+		await readPayloads(dir);
+		assert.fail("a query with an unknown field was accepted");
+	} catch (error) {
+		assertSidecarError(error, path.basename(bodyFile), /unknown query field "orderBy"/);
+	}
+});
+
+test("a payload with no sidecar is legal, and reads as body-only", async (t) => {
+	// The other half of the strictness: "no sidecar" (a scratch cache a test builds
+	// from bodies alone) must stay legal, and must read differently from "a sidecar
+	// that lies" — meta stays undefined rather than half-filled.
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-bodies-only-"));
+	t.after(() => rm(dir, { recursive: true, force: true }));
+	const bodyFile = path.join(dir, "lol-fandom", "cargoexport", "Tournaments", "0000aaaa.json");
+	await mkdir(path.dirname(bodyFile), { recursive: true });
+	await writeFile(bodyFile, "[]", "utf8");
+	const [payload] = await readPayloads(dir);
+	assert.equal(payload.meta, undefined);
+	assert.equal(payload.query, undefined);
+	assert.equal(payload.table, "Tournaments");
+});
+
 test("every recorded payload carries provenance that matches its bytes", async () => {
 	// Every body, in every table directory: the sidecar is what lets a value be
 	// walked back to the bytes it came from (spec D7, R9), and the table it names has

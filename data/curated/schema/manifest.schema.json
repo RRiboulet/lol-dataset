@@ -1,0 +1,123 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:manifest:1",
+	"title": "Provenance manifest",
+	"description": "The shape of data/curated/manifest.json, the build's account of the cached bytes it read and the entity files it emitted (spec D2, D7, R8, R9). This file is the contract: `readManifest` validates a committed manifest against it before comparing anything, and the build validates the manifest it is about to write. `entities` must name every emitted file once, in the build's OUTPUTS order; `payloads` must name every cached payload the build read once, sorted by cache-relative path. `entityDigest` is recomputed from `entities` rather than trusted. `fetchedAt` is the only timestamp in the dataset, and is absent for a body-only payload with no sidecar.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["format", "entityDigest", "entities", "payloads"],
+	"properties": {
+		"format": {
+			"type": "string",
+			"const": "lol-dataset-provenance/1",
+			"description": "The manifest's own format marker, so a reader can refuse a version it does not know."
+		},
+		"entityDigest": {
+			"type": "string",
+			"pattern": "^[0-9a-f]{64}$",
+			"description": "sha256 over `entities` in the build's OUTPUTS order: for each file, `${file}\\t${sha256}\\t${records}\\n`. Recomputed by the reader, never trusted as an opaque string."
+		},
+		"entities": {
+			"type": "array",
+			"description": "One entry per emitted entity file, in the build's OUTPUTS order (the order the writer writes and the digest is defined on).",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["file", "records", "sha256"],
+				"properties": {
+					"file": {
+						"type": "string",
+						"minLength": 1,
+						"description": "The emitted file's name, e.g. `events.jsonl`."
+					},
+					"records": {
+						"type": "integer",
+						"minimum": 0,
+						"description": "Non-empty JSONL lines: the record count, so a reader can sanity-check a file."
+					},
+					"sha256": {
+						"type": "string",
+						"pattern": "^[0-9a-f]{64}$",
+						"description": "sha256 of the emitted file's bytes."
+					}
+				}
+			}
+		},
+		"payloads": {
+			"type": "array",
+			"description": "One entry per cached payload the build read, sorted by cache-relative path so a diff shows an added or removed payload in one line.",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["file", "table", "endpoint", "bodySha256"],
+				"properties": {
+					"file": {
+						"type": "string",
+						"minLength": 1,
+						"description": "Path relative to the cache root, e.g. `lol-fandom/cargoexport/Tournaments/<key>.json`."
+					},
+					"table": {
+						"type": "string",
+						"minLength": 1,
+						"description": "The Cargo table whose directory the payload sits in; this is how the build routed it."
+					},
+					"endpoint": {
+						"type": "string",
+						"enum": ["cargoquery", "cargoexport"],
+						"description": "The Cargo endpoint the payload came from."
+					},
+					"bodySha256": {
+						"type": "string",
+						"pattern": "^[0-9a-f]{64}$",
+						"description": "sha256 of the body bytes on disk, verified against the sidecar when there is one."
+					},
+					"fetchedAt": {
+						"type": "string",
+						"pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$",
+						"description": "The sidecar's recorded fetch time, as an ISO-8601 instant. Absent for a body-only payload; the only timestamp in the dataset (spec D8)."
+					},
+					"status": {
+						"type": "integer",
+						"minimum": 100,
+						"maximum": 599,
+						"description": "The sidecar's recorded HTTP status. Absent for a body-only payload."
+					},
+					"query": {
+						"type": "object",
+						"additionalProperties": false,
+						"required": ["endpoint", "tables", "fields"],
+						"description": "The query the sidecar records: what produced these bytes. Absent for a body-only payload.",
+						"properties": {
+							"endpoint": {
+								"type": "string",
+								"enum": ["cargoquery", "cargoexport"]
+							},
+							"tables": {
+								"type": "string",
+								"minLength": 1
+							},
+							"fields": {
+								"type": "string",
+								"minLength": 1
+							},
+							"where": {
+								"type": "string"
+							},
+							"order_by": {
+								"type": "string"
+							},
+							"limit": {
+								"type": "integer",
+								"minimum": 0
+							},
+							"offset": {
+								"type": "integer",
+								"minimum": 0
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

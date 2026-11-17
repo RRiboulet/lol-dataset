@@ -46,6 +46,24 @@
 // `manifest.ts`). The sidecar is therefore optional — a scratch directory built from
 // bodies alone is legal — but a sidecar that exists is read strictly, because provenance
 // that cannot be read is worse than provenance that is absent.
+//
+// Two "a body with no sidecar" situations read the same through `readPayloads`, and must
+// not be confused when deciding what may be pinned:
+//
+//   body-only by design    a scratch directory a test builds from bodies alone, or a
+//                          fixture recorded before the sidecar format existed. Legal:
+//                          the build pins it with no `fetchedAt`, `status` or `query`,
+//                          and nothing downstream can be wrong about provenance that
+//                          is absent.
+//   body-only by accident  an interrupted `writePayload`, which writes the body first
+//                          and the sidecar last. The bytes are real, but nobody verified
+//                          them. The fetcher already treats this as incomplete —
+//                          `readPayload` returns `undefined`, so the query is requested
+//                          again and the body is overwritten with a complete pair. The
+//                          build cannot tell the two cases apart, so whether a committed
+//                          manifest may carry a body-only pin (or should warn about one)
+//                          is the manifest owner's call (`manifest.ts` / `build.ts`),
+//                          not this module's.
 
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
@@ -93,6 +111,28 @@ export function canonicalQuery(query: CargoQuery): string {
 	if (query.limit !== undefined) ordered.limit = String(query.limit);
 	if (query.offset !== undefined) ordered.offset = String(query.offset);
 	return JSON.stringify(ordered);
+}
+
+/** The query fields the cache understands; anything else is a typo or a format drift. */
+const QUERY_FIELDS = new Set(["endpoint", "tables", "fields", "where", "order_by", "limit", "offset"]);
+
+const REMEDY = "re-run record.ts or fetch.ts for this query, or restore the payload from the recording";
+
+/**
+ * Refuse a query carrying fields the cache does not know, instead of dropping them.
+ *
+ * `canonicalQuery` builds the cache key and the manifest's query identity from the known
+ * fields only, so a query with an extra field would hash exactly like the query without
+ * it: two caches differing only in that field would pin identical manifests, and the pin
+ * would claim a query identity it never compared. `fetch.ts`'s plan parser applies the
+ * same rule to plans; this applies it wherever a query arrives without one.
+ */
+function assertKnownQueryFields(query: CargoQuery, where: string): void {
+	for (const key of Object.keys(query)) {
+		if (!QUERY_FIELDS.has(key)) {
+			throw new Error(`${where}: unknown query field ${JSON.stringify(key)} — refused rather than dropped, so the cache key and the manifest's query identity cannot silently ignore it — ${REMEDY}`);
+		}
+	}
 }
 
 /** Cache key for a query: a hash of the canonical query, never of its position. */
@@ -176,6 +216,10 @@ export async function writePayload(
 	meta: { url: string; fetchedAt: string; status: number },
 ): Promise<{ body: string; meta: string }> {
 	const paths = payloadPaths(root, query);
+	// What is written must be readable: a sidecar whose query carries a field the strict
+	// reader rejects would leave a cache the build refuses to pin, so refuse it here,
+	// before the body is written on top of a half-secret query.
+	assertKnownQueryFields(query, paths.meta);
 	const record: PayloadMeta = {
 		source: SOURCE,
 		endpoint: query.endpoint,
@@ -260,9 +304,13 @@ export type CachedPayload = {
  * Every payload body under `root`, in a stable order.
  *
  * Sorted by file name so a build is reproducible even before assembly sorts its
- * records, and recursive so nested windows (ticket 09 may bucket by year) stay
- * readable. `.meta.json` sidecars are skipped: they carry a fetch time and must
- * never reach the output.
+ * records. The walk is recursive only because it descends from the root: the layout is
+ * flat — `<source>/<endpoint>/<table>/<key>.json` — and the shape check below rejects
+ * anything deeper. A year-bucketed layout (the crawl never needed one) would bury the
+ * table segment the build routes by, so bucketing would have to live inside a table's
+ * directory and re-negotiate that check, not be silently readable here.
+ * `.meta.json` sidecars are skipped: they carry a fetch time and must never reach the
+ * output.
  */
 export async function readPayloads(root: string): Promise<CachedPayload[]> {
 	const found: string[] = [];
@@ -307,9 +355,11 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
  * A sidecar is written by `record.ts`/`fetch.ts` and is not required: a scratch
  * directory a test builds from bodies alone is legal, which is why this is optional
  * rather than a second thing that has to exist before the build runs. Optional is not
- * the same as ignorable, though: a sidecar that *is* there has to be readable, because a
- * cache whose provenance cannot be read is a broken cache, and silently treating it as
- * "no sidecar" would hide exactly the thing the manifest exists to prove.
+ * the same as ignorable, though: a sidecar that *is* there is read strictly and
+ * completely — every field spec D7 names (source, URL, fetch time, HTTP status, body
+ * hash) plus the query that produced the body must be present and well-formed, because
+ * a cache whose provenance cannot be read is a broken cache, and silently treating it
+ * as "no sidecar" would hide exactly the thing the manifest exists to prove.
  */
 async function sidecarOf(bodyFile: string, relative: string): Promise<{ meta?: PayloadMeta; query?: CargoQuery }> {
 	const metaFile = bodyFile.replace(/\.json$/, ".meta.json");
@@ -323,26 +373,40 @@ async function sidecarOf(bodyFile: string, relative: string): Promise<{ meta?: P
 	}
 	const meta = (parsed ?? {}) as Partial<PayloadMeta>;
 	if (typeof meta.bodySha256 !== "string" || meta.bodySha256 === "") {
-		throw new Error(`${relative}.meta.json: sidecar states no bodySha256, so its bytes cannot be verified`);
+		throw new Error(`${relative}.meta.json: sidecar states no bodySha256, so its bytes cannot be verified — ${REMEDY}`);
+	}
+	// D7 names the URL; the manifest carries it only through the sidecar.
+	if (typeof meta.url !== "string" || meta.url === "") {
+		throw new Error(`${relative}.meta.json: sidecar states no url — D7 records URL, fetch time, HTTP status and body hash — ${REMEDY}`);
+	}
+	if (typeof meta.source !== "string" || meta.source === "") {
+		throw new Error(`${relative}.meta.json: sidecar states no source — D7 records URL, fetch time, HTTP status and body hash — ${REMEDY}`);
 	}
 	if (typeof meta.fetchedAt !== "string" || meta.fetchedAt === "") {
-		throw new Error(`${relative}.meta.json: sidecar states no fetchedAt`);
+		throw new Error(`${relative}.meta.json: sidecar states no fetchedAt — ${REMEDY}`);
+	}
+	// The manifest pins `fetchedAt` verbatim, so garbage here becomes the dataset's only
+	// timestamp. The shape is what `record.ts`/`fetch.ts` write (`new Date().toISOString()`);
+	// anything else — even a string `Date.parse` would accept — is refused, not normalised.
+	if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/.test(meta.fetchedAt) || !Number.isFinite(Date.parse(meta.fetchedAt))) {
+		throw new Error(`${relative}.meta.json: fetchedAt ${JSON.stringify(meta.fetchedAt)} is not a parseable ISO-8601 instant, and the manifest would pin it verbatim — ${REMEDY}`);
 	}
 	if (typeof meta.status !== "number" || !Number.isInteger(meta.status)) {
-		throw new Error(`${relative}.meta.json: sidecar states no HTTP status`);
+		throw new Error(`${relative}.meta.json: sidecar states no HTTP status — ${REMEDY}`);
 	}
 	const query = meta.query as CargoQuery | undefined;
 	if (query === null || typeof query !== "object") {
-		throw new Error(`${relative}.meta.json: sidecar states no query`);
+		throw new Error(`${relative}.meta.json: sidecar states no query — ${REMEDY}`);
 	}
+	assertKnownQueryFields(query, `${relative}.meta.json`);
 	if (typeof query.tables !== "string" || typeof query.fields !== "string") {
-		throw new Error(`${relative}.meta.json: sidecar's query names no tables and fields`);
+		throw new Error(`${relative}.meta.json: sidecar's query names no tables and fields — ${REMEDY}`);
 	}
 	// `where` is read as text by the game report, so a sidecar holding a non-string there
 	// is an error rather than something handed on to fail later as `where.includes is not a
 	// function`.
 	if (query.where !== undefined && typeof query.where !== "string") {
-		throw new Error(`${relative}.meta.json: sidecar's query has a non-string where`);
+		throw new Error(`${relative}.meta.json: sidecar's query has a non-string where — ${REMEDY}`);
 	}
 	return { meta: meta as PayloadMeta, query };
 }

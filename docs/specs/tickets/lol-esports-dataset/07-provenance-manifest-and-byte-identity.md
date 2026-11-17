@@ -48,18 +48,34 @@ payloads[]      { file, table, endpoint, bodySha256, fetchedAt?, status?, query?
 ```
 
 - **Payloads are sorted by cache-relative path**, so a diff shows an added or removed
-  payload in one line. `file` is relative to the cache root on purpose: an absolute
-  path would make the manifest depend on where the checkout lives, and the manifest is
-  committed.
+  payload in one line. `file` is relative to the cache root — the directory passed as
+  `--raw`, which is `tools/dataset/fixtures/raw/` for the committed fixtures and the
+  gitignored `raw/` of spec D6 for a live crawl — not to `data/curated/` or the checkout.
+  An absolute path would make the manifest depend on where the checkout lives, and the
+  manifest is committed. Thus
+  `lol-fandom/cargoexport/ScoreboardGames/b47bd27803861818ed3079a0.json` names
+  `tools/dataset/fixtures/raw/lol-fandom/cargoexport/ScoreboardGames/b47bd27803861818ed3079a0.json`
+  in this tree; a reader of ticket 10 can walk from a game's source identifiers through
+  the manifest to that path using only committed files plus the manifest.
 - **`fetchedAt` is the only timestamp in the dataset.** The entity files never see it,
   and the suite asserts that no entity file contains any recorded fetch time.
 - **A payload with no sidecar is legal, and appears without `fetchedAt`, `status` and
   `query`.** A scratch directory a test builds from bodies alone has no provenance to
   betray, and inventing a timestamp for it is exactly the wall-clock the spec forbids.
-  The suite covers both shapes. A sidecar that *exists* is now read strictly: unreadable
-  JSON, a missing hash, a missing fetch time, a missing status or a malformed query
-  fails the build. "No sidecar" and "a sidecar that lies" must not look alike, which is
-  what made `readPayloads` stop silently dropping a malformed sidecar.
+  The suite covers both shapes. A sidecar that *exists* is a contract: it must state
+  `source` and `url`, a `fetchedAt` that is a parseable ISO-8601 instant, an integer
+  `status`, the body's `bodySha256`, and a `query` using only the Cargo fields the
+  build understands (`endpoint`, `tables`, `fields`, `where`, `order_by`, `limit`,
+  `offset`). Unreadable JSON, a missing or nonsensical field, an unknown query field,
+  or a hash that disagrees with the bytes fails the build. "No sidecar" and
+  "a sidecar that lies" must not look alike, which is what made `readPayloads` stop
+  silently dropping a malformed sidecar.
+- **`format` is a versioned contract; a sidecar is not.** The manifest is a committed
+  document that other tools read, so it carries `lol-dataset-provenance/1` and
+  `--check` refuses a different format. A sidecar is a cache-local artifact written by
+  `record.ts`/`fetch.ts` beside the body it describes, including inside the committed
+  fixture cache, and rewritten when that body is re-recorded; it is not an emitted
+  `data/curated/` file and carries no version marker.
 - **`entityDigest` is defined, not implied**, because "a digest of the files" is
   ambiguous the moment the order changes:
 
@@ -147,13 +163,17 @@ Two gaps were real and are covered rather than papered over:
 reference is the record that *no* entity answers to it, and its `string` is what the
 source said.
 
-### The inherited decision: both IEM 2015 payloads are canonical
+### The inherited decision: a pin is whatever the build read
 
 Ticket 09 re-fetched IEM 2015 with the same rows and a different `fields=` order, so the
 same data arrived as different bytes under a different cache key. The decision: **the
-manifest pins the bytes the build read, not a preferred fetch.** Both payloads are
-listed, each with its own hash, and the entity files do not move because row dedupe is
-key-order independent.
+manifest pins the bytes the build read, not a preferred fetch.** The committed manifest
+pins exactly one IEM `ScoreboardGames` payload —
+`lol-fandom/cargoexport/ScoreboardGames/b47bd27803861818ed3079a0.json`, body hash
+`25fa5c6c…` — because that is the one in the committed fixture cache. The two-payload
+case exists in a test, which adds a re-keyed variant to a scratch copy of the cache:
+were both variants left in one cache, each would be listed with its own hash, and the
+entity files would not move because row dedupe is key-order independent.
 
 - No "canonical variant" flag, no preferred hash, no choice of one file over the other.
   A flag would need a rule for which variant wins, and every rule ("the first fetched",
@@ -167,6 +187,13 @@ key-order independent.
   its columns reversed (a different query, key and body hash), asserts the entity files
   are byte-identical to the one-variant build, asserts both payloads are listed with
   different hashes, and asserts `--check` reports the missing pin.
+- **A variant is a pin only while it is in the cache.** The build does not choose a
+  winner and does not delete files; `readPayloads` walks the cache, so a superseded
+  body left there stays pinned, required by `--check`, and must also be committed as a
+  fixture. The cleanup is part of the crawl: ticket 10 deletes the superseded body and
+  sidecar from the cache and the fixture tree, then regenerates the manifest, so the
+  pins follow the bytes that remain instead of accumulating every fetch. A removed
+  payload still listed, or a replacement missing from the manifest, fails `--check`.
 
 ### Fixed representation
 

@@ -16,10 +16,12 @@ with the source's fidelity and a player row per participant, with kills and gold
 reconciled against the team totals — a per-event report of which events the
 corpus carries games for, and `manifest.json`, which pins every cached payload the
 build read by sha256 (with its query and fetch time, the only timestamp in the
-repository) and digests every emitted file. A build also verifies each payload
-against its sidecar's hash and runs an invariant gate over the emitted records, so
-a tampered payload, a hand-edit or a bad merge that contradicts the data fails
-before anything is written; `build --check` compares the entity files byte for byte
+repository) and digests every emitted file. Its `file` pins are relative to the cache
+root, so the committed ones resolve under `tools/dataset/fixtures/raw/` and a reader can
+walk from a game's source identifiers to its payload with the manifest alone. A build
+also verifies each payload against its sidecar's hash and runs an invariant gate
+over the emitted records, so a tampered payload, a hand-edit or a bad merge that
+contradicts the data fails before anything is written; `build --check` compares the entity files byte for byte
 and the manifest on everything but `fetchedAt`, and `node tools/check.ts` runs both
 suites. Those three events — Worlds
 2023, MSI 2023 and IEM IX 2015 — are the only ones with games; ticket 10 is the crawl

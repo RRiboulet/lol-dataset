@@ -12,12 +12,25 @@ Changed:
   source changes the fetch time and not the data. A tampered cache still fails
   first, in the build itself.
 - `readPayloads` reads a sidecar strictly instead of silently dropping one it
-  cannot parse: a missing hash, fetch time, status or query is a broken cache
-  and stops the build. A payload with no sidecar stays legal, which is what a
-  scratch directory built from bodies alone is.
+  cannot parse: a missing body hash, URL, source, fetch time, status or query, a
+  fetch time that is not a parseable ISO-8601 instant, or a query field the
+  build does not know is a broken cache and stops the build. A payload with no
+  sidecar stays legal, which is what a scratch directory built from bodies alone
+  is.
 - `data/curated/schema/game.schema.json` no longer claims that Riot's ACS fields
   are absent from every recorded row. They were not: the 19 IEM 2015 rows state
   `RiotHash`, and the game record now carries it.
+- The provenance record makes a manifest pin usable as a path rather than only as a
+  hash: `file` values are relative to the cache root, so the committed ones resolve
+  under `tools/dataset/fixtures/raw/` and a reader can follow a game's source
+  identifiers to the payload it came from. A re-fetched variant is a pin only while its
+  body is in the cache, which makes removing a superseded payload and regenerating the
+  manifest the crawl's job instead of letting every fetch accumulate a permanent pin.
+  The committed manifest pins the one IEM 2015 scoreboard payload the fixture cache
+  holds; the case with two variants is a test that proves row dedupe does not depend on
+  field order. The manifest keeps its `format` marker because it is a committed document
+  other tools parse, while a sidecar has none because it is a cache-local artifact
+  rewritten with its body.
 
 - `AGENTS.md`'s "current state" paragraph describes what the repository now
   holds — the dataset spec, its ticket series, and the curated event and identity
