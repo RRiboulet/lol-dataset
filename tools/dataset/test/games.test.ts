@@ -69,7 +69,7 @@ async function payloadBodies(raw: string, table: string): Promise<string[]> {
 test("a recorded event yields exactly the games the source states, once each", async () => {
 	const result = await build();
 	const { games } = result.scoreboards;
-	assert.equal(games.length, 129, "110 Worlds 2023 games + 19 IEM 2015 games");
+	assert.equal(games.length, 205, "110 Worlds 2023 + 76 MSI 2023 + 19 IEM 2015 games");
 	assert.equal(gamesUnder(result, WORLDS).length, 110);
 	assert.equal(gamesUnder(result, IEM).length, 19);
 	assert.equal(new Set(games.map((game) => game.id)).size, games.length, "no duplicate game ids");
@@ -203,7 +203,7 @@ test("the source identifiers travel with the row, wherever the source provided t
 test("matches: every series the source states, with the score the games cannot recover", async () => {
 	const result = await build();
 	const { matches, games } = result.scoreboards;
-	assert.equal(matches.length, 65, "52 Worlds 2023 series + 13 IEM 2015 series");
+	assert.equal(matches.length, 90, "52 Worlds 2023 + 25 MSI 2023 + 13 IEM 2015 series");
 	const byId = new Map(matches.map((match) => [match.id, match]));
 	for (const game of games) {
 		assert.ok(game.matchId !== undefined, `${game.source.gameId}: its series is in the corpus`);
@@ -257,16 +257,20 @@ test("the per-event report separates 'no games in the source' from 'nobody asked
 	// `empty` is the same claim as "the source answered zero games".
 	assert.equal(state.get("2013 World Cyber Games")?.state, "empty");
 	assert.equal(state.get("2013 World Cyber Games")?.games, 0);
-	// A recorded `ScoreboardPlayers` query — a game-bearing table — names IPL 5's page
-	// exactly (`OverviewPage='IGN ProLeague Season 5'`), so the source was asked about this
-	// event and returned no game rows. Reading only `ScoreboardGames` used to call that
-	// `missing`, which was wrong: `missing` is a claim about the queries, not the table.
-	assert.equal(state.get("IGN ProLeague Season 5")?.state, "empty");
+	// IPL 5 is `missing`, not `empty`: the only recorded query for it is a
+	// `ScoreboardPlayers` one, and that came back with **ten rows**. Rows in a player
+	// table say nothing about whether the event has games, so they cannot establish
+	// emptiness — a game table asking and returning nothing can. (Ticket 09 measured 72
+	// IPL 5 games at the source; they are deliberately not committed, see ticket 14.)
+	assert.equal(state.get("IGN ProLeague Season 5")?.state, "missing");
 	assert.equal(state.get("IGN ProLeague Season 5")?.games, 0);
-	// `missing` still means no game-bearing query named the event. A `Tournaments` query
-	// does name MSI 2023's page (`OverviewPage IN (…,'2023 Mid-Season Invitational',…)`),
-	// but that table carries no games, so it says nothing about whether games exist.
-	assert.equal(state.get("2023 Mid-Season Invitational")?.state, "missing");
+	// MSI 2023 was crawled for real in this ticket: it carries games, so it is recorded.
+	assert.equal(state.get("2023 Mid-Season Invitational")?.state, "recorded");
+	// WCG 2011 is the earliest era: a real `LIKE '2011 World Cyber Games%'` query came
+	// back empty, which is the measurement that separates "the source has no games here"
+	// from "nobody asked".
+	assert.equal(state.get("2011 World Cyber Games")?.state, "empty");
+	assert.equal(state.get("2011 World Cyber Games")?.games, 0);
 	// Counts reconcile with the emitted files.
 	const total = report.reduce((sum, row) => sum + row.games, 0);
 	assert.equal(total, result.scoreboards.games.length);
@@ -284,11 +288,13 @@ test("an event name that only appears inside a LIKE pattern is not a query for t
 		const [body] = await payloadBodies(raw, "ScoreboardGames");
 		const metaFile = body.replace(/\.json$/, ".meta.json");
 		const meta = JSON.parse(await readFile(metaFile, "utf8")) as { query: Record<string, unknown> };
-		meta.query.where = "Tournament LIKE '%MSI 2023%'";
+		// A substring pattern names a shape, not the event: an unanchored match would make
+		// this event look "empty" although no query ever asked for it.
+		meta.query.where = "OverviewPage LIKE '%2025 First Stand%'";
 		await writeFile(metaFile, JSON.stringify(meta), "utf8");
 	});
 	const state = new Map(result.scoreboards.eventGames.map((row) => [row.overviewPage, row.state]));
-	assert.equal(state.get("2023 Mid-Season Invitational"), "missing", "a LIKE pattern is not a literal that names the event");
+	assert.equal(state.get("2025 First Stand"), "missing", "a substring LIKE pattern is not a literal that names the event");
 });
 
 test("a game whose teams are not its series' teams stops the build, naming both", async () => {
@@ -338,7 +344,7 @@ test("a game for an event the rule does not select is ignored, not emitted", asy
 		assert.ok(result.scoreboards.games.every((game) => !game.overviewPage.startsWith(WORLDS)));
 		assert.equal(result.scoreboards.ignoredGames.length, 110, "the 110 Worlds games are counted as ignored");
 		assert.equal(result.scoreboards.ignoredMatches.length, 52);
-		assert.equal(result.scoreboards.games.length, 19, "only the IEM event still contributes games");
+		assert.equal(result.scoreboards.games.length, 95, "MSI 2023 and IEM 2015 still contribute games");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
@@ -507,4 +513,21 @@ test("the committed games match a rebuild over the recorded fixtures", async () 
 		);
 		assert.equal(committed, result.files[file], `${file} is committed and current — run the build without --check`);
 	}
+});
+
+test("a game table that answered with rows does not make an event empty", async () => {
+	// `empty` is a claim that a game query came back with nothing. A payload that names
+	// the event and returned rows — a player table, or a game table with data — must not
+	// produce it, or the report says the source has no games while the source answered.
+	const result = await build();
+	const state = new Map(result.scoreboards.eventGames.map((row) => [row.overviewPage, row.state]));
+	for (const page of [WORLDS, IEM, "2023 Mid-Season Invitational"]) {
+		assert.equal(state.get(page), "recorded", `${page} carries games, so it is recorded`);
+	}
+	const empty = result.scoreboards.eventGames.filter((row) => row.state === "empty");
+	for (const row of empty) {
+		assert.equal(row.games, 0);
+		assert.equal(row.matches, 0);
+	}
+	assert.ok(empty.length > 0, "the fixtures still carry an event the source answered with nothing");
 });

@@ -33,6 +33,14 @@ clock in entity files). Leaves the fetcher that fills the cache to its own ticke
       affected records.
 - [ ] Numbers and dates use one fixed representation across every entity file.
 
+## Inherited decision
+
+Ticket 09's crawl recorded some events twice: the committed fixture payloads and, for
+IEM 2015, a re-fetch whose rows are identical but whose bytes differ (a different
+`fields=` order changes the body, and so its hash). The manifest pins payload hashes,
+so it has to say which bytes are canonical for an event that was fetched more than
+once. Decide it here rather than letting the full crawl fix the answer by accident.
+
 ## Validation
 
 Build seam plus a two-build comparison, and a payload-tampering fixture. Covers

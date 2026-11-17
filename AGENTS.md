@@ -11,14 +11,15 @@ own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
 holds what the build emits today — the selected events with the report of every
 rejection, the team, player, champion and alias identity tables, the games and
-matches of the two events whose payloads have been recorded — each game now carrying
-its champion draft with the source's fidelity and a player row per participant, with
-kills and gold reconciled against the team totals — and a per-event report of which
-events the corpus carries games for. A build also runs an invariant gate over the
-emitted records, so a hand-edit or a bad merge that contradicts the data fails before
-anything is written, and `node tools/check.ts` runs both suites. Those two events are
-the only
-ones with games: tickets 09 and 10 are the crawl that fills the rest. There is no
+matches of the three events crawled so far — each game carrying its champion draft
+with the source's fidelity and a player row per participant, with kills and gold
+reconciled against the team totals — and a per-event report of which events the
+corpus carries games for. A build also runs an invariant gate over the emitted
+records, so a hand-edit or a bad merge that contradicts the data fails before anything
+is written, and `node tools/check.ts` runs both suites. Those three events — Worlds
+2023, MSI 2023 and IEM IX 2015 — are the only ones with games; ticket 10 is the crawl
+that fills the rest, and ticket 14 must settle IPL 5's disagreeing series rows before
+it does. There is no
 `README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
 a schema, a scraper or a README as a side effect of an unrelated task; those are
 their own changes.

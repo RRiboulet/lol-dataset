@@ -437,11 +437,18 @@ function assembleMatch(match: SourceMatch, event: EventRecord, input: Scoreboard
  * Only tables that can carry games or series answer this: a `Tournaments` row names an
  * event without saying anything about whether it has games. The measure is the
  * *literals* a Cargo `where` clause supplies for a page/name column — `OverviewPage='…'`,
- * `Tournament IN ('…','…')` — so a `LIKE '%event%'` pattern is not mistaken for a query
- * for the event, and a literal has to equal the event's page, a stage page under it, or
- * its display name rather than merely contain it.
+ * `Tournament IN ('…','…')`, `GameId LIKE '…%'` — so a substring pattern is not mistaken
+ * for a query for the event, and a literal has to equal the event's page, a stage page
+ * under it, or its display name rather than merely contain it.
  */
-const GAME_TABLES: ReadonlySet<string> = new Set(["ScoreboardGames", "ScoreboardPlayers", "MatchSchedule"]);
+
+/**
+ * The tables whose rows are *games*. Only these can establish "the source has no games
+ * for this event": a `ScoreboardPlayers` payload that returned rows says nothing about
+ * whether games exist, and treating it as evidence of emptiness marked IPL 5 (`empty`)
+ * while a recorded query had in fact returned rows.
+ */
+const GAME_ROW_TABLES: ReadonlySet<string> = new Set(["ScoreboardGames", "MatchSchedule"]);
 
 /** The Cargo columns a game-bearing table names an event by, lower-case: Cargo columns are not case-sensitive. */
 const EVENT_COLUMNS: ReadonlySet<string> = new Set(["overviewpage", "tournament"]);
@@ -449,16 +456,31 @@ const EVENT_COLUMNS: ReadonlySet<string> = new Set(["overviewpage", "tournament"
 /**
  * The string literals a Cargo `where` clause supplies for the named columns.
  *
- * Read structurally rather than by substring: `Column='text'` and `Column IN ('a','b')`
- * are the two shapes the recorded queries use, `LIKE '%text%'` names no literal, and
- * Cargo escapes a quote inside a literal by doubling it (`'Cho''Gath'`).
+ * Read structurally rather than by substring: `Column='text'`, `Column IN ('a','b')` and
+ * an anchored `Column LIKE 'text%'` are the shapes a recorded query uses, while a
+ * substring pattern (`LIKE '%text%'`) names no event and is ignored. Cargo escapes a
+ * quote inside a literal by doubling it (`'Cho''Gath'`).
  */
 function whereLiterals(where: string, columns: ReadonlySet<string>): string[] {
 	const found: string[] = [];
-	const clause = /\b([A-Za-z_][A-Za-z0-9_]*)\s*(?:=\s*|IN\s*)('(?:[^']|'')*'|\([^)]*\))/gi;
+	const clause = /\b([A-Za-z_][A-Za-z0-9_]*)\s*(=\s*|IN\s*|LIKE\s*)('(?:[^']|'')*'|\([^)]*\))/gi;
 	for (const match of where.matchAll(clause)) {
 		if (!columns.has(match[1].toLowerCase())) continue;
-		for (const literal of match[2].matchAll(/'((?:[^']|'')*)'/g)) found.push(literal[1].replace(/''/g, "'"));
+		const operator = match[2].trim().toUpperCase();
+		for (const literal of match[3].matchAll(/'((?:[^']|'')*)'/g)) {
+			const text = literal[1].replace(/''/g, "'");
+			if (operator !== "LIKE") {
+				found.push(text);
+				continue;
+			}
+			// A `LIKE` names the event only when it is anchored at the start: `LIKE 'page%'`
+			// is a query for `page`, and `LIKE 'page'` (no wildcard) is exactly that page.
+			// A leading wildcard, or one anywhere but the end, makes it a substring match:
+			// it could hit any page that merely contains those words, so it names nothing.
+			const body = text.endsWith("%") ? text.slice(0, -1) : text;
+			if (body === "" || body.includes("%")) continue;
+			found.push(body);
+		}
 	}
 	return found;
 }
@@ -471,8 +493,23 @@ function namesEvent(literal: string, event: EventRecord): boolean {
 	return literal.startsWith(`${event.overviewPage}/`);
 }
 
+/** How many rows a payload body holds, without trusting it to be well formed. */
+function rowCount(payload: CachedPayload): number {
+	try {
+		const parsed: unknown = JSON.parse(payload.body);
+		if (Array.isArray(parsed)) return parsed.length;
+		const envelope = parsed as { cargoquery?: unknown } | null;
+		return Array.isArray(envelope?.cargoquery) ? envelope.cargoquery.length : 0;
+	} catch {
+		return 0;
+	}
+}
+
 function wasAsked(payload: CachedPayload, event: EventRecord): boolean {
-	if (!GAME_TABLES.has(payload.table)) return false;
+	// A game table asked and came back empty is the claim `empty` makes. A player-table
+	// payload is still a query that named the event, but its rows are not games, so it
+	// cannot say the event has none.
+	if (!GAME_ROW_TABLES.has(payload.table) || rowCount(payload) > 0) return false;
 	const where = payload.query?.where;
 	if (typeof where !== "string" || where === "") return false;
 	return whereLiterals(where, EVENT_COLUMNS).some((literal) => namesEvent(literal, event));

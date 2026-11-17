@@ -378,7 +378,27 @@ function dedupe<T extends { sourceFile: string }>(
 	return [...byKey.values()];
 }
 
-const same = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b);
+/**
+ * Structural equality that does not care about key order.
+ *
+ * A Cargo row's field order is an artifact of the `fields=` list the query asked for,
+ * not a fact about the data: two payloads that requested the same columns in a
+ * different order carry the same row. Comparing `JSON.stringify` directly would turn
+ * that into a "one payload is stale" failure, which is the sort of false alarm that
+ * teaches people to ignore the check.
+ */
+function canonical(value: unknown): string {
+	if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+	if (value !== null && typeof value === "object") {
+		const entries = Object.entries(value as Record<string, unknown>)
+			.filter(([, child]) => child !== undefined)
+			.sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0));
+		return `{${entries.map(([key, child]) => `${JSON.stringify(key)}:${canonical(child)}`).join(",")}}`;
+	}
+	return JSON.stringify(value) ?? "null";
+}
+
+const same = (a: unknown, b: unknown): boolean => canonical(a) === canonical(b);
 
 /**
  * Two payloads may carry the same row; `sourceFile` is provenance, not data.
@@ -626,8 +646,8 @@ export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[
 				durationSeconds: asDurationSeconds(raw(row, "Gamelength"), `${payload.file}: ${gameId}: Gamelength`),
 				patch: asPatch(raw(row, "Patch")),
 				sides: [gameSide(row, "Team1", `${payload.file}: ${gameId}`), gameSide(row, "Team2", `${payload.file}: ${gameId}`)],
-				picks: [asList(raw(row, "Team1Picks")), asList(raw(row, "Team2Picks"))],
-				bans: [asList(raw(row, "Team1Bans")), asList(raw(row, "Team2Bans"))],
+				picks: [draftNames(raw(row, "Team1Picks")), draftNames(raw(row, "Team2Picks"))],
+				bans: [draftNames(raw(row, "Team1Bans")), draftNames(raw(row, "Team2Bans"))],
 				riotPlatformGameId: asText(raw(row, "RiotPlatformGameId")),
 				sourceFile: payload.file,
 			});
@@ -714,6 +734,19 @@ function assertTimestamp(text: string, stated: boolean, where: string): void {
 	const valid =
 		month >= 1 && month <= 12 && day >= 1 && day <= months[month - 1] && hour <= 23 && minute <= 59 && second <= 59;
 	if (!valid) throw new Error(`${where}: ${JSON.stringify(text)} is not a real calendar instant`);
+}
+
+/**
+ * The champion names in a Cargo list field, with the source's placeholder removed.
+ *
+ * `ScoreboardGames.Team*Picks`/`Team*Bans` use the same `None` for an unused slot as
+ * `PicksAndBansS7` does (measured on one MSI 2023 ban list). Filtering it here as well
+ * as in the ordered path matters twice over: otherwise the identity tables mint an
+ * entity called `None`, and the unordered fallback can emit a "complete" draft that
+ * contains it.
+ */
+function draftNames(value: unknown): string[] {
+	return asList(value).filter((name) => !/^none$/i.test(name));
 }
 
 /** A comma-separated Cargo string is a list, not a free-text blob. */
@@ -822,7 +855,11 @@ export function normalizePicksAndBans(payloads: CachedPayload[]): SourceDraft[] 
 			const found: DraftSlot[] = [];
 			for (let slot = 1; slot <= DRAFT_SLOTS; slot += 1) {
 				const champion = asText(raw(row, `${prefix}${kind}${slot}`));
-				if (champion !== "") found.push({ slot, champion });
+				// The source writes `None` for a slot that was never used (measured on one
+				// MSI 2023 ban). It is a placeholder, not a champion, so the slot is absent —
+				// inventing a `None` entity would put a fake pick in the draft.
+				if (champion === "" || /^none$/i.test(champion)) continue;
+				found.push({ slot, champion });
 			}
 			return found;
 		};

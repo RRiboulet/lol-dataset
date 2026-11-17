@@ -73,6 +73,23 @@ which is the transcribed field inventory in `docs/specs/` and the recorded paylo
 fixtures, not the first committed dataset. Reusing the derived data therefore
 requires crediting Leaguepedia and sharing derivative work alike.
 
+The committed dataset currently carries real crawled data for these events, each
+fetched through `tools/dataset/fetch.ts` and recorded with its query, URL, fetch
+time and body hash:
+
+- **2023 Mid-Season Invitational** — 76 games, 760 player rows, 25 series, 76
+  ordered drafts. Crawled for ticket 09.
+- **IEM Season IX World Championship 2015** and **2023 Season World Championship** —
+  recorded during tickets 03–05 and re-fetched during ticket 09.
+- **World Cyber Games 2011** — recorded queries that returned no rows; committed as
+  the evidence behind the dataset's 2011 floor.
+
+The notice grows with the data: an event whose **games** are committed is named here in
+the same change that commits them. Recorded payloads that name other events — the
+ticket-02 identity probes for IPL 5 and the 2015 season, for example — are covered by
+the general attribution above rather than listed one by one; they carry players and
+teams, not games, and none of their rows is in the committed dataset.
+
 Riot Games' own material — champion and item data from Data Dragon, anything from
 the LoL Esports API — is not covered by that licence and is used under Riot's terms,
 not CC BY-SA.
