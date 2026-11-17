@@ -115,7 +115,9 @@ test("a game with two winning sides is refused, naming the game", async () => {
 	});
 	assert.ok(violations.some((violation) => /both sides are .*cannot be a team against itself/.test(violation)));
 	assert.ok(violations.some((violation) => /winning sides/.test(violation)));
-	assert.ok(violations.every((violation) => violation.startsWith("game ")), violations.join("\n"));
+	// The downstream contradictions the same corruption produces are reported in the
+	// same run, which is the point of collecting rather than throwing.
+	assert.ok(violations.every((violation) => /^(game|player-game) /.test(violation)), violations.join("\n"));
 });
 
 test("a negative statistic is refused, naming the record", async () => {
@@ -199,4 +201,165 @@ test("the gate is part of the build, not an opt-in flag", async () => {
 		/violates \d+ invariant/,
 		"and the gate refuses the same records once one of them is wrong",
 	);
+});
+
+test("a player row attached to a team that is not one of its game's sides is refused", async () => {
+	// The gap that only shows on a partial game: a complete game's five-per-side count
+	// catches it incidentally, so the rule has to stand on its own.
+	const violations = await violationsAfter((data) => {
+		const game = data.games.find((candidate) => candidate.coverage.playerStats === "partial");
+		assert.ok(game);
+		const row = data.playerGames.find((candidate) => candidate.gameId === game.id);
+		assert.ok(row);
+		const outsider = data.identity.teams.find((team) => !game.sides.some((side) => side.teamId === team.id));
+		assert.ok(outsider);
+		row.teamId = outsider.id;
+	});
+	assert.equal(violations.length, 1, violations.join("\n"));
+	assert.match(violations[0], /is not one of its game's sides/);
+});
+
+test("a player row attributed to another event is refused", async () => {
+	await expectViolation(
+		(data) => {
+			const row = data.playerGames[0];
+			const event = data.events.find((candidate) => candidate.id !== row.eventId);
+			assert.ok(event);
+			row.eventId = event.id;
+		},
+		/names event evt-[0-9a-f]+ but its game belongs to/,
+		"player-game",
+	);
+});
+
+test("an alias must point at an entity of its own kind", async () => {
+	await expectViolation(
+		(data) => {
+			const alias = data.identity.aliases.find((candidate) => candidate.kind === "team");
+			assert.ok(alias);
+			alias.entityId = data.identity.champions[0].id;
+		},
+		/is a team alias but points at ch-[0-9a-f]+, which is another kind of entity/,
+		"alias",
+	);
+});
+
+test("a duplicated per-event report row and a missing one are both refused", async () => {
+	const duplicated = await violationsAfter((data) => {
+		data.eventGames.push(structuredClone(data.eventGames[0]));
+	});
+	assert.ok(duplicated.some((violation) => /appears 2 times — one record per key/.test(violation)), duplicated.join("\n"));
+
+	const missing = await violationsAfter((data) => {
+		data.eventGames.shift();
+	});
+	assert.ok(missing.some((violation) => /has no report row/.test(violation)), missing.join("\n"));
+});
+
+test("a report state that contradicts its counts is refused", async () => {
+	await expectViolation(
+		(data) => {
+			const record = data.eventGames.find((candidate) => candidate.state === "recorded");
+			assert.ok(record);
+			record.state = "missing";
+		},
+		/says missing but carries \d+ games and \d+ matches/,
+		"event-games",
+	);
+});
+
+test("an ordered complete draft with a swapped or missing slot is refused", async () => {
+	const swapped = await violationsAfter((data) => {
+		const game = data.games.find((candidate) => candidate.coverage.draft === "complete" && candidate.draft?.fidelity === "ordered");
+		assert.ok(game?.draft);
+		const picks = game.draft.sides[0].picks;
+		[picks[0].slot, picks[1].slot] = [picks[1].slot, picks[0].slot];
+	});
+	assert.ok(swapped.some((violation) => /ordered complete draft but blue picks slots are/.test(violation)), swapped.join("\n"));
+
+	const dropped = await violationsAfter((data) => {
+		const game = data.games.find((candidate) => candidate.coverage.draft === "complete" && candidate.draft?.fidelity === "ordered");
+		assert.ok(game?.draft);
+		delete (game.draft.sides[0].picks[0] as { slot?: number }).slot;
+	});
+	assert.ok(dropped.some((violation) => /ordered complete draft but blue picks slots/.test(violation)), dropped.join("\n"));
+});
+
+test("a draft present under an unavailable claim, or player rows under one, are refused", async () => {
+	const draft = await violationsAfter((data) => {
+		const game = data.games.find((candidate) => candidate.draft !== undefined);
+		assert.ok(game);
+		game.coverage.draft = "unavailable";
+	});
+	assert.ok(draft.some((violation) => /carries a draft while claiming none is available/.test(violation)), draft.join("\n"));
+
+	const players = await violationsAfter((data) => {
+		const game = data.games.find((candidate) => candidate.coverage.playerStats === "complete");
+		assert.ok(game);
+		game.coverage.playerStats = "unavailable";
+	});
+	assert.ok(players.some((violation) => /claims player statistics are unavailable but carries/.test(violation)), players.join("\n"));
+});
+
+test("an emitted event with no included selection row, and a duplicated selection row, are refused", async () => {
+	const missing = await violationsAfter((data) => {
+		const index = data.selection.findIndex((record) => record.decision === "included");
+		assert.ok(index >= 0);
+		data.selection.splice(index, 1);
+	});
+	assert.ok(missing.some((violation) => /has no included row for it/.test(violation)), missing.join("\n"));
+
+	const duplicated = await violationsAfter((data) => {
+		data.selection.push(structuredClone(data.selection[0]));
+	});
+	assert.ok(duplicated.some((violation) => /selection evt-[0-9a-f]+: appears 2 times/.test(violation)), duplicated.join("\n"));
+});
+
+test("negative durations, bestOf and report counts are refused", async () => {
+	const violations = await violationsAfter((data) => {
+		data.games[0].durationSeconds = -60;
+		data.matches[0].bestOf = -3;
+		data.eventGames[0].games = -1;
+	});
+	for (const expected of [/durationSeconds is -60/, /bestOf is -3/, /reports a negative count/]) {
+		assert.ok(violations.some((violation) => expected.test(violation)), `expected ${expected}: ${violations.join("\n")}`);
+	}
+});
+
+test("a malformed sides array is reported instead of crashing the gate", async () => {
+	const violations = await violationsAfter((data) => {
+		data.games[0].sides = [data.games[0].sides[0]] as never;
+		data.eventGames[0].games += 99; // a second, independent corruption in another file
+	});
+	assert.ok(violations.some((violation) => /has 1 sides — a game has exactly two/.test(violation)), violations.join("\n"));
+	assert.ok(violations.some((violation) => /says \d+ games but/.test(violation)), "the other file is still checked");
+});
+
+test("a game retargeted to another event's match, and one source row emitted twice, are refused", async () => {
+	const crossEvent = await violationsAfter((data) => {
+		const game = data.games.find((candidate) => candidate.matchId !== undefined);
+		assert.ok(game);
+		const other = data.matches.find((candidate) => candidate.eventId !== game.eventId);
+		assert.ok(other);
+		game.matchId = other.id;
+	});
+	assert.ok(crossEvent.some((violation) => /of another event/.test(violation)), crossEvent.join("\n"));
+
+	const duplicated = await violationsAfter((data) => {
+		const clone = structuredClone(data.games[0]);
+		clone.id = "gm-000000000001";
+		data.games.push(clone);
+	});
+	assert.ok(duplicated.some((violation) => /is emitted as 2 games/.test(violation)), duplicated.join("\n"));
+});
+
+test("a side key set to undefined is absence, not a stated statistic", async () => {
+	// `coverageOf` treats undefined as absent, so the gate must too; otherwise a
+	// legitimate record built in memory would be reported as carrying a value.
+	const violations = await violationsAfter((data) => {
+		const game = data.games.find((candidate) => candidate.coverage.teamStats === "unavailable");
+		if (game === undefined) return; // the fixtures have none; the rule is still exercised below
+		(game.sides[0] as unknown as Record<string, unknown>).kills = undefined;
+	});
+	assert.deepEqual(violations, []);
 });

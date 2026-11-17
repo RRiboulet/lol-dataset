@@ -48,7 +48,19 @@ use on real data to the crawl tickets.
   sides, exactly one winner), referential integrity across every file, arithmetic
   (non-negative statistics, player sums against team totals, per-event counts), and
   the coverage claims themselves: `complete` is checked against the era's eligible
-  fields, and `unavailable` against the absence of the values it denies.
+  fields, and `unavailable` against the absence of the values it denies. An alias
+  must point at an entity of its own kind, a player row must belong to a team its
+  game actually fields and to that game's event, a series and a game must share an
+  event, one source row cannot become two games, and every emitted event carries an
+  included selection row plus one report row.
+- A review pass tightened the gate further: `ordered` drafts are checked slot by slot
+  rather than by count, `partial`/`unavailable` player claims are cross-checked
+  against their rows, a malformed `sides` array is reported instead of throwing, and
+  absence is read as `!== undefined` (matching `coverageOf`) so an in-memory
+  `undefined` is never mistaken for a stated value.
+- The rules are deliberately checked against **both** directions: no false positive on
+  the real build (which would block all dataset work), and a fixture per false
+  negative. `node tools/check.ts` covers the first on every run.
 - `node tools/check.ts` enumerates each suite's `*.test.ts` files rather than passing
   a glob. A glob that matches nothing exits successfully, which would make the one
   command report a green run that tested nothing.
