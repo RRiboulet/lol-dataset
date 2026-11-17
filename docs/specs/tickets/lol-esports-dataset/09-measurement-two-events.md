@@ -41,8 +41,12 @@ placeholder sits in **both** draft paths — the numbered `PicksAndBansS7` field
 a champion entity called `None` and let the unordered fallback emit it.
 
 **IEM Season IX 2015 (pre-herald era)** — already recorded for tickets 03–05 and
-re-fetched here through the real fetcher; its payloads were byte-identical, so the
-committed cache keeps the original recording. 19 games, 190 player rows, 13 series.
+re-fetched here through the real fetcher. The re-fetched **rows** are identical to the
+committed ones; the **bytes** are not, because a different `fields=` order changes the
+body and therefore its hash. The committed cache keeps the original recording, and of
+the four re-fetched payloads only the zero-row `PicksAndBansS7` one is committed, as the
+evidence for the "no ordered draft in this era" claim below. 19 games, 190 player rows,
+13 series.
 The source states kills, deaths, assists, CS and gold, plus a partial team-stat row
 (no inhibitors, three bans a side), but **no damage, vision, keystone or runes** on any
 player. Drafts are **unordered**: `PicksAndBansS7` has no row for this era, so the
@@ -70,7 +74,10 @@ the earliest *games* the source still carries are 2012's IPL 5, not 2011's.
   list field carries it (`Team2Bans` ends with `None`). Filtered in both paths, so no
   entity is minted and the game's draft coverage is honestly `partial`.
 - **IPL 5's series rows disagree with its games.** Crawling IPL 5 (2012) — the earliest
-  event that *does* carry games — produced 72 games, 720 player rows and 48 series,
+  event that *does* carry games — produced 72 games, 720 player rows and 48 series.
+  Those four payloads are committed under `tools/dataset/fixtures/pending/`, which the
+  build does not read, so the figures below stay checkable while the event stays out of
+  the dataset; ticket 14 decides what to do with them. The crawl found
   but the game↔series team check refused 11 pairings: some are a legacy team name
   (`Counter Logic Gaming` on the game, `CLG Prime` on the series), others are apparent
   cross-match mixups in the source's own `MatchSchedule`. **IPL 5 is not committed

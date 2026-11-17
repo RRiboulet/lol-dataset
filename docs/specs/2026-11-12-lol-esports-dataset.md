@@ -219,7 +219,12 @@ holds the dimensional model (dimensions, facts, its DDL, and its own data dictio
 `raw/` (gitignored) holds the payload cache; `tools/dataset/` holds fetch, normalize,
 assemble, emit, model and validate, with its tests beside them. The raw cache is not
 committed — it is large, it duplicates a third party's content, and R9's manifest plus
-hashes already pin it.
+hashes already pin it. Two exceptions, both smaller and deliberate:
+`tools/dataset/fixtures/raw/` holds the payloads the build and its tests actually read,
+because CI must reproduce the committed dataset with no network, and
+`tools/dataset/fixtures/pending/` holds recorded payloads that are not yet buildable
+(ticket 09's IPL 5, whose series rows disagree) so the tickets that will resolve them
+start from real bytes rather than a re-crawl. The build never reads `pending/`.
 
 **D7 — Provenance record.** Each cached payload gets a sidecar with URL,
 fetch time, HTTP status and body hash; the manifest lists the payload hashes the

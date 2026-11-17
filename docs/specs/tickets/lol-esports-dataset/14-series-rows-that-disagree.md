@@ -21,7 +21,9 @@ invariant refused **11 pairings**. Two causes are mixed together:
 
 Because of this, IPL 5 is deliberately **not** in the committed dataset, and the four
 payloads crawled for it (games, players, series, drafts) are not in the fixture cache,
-so the build cannot fail on them. What *is* still committed are two older payloads
+so the build cannot fail on them. They are committed under
+`tools/dataset/fixtures/pending/`, which the build does not read, so this ticket starts
+from the real bytes rather than a re-crawl. What *is* still committed are two older payloads
 recorded for ticket 02 — a `ScoreboardPlayers` query and a `Tournaments` row that name
 IPL 5 — which is why `event-games.jsonl` reports the event as `missing` rather than
 `empty`: those rows never asked for games.
