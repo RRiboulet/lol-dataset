@@ -35,7 +35,10 @@ below), **zero `ratelimited` responses**, and no run-ending failure.
 slot numbers. 75 of 76 games are complete across all three field groups; the
 exception is `…_Bracket Round 1_4_3`, whose `Team2Ban4` is the literal string `None` —
 the source's placeholder for an unused ban slot. It is emitted as an **absent** slot,
-so that game's draft coverage is honestly `partial` rather than a fabricated pick.
+so that game's draft coverage is honestly `partial` rather than a fabricated pick. The
+placeholder sits in **both** draft paths — the numbered `PicksAndBansS7` field and the
+`ScoreboardGames` ban list — and both filter it: handling only the numbered one minted
+a champion entity called `None` and let the unordered fallback emit it.
 
 **IEM Season IX 2015 (pre-herald era)** — already recorded for tickets 03–05 and
 re-fetched here through the real fetcher; its payloads were byte-identical, so the
@@ -63,8 +66,9 @@ the earliest *games* the source still carries are 2012's IPL 5, not 2011's.
 
 ## Divergences found, and what was done
 
-- **`None` as a draft placeholder.** MSI 2023's `Team2Ban4` is `None`. Treated as an
-  absent slot (not a champion entity), and the game's draft coverage is `partial`.
+- **`None` as a draft placeholder.** MSI 2023's `Team2Ban4` is `None`, and the same
+  list field carries it (`Team2Bans` ends with `None`). Filtered in both paths, so no
+  entity is minted and the game's draft coverage is honestly `partial`.
 - **IPL 5's series rows disagree with its games.** Crawling IPL 5 (2012) — the earliest
   event that *does* carry games — produced 72 games, 720 player rows and 48 series,
   but the game↔series team check refused 11 pairings: some are a legacy team name
