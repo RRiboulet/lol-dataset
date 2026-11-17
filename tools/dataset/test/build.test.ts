@@ -14,6 +14,7 @@ import { promisify } from "node:util";
 import { test } from "node:test";
 
 import { buildDataset, writeDataset } from "../build.ts";
+import { MANIFEST_FILE } from "../manifest.ts";
 import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
 
 const run = promisify(execFile);
@@ -197,13 +198,16 @@ test("writeDataset is what the committed files are made of", async () => {
 	try {
 		const result = await fixtureBuild();
 		await writeDataset(result, dir);
-		assert.deepEqual((await readdir(dir)).sort(), Object.keys(result.files).sort());
+		// The registry plus the manifest, which is written by the same call so the entity
+		// files are never in a checkout without the provenance that describes them.
+		assert.deepEqual((await readdir(dir)).sort(), [...Object.keys(result.files), MANIFEST_FILE].sort());
 		for (const [file, body] of Object.entries(result.files)) {
 			assert.equal(await readFile(path.join(dir, file), "utf8"), body);
 			assert.ok(body.endsWith("\n"), `${file} must end with a newline`);
 			assert.ok(!body.startsWith("\uFEFF"), `${file} must not carry a BOM`);
 			assert.ok(!body.includes("\r"), `${file} must use LF endings`);
 		}
+		assert.equal(await readFile(path.join(dir, MANIFEST_FILE), "utf8"), result.manifestText);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

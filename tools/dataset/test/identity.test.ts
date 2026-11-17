@@ -25,7 +25,7 @@ import { AmbiguousIdentity } from "../identity.ts";
 import { displayName } from "../normalize.ts";
 import type { BuildResult } from "../build.ts";
 import { validateAgainst } from "../validate.ts";
-import { CURATED_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
+import { CURATED_DIR, FIXTURE_RAW, savePayloadBody, SCHEMA_DIR } from "./helpers.ts";
 
 // The windows are the observed use in the whole recorded corpus, and ticket 03 makes
 // games observations too: `T1` is dated by the 2023 scoreboard row and by the Worlds
@@ -108,7 +108,7 @@ test("the entity's ID does not change when its display name changes", async () =
 			if (row.OverviewPage === "T1") row.Name = "T1 Esports";
 			if (row.OverviewPage === "Team Liquid") row.Name = "Team Liquid Rebranded";
 		}
-		await writeFile(teamsFile, JSON.stringify(teams), "utf8");
+		await savePayloadBody(teamsFile, JSON.stringify(teams));
 
 		// The source rewrites the *current* champion name retroactively (measured: 2011
 		// and 2012 rows already say `Nunu &amp; Willump`), so a display rename arrives as
@@ -117,12 +117,12 @@ test("the entity's ID does not change when its display name changes", async () =
 		for (const championsFile of await payloadFiles(dir, "Champions")) {
 			const champions = await readRows(championsFile);
 			for (const row of champions) if (row.KeyInteger === 20) row.Name = "Nunu";
-			await writeFile(championsFile, JSON.stringify(champions), "utf8");
+			await savePayloadBody(championsFile, JSON.stringify(champions));
 		}
 		for (const file of await payloadFiles(dir, "ScoreboardPlayers")) {
 			const rows = await readRows(file);
 			for (const row of rows) if (row.Champion === "Nunu &amp; Willump") row.Champion = "Nunu";
-			await writeFile(file, JSON.stringify(rows), "utf8");
+			await savePayloadBody(file, JSON.stringify(rows));
 		}
 
 		const changed = await buildDataset({ rawDir: dir });
@@ -267,7 +267,7 @@ test("an unresolved source string mints an entity and is reported, rather than f
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
 		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
-		await writeFile(teamsFile, JSON.stringify(teams), "utf8");
+		await savePayloadBody(teamsFile, JSON.stringify(teams));
 		const resolved = await buildDataset({ rawDir: dir });
 		const now = resolved.identity.teams.find((team) => team.name === "The Bandits Prime");
 		assert.equal(now?.id, entity.id, "registering the page later must not renumber the entity");
@@ -309,7 +309,7 @@ test("the champion rename the source cannot record resolves through the declared
 			if (!pick) continue;
 			pick.Champion = "Nunu";
 			rewrote += 1;
-			await writeFile(file, JSON.stringify(rows), "utf8");
+			await savePayloadBody(file, JSON.stringify(rows));
 		}
 		assert.ok(rewrote >= 1, "the recorded fixtures carry Nunu picks to rewrite");
 		const built = await buildDataset({ rawDir: dir });
@@ -392,7 +392,7 @@ test("every identity file satisfies its checked-in schema, and an empty file is 
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
 		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
-		await writeFile(teamsFile, JSON.stringify(teams), "utf8");
+		await savePayloadBody(teamsFile, JSON.stringify(teams));
 		const built = await buildDataset({ rawDir: dir });
 		assert.equal(built.files["identity-unresolved.jsonl"], "");
 		assert.equal((await schema("identity-unresolved.schema.json")).type, "object");
@@ -444,7 +444,7 @@ test("a string that names two entities is reported with its candidates and mints
 		for (const page of ["Wolf (Lee Jae-wan)", "Faker"]) {
 			players.push({ _pageName: page, AllName: "Ambiguous Handle", OverviewPage: page, ID: "Ambiguous Handle" });
 		}
-		await writeFile(playersFile, JSON.stringify(players), "utf8");
+		await savePayloadBody(playersFile, JSON.stringify(players));
 		const [scoreboardFile] = await payloadFiles(dir, "ScoreboardPlayers");
 		const scoreboard = await readRows(scoreboardFile);
 		scoreboard.push({
@@ -456,7 +456,7 @@ test("a string that names two entities is reported with its candidates and mints
 			OverviewPage: "2023 Season World Championship/Main Event",
 			"DateTime UTC": "2023-10-19 05:16:00",
 		});
-		await writeFile(scoreboardFile, JSON.stringify(scoreboard), "utf8");
+		await savePayloadBody(scoreboardFile, JSON.stringify(scoreboard));
 
 		const built = await buildDataset({ rawDir: dir });
 		const row = built.identity.unresolved.find((record) => record.string === "Ambiguous Handle");
@@ -478,7 +478,7 @@ test("a team rename edge the payloads cannot complete stops the build", async ()
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
 		for (const row of teams) if (row.OverviewPage === "H2k-Gaming") row.RenamedTo = "H2k-Gaming Esports";
-		await writeFile(teamsFile, JSON.stringify(teams), "utf8");
+		await savePayloadBody(teamsFile, JSON.stringify(teams));
 		await assert.rejects(
 			buildDataset({ rawDir: dir }),
 			/team "H2k-Gaming" says it was renamed to "H2k-Gaming Esports", but no Teams payload carries that page/,
@@ -497,7 +497,7 @@ test("two pages renamed into one successor stop the build", async () => {
 			if (row.OverviewPage === "H2k-Gaming") row.RenamedTo = "T1";
 			if (row.OverviewPage === "Team Dynamic") row.RenamedTo = "T1";
 		}
-		await writeFile(teamsFile, JSON.stringify(teams), "utf8");
+		await savePayloadBody(teamsFile, JSON.stringify(teams));
 		await assert.rejects(buildDataset({ rawDir: dir }), /two team pages claim to have been renamed into "T1"/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });

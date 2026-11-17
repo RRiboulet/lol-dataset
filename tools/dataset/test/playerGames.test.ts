@@ -12,7 +12,7 @@ import { test } from "node:test";
 
 import type { BuildResult } from "../build.ts";
 import { buildDataset } from "../build.ts";
-import { FIXTURE_RAW } from "./helpers.ts";
+import { FIXTURE_RAW, savePayloadBody } from "./helpers.ts";
 
 const PLAYERS_DIR = path.join("lol-fandom", "cargoexport", "ScoreboardPlayers");
 
@@ -106,7 +106,7 @@ test("the played position wins when the source's role label disagrees", async ()
 		assert.ok(row);
 		const played = String(row.IngameRole);
 		row.Role = played === "Top" ? "Jungle" : "Top";
-		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 		const result = await buildDataset({ rawDir: dir });
 		const emitted = result.playerGames.rows.find((candidate) => candidate.id === target.id);
 		assert.equal(emitted?.role, played, "IngameRole, the position actually played, is authoritative");
@@ -126,7 +126,7 @@ test("a player appearing twice in one game fails the build, naming the game", as
 		const sameGame = source.filter((row) => row.GameId === target.source.gameId);
 		assert.ok(sameGame.length > 1);
 		sameGame[1].Link = target.sourcePlayer;
-		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 		await assert.rejects(buildDataset({ rawDir: dir }), (error: Error) =>
 			error.message.includes(target.source.gameId) && /twice/.test(error.message),
 		);
@@ -146,7 +146,7 @@ test("a broken sum fails the build, naming the game and the team", async () => {
 		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === target.sourcePlayer);
 		assert.ok(row);
 		row.Kills = Number(row.Kills) + 1;
-		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 		await assert.rejects(buildDataset({ rawDir: dir }), (error: Error) =>
 			error.message.includes(target.source.gameId) && /players sum to/.test(error.message) && error.message.includes(target.teamName),
 		);
@@ -192,7 +192,7 @@ test("a game with duplicate roles is partial, not complete", async () => {
 		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === sameSide[0].sourcePlayer);
 		assert.ok(row);
 		row.IngameRole = target.role;
-		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 		const result = await buildDataset({ rawDir: dir });
 		const game = result.scoreboards.games.find((candidate) => candidate.source.gameId === target.source.gameId);
 		assert.equal(game?.coverage.playerStats, "partial", "the coverage marker does not claim an impossible complete draft of roles");
@@ -212,7 +212,7 @@ test("an identical duplicate player row in one payload fails the build", async (
 		const original = source.find((row) => row.GameId === target.source.gameId && row.Link === target.sourcePlayer);
 		assert.ok(original);
 		source.push({ ...original });
-		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 		await assert.rejects(buildDataset({ rawDir: dir }), (error: Error) =>
 			error.message.includes(target.source.gameId) && /appears twice/.test(error.message),
 		);
@@ -236,7 +236,7 @@ test("present-but-unparseable source values stop the build", async () => {
 			const row = source.find((candidate) => typeof candidate.Kills === "number");
 			assert.ok(row);
 			row[field] = value;
-			await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+			await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 			await assert.rejects(buildDataset({ rawDir: dir }), expected);
 		} finally {
 			await rm(dir, { recursive: true, force: true });
@@ -252,7 +252,7 @@ test("a malformed row in a rejected event still fails loudly", async () => {
 		const row = source.find((candidate) => String(candidate.OverviewPage).startsWith("IEM Season IX - Cologne"));
 		assert.ok(row);
 		row.Kills = "abc";
-		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 		await assert.rejects(buildDataset({ rawDir: dir }), /expected a number, got "abc"/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
@@ -347,7 +347,7 @@ test("a role differing only in case still counts as one played position", async 
 		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === sameSide[0].sourcePlayer);
 		assert.ok(row);
 		row.IngameRole = String(target.role).toLowerCase();
-		await writeFile(file, `${JSON.stringify(source)}\n`, "utf8");
+		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
 		const result = await buildDataset({ rawDir: dir });
 		const game = result.scoreboards.games.find((candidate) => candidate.source.gameId === target.source.gameId);
 		assert.equal(game?.coverage.playerStats, "partial");

@@ -229,7 +229,12 @@
 				"riotPlatformGameId": {
 					"type": "string",
 					"minLength": 1,
-					"description": "Riot's platform game id, where the source records one. The ACS enrichment fields (RiotGameId, RiotHash) are absent on every recorded row."
+					"description": "Riot's platform game id, where the source records one — every recorded row has one."
+				},
+				"riotHash": {
+					"type": "string",
+					"minLength": 1,
+					"description": "Riot's own hash of the game record (`ScoreboardGames.RiotHash`), where the source records one: the 2015-era rows carry it and the 2023 rows do not. Carried because spec D7 names it as a source identifier; the numeric `RiotGameId` and the platform letter beside it stay in the payload row, which is committed, rather than being duplicated here."
 				}
 			}
 		}

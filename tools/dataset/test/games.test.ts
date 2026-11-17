@@ -23,7 +23,7 @@ import { eraOn } from "../eras.ts";
 import type { GameRecord, MatchRecord } from "../games.ts";
 import { normalizeSources } from "../normalize.ts";
 import { TEAM_STAT_FIELDS } from "../normalize.ts";
-import { FIXTURE_RAW, writeTempRule } from "./helpers.ts";
+import { FIXTURE_RAW, savePayloadBody, writeTempRule } from "./helpers.ts";
 
 const WORLDS = "2023 Season World Championship";
 const IEM = "IEM Season IX - World Championship";
@@ -310,7 +310,7 @@ test("a game whose teams are not its series' teams stops the build, naming both"
 			const row = rows.find((candidate) => candidate.MatchId === SOURCE);
 			if (row === undefined) continue;
 			row.MatchId = TARGET;
-			await writeFile(file, JSON.stringify(rows), "utf8");
+			await savePayloadBody(file, JSON.stringify(rows));
 			return;
 		}
 		throw new Error(`the fixtures carry no game for ${SOURCE}`);
@@ -400,7 +400,7 @@ test("a departed patch is an absent key, not an empty string", async () => {
 			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
 			if (rows.length === 0) continue;
 			delete rows[0].Patch;
-			await writeFile(file, JSON.stringify(rows), "utf8");
+			await savePayloadBody(file, JSON.stringify(rows));
 			break;
 		}
 		const result = await buildDataset({ rawDir: raw });
@@ -430,7 +430,7 @@ test("a value the era table declares ineligible stops the build, naming the game
 			const target = rows.find((row) => String(row.DateTime_UTC ?? row["DateTime UTC"]).startsWith("2015-"));
 			if (target === undefined) continue;
 			target.Team1VoidGrubs = 2;
-			await writeFile(file, JSON.stringify(rows), "utf8");
+			await savePayloadBody(file, JSON.stringify(rows));
 			break;
 		}
 		await assert.rejects(buildDataset({ rawDir: raw }), /states voidGrubs, which the era table declares ineligible in pre-herald/);
@@ -461,7 +461,7 @@ test("a half-recorded game is partial, not unavailable", async () => {
 					target[key] = null;
 				}
 			}
-			await writeFile(file, JSON.stringify(rows), "utf8");
+			await savePayloadBody(file, JSON.stringify(rows));
 			break;
 		}
 		const result = await buildDataset({ rawDir: raw });
@@ -488,7 +488,7 @@ test("a Gamelength this stage cannot parse stops the build instead of vanishing"
 			// The source once answered float minutes here (`Gamelength_Number`); if its
 			// `mm:ss` column ever changed shape, every duration would go absent silently.
 			rows[0].Gamelength = "28.65";
-			await writeFile(file, JSON.stringify(rows), "utf8");
+			await savePayloadBody(file, JSON.stringify(rows));
 			break;
 		}
 		await assert.rejects(buildDataset({ rawDir: raw }), /expected a Gamelength of mm:ss or h:mm:ss, got "28\.65"/);

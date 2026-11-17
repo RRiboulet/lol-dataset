@@ -40,9 +40,12 @@
 // The sidecar is provenance, and the build's *data* output never depends on it: the
 // normalizers read bodies, so a fixture and a live payload are byte-compatible and the
 // emitted rows cannot depend on when a payload was fetched (spec R8 — no wall-clock in
-// the data). One report does read the recorded query text — the game report has to tell
-// "the source answered zero games" from "nobody asked" — so the sidecar is optional,
-// never hashed into the output, and never a second thing that has to exist.
+// the data). Two things do read it: the game report needs the recorded query text to
+// tell "the source answered zero games" from "nobody asked", and the build verifies the
+// body hash and copies the fetch time into `data/curated/manifest.json` (ticket 07,
+// `manifest.ts`). The sidecar is therefore optional — a scratch directory built from
+// bodies alone is legal — but a sidecar that exists is read strictly, because provenance
+// that cannot be read is worse than provenance that is absent.
 
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
@@ -235,6 +238,8 @@ export type CachedPayload = {
 	file: string;
 	/** The Cargo table the query read, from the directory. This is how the build routes it. */
 	table: string;
+	/** The endpoint whose directory the payload sits in, carried into the manifest (spec D7). */
+	endpoint: CargoEndpoint;
 	body: string;
 	/**
 	 * The query the sidecar records, when there is one. Never emitted and never hashed
@@ -242,6 +247,13 @@ export type CachedPayload = {
 	 * event came back empty" from "nobody asked for this event", and only the query says.
 	 */
 	query?: CargoQuery;
+	/**
+	 * The sidecar exactly as recorded, when there is one: the build verifies `bodySha256`
+	 * against the bytes it just read (`manifest.ts`) and the manifest carries `fetchedAt`
+	 * and `status`. A sidecar that exists but cannot be read is a broken cache and fails
+	 * the build — "no sidecar" and "a sidecar that lies" must not look alike.
+	 */
+	meta?: PayloadMeta;
 };
 
 /**
@@ -278,33 +290,59 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
 		if (parts.length !== 4 || (parts[1] !== "cargoexport" && parts[1] !== "cargoquery")) {
 			throw new Error(`${relative}: expected <source>/<endpoint>/<table>/<key>.json`);
 		}
-		payloads.push({ file: relative, table: parts[2], body: await readFile(file, "utf8"), ...(await queryOf(file)) });
+		payloads.push({
+			file: relative,
+			table: parts[2],
+			endpoint: parts[1] as CargoEndpoint,
+			body: await readFile(file, "utf8"),
+			...(await sidecarOf(file, relative)),
+		});
 	}
 	return payloads;
 }
 
 /**
- * The query an optional sidecar records, for reporting only.
+ * The sidecar an optional payload carries: its provenance and the query it records.
  *
  * A sidecar is written by `record.ts`/`fetch.ts` and is not required: a scratch
  * directory a test builds from bodies alone is legal, which is why this is optional
- * rather than a second thing that has to exist before the build runs.
+ * rather than a second thing that has to exist before the build runs. Optional is not
+ * the same as ignorable, though: a sidecar that *is* there has to be readable, because a
+ * cache whose provenance cannot be read is a broken cache, and silently treating it as
+ * "no sidecar" would hide exactly the thing the manifest exists to prove.
  */
-async function queryOf(bodyFile: string): Promise<{ query?: CargoQuery }> {
+async function sidecarOf(bodyFile: string, relative: string): Promise<{ meta?: PayloadMeta; query?: CargoQuery }> {
 	const metaFile = bodyFile.replace(/\.json$/, ".meta.json");
 	const text = await readIfExists(metaFile);
 	if (text === undefined) return {};
+	let parsed: unknown;
 	try {
-		const meta = JSON.parse(text) as { query?: unknown };
-		const query = meta.query;
-		if (query === null || typeof query !== "object") return {};
-		const candidate = query as CargoQuery;
-		if (typeof candidate.tables !== "string" || typeof candidate.fields !== "string") return {};
-		// `where` is read as text by the game report, so a sidecar holding a non-string there
-		// is dropped rather than handed on to fail later as `where.includes is not a function`.
-		if (candidate.where !== undefined && typeof candidate.where !== "string") return {};
-		return { query: candidate };
-	} catch {
-		return {};
+		parsed = JSON.parse(text);
+	} catch (error) {
+		throw new Error(`${relative}.meta.json: sidecar is not JSON (${(error as Error).message})`);
 	}
+	const meta = (parsed ?? {}) as Partial<PayloadMeta>;
+	if (typeof meta.bodySha256 !== "string" || meta.bodySha256 === "") {
+		throw new Error(`${relative}.meta.json: sidecar states no bodySha256, so its bytes cannot be verified`);
+	}
+	if (typeof meta.fetchedAt !== "string" || meta.fetchedAt === "") {
+		throw new Error(`${relative}.meta.json: sidecar states no fetchedAt`);
+	}
+	if (typeof meta.status !== "number" || !Number.isInteger(meta.status)) {
+		throw new Error(`${relative}.meta.json: sidecar states no HTTP status`);
+	}
+	const query = meta.query as CargoQuery | undefined;
+	if (query === null || typeof query !== "object") {
+		throw new Error(`${relative}.meta.json: sidecar states no query`);
+	}
+	if (typeof query.tables !== "string" || typeof query.fields !== "string") {
+		throw new Error(`${relative}.meta.json: sidecar's query names no tables and fields`);
+	}
+	// `where` is read as text by the game report, so a sidecar holding a non-string there
+	// is an error rather than something handed on to fail later as `where.includes is not a
+	// function`.
+	if (query.where !== undefined && typeof query.where !== "string") {
+		throw new Error(`${relative}.meta.json: sidecar's query has a non-string where`);
+	}
+	return { meta: meta as PayloadMeta, query };
 }

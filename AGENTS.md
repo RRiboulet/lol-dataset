@@ -5,7 +5,7 @@ from the first tournament through the one being played right now (2026). It is
 the first step of a larger project, so the shape of the data matters more than
 speed: expect schema decisions to outlive the scrapers that fill them.
 
-**Current state: the event, identity, game, draft and player layers, with an invariant gate, on top of the scaffold.** The
+**Current state: the event, identity, game, draft and player layers, with an invariant gate and a provenance manifest, on top of the scaffold.** The
 devcontainer, pi extensions, skills and templates are in place, and the project's
 own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
@@ -13,10 +13,15 @@ holds what the build emits today — the selected events with the report of ever
 rejection, the team, player, champion and alias identity tables, the games and
 matches of the three events crawled so far — each game carrying its champion draft
 with the source's fidelity and a player row per participant, with kills and gold
-reconciled against the team totals — and a per-event report of which events the
-corpus carries games for. A build also runs an invariant gate over the emitted
-records, so a hand-edit or a bad merge that contradicts the data fails before anything
-is written, and `node tools/check.ts` runs both suites. Those three events — Worlds
+reconciled against the team totals — a per-event report of which events the
+corpus carries games for, and `manifest.json`, which pins every cached payload the
+build read by sha256 (with its query and fetch time, the only timestamp in the
+repository) and digests every emitted file. A build also verifies each payload
+against its sidecar's hash and runs an invariant gate over the emitted records, so
+a tampered payload, a hand-edit or a bad merge that contradicts the data fails
+before anything is written; `build --check` compares the entity files byte for byte
+and the manifest on everything but `fetchedAt`, and `node tools/check.ts` runs both
+suites. Those three events — Worlds
 2023, MSI 2023 and IEM IX 2015 — are the only ones with games; ticket 10 is the crawl
 that fills the rest, and ticket 14 must settle IPL 5's disagreeing series rows before
 it does. There is no
