@@ -60,24 +60,36 @@ test("2023 games carry ordered slots, 2015 games carry unordered sets, and all c
 	const games = result.scoreboards.games;
 	const ordered = games.filter((game) => game.draft?.fidelity === "ordered");
 	const unordered = games.filter((game) => game.draft?.fidelity === "unordered");
-	assert.equal(ordered.length, 110, "the recorded PicksAndBansS7 rows are joined to every 2023 game");
+	assert.equal(ordered.length, 186, "the recorded PicksAndBansS7 rows join every 2023 game (Worlds 110 + MSI 76)");
 	assert.equal(unordered.length, 19, "the pre-2017 games fall back to the list fields");
 	const championById = new Map(result.identity.champions.map((champion) => [champion.id, champion]));
 	const championIds = new Set(championById.keys());
+	// The source writes `None` for an unused draft slot (measured on one MSI 2023 ban), and
+	// that slot must be absent rather than a champion called `None`. It is the only
+	// ordered game whose draft is therefore partial, which is the honest marker.
+	const NONE_SLOT_GAME = "2023 Mid-Season Invitational_Bracket Round 1_4_3";
 	for (const game of games) {
 		// The 2015 rows state five picks and three bans a side, so R6 calls them partial:
 		// a coverage marker that called them complete would hide the missing ban slots.
-		assert.equal(game.coverage.draft, game.draft?.fidelity === "ordered" ? "complete" : "partial", `${game.source.gameId}: honest draft coverage`);
+		const expectedCoverage = game.source.gameId === NONE_SLOT_GAME ? "partial" : game.draft?.fidelity === "ordered" ? "complete" : "partial";
+		assert.equal(game.coverage.draft, expectedCoverage, `${game.source.gameId}: honest draft coverage`);
 		assert.ok(game.draft, `${game.source.gameId}: a draft is present`);
 		assert.deepEqual(game.draft.sides.map((side) => side.side), ["blue", "red"]);
 		for (const side of game.draft.sides) {
 			for (const group of ["picks", "bans"] as const) {
-				assert.equal(side[group].length, group === "picks" || game.draft.fidelity === "ordered" ? 5 : 3, `${game.source.gameId}: the source's ${group} count per side`);
+				const short = game.source.gameId === NONE_SLOT_GAME && side.side === "red" && group === "bans";
+				const expected = game.draft.fidelity === "ordered" ? (short ? 4 : 5) : group === "picks" ? 5 : 3;
+				assert.equal(side[group].length, expected, `${game.source.gameId}: the source's ${group} count per side`);
 				for (const entry of side[group]) {
 					assert.ok(championIds.has(entry.championId), `${game.source.gameId}: ${entry.sourceChampion} has a canonical entity`);
 					assert.notEqual(championById.get(entry.championId)?.riotKey, null, `${entry.sourceChampion} is anchored on Riot's id, not a display string`);
 					assert.equal(entry.championName.length > 0, true);
-					if (game.draft.fidelity === "ordered") assert.equal(entry.slot, side[group].indexOf(entry) + 1, "slots are source numbers");
+					// Slots are the source's own numbers, in order. A placeholder slot is absent,
+					// so the sequence may skip one (measured: MSI `Team2Ban4` is `None`).
+					if (game.draft.fidelity === "ordered") {
+						const previous = side[group][side[group].indexOf(entry) - 1]?.slot ?? 0;
+						assert.ok((entry.slot ?? 0) > previous, `${game.source.gameId}: slots ascend`);
+					}
 					else assert.ok(!("slot" in entry), "unordered entries never claim a slot");
 				}
 			}
@@ -311,8 +323,8 @@ test("two payloads carrying identical rows are one draft and one game, not a sta
 		status: 200,
 	});
 	const result = await buildDataset({ rawDir: dir });
-	assert.equal(result.scoreboards.games.length, 129, "the overlapping rows did not duplicate a game");
-	assert.equal(result.scoreboards.games.filter((game) => game.coverage.draft === "complete").length, 110);
+	assert.equal(result.scoreboards.games.length, 205, "the overlapping rows did not duplicate a game");
+	assert.equal(result.scoreboards.games.filter((game) => game.coverage.draft === "complete").length, 185, "185 of 186 ordered games; one MSI ban slot is the source's `None`");
 });
 
 test("a draft from a rejected event mints no champion or unresolved entity", async () => {

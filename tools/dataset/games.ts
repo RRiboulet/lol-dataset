@@ -449,16 +449,26 @@ const EVENT_COLUMNS: ReadonlySet<string> = new Set(["overviewpage", "tournament"
 /**
  * The string literals a Cargo `where` clause supplies for the named columns.
  *
- * Read structurally rather than by substring: `Column='text'` and `Column IN ('a','b')`
- * are the two shapes the recorded queries use, `LIKE '%text%'` names no literal, and
- * Cargo escapes a quote inside a literal by doubling it (`'Cho''Gath'`).
+ * Read structurally rather than by substring: `Column='text'`, `Column IN ('a','b')` and
+ * an anchored `Column LIKE 'text%'` are the shapes a recorded query uses, while a
+ * substring pattern (`LIKE '%text%'`) names no event and is ignored. Cargo escapes a
+ * quote inside a literal by doubling it (`'Cho''Gath'`).
  */
 function whereLiterals(where: string, columns: ReadonlySet<string>): string[] {
 	const found: string[] = [];
-	const clause = /\b([A-Za-z_][A-Za-z0-9_]*)\s*(?:=\s*|IN\s*)('(?:[^']|'')*'|\([^)]*\))/gi;
+	const clause = /\b([A-Za-z_][A-Za-z0-9_]*)\s*(?:=\s*|IN\s*|LIKE\s*)('(?:[^']|'')*'|\([^)]*\))/gi;
 	for (const match of where.matchAll(clause)) {
 		if (!columns.has(match[1].toLowerCase())) continue;
-		for (const literal of match[2].matchAll(/'((?:[^']|'')*)'/g)) found.push(literal[1].replace(/''/g, "'"));
+		const anchored = /^LIKE$/i.test(match[0].trim().slice(match[1].length).split(/\s+/).filter(Boolean)[0] ?? "");
+		for (const literal of match[2].matchAll(/'((?:[^']|'')*)'/g)) {
+			const text = literal[1].replace(/''/g, "'");
+			// Only a prefix anchor names the event: `LIKE 'page%'` is a query for `page`,
+			// while `LIKE '%page%'` could match any page that merely contains the words.
+			if (anchored) {
+				if (!text.endsWith("%")) continue;
+				found.push(text.slice(0, -1));
+			} else found.push(text);
+		}
 	}
 	return found;
 }

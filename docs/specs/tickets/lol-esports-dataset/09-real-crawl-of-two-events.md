@@ -1,7 +1,7 @@
 # 09: A real crawl of two events, end to end
 
 **Blocked by:** 03, 04, 05, 06, 08
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -25,19 +25,19 @@ Leaves the full event list to ticket 10.
 
 ## Acceptance criteria
 
-- [ ] Both events are fetched through the real fetcher without a run-ending rate
+- [x] Both events are fetched through the real fetcher without a run-ending rate
       limit failure.
-- [ ] The build over that cache validates clean.
-- [ ] The early-era event's emitted coverage matches the measurement: field groups
+- [x] The build over that cache validates clean.
+- [x] The early-era event's emitted coverage matches the measurement: field groups
       absent in the source are absent and marked, not invented.
-- [ ] The ordered-draft era yields ordered drafts; the early era yields unordered
+- [x] The ordered-draft era yields ordered drafts; the early era yields unordered
       ones, as the fidelity marker claims.
-- [ ] A written report of what each event contains, with the queries used.
-- [ ] Any divergence from the spec's era assumption is recorded in the spec, not
+- [x] A written report of what each event contains, with the queries used.
+- [x] Any divergence from the spec's era assumption is recorded in the spec, not
       silently absorbed.
-- [ ] The attribution notice names every event whose real data is committed here,
+- [x] The attribution notice names every event whose real data is committed here,
       so the notice grows with the data rather than lagging it.
-- [ ] Killing the crawl mid-run and re-running completes it without duplicate
+- [x] Killing the crawl mid-run and re-running completes it without duplicate
       fetches.
 
 ## Validation

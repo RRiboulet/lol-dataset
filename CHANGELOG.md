@@ -25,6 +25,22 @@ Changed:
 
 Added:
 
+- The first live crawl, for ticket 09: **MSI 2023** (76 games, 760 player rows, 25
+  series, 76 ordered drafts; every field group complete) and **IEM Season IX World
+  Championship 2015** (19 games, 190 player rows, 13 series; unordered drafts and no
+  damage, vision, keystone or runes — partial, and honestly marked). The committed
+  dataset grows from 129 to 205 games and from 1,290 to 2,050 player rows. Both events
+  were fetched through `tools/dataset/fetch.ts` at its measured-safe 75 s spacing with
+  zero rate-limit refusals, and the queries are committed as plans so the run is
+  reproducible.
+- The earliest era measured, not assumed: WCG 2011 returns **no per-game scoreboard at
+  all** — four game-bearing tables and a probe over every World Cyber Games event all
+  came back empty — so the spec's Open assumption 1 is now answered in the spec, the
+  attribution notice names every event whose rows are committed, and
+  `event-games.jsonl` reports WCG 2011 as `empty` rather than `missing`.
+- `event-games.jsonl` reads an anchored `LIKE 'page%'` as a query for that page (a
+  substring pattern still names nothing), so a crawl that filters by prefix is
+  reported as having asked.
 - An invariant gate that runs inside every build, after the schemas: it refuses the
   dataset when a game id repeats, a game's two sides are one team or it has no single
   winner, any reference dangles across the files, a statistic is negative, a player's

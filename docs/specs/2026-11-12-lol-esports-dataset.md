@@ -354,7 +354,15 @@ re-derived on every run.
    job; the decision to accept a thinner early era is not open again.)* The
    ordered draft table is `PicksAndBansS7`, so order is expected to be unavailable
    before 2017, and per-player statistics are expected to be sparse or absent for
-   the earliest events. R5 and R6 are written to survive that. The measurement
+   the earliest events. **Measured by ticket 09
+   (`docs/specs/tickets/lol-esports-dataset/09-measurement-two-events.md`):** the
+   earliest admitted event, WCG 2011, has **no per-game scoreboard at all** — four
+   game-bearing tables and a probe over every World Cyber Games event all returned
+   zero rows — so the 2011 floor is represented by "the source has no games here"
+   (`event-games.jsonl` says `empty`), not by thin games. The earliest games the
+   source still carries are 2012's IPL 5, and the 2014–2016 rows are thin exactly as
+   expected: IEM IX 2015 states kills, deaths, assists, CS and gold, but no damage,
+   vision, keystone or runes, and no ordered draft. No era boundary moved. R5 and R6 are written to survive that. The measurement
    that replaces the expectation is ticket 09's; the shape question behind it is
    closed, because starting the dataset in 2014/2017 instead was rejected on
    2026-11-12 in favour of keeping 2011 and marking it.

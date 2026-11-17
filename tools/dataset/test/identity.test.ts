@@ -30,7 +30,7 @@ import { CURATED_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
 // The windows are the observed use in the whole recorded corpus, and ticket 03 makes
 // games observations too: `T1` is dated by the 2023 scoreboard row and by the Worlds
 // final on 2023-11-19, so its era is the span the corpus saw it in.
-const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2015-10-01", currentSeen: "2023-11-19" } as const;
+const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2015-10-01", currentSeen: "2023-11-19", currentFirstSeen: "2023-05-10" } as const;
 
 async function fixtureBuild(): Promise<BuildResult> {
 	return buildDataset({ rawDir: FIXTURE_RAW });
@@ -78,7 +78,7 @@ test("a team rebrand in the fixtures is one entity carrying both strings and the
 	assert.deepEqual([old.firstSeen, old.lastSeen], [TEAM_RENAME.fromSeen, TEAM_RENAME.fromSeen]);
 	// A span, not a point: the name is dated by the 2023 scoreboard row and again by the
 	// Worlds final the games payload carries (ticket 03).
-	assert.deepEqual([current.firstSeen, current.lastSeen], ["2023-10-19", TEAM_RENAME.currentSeen]);
+	assert.deepEqual([current.firstSeen, current.lastSeen], [TEAM_RENAME.currentFirstSeen, TEAM_RENAME.currentSeen]);
 	assert.ok(old.evidence.includes("rename"), "the old page is evidenced by the source's own RenamedTo edge");
 	assert.ok(old.evidence.includes("observed"), "the old name is evidenced by a recorded scoreboard row");
 })
