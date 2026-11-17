@@ -2,6 +2,14 @@
 //
 //   node tools/dataset/cli.ts build                     # raw/ -> data/curated/, always offline
 //   node tools/dataset/cli.ts build --check             # fail if the committed data drifted
+//   node tools/dataset/cli.ts build --raw fixtures/raw --check   # ... against the recorded fixtures
+//
+// `--check` compares entity files byte for byte and the manifest on everything that
+// describes the data. It deliberately tolerates one difference: a payload's
+// `fetchedAt`. Revalidating the same bytes against the source changes only that
+// timestamp, and a data rebuild must not fail because the cache was refreshed
+// (ticket 07). A payload the committed manifest does not name, a changed body hash,
+// or an entity digest from some other dataset all still fail.
 //   node tools/dataset/cli.ts build \
 //     --raw tools/dataset/fixtures/raw                  # build from the recorded fixtures
 //
@@ -35,6 +43,7 @@ import { parseArgs } from "node:util";
 import type { BuildResult, OutputFile } from "./build.ts";
 import { buildDataset, DEFAULT_RULE_FILE, DEFAULT_SCHEMA_DIR, OUTPUTS, writeDataset } from "./build.ts";
 import type { CargoQuery } from "./cache.ts";
+import { compareManifest, MANIFEST_FILE } from "./manifest.ts";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..", "..");
 
@@ -104,6 +113,24 @@ async function check(result: BuildResult, outDir: string): Promise<string[]> {
 		const index = built.findIndex((line, i) => line !== there[i]);
 		const first = index === -1 ? Math.min(built.length, there.length) : index;
 		drift.push(`${file}: differs at line ${first + 1}\n    committed: ${there[first] ?? "<end of file>"}\n    built:     ${built[first] ?? "<end of file>"}`);
+	}
+	// The manifest is not compared byte for byte: it carries each payload's `fetchedAt`,
+	// and revalidating the same bytes against the source must not look like data drift
+	// (ticket 07). Everything that describes the data is compared — the entity digests
+	// and every payload pin except that timestamp — so a cache that changed, a payload
+	// the build stopped reading, or a manifest describing some other dataset all fail.
+	const committedManifest = await readFile(path.join(outDir, MANIFEST_FILE), "utf8").catch(() => undefined);
+	if (committedManifest === undefined) {
+		drift.push(`${MANIFEST_FILE}: not committed (run the build without --check)`);
+	} else {
+		let parsed: unknown;
+		try {
+			parsed = JSON.parse(committedManifest);
+		} catch (error) {
+			drift.push(`${MANIFEST_FILE}: not JSON (${(error as Error).message})`);
+			parsed = undefined;
+		}
+		if (parsed !== undefined) drift.push(...compareManifest(parsed, result.manifest));
 	}
 	return drift;
 }
@@ -192,6 +219,10 @@ async function main(): Promise<void> {
 	});
 
 	console.log(describe(result));
+	console.log(
+		`provenance: ${result.manifest.payloads.length} payload(s) pinned by sha256, ` +
+			`${result.manifest.entities.length} entity file(s) under digest ${result.manifest.entityDigest.slice(0, 12)}`,
+	);
 	console.log(`rule: ${values.rule ?? DEFAULT_RULE_FILE}`);
 	console.log(`inputs: ${rawDir}`);
 
@@ -207,7 +238,7 @@ async function main(): Promise<void> {
 	}
 
 	await writeDataset(result, outDir);
-	console.log(`wrote ${Object.keys(OUTPUTS).join(", ")} to ${outDir}`);
+	console.log(`wrote ${Object.keys(OUTPUTS).join(", ")}, ${MANIFEST_FILE} to ${outDir}`);
 }
 
 await main();

@@ -226,9 +226,14 @@ because CI must reproduce the committed dataset with no network, and
 (ticket 09's IPL 5, whose series rows disagree) so the tickets that will resolve them
 start from real bytes rather than a re-crawl. The build never reads `pending/`.
 
-**D7 — Provenance record.** Each cached payload gets a sidecar with URL,
-fetch time, HTTP status and body hash; the manifest lists the payload hashes the
-dataset was built from. Entity records carry the source identifiers they came
+**D7 — Provenance record.** Each cached payload fetched from the source gets a sidecar
+with URL, fetch time, HTTP status and body hash; the manifest lists the payload hashes
+the dataset was built from, with `file` paths relative to the cache root (`raw/` for a
+crawl, `tools/dataset/fixtures/raw/` for the committed fixtures). A cache built from
+bodies alone for a test may have no sidecar, but a sidecar that exists is read strictly:
+it names `source` and `url`, a `fetchedAt` that parses as an ISO-8601 instant, an
+integer `status`, the body's `bodySha256` and a `query` with only the Cargo fields the
+build understands; unreadable or incomplete provenance fails the build. Entity records carry the source identifiers they came
 from (the wiki's game id and match id, and Riot's platform game id and hash where
 present) so any row can be walked back to a source page by hand.
 

@@ -1,0 +1,541 @@
+{
+  "format": "lol-dataset-provenance/1",
+  "entityDigest": "0c0c0b21709b0e926ee29a221d8273483d49189e52d4cbf36c169badecca6a6c",
+  "entities": [
+    {
+      "file": "events.jsonl",
+      "records": 10,
+      "sha256": "b18890527cd64f764ca061f84312a388965b42978fc29d636a62d86a6d2e2cc9"
+    },
+    {
+      "file": "event-selection.jsonl",
+      "records": 19,
+      "sha256": "af4fb465521857bbd77f3cfdd816d277bd70e4cdf7619cc339bbaed0055aef60"
+    },
+    {
+      "file": "event-games.jsonl",
+      "records": 10,
+      "sha256": "4391c5130e040873551c6b2ed9776852543d0c9875b9a5e49af61d2214994989"
+    },
+    {
+      "file": "games.jsonl",
+      "records": 205,
+      "sha256": "2bc52419d5280bb661f58bf9454b8165783266ea50e38d1d4c963c52f61444de"
+    },
+    {
+      "file": "matches.jsonl",
+      "records": 90,
+      "sha256": "42228c8d254e3ca06dd71b68312c6b66ecdeda29f9caceb604d0a6bcdc430409"
+    },
+    {
+      "file": "player-games.jsonl",
+      "records": 2050,
+      "sha256": "9920f43378624a1f1c4b014d5fc71db523da5ad45666e5929fba233946314629"
+    },
+    {
+      "file": "teams.jsonl",
+      "records": 37,
+      "sha256": "e6b824fabf283204f1a9c5dc72423b8782ea37aa2c4abc4e62989b46bafce738"
+    },
+    {
+      "file": "players.jsonl",
+      "records": 202,
+      "sha256": "b371815704ee87aff0336ff7c6f44dca18abf225f5803d27cf27b6fee456a468"
+    },
+    {
+      "file": "champions.jsonl",
+      "records": 173,
+      "sha256": "a28250201509ae4013fb276111cea0092aa6197fd7bead3ed28230c29af5a282"
+    },
+    {
+      "file": "aliases.jsonl",
+      "records": 514,
+      "sha256": "067fb17df78e21156c8bce14bd489be9a5d10d2050d6d3bdb7f5a679a38f60b8"
+    },
+    {
+      "file": "identity-unresolved.jsonl",
+      "records": 175,
+      "sha256": "166c51bd53d6166a756bc347e3641d301dd67db21a67348ff959310385b59c33"
+    }
+  ],
+  "payloads": [
+    {
+      "file": "lol-fandom/cargoexport/Champions/05bb1e3f59dc285b16de4669.json",
+      "table": "Champions",
+      "endpoint": "cargoexport",
+      "bodySha256": "e9b13d9aa777a98cbc3d1af62506648569029af2d3872f12f690f467febb6595",
+      "fetchedAt": "2026-11-16T16:02:36.782Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Champions",
+        "fields": "Name,KeyInteger,ReleaseDate",
+        "order_by": "Name ASC",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Champions/978c60932c0c3cbd0272eb02.json",
+      "table": "Champions",
+      "endpoint": "cargoexport",
+      "bodySha256": "a64c3316afed37d153c2b8e98620aa92127e94d6c270f33ba49a453271452d90",
+      "fetchedAt": "2026-11-12T23:06:05.420Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Champions",
+        "fields": "Name,KeyInteger,ReleaseDate",
+        "where": "Name IN ('Alistar','Amumu','Annie','Aphelios','Ashe','Aurora','Azir','Braum','Cho''Gath','Corki','Elise','Fiora','Gnar','Gragas','Irelia','Janna','Jax','Jayce','K''Sante','Kalista','Karthus','LeBlanc','Lee Sin','Lucian','Lulu','Milio','Miss Fortune','Nautilus','Nunu &amp; Willump','Orianna','Rell','Renata Glasc','Rengar','Sejuani','Singed','Sivir','Soraka','Syndra','Tristana','Twisted Fate','Twitch','Vayne','Warwick','Wukong')",
+        "order_by": "Name ASC",
+        "limit": 60
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/1b37c11c3fe6aebbcbce6d8c.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "561faef20f25286fbb34419495e751045b225b34572289c834d26200f70ddca1",
+      "fetchedAt": "2026-11-17T10:21:26.088Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/4f66bdfa76f08cb157864779.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "ae1f2b34449ad2f99d9a76f0e7666a7c8ce6eb1f4d9131f07070d7f24e74bbdf",
+      "fetchedAt": "2026-11-15T20:43:21.220Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage IN ('2023 Season World Championship','2023 Season World Championship/Main Event','2023 Season World Championship/Play-In')",
+        "order_by": "DateTime_UTC",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/879e7d2f18493024fc2fc71c.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-17T10:15:51.356Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/fe0b28d45f0561129ca42fb9.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "94c39a16528c2ca2c5124e33b789d60e580b20f328e6c64393d458458a1c4315",
+      "fetchedAt": "2026-11-15T20:44:36.517Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage='IEM Season IX - World Championship'",
+        "order_by": "DateTime_UTC",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/55ee6bfb3cac44d60c0ae550.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "9bb3e477287404ffb5655c9c6e9e01ffccc409693546f8276a0858c52eac6ed8",
+      "fetchedAt": "2026-11-16T15:10:22.871Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE '2023 Season World Championship%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/56e5919ffbd61932769a0951.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "dc558155eee24d4da343659fdbe88b2fcd81a26a4a59d02bc7f66c71c6e688e6",
+      "fetchedAt": "2026-11-16T15:10:38.425Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5",
+        "where": "SwitchedSides = 1",
+        "order_by": "GameId",
+        "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/67ee10ba2ee8d1763f8c3753.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-17T10:17:16.783Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE '2011 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/c3bed7e667becadbcd9d95c9.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-17T11:04:59.218Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE 'IEM Season IX - World Championship%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/f03448b9f8060ee8e99dd522.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "b4f18f2512aad0d00b5385d8551f8d351f45da56ff8d60e411817981426945fe",
+      "fetchedAt": "2026-11-17T10:22:41.532Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE '2023 Mid-Season Invitational%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/a0528975ce1c5d8a283cb870.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "6bc7a47a16c500d97dca7a1088d63e3620970d8a7deace100bdc43f592090282",
+      "fetchedAt": "2026-11-12T23:04:50.098Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('APA','APA (Eain Stearns)','Ambition','Bang','Bengi','CoreJJ','Cpt Jack','Dan Dinh','DontMashMe','Doublelift','Dreilix','Dyrus','Faker','Flame','Flamer','Gumayusi','Helios','Helios (Shin Dong-jin)','Hjarnan','Honest','Keria','Linak','Luncafoer','Lustboy','MaRin','MoMa','NOTTILTEDAD','NintendudeX','Nio','Odoamne','Oner','Owpi','Pixel','Pyosik','Ryu','Salce','Summit','TakashiX','Trailblazer','Trailblazer (Oskar Moreno)','Westrice','Wolf','Wolf (Lee Jae-wan)','Yellowstar','Yeon','Yeon (Sean Sung)','Zeus','ZionSpartan','bbmuffin','denizzz','kaSing','kujaa','loulex','sOAZ') OR OverviewPage IN ('APA','APA (Eain Stearns)','Ambition','Bang','Bengi','CoreJJ','Cpt Jack','Dan Dinh','DontMashMe','Doublelift','Dreilix','Dyrus','Faker','Flame','Flamer','Gumayusi','Helios','Helios (Shin Dong-jin)','Hjarnan','Honest','Keria','Linak','Luncafoer','Lustboy','MaRin','MoMa','NOTTILTEDAD','NintendudeX','Nio','Odoamne','Oner','Owpi','Pixel','Pyosik','Ryu','Salce','Summit','TakashiX','Trailblazer','Trailblazer (Oskar Moreno)','Westrice','Wolf','Wolf (Lee Jae-wan)','Yellowstar','Yeon','Yeon (Sean Sung)','Zeus','ZionSpartan','bbmuffin','denizzz','kaSing','kujaa','loulex','sOAZ') OR ID='Wolf'",
+        "order_by": "AllName ASC",
+        "limit": 150
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/2c56284940e4601ab472b28c.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "9b2c17f3ff1fe325ddb2dccd81a735c356012636e75addb6565f0305d0bb0e4f",
+      "fetchedAt": "2026-11-15T19:29:37.320Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "Tournament IN ('Worlds 2023','Worlds 2023 Main Event','Worlds 2023 Play-In')",
+        "order_by": "DateTime_UTC",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/99194ed591e93c90b4b34ee0.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-17T10:23:17.322Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "Tournament LIKE '%Cyber Games%'",
+        "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/b3dc0e5d9d772a7759f5be93.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-15T20:34:16.941Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "Tournament='World Cyber Games 2013'",
+        "order_by": "DateTime_UTC",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/b47bd27803861818ed3079a0.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "25fa5c6c2d926988b1c41e8c93248304c2e21f7ded601d071e8816dc634785c0",
+      "fetchedAt": "2026-11-15T20:42:05.922Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage='IEM Season IX - World Championship'",
+        "order_by": "DateTime_UTC",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/c8c73bc1732bd80108c4814e.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-17T10:12:57.827Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/ed35e52e3e7d5f2d6c324ffb.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "c6100d615fc959bef928e1f81b6d1af8bb38f7b4d0ad24853118f2cca18ecfcd",
+      "fetchedAt": "2026-11-17T10:18:37.158Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/124fc76e9d4843b4b027dc7b.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "beb3c3945d799e5158318a8c6eb92526c6f089c5c47a1d5545baec1d7417c5e2",
+      "fetchedAt": "2026-11-16T16:21:54.543Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "(OverviewPage LIKE '2023 Season World Championship%' OR OverviewPage LIKE 'IEM Season IX%')",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/15c7414b08954647708d0708.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "c064180d34112248146bb7e6e5fc091d64360d808858ad2a6873305dce338f0c",
+      "fetchedAt": "2026-11-12T22:53:07.231Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+        "where": "OverviewPage='Season 1 World Championship'",
+        "order_by": "DateTime_UTC ASC",
+        "limit": 10
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/37855a8c39b19894ff6890b5.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "1c816d46e773185f80c493225b142b7102e85f6f07623e427b5737034205ee2d",
+      "fetchedAt": "2026-11-17T10:20:02.179Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/5a79fefcf625bcb38b500195.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "d94924cc5698ce9a89ad3801fab3ac8379362203f016bb0a7fb6835b5b32f109",
+      "fetchedAt": "2026-11-12T22:58:33.291Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+        "where": "OverviewPage='2015 Season World Championship' AND Team IN ('SK Telecom T1','H2k-Gaming')",
+        "order_by": "DateTime_UTC ASC",
+        "limit": 10
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/80289c3e35b8d0ac94a62bd6.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-17T10:14:26.985Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/ce6d9f85e44521ab35561e4f.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "8e1491504ea69c40e856150551a2316430e4cd95bd7a92d07d05648b73e0a1dc",
+      "fetchedAt": "2026-11-12T23:01:03.997Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+        "where": "Team='The Bandits Prime' OR TeamVs='The Bandits Prime'",
+        "order_by": "DateTime_UTC ASC",
+        "limit": 10
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/d5cca6443eb9898eaa25fea4.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "0f78942edc456e2c4469bb74bdcc64866335884c95c0c47caecda8c82a7d70e7",
+      "fetchedAt": "2026-11-12T22:59:48.738Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+        "where": "OverviewPage='2023 Season World Championship/Main Event' AND Team IN ('T1','Team Liquid')",
+        "order_by": "DateTime_UTC ASC",
+        "limit": 10
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/ec1c8077b1c91fca86f40fa3.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "39d84c5dbf4a9d2e24d06718e28a04a95aecf43928680d9218b18e9237d0ef54",
+      "fetchedAt": "2026-11-12T22:57:17.917Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+        "where": "OverviewPage='IGN ProLeague Season 5'",
+        "order_by": "DateTime_UTC ASC",
+        "limit": 10
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/TeamRedirects/97c977a238ecff061b8ceb03.json",
+      "table": "TeamRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "d13e7345361ef005f0812aa05c5bff9cb91cd4d120c40653bf08521fd3a94c37",
+      "fetchedAt": "2026-11-12T23:03:34.659Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "TeamRedirects",
+        "fields": "_pageName,AllName,OtherName",
+        "where": "AllName IN ('Azubu Blaze','DKB XPERION NXT','Epik Gamer','H2k-Gaming','SK Telecom T1','T1','Team Dynamic','Team Liquid','The Bandits Prime','against All authority','SKT T1','SK Telecom')",
+        "order_by": "AllName ASC",
+        "limit": 40
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/6389610085e1eeb7bdab22d7.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "57ddb5c48a5514a2947cf7f9789f10434bbf274b0e7863bce6d4e462c9a56923",
+      "fetchedAt": "2026-11-12T23:02:19.310Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('Azubu Blaze','DKB XPERION NXT','Epik Gamer','H2k-Gaming','SK Telecom T1','T1','Team Dynamic','Team Liquid','The Bandits Prime','against All authority')",
+        "order_by": "OverviewPage ASC",
+        "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Tournaments/7dbeadfac38ca83b39afe2db.json",
+      "table": "Tournaments",
+      "endpoint": "cargoexport",
+      "bodySha256": "35c6877548184c8b53233ae093f0c2095d1e7684379e2442c9a58e01c970535c",
+      "fetchedAt": "2026-11-12T22:17:40.459Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Tournaments",
+        "fields": "Name,OverviewPage,DateStart,League,Region",
+        "where": "OverviewPage IN ('IEM Season IX - World Championship','IEM Season IX - Cologne','Rift Rivals 2017/NA-EU','2020 Mid-Season Cup','2013 World Cyber Games','2010 World Cyber Games','Esports World Cup 2024','2025 First Stand','2027 First Stand','IGN ProLeague Season 5')",
+        "order_by": "OverviewPage ASC",
+        "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Tournaments/cc545330dc9367b8e35d974d.json",
+      "table": "Tournaments",
+      "endpoint": "cargoexport",
+      "bodySha256": "dfca8611e698178dedf4f34a11fde8eed80f0bc6c6c7ea446e23c44e9287b6f3",
+      "fetchedAt": "2026-11-12T22:16:25.131Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Tournaments",
+        "fields": "Name,OverviewPage,DateStart,League,Region",
+        "where": "OverviewPage IN ('2023 Season World Championship','2023 Season World Championship/Main Event','2023 Season World Championship/Play-In','2023 Worlds Qualifying Series','2023 Mid-Season Invitational','All-Star Las Vegas 2019','LCK/2023 Season/Spring Season','Curse King Of The Hill','2011 World Cyber Games')",
+        "order_by": "OverviewPage ASC",
+        "limit": 20
+      }
+    }
+  ]
+}

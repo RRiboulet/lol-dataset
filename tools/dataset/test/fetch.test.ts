@@ -16,7 +16,7 @@ import * as path from "node:path";
 import { test } from "node:test";
 
 import type { CargoEndpoint, CargoQuery } from "../cache.ts";
-import { cacheKey, payloadPaths, queryUrl, readPayload } from "../cache.ts";
+import { cacheKey, payloadPaths, queryUrl, readPayload, writePayload } from "../cache.ts";
 import type { Transport, TransportResponse } from "../fetch.ts";
 import { FetchStoppedError, fetchQueries, parsePlan } from "../fetch.ts";
 
@@ -405,6 +405,22 @@ test("a body without its sidecar is incomplete, so the query is fetched again", 
 	assert.match(cached.body, /new bytes/);
 	assert.match(await readFile(paths.meta, "utf8"), /"bodySha256"/);
 	assert.deepEqual((await cacheFiles(dir)).temps, []);
+});
+
+test("writePayload refuses a query with unknown fields, so it never writes a sidecar the build cannot pin", async (t) => {
+	const dir = await scratch(t);
+	// canonicalQuery drops fields it does not know, so a query with an extra field would
+	// hash like the query without it — and the manifest's query identity would compare a
+	// lossy projection. The writer refuses before anything lands on disk.
+	await assert.rejects(
+		writePayload(dir, { endpoint: "cargoexport", tables: "Tournaments", fields: "Name", orderBy: "Name ASC" }, "[]", {
+			url: "https://lol.fandom.com/wiki/Special:CargoExport",
+			fetchedAt: "2026-11-12T00:00:00.000Z",
+			status: 200,
+		}),
+		/unknown query field "orderBy"/,
+	);
+	assert.equal((await cacheFiles(dir)).bodies.length, 0, "nothing may be written for a refused query");
 });
 
 test("fetch reads no credential from the environment and sends none", async (t) => {

@@ -1,12 +1,18 @@
 // build: the pipeline seam (spec test seam S1).
 //
-//   readPayloads(rawDir) -> normalize -> rule -> assemble -> emit -> validate
+//   readPayloads(rawDir) -> verify provenance -> normalize -> rule -> assemble
+//                        -> emit -> validate -> invariants -> manifest
 //
 // Everything below the cache is a pure function of files on disk (spec D5): this
 // function takes a directory of recorded payloads and a rule file, and returns
 // bytes. No network, no clock, no ambient state — which is why the whole suite can
 // run with no network access available, and why two runs over the same directory
 // are byte-identical by construction rather than by luck.
+//
+// Two steps are ticket 07's (spec R8, R9): the provenance gate refuses a payload whose
+// bytes no longer match its sidecar, and the returned manifest pins every payload read
+// plus the digests of the emitted files. Both ship beside the bytes, so `--check` can
+// tell "same data" from "different data" without a fresh network call.
 //
 // Ticket 08 grows the fetch layer above this seam; tickets 03-05 add more entity
 // paths beside `events` and the identity tables; ticket 06 adds the invariant gate
@@ -30,6 +36,8 @@ import type { ScoreboardAssembly } from "./games.ts";
 import { assembleScoreboards, selectedGameIds } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
+import type { Manifest } from "./manifest.ts";
+import { assertPayloadHashes, buildManifest, MANIFEST_FILE, renderManifest } from "./manifest.ts";
 import { normalizeSources } from "./normalize.ts";
 import { assertInvariants } from "./invariants.ts";
 import { assemblePlayerGames } from "./playerGames.ts";
@@ -74,6 +82,10 @@ export type BuildOptions = {
 export type BuildResult = AssembledDataset & {
 	/** The bytes to write, keyed by file name. */
 	files: Record<OutputFile, string>;
+	/** The provenance manifest: every payload read, and the digests of `files`. */
+	manifest: Manifest;
+	/** `manifest` as the bytes written to `manifest.json` (spec D8: the only timestamp). */
+	manifestText: string;
 	/** The teams, players, champions, alias table and unresolved report. */
 	identity: AssembledIdentity;
 	/** Games, matches and the per-event game report (ticket 03). */
@@ -125,6 +137,10 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		// would look like a successful run over an event that has no data.
 		throw new Error(`${options.rawDir}: no recorded payloads found`);
 	}
+	// Provenance before data (spec R9, ticket 07): a payload whose bytes contradict its
+	// sidecar is refused here, naming the payload and the records it would have produced,
+	// rather than being normalized into a dataset that the committed manifest cannot pin.
+	assertPayloadHashes(payloads);
 	const sources = normalizeSources(payloads);
 	const assembled = assembleDataset(rule, sources.tournaments);
 	// Identity first: games and matches reference teams, and their team strings are
@@ -177,6 +193,15 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		validateFile(file, files[file], await loadSchema(schemaDir, output.schema));
 	}
 
+	// The manifest is built from the same payload list and the same bytes that were read
+	// and normalized, so it cannot describe a dataset the build did not produce. Entity
+	// digests are taken in `OUTPUTS` order, which is the documented definition.
+	const manifest = buildManifest(
+		payloads,
+		(Object.keys(OUTPUTS) as OutputFile[]).map((file) => ({ file, body: files[file] })),
+	);
+	const manifestText = renderManifest(manifest);
+
 	// Structure first, then truth: a record can satisfy its schema and still contradict
 	// the row beside it, and only this gate sees that (spec R10, ticket 06).
 	assertInvariants({
@@ -190,13 +215,19 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		eras,
 	});
 
-	return { ...assembled, files, identity, scoreboards, playerGames, rule, eras };
+	return { ...assembled, files, manifest, manifestText, identity, scoreboards, playerGames, rule, eras };
 }
 
-/** Write the emitted bytes. The only stage that writes to the output directory. */
-export async function writeDataset(result: Pick<BuildResult, "files">, outDir: string): Promise<void> {
+/**
+ * Write the emitted bytes. The only stage that writes to the output directory.
+ *
+ * The manifest goes last and is written by the same call, so a checkout cannot end up
+ * with entity files newer than the manifest that describes them.
+ */
+export async function writeDataset(result: Pick<BuildResult, "files" | "manifestText">, outDir: string): Promise<void> {
 	await mkdir(outDir, { recursive: true });
 	for (const [file, body] of Object.entries(result.files) as [OutputFile, string][]) {
 		await writeFile(path.join(outDir, file), body, "utf8");
 	}
+	await writeFile(path.join(outDir, MANIFEST_FILE), result.manifestText, "utf8");
 }

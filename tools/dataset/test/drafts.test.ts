@@ -17,7 +17,7 @@ import { buildDataset } from "../build.ts";
 import type { CargoQuery } from "../cache.ts";
 import { writePayload } from "../cache.ts";
 import type { GameRecord } from "../games.ts";
-import { FIXTURE_RAW } from "./helpers.ts";
+import { FIXTURE_RAW, savePayloadBody } from "./helpers.ts";
 
 const DRAFT_DIR = path.join("lol-fandom", "cargoexport", "PicksAndBansS7");
 const GAME_DIR = path.join("lol-fandom", "cargoexport", "ScoreboardGames");
@@ -46,7 +46,7 @@ async function rows(file: string): Promise<Record<string, unknown>[]> {
 }
 
 async function save(file: string, values: Record<string, unknown>[]): Promise<void> {
-	await writeFile(file, `${JSON.stringify(values)}\n`, "utf8");
+	await savePayloadBody(file, `${JSON.stringify(values)}\n`);
 }
 
 function gameById(result: BuildResult, id: string): GameRecord {

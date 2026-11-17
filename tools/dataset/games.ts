@@ -85,7 +85,7 @@ export type GameRecord = {
 	sides: [GameSideRecord, GameSideRecord];
 	winnerTeamId: string;
 	winnerTeamName: string;
-	source: { gameId: string; matchId: string; riotPlatformGameId?: string };
+	source: { gameId: string; matchId: string; riotPlatformGameId?: string; riotHash?: string };
 };
 
 export type MatchSideRecord = {
@@ -388,6 +388,7 @@ function assembleGame(
 			gameId: game.gameId,
 			matchId: game.matchId,
 			...(game.riotPlatformGameId === "" ? {} : { riotPlatformGameId: game.riotPlatformGameId }),
+			...(game.riotHash === "" ? {} : { riotHash: game.riotHash }),
 		},
 	};
 }

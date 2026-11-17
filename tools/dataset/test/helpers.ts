@@ -8,7 +8,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 
-import { readPayloads } from "../cache.ts";
+import { readPayloads, sha256 } from "../cache.ts";
 import { normalizeSources } from "../normalize.ts";
 import type { SourceEvent } from "../normalize.ts";
 import type { EventSelectionRule, RuleDecision } from "../rule.ts";
@@ -60,4 +60,33 @@ export async function writeTempRule(dir: string, rule: unknown, name = "event-se
 	const file = path.join(dir, name);
 	await writeFile(file, `${JSON.stringify(rule, null, "\t")}\n`, "utf8");
 	return file;
+}
+
+/**
+ * Rewrite a payload body the way the recorder would, keeping its sidecar honest.
+ *
+ * Several tests change a recorded payload to express a case (a renamed team, a
+ * contradicted side). The build now verifies each body against its sidecar's
+ * `bodySha256` (spec R9, ticket 07), so an edited body without a refreshed hash is a
+ * tampered cache and fails correctly. This is the recorder's behaviour for an edited
+ * body: write the bytes, then update the hash that claims to describe them. A payload
+ * that never had a sidecar stays body-only, which is also legal.
+ */
+export async function savePayloadBody(file: string, body: string): Promise<void> {
+	await writeFile(file, body, "utf8");
+	const metaFile = file.replace(/\.json$/, ".meta.json");
+	let text: string;
+	try {
+		text = await readFile(metaFile, "utf8");
+	} catch {
+		return;
+	}
+	let meta: Record<string, unknown>;
+	try {
+		meta = JSON.parse(text) as Record<string, unknown>;
+	} catch {
+		return;
+	}
+	meta.bodySha256 = sha256(body);
+	await writeFile(metaFile, `${JSON.stringify(meta, null, 2)}\n`, "utf8");
 }

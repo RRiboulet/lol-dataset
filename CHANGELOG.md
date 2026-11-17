@@ -4,6 +4,34 @@
 
 Changed:
 
+- `build --check` now compares the provenance manifest as well as the entity
+  files: it fails when the committed manifest does not name a payload the build
+  actually read, when a payload's hash or query changed, or when an entity
+  digest belongs to another dataset. One difference is deliberately tolerated —
+  a payload's `fetchedAt` — because revalidating the same bytes against the
+  source changes the fetch time and not the data. A tampered cache still fails
+  first, in the build itself.
+- `readPayloads` reads a sidecar strictly instead of silently dropping one it
+  cannot parse: a missing body hash, URL, source, fetch time, status or query, a
+  fetch time that is not a parseable ISO-8601 instant, or a query field the
+  build does not know is a broken cache and stops the build. A payload with no
+  sidecar stays legal, which is what a scratch directory built from bodies alone
+  is.
+- `data/curated/schema/game.schema.json` no longer claims that Riot's ACS fields
+  are absent from every recorded row. They were not: the 19 IEM 2015 rows state
+  `RiotHash`, and the game record now carries it.
+- The provenance record makes a manifest pin usable as a path rather than only as a
+  hash: `file` values are relative to the cache root, so the committed ones resolve
+  under `tools/dataset/fixtures/raw/` and a reader can follow a game's source
+  identifiers to the payload it came from. A re-fetched variant is a pin only while its
+  body is in the cache, which makes removing a superseded payload and regenerating the
+  manifest the crawl's job instead of letting every fetch accumulate a permanent pin.
+  The committed manifest pins the one IEM 2015 scoreboard payload the fixture cache
+  holds; the case with two variants is a test that proves row dedupe does not depend on
+  field order. The manifest keeps its `format` marker because it is a committed document
+  other tools parse, while a sidecar has none because it is a cache-local artifact
+  rewritten with its body.
+
 - `AGENTS.md`'s "current state" paragraph describes what the repository now
   holds — the dataset spec, its ticket series, and the curated event and identity
   layer — instead of claiming there is no dataset yet, which had been untrue
@@ -24,6 +52,32 @@ Changed:
   `ARG PI_AGENT_SETUP_TAG=` in the same commit, then a rebuild.
 
 Added:
+
+- A provenance manifest at `data/curated/manifest.json`, written by the build: every
+  cached payload the build read, sorted by cache-relative path, with its table,
+  endpoint, recorded query, fetch time, HTTP status and sha256 of the body; plus a
+  digest and record count for each emitted entity file and one aggregate
+  `entityDigest` over them in the build's `OUTPUTS` order. It is the only place a
+  timestamp is allowed, and the entity files are asserted to contain none of them.
+- Payload hash verification during the build: a cached payload whose bytes no longer
+  match its sidecar stops the build, naming the payload file, the recorded and actual
+  hashes, the table, the entity files that table feeds and the row identifiers the
+  body carries. Two builds from the same cache remain byte-identical, a restored cache
+  changes nothing, and re-fetching the same bytes moves only `fetchedAt` in the
+  manifest.
+- `games.source.riotHash` on the 19 recorded games whose `ScoreboardGames` row states
+  Riot's hash, because spec D7 names it as a source identifier and the field was
+  genuinely missing. It is absent where the source states none, which is every 2023
+  row.
+- `tools/dataset/test/provenance.test.ts`, which audits every emitted record back to
+  a recorded payload row pinned in the manifest and covers the manifest shape and
+  digest definition, the tamper failure, the body-only payload, `--check`'s four
+  cases, the fixed representation of numbers and dates, and the decision below.
+- The re-fetched IEM 2015 payload problem is decided rather than deferred: the
+  manifest pins the bytes the build read, so two fetches of identical rows with a
+  different `fields=` order are both listed, each with its own hash, and the entity
+  files do not move. `--check` requires the committed manifest to name every payload
+  read, so a new byte variant is a manifest regeneration, not a silent re-pin.
 
 - The first live crawl, for ticket 09: **MSI 2023** (76 games, 760 player rows, 25
   series, 76 ordered drafts; every field group complete) and a re-fetch of **IEM

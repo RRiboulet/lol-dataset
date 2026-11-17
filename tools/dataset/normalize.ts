@@ -199,6 +199,11 @@ export type SourceGame = {
 	picks: [string[], string[]];
 	bans: [string[], string[]];
 	riotPlatformGameId: string;
+	/**
+	 * The source's `RiotHash`: Riot's own hash of the game record, where the source
+	 * recorded one (the 2015-era rows carry it; the 2023 rows do not).
+	 */
+	riotHash: string;
 	sourceFile: string;
 };
 
@@ -649,6 +654,7 @@ export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[
 				picks: [draftNames(raw(row, "Team1Picks")), draftNames(raw(row, "Team2Picks"))],
 				bans: [draftNames(raw(row, "Team1Bans")), draftNames(raw(row, "Team2Bans"))],
 				riotPlatformGameId: asText(raw(row, "RiotPlatformGameId")),
+				riotHash: asText(raw(row, "RiotHash")),
 				sourceFile: payload.file,
 			});
 		}
