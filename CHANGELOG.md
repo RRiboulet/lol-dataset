@@ -50,7 +50,11 @@ Changed:
   field order. The manifest keeps its `format` marker because it is a committed document
   other tools parse, while a sidecar has none because it is a cache-local artifact
   rewritten with its body.
-
+- `AGENTS.md`'s "current state" paragraph now names the dimensional model beside
+  the curated layer: the dimensions and facts, the alias bridge, the unknown
+  member, the generated DDL and dictionary, the `model` command and its
+  `--check`. The earlier bullet above records the curated-layer update this one
+  follows; neither claims a README exists.
 - `AGENTS.md`'s "current state" paragraph describes what the repository now
   holds — the dataset spec, its ticket series, and the curated event and identity
   layer — instead of claiming there is no dataset yet, which had been untrue
@@ -94,6 +98,35 @@ Added:
   12 legacy-name games (6 series) and 8 cross-match games (3 reciprocal `MatchId` swaps),
   and asserts that the class decides the handling. Ticket 09's figure of 11 pairings
   (9 + 3) does not reproduce on these bytes; the derived counts are what the test pins.
+- A dimensional model at `data/model/`, derived from `data/curated/` and never
+  written back: `dim_event`, `dim_match`, `dim_game`, `dim_team`, `dim_player`,
+  `dim_champion`, `dim_patch` and `dim_date`; `fact_game_side` at one row per
+  game per side, `fact_player_game` at one row per game per player and
+  `fact_draft_slot` at one row per draft entry; and `bridge_alias`, which keeps a
+  rename as one dimension row with dated source strings instead of a type-2
+  duplicate. Every dimension carries a natural key, a display name and an
+  unknown member at key 0, so a thin-era fact joins to `Unknown` rather than
+  disappearing from an inner join. Facts hold source measures and grain
+  attributes only; no rate, average or percentage is computed, and a test fails
+  if a column of that shape appears.
+- `node tools/dataset/cli.ts model`, which rebuilds `data/model/` from the
+  committed curated records, and `model --check`, which compares every generated
+  byte. The emitted artifact is one CSV per table plus generated `schema.sql`
+  (SQLite dialect, primary keys, natural-key uniqueness and fact foreign keys)
+  and `data-dictionary.md` (every column, its absence rule, the unknown member,
+  the bridge and the key/sort rules). The format is RFC 4180 quoting with LF
+  terminators, UTF-8 without a BOM, a header row, fixed column order, ISO-8601
+  dates, unformatted integers and an empty field for an absent value — distinct
+  from a recorded `0`. The LF choice is deliberate: `.gitattributes` normalizes
+  the repository to LF, so CRLF output would not match a checkout.
+- `tools/dataset/test/model.test.ts`, which proves the committed model is exactly
+  a rebuild; every grain is unique; row counts reconcile per event and per game
+  for sides, player rows and draft slots; every fact foreign key resolves
+  (including the unknown member); the T1 rename is one dimension row and two
+  dated bridge rows; coverage and draft fidelity survive into `dim_game`; no
+  derived-measure column can pass; the CSV quoting round-trips and contains no
+  BOM or CR; two builds are byte-identical; and the DDL plus CSVs load into an
+  in-memory SQLite database whose inner joins keep every fact row.
 - A provenance manifest at `data/curated/manifest.json`, written by the build: every
   cached payload the build read, sorted by cache-relative path, with its table,
   endpoint, recorded query, fetch time, HTTP status and sha256 of the body; plus a

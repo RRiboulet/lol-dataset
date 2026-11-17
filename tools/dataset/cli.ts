@@ -3,6 +3,10 @@
 //   node tools/dataset/cli.ts build                     # raw/ -> data/curated/, always offline
 //   node tools/dataset/cli.ts build --check             # fail if the committed data drifted
 //   node tools/dataset/cli.ts build --raw fixtures/raw --check   # ... against the recorded fixtures
+//   node tools/dataset/cli.ts model                     # data/curated/ -> data/model/
+//   node tools/dataset/cli.ts model --check             # fail if the committed model drifted
+// `model` reads `data/curated/` and writes `data/model/` by default; `--curated` and
+// `--out` point it at another tree.
 //
 // `--check` compares entity files byte for byte and the manifest on everything that
 // describes the data. It deliberately tolerates one difference: a payload's
@@ -43,6 +47,7 @@ import { parseArgs } from "node:util";
 import type { BuildResult, OutputFile } from "./build.ts";
 import { buildDataset, DEFAULT_RULE_FILE, DEFAULT_SCHEMA_DIR, OUTPUTS, writeDataset } from "./build.ts";
 import type { CargoQuery } from "./cache.ts";
+import type { ModelBuild } from "./model.ts";
 import { compareManifest, MANIFEST_FILE } from "./manifest.ts";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..", "..");
@@ -112,7 +117,32 @@ function describe(result: BuildResult): string {
 	return lines.join("\n");
 }
 
-/** Compare built bytes with what is committed; report the first difference per file. */
+/** One line per model table: its row count and declared grain. */
+function describeModel(result: ModelBuild): string {
+	const lines = result.tables.map((table) => `${table.name}: ${table.rows.length} row(s) — ${table.grain}`);
+	return lines.join("\n");
+}
+
+/** Compare the model's bytes with what is committed; the model has no manifest. */
+async function checkModel(result: ModelBuild, outDir: string): Promise<string[]> {
+	const drift: string[] = [];
+	for (const [file, body] of Object.entries(result.files)) {
+		const committed = await readFile(path.join(outDir, file), "utf8").catch(() => undefined);
+		if (committed === body) continue;
+		if (committed === undefined) {
+			drift.push(`${file}: not committed (run \`node tools/dataset/cli.ts model\`)`);
+			continue;
+		}
+		const built = body.split("\n");
+		const there = committed.split("\n");
+		const index = built.findIndex((line, i) => line !== there[i]);
+		const first = index === -1 ? Math.min(built.length, there.length) : index;
+		drift.push(`${file}: differs at line ${first + 1}\n    committed: ${there[first] ?? "<end of file>"}\n    built:     ${built[first] ?? "<end of file>"}`);
+	}
+	return drift;
+}
+
+/** Compare the build's bytes with what is committed; report the first difference per file. */
 async function check(result: BuildResult, outDir: string): Promise<string[]> {
 	const drift: string[] = [];
 	for (const [file, body] of Object.entries(result.files) as [OutputFile, string][]) {
@@ -155,6 +185,7 @@ async function main(): Promise<void> {
 		options: {
 			raw: { type: "string" },
 			out: { type: "string" },
+			curated: { type: "string" },
 			rule: { type: "string" },
 			aliases: { type: "string" },
 			eras: { type: "string" },
@@ -207,8 +238,32 @@ async function main(): Promise<void> {
 		return;
 	}
 
+	if (command === "model") {
+		// Imported here so `build` keeps exactly the modules it had (spec D5). The model
+		// stage is below the cache and reads only the committed curated files.
+		const { buildModel, loadModelInput, writeModel } = await import("./model.ts");
+		const curatedDir = values.curated ?? path.join(REPO_ROOT, "data", "curated");
+		const outDir = values.out ?? path.join(REPO_ROOT, "data", "model");
+		const result = buildModel(await loadModelInput(curatedDir));
+		console.log(describeModel(result));
+		console.log(`inputs: ${curatedDir}`);
+		if (values.check) {
+			const drift = await checkModel(result, outDir);
+			if (drift.length > 0) {
+				console.error(`\nthe committed model does not match a rebuild:\n  - ${drift.join("\n  - ")}`);
+				process.exitCode = 1;
+				return;
+			}
+			console.log("committed model matches a rebuild");
+			return;
+		}
+		await writeModel(result, outDir);
+		console.log(`wrote ${Object.keys(result.files).join(", ")} to ${outDir}`);
+		return;
+	}
+
 	if (command !== "build") {
-		throw new Error(`unknown command ${JSON.stringify(command)}; expected \`build\` or \`fetch\``);
+		throw new Error(`unknown command ${JSON.stringify(command)}; expected \`build\`, \`fetch\` or \`model\``);
 	}
 
 	const outDir = values.out ?? path.join(REPO_ROOT, "data", "curated");

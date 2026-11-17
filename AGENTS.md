@@ -23,12 +23,18 @@ also verifies each payload against its sidecar's hash and runs an invariant gate
 over the emitted records, so a tampered payload, a hand-edit or a bad merge that
 contradicts the data fails before anything is written; `build --check` compares the entity files byte for byte
 and the manifest on everything but `fetchedAt`, and `node tools/check.ts` runs both
-suites. Those four events — Worlds
-2023, MSI 2023, IEM IX 2015 and IPL 5 2012 — are the only ones with games; ticket 10 is
-the crawl that fills the rest. IPL 5 is the one that took a decision rather than a
-crawl: its `MatchSchedule` spells one team's name two ways and swaps three pairs of
-`MatchId`s, so a legacy alias is declared and the swapped games are emitted without a
-`matchId` (ticket 14, which also removed `fixtures/pending/`). There is no
+suites. `data/model/` holds the star schema derived from that curated layer:
+dimensions for event, match, game, team, player, champion, patch and date; facts at
+one row per game per side, per game per player and per draft slot; an alias bridge
+with validity dates; an unknown member at key 0 in every dimension; and the
+generated DDL and per-column data dictionary. `node tools/dataset/cli.ts model`
+rebuilds it from `data/curated/` and `model --check` proves the committed bytes are
+current. Those four events — Worlds 2023, MSI 2023, IEM IX 2015 and IPL 5 2012 — are
+the only ones with games; ticket 10 is the crawl that fills the rest, and ticket 13
+builds the model over the full dataset. IPL 5 is the one that took a decision rather
+than a crawl: its `MatchSchedule` spells one team's name two ways and swaps three
+pairs of `MatchId`s, so a legacy alias is declared and the swapped games are emitted
+without a `matchId` (ticket 14, which also removed `fixtures/pending/`). There is no
 `README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
 a schema, a scraper or a README as a side effect of an unrelated task; those are
 their own changes.
