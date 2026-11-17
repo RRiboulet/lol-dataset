@@ -75,14 +75,16 @@ the earliest *games* the source still carries are 2012's IPL 5, not 2011's.
   entity is minted and the game's draft coverage is honestly `partial`.
 - **IPL 5's series rows disagree with its games.** Crawling IPL 5 (2012) — the earliest
   event that *does* carry games — produced 72 games, 720 player rows and 48 series.
-  Those four payloads are committed under `tools/dataset/fixtures/pending/`, which the
-  build does not read, so the figures below stay checkable while the event stays out of
-  the dataset; ticket 14 decides what to do with them. The crawl found
+  Those four payloads were committed under `tools/dataset/fixtures/pending/`, which the
+  build did not read, so the figures below stayed checkable while the event stayed out of
+  the dataset; ticket 14 decided what to do with them. The crawl found
   but the game↔series team check refused 11 pairings: some are a legacy team name
   (`Counter Logic Gaming` on the game, `CLG Prime` on the series), others are apparent
-  cross-match mixups in the source's own `MatchSchedule`. **IPL 5 is not committed
-  here**; it is filed as ticket 14 so the full crawl (ticket 10) handles it with a
-  decision rather than by accident.
+  cross-match mixups in the source's own `MatchSchedule`. **IPL 5 was not committed
+  here**; it was filed as ticket 14 so the full crawl (ticket 10) handles it with a
+  decision rather than by accident. *(Resolved: ticket 14 measured 20 pairings — 12
+  legacy, 8 mixups — declared the legacy alias and detaches the mixups' games, and IPL 5
+  is in the committed dataset; see `14-series-rows-that-disagree.md`.)*
 - **Cargo field order is not data.** Re-fetching IEM 2015 with the same columns in a
   different order produced byte-identical rows that `dedupe` reported as a stale
   conflict. Fixed: row comparison is now key-order independent.

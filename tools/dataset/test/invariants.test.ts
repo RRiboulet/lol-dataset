@@ -64,6 +64,30 @@ async function expectViolation(
 	assert.ok(matching[0].includes(record), `the message names ${record}: ${matching[0]}`);
 }
 
+test("a game attached to a series between two other teams is refused", async () => {
+	// Ticket 14 detaches a game the source's series contradicts, so the assembler no longer
+	// emits one — which makes this the gate's job: a hand-edited `matchId`, or a bad merge,
+	// can still name a real series of the same event and put the game between two other
+	// teams, and no id check sees it. The message names both sides so the line is findable.
+	await expectViolation(
+		(data) => {
+			const game = data.games.find((candidate) => candidate.matchId !== undefined);
+			assert.ok(game);
+			const gameTeams = game.sides.map((side) => side.teamId).sort();
+			const other = data.matches.find(
+				(match) =>
+					match.eventId === game.eventId &&
+					match.id !== game.matchId &&
+					match.sides.map((side) => side.teamId).sort().join() !== gameTeams.join(),
+			);
+			assert.ok(other, "the fixtures carry another series of the same event between other teams");
+			game.matchId = other.id;
+		},
+		/a game cannot sit in a series between two other teams/,
+		"game",
+	);
+});
+
 test("a clean dataset passes the gate with no warnings", async () => {
 	const data = await clean();
 	assert.deepEqual(findInvariantViolations(data), []);

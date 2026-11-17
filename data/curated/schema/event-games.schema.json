@@ -33,7 +33,7 @@
 				"empty",
 				"missing"
 			],
-			"description": "`recorded`: the corpus emits at least one row for this event, a game or a series. `empty`: a recorded query to a **game** table (`ScoreboardGames`, `MatchSchedule`) named this event — its page, a stage page under it, or its display name, as a Cargo literal: `Column=...`, `Column IN (...)`, or an anchored `Column LIKE 'prefix%'` (an exact `LIKE` with no wildcard counts too) — and the source returned no rows; measured on World Cyber Games 2013 and 2011. A `ScoreboardPlayers` query cannot establish this: its rows are players, not games, so an event with only such a query is `missing` (measured on IPL 5, whose player probe returned ten rows). `missing`: no recorded query addressed this event's games."
+			"description": "`recorded`: the corpus emits at least one row for this event, a game or a series. `empty`: a recorded query to a **game** table (`ScoreboardGames`, `MatchSchedule`) named this event — its page, a stage page under it, or its display name, as a Cargo literal: `Column=...`, `Column IN (...)`, or an anchored `Column LIKE 'prefix%'` (an exact `LIKE` with no wildcard counts too) — and the source returned no rows; measured on World Cyber Games 2013 and 2011. A `ScoreboardPlayers` query cannot establish this: its rows are players, not games, so an event with only such a query is `missing` (measured on IPL 5 before ticket 14 committed its game payloads, when its player probe returned ten rows and no game query had been recorded). `missing`: no recorded query addressed this event's games."
 		},
 		"games": {
 			"type": "integer",

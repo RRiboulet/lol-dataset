@@ -45,7 +45,7 @@ async function rows(file: string): Promise<Record<string, unknown>[]> {
 test("ten rows per game, five played roles per side, and sums that reconcile", async () => {
 	const result = await build();
 	const rowsOut = result.playerGames.rows;
-	assert.equal(rowsOut.length, 2050, "110 Worlds + 76 MSI + 19 IEM games, ten players each");
+	assert.equal(rowsOut.length, 2770, "110 Worlds + 76 MSI + 19 IEM + 72 IPL 5 games, ten players each");
 	const games = new Map(result.scoreboards.games.map((game) => [game.id, game]));
 	const perGame = new Map<string, typeof rowsOut>();
 	for (const row of rowsOut) {
@@ -53,10 +53,10 @@ test("ten rows per game, five played roles per side, and sums that reconcile", a
 		list.push(row);
 		perGame.set(row.gameId, list);
 	}
-	assert.equal(perGame.size, 205);
+	assert.equal(perGame.size, 277);
 	const coverage = new Map(result.scoreboards.games.map((game) => [game.id, game.coverage.playerStats]));
 	assert.equal([...coverage.values()].filter((state) => state === "complete").length, 186);
-	assert.equal([...coverage.values()].filter((state) => state === "partial").length, 19);
+	assert.equal([...coverage.values()].filter((state) => state === "partial").length, 91);
 	for (const [gameId, players] of perGame) {
 		assert.equal(players.length, 10, `${gameId}: ten player rows`);
 		const game = games.get(gameId);
@@ -171,12 +171,16 @@ test("two builds emit byte-identical player rows", async () => {
 
 test("rejected IEM games mint no teams, players or unresolved references", async () => {
 	const result = await build();
-	for (const name of ["Dignitas", "007x", "CaoMei"]) {
+	// The names are the ones only the rejected `IEM Season IX - Cologne` rows carry in the
+	// recorded corpus. `Dignitas` used to be on this list and is a real IPL 5 qualifier
+	// team now, which is exactly why the list has to be checked against the payloads rather
+	// than remembered.
+	for (const name of ["Team ROCCAT", "Jankos", "Overpow"]) {
 		assert.ok(!result.identity.teams.some((team) => team.name === name), `${name} is not a team in this dataset`);
 		assert.ok(!result.identity.players.some((player) => player.name === name), `${name} is not a player in this dataset`);
 		assert.ok(!result.identity.unresolved.some((row) => row.string === name), `${name} is not unresolved either`);
 	}
-	assert.equal(result.playerGames.rows.length, 2050, "filtering identity observations does not remove real player rows");
+	assert.equal(result.playerGames.rows.length, 2770, "filtering identity observations does not remove real player rows");
 });
 
 test("a game with duplicate roles is partial, not complete", async () => {
@@ -381,7 +385,7 @@ test("an identity-only row cannot blank a stat row's GameId through deduplicatio
 			"utf8",
 		);
 		const result = await buildDataset({ rawDir: dir });
-		assert.equal(result.playerGames.rows.length, 2050, "the stat rows survive the overlapping identity copy");
+		assert.equal(result.playerGames.rows.length, 2770, "the stat rows survive the overlapping identity copy");
 		assert.ok(
 			result.playerGames.rows.some((row) => row.id === target.id && "damage" in row),
 			"the stat row is still a stat row",

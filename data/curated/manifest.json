@@ -1,6 +1,6 @@
 {
   "format": "lol-dataset-provenance/1",
-  "entityDigest": "0c0c0b21709b0e926ee29a221d8273483d49189e52d4cbf36c169badecca6a6c",
+  "entityDigest": "d63ae8b78e88d5a0e194820e9b97ea156c3ef901f43047fb1b6f596105a03356",
   "entities": [
     {
       "file": "events.jsonl",
@@ -15,32 +15,32 @@
     {
       "file": "event-games.jsonl",
       "records": 10,
-      "sha256": "4391c5130e040873551c6b2ed9776852543d0c9875b9a5e49af61d2214994989"
+      "sha256": "9e180f3337412ba0ec67f3ef6e2fb5be033531a62e8d6db66f0799d5c3c138ad"
     },
     {
       "file": "games.jsonl",
-      "records": 205,
-      "sha256": "2bc52419d5280bb661f58bf9454b8165783266ea50e38d1d4c963c52f61444de"
+      "records": 277,
+      "sha256": "40cf62c453680e5f6a648a2154322f58ddd13c8a5676ff94e3f1833ec0f10f06"
     },
     {
       "file": "matches.jsonl",
-      "records": 90,
-      "sha256": "42228c8d254e3ca06dd71b68312c6b66ecdeda29f9caceb604d0a6bcdc430409"
+      "records": 132,
+      "sha256": "17922431fcf63d79aaf6c42c9a19e700e15d9e3e0ec2b93ee6100503e5b9377e"
     },
     {
       "file": "player-games.jsonl",
-      "records": 2050,
-      "sha256": "9920f43378624a1f1c4b014d5fc71db523da5ad45666e5929fba233946314629"
+      "records": 2770,
+      "sha256": "c0f6895e137db5dc6dc22e650b2f4f50db801edc8bed377fa3cfd20aadf39590"
     },
     {
       "file": "teams.jsonl",
-      "records": 37,
-      "sha256": "e6b824fabf283204f1a9c5dc72423b8782ea37aa2c4abc4e62989b46bafce738"
+      "records": 51,
+      "sha256": "df56e460a0860e2b019dad2893d698191823b0b73286f65358a0d1a1d0a63208"
     },
     {
       "file": "players.jsonl",
-      "records": 202,
-      "sha256": "b371815704ee87aff0336ff7c6f44dca18abf225f5803d27cf27b6fee456a468"
+      "records": 267,
+      "sha256": "7d3ddfac784961f09d76954317109e7d6b793a546936fc7799e5daac4141205f"
     },
     {
       "file": "champions.jsonl",
@@ -49,13 +49,13 @@
     },
     {
       "file": "aliases.jsonl",
-      "records": 514,
-      "sha256": "067fb17df78e21156c8bce14bd489be9a5d10d2050d6d3bdb7f5a679a38f60b8"
+      "records": 596,
+      "sha256": "a688346d0be9990b076fd5184367c77096c5ffac165b5032f91332914ba0306b"
     },
     {
       "file": "identity-unresolved.jsonl",
-      "records": 175,
-      "sha256": "166c51bd53d6166a756bc347e3641d301dd67db21a67348ff959310385b59c33"
+      "records": 253,
+      "sha256": "d91d21e5bf5e7f8fb2ccf72b5e602d97c70b00a2bfd09fd42ac2e083d4513330"
     }
   ],
   "payloads": [
@@ -134,6 +134,22 @@
         "tables": "MatchSchedule",
         "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
         "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/f0820d5361f9b331f59c5af8.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "239967bd958d7954ddab9431b8bc7fec76484be10e7225aa5ab29e1aabd79bbd",
+      "fetchedAt": "2026-11-17T10:27:16.611Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE 'IGN ProLeague Season 5%'",
         "order_by": "MatchId",
         "limit": 500
       }
@@ -219,6 +235,22 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/e4bf2a09cc603c551bd0756b.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-17T10:28:34.191Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE 'IGN ProLeague Season 5%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/PicksAndBansS7/f03448b9f8060ee8e99dd522.json",
       "table": "PicksAndBansS7",
       "endpoint": "cargoexport",
@@ -248,6 +280,22 @@
         "where": "AllName IN ('APA','APA (Eain Stearns)','Ambition','Bang','Bengi','CoreJJ','Cpt Jack','Dan Dinh','DontMashMe','Doublelift','Dreilix','Dyrus','Faker','Flame','Flamer','Gumayusi','Helios','Helios (Shin Dong-jin)','Hjarnan','Honest','Keria','Linak','Luncafoer','Lustboy','MaRin','MoMa','NOTTILTEDAD','NintendudeX','Nio','Odoamne','Oner','Owpi','Pixel','Pyosik','Ryu','Salce','Summit','TakashiX','Trailblazer','Trailblazer (Oskar Moreno)','Westrice','Wolf','Wolf (Lee Jae-wan)','Yellowstar','Yeon','Yeon (Sean Sung)','Zeus','ZionSpartan','bbmuffin','denizzz','kaSing','kujaa','loulex','sOAZ') OR OverviewPage IN ('APA','APA (Eain Stearns)','Ambition','Bang','Bengi','CoreJJ','Cpt Jack','Dan Dinh','DontMashMe','Doublelift','Dreilix','Dyrus','Faker','Flame','Flamer','Gumayusi','Helios','Helios (Shin Dong-jin)','Hjarnan','Honest','Keria','Linak','Luncafoer','Lustboy','MaRin','MoMa','NOTTILTEDAD','NintendudeX','Nio','Odoamne','Oner','Owpi','Pixel','Pyosik','Ryu','Salce','Summit','TakashiX','Trailblazer','Trailblazer (Oskar Moreno)','Westrice','Wolf','Wolf (Lee Jae-wan)','Yellowstar','Yeon','Yeon (Sean Sung)','Zeus','ZionSpartan','bbmuffin','denizzz','kaSing','kujaa','loulex','sOAZ') OR ID='Wolf'",
         "order_by": "AllName ASC",
         "limit": 150
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/26b4fa23c97218115fbd745f.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "477d274e85fca9a714da21d437ae8c2e236eed542b835b0ec0c5d5e3ef3885e0",
+      "fetchedAt": "2026-11-17T10:24:35.316Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE 'IGN ProLeague Season 5%'",
+        "order_by": "GameId",
+        "limit": 500
       }
     },
     {
@@ -421,6 +469,22 @@
         "tables": "ScoreboardPlayers",
         "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
         "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/cb258361fa10b13869179235.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "1c5241110580659ad8ba8c687823d8ca0dc1c49f022f949ad698ba7a707cb681",
+      "fetchedAt": "2026-11-17T10:25:52.879Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE 'IGN ProLeague Season 5%'",
         "order_by": "GameId",
         "limit": 2000
       }

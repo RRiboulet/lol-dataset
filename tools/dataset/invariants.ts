@@ -164,6 +164,22 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 			const match = matches.find((candidate) => candidate.id === game.matchId);
 			if (match === undefined) collector.add(where, `references match ${game.matchId}, which is not emitted`);
 			else if (match.eventId !== game.eventId) collector.add(where, `references match ${game.matchId} of another event (${match.eventId}) — a game and its series share an event`);
+			else if (game.sides.length === 2) {
+				// The link has to be the truth, not merely a valid id. A hand-edit or a bad merge
+				// can keep a same-event match while putting the game between two other teams, and
+				// no id check sees it — only the team set does. The build detaches a game the
+				// source's series contradicts (ticket 14), so this fires on an edited record or on
+				// an assembler that stopped detaching, never on the recorded data.
+				const teams = game.sides.map((side) => side.teamId).sort();
+				const series = match.sides.map((side) => side.teamId).sort();
+				if (teams[0] !== series[0] || teams[1] !== series[1]) {
+					collector.add(
+						where,
+						`names series ${game.matchId} between ${series.join(" and ")}, but its own sides are ${teams.join(" and ")} — ` +
+							"a game cannot sit in a series between two other teams",
+					);
+				}
+			}
 		}
 		if (game.sides.length !== 2) {
 			collector.add(where, `has ${game.sides.length} sides — a game has exactly two`);
