@@ -19,9 +19,12 @@ invariant refused **11 pairings**. Two causes are mixed together:
   `MatchSchedule` disagrees with its `ScoreboardGames` about which match the game
   belongs to.
 
-Because of this, IPL 5 is deliberately **not** in the committed dataset; the crawl's
-measurement is recorded in `09-measurement-two-events.md`, and the payloads stay out
-of the fixture cache so the build cannot fail on them.
+Because of this, IPL 5 is deliberately **not** in the committed dataset, and the four
+payloads crawled for it (games, players, series, drafts) are not in the fixture cache,
+so the build cannot fail on them. What *is* still committed are two older payloads
+recorded for ticket 02 — a `ScoreboardPlayers` query and a `Tournaments` row that name
+IPL 5 — which is why `event-games.jsonl` reports the event as `missing` rather than
+`empty`: those rows never asked for games.
 
 ## What has to be decided
 

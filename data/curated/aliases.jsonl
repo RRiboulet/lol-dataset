@@ -93,7 +93,6 @@
 {"kind":"champion","string":"Nidalee","entityId":"ch-635d4eca2d29","entityName":"Nidalee","firstSeen":"2015-03-13","lastSeen":"2023-10-28","evidence":["registry","observed"]}
 {"kind":"champion","string":"Nilah","entityId":"ch-199bc2d80a8a","entityName":"Nilah","firstSeen":"2023-10-22","lastSeen":"2023-11-05","evidence":["registry","observed"]}
 {"kind":"champion","string":"Nocturne","entityId":"ch-238731b0e0dd","entityName":"Nocturne","firstSeen":"2023-05-04","lastSeen":"2023-11-19","evidence":["registry","observed"]}
-{"kind":"champion","string":"None","entityId":"ch-dc937b598926","entityName":"None","firstSeen":"2023-05-12","lastSeen":"2023-05-12","evidence":["observed"]}
 {"kind":"champion","string":"Nunu","entityId":"ch-f93dac5db740","entityName":"Nunu & Willump","firstSeen":"2009-02-21","lastSeen":null,"evidence":["declared"]}
 {"kind":"champion","string":"Nunu &amp; Willump","entityId":"ch-f93dac5db740","entityName":"Nunu & Willump","firstSeen":"2012-11-29","lastSeen":"2012-11-29","evidence":["registry","observed"]}
 {"kind":"champion","string":"Olaf","entityId":"ch-1a3ad80c596f","entityName":"Olaf","firstSeen":"2023-05-02","lastSeen":"2023-10-29","evidence":["registry","observed"]}

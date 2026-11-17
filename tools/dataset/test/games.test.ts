@@ -257,11 +257,12 @@ test("the per-event report separates 'no games in the source' from 'nobody asked
 	// `empty` is the same claim as "the source answered zero games".
 	assert.equal(state.get("2013 World Cyber Games")?.state, "empty");
 	assert.equal(state.get("2013 World Cyber Games")?.games, 0);
-	// A recorded `ScoreboardPlayers` query — a game-bearing table — names IPL 5's page
-	// exactly (`OverviewPage='IGN ProLeague Season 5'`), so the source was asked about this
-	// event and returned no game rows. Reading only `ScoreboardGames` used to call that
-	// `missing`, which was wrong: `missing` is a claim about the queries, not the table.
-	assert.equal(state.get("IGN ProLeague Season 5")?.state, "empty");
+	// IPL 5 is `missing`, not `empty`: the only recorded query for it is a
+	// `ScoreboardPlayers` one, and that came back with **ten rows**. Rows in a player
+	// table say nothing about whether the event has games, so they cannot establish
+	// emptiness — a game table asking and returning nothing can. (Ticket 09 measured 72
+	// IPL 5 games at the source; they are deliberately not committed, see ticket 14.)
+	assert.equal(state.get("IGN ProLeague Season 5")?.state, "missing");
 	assert.equal(state.get("IGN ProLeague Season 5")?.games, 0);
 	// MSI 2023 was crawled for real in this ticket: it carries games, so it is recorded.
 	assert.equal(state.get("2023 Mid-Season Invitational")?.state, "recorded");
@@ -512,4 +513,21 @@ test("the committed games match a rebuild over the recorded fixtures", async () 
 		);
 		assert.equal(committed, result.files[file], `${file} is committed and current — run the build without --check`);
 	}
+});
+
+test("a game table that answered with rows does not make an event empty", async () => {
+	// `empty` is a claim that a game query came back with nothing. A payload that names
+	// the event and returned rows — a player table, or a game table with data — must not
+	// produce it, or the report says the source has no games while the source answered.
+	const result = await build();
+	const state = new Map(result.scoreboards.eventGames.map((row) => [row.overviewPage, row.state]));
+	for (const page of [WORLDS, IEM, "2023 Mid-Season Invitational"]) {
+		assert.equal(state.get(page), "recorded", `${page} carries games, so it is recorded`);
+	}
+	const empty = result.scoreboards.eventGames.filter((row) => row.state === "empty");
+	for (const row of empty) {
+		assert.equal(row.games, 0);
+		assert.equal(row.matches, 0);
+	}
+	assert.ok(empty.length > 0, "the fixtures still carry an event the source answered with nothing");
 });

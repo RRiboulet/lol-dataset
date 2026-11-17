@@ -646,8 +646,8 @@ export function normalizeScoreboardGames(payloads: CachedPayload[]): SourceGame[
 				durationSeconds: asDurationSeconds(raw(row, "Gamelength"), `${payload.file}: ${gameId}: Gamelength`),
 				patch: asPatch(raw(row, "Patch")),
 				sides: [gameSide(row, "Team1", `${payload.file}: ${gameId}`), gameSide(row, "Team2", `${payload.file}: ${gameId}`)],
-				picks: [asList(raw(row, "Team1Picks")), asList(raw(row, "Team2Picks"))],
-				bans: [asList(raw(row, "Team1Bans")), asList(raw(row, "Team2Bans"))],
+				picks: [draftNames(raw(row, "Team1Picks")), draftNames(raw(row, "Team2Picks"))],
+				bans: [draftNames(raw(row, "Team1Bans")), draftNames(raw(row, "Team2Bans"))],
 				riotPlatformGameId: asText(raw(row, "RiotPlatformGameId")),
 				sourceFile: payload.file,
 			});
@@ -734,6 +734,19 @@ function assertTimestamp(text: string, stated: boolean, where: string): void {
 	const valid =
 		month >= 1 && month <= 12 && day >= 1 && day <= months[month - 1] && hour <= 23 && minute <= 59 && second <= 59;
 	if (!valid) throw new Error(`${where}: ${JSON.stringify(text)} is not a real calendar instant`);
+}
+
+/**
+ * The champion names in a Cargo list field, with the source's placeholder removed.
+ *
+ * `ScoreboardGames.Team*Picks`/`Team*Bans` use the same `None` for an unused slot as
+ * `PicksAndBansS7` does (measured on one MSI 2023 ban list). Filtering it here as well
+ * as in the ordered path matters twice over: otherwise the identity tables mint an
+ * entity called `None`, and the unordered fallback can emit a "complete" draft that
+ * contains it.
+ */
+function draftNames(value: unknown): string[] {
+	return asList(value).filter((name) => !/^none$/i.test(name));
 }
 
 /** A comma-separated Cargo string is a list, not a free-text blob. */

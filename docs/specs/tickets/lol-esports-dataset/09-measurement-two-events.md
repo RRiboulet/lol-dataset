@@ -37,7 +37,9 @@ exception is `…_Bracket Round 1_4_3`, whose `Team2Ban4` is the literal string 
 the source's placeholder for an unused ban slot. It is emitted as an **absent** slot,
 so that game's draft coverage is honestly `partial` rather than a fabricated pick.
 
-**IEM Season IX 2015 (pre-herald era)** — 19 games, 190 player rows, 13 series.
+**IEM Season IX 2015 (pre-herald era)** — already recorded for tickets 03–05 and
+re-fetched here through the real fetcher; its payloads were byte-identical, so the
+committed cache keeps the original recording. 19 games, 190 player rows, 13 series.
 The source states kills, deaths, assists, CS and gold, plus a partial team-stat row
 (no inhibitors, three bans a side), but **no damage, vision, keystone or runes** on any
 player. Drafts are **unordered**: `PicksAndBansS7` has no row for this era, so the

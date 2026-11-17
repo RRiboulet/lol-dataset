@@ -26,10 +26,11 @@ Changed:
 Added:
 
 - The first live crawl, for ticket 09: **MSI 2023** (76 games, 760 player rows, 25
-  series, 76 ordered drafts; every field group complete) and **IEM Season IX World
-  Championship 2015** (19 games, 190 player rows, 13 series; unordered drafts and no
-  damage, vision, keystone or runes — partial, and honestly marked). The committed
-  dataset grows from 129 to 205 games and from 1,290 to 2,050 player rows. Both events
+  series, 76 ordered drafts; every field group complete) and a re-fetch of **IEM
+  Season IX World Championship 2015**, already recorded for tickets 03–05 (19 games,
+  190 player rows, 13 series; unordered drafts and no damage, vision, keystone or
+  runes — partial, and honestly marked). The committed dataset grows from 129 to 205
+  games and from 1,290 to 2,050 player rows, all of that growth from MSI 2023. Both events
   were fetched through `tools/dataset/fetch.ts` at its measured-safe 75 s spacing with
   zero rate-limit refusals, and the queries are committed as plans so the run is
   reproducible.

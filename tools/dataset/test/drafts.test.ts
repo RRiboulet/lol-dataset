@@ -364,3 +364,20 @@ test("an unknown side-switch value or a sixth slot stops the build", async () =>
 		}
 	}
 });
+
+test("the source's None placeholder is absent in both draft paths", async () => {
+	// MSI 2023 writes `None` for an unused slot in TWO places: the numbered
+	// `PicksAndBansS7` ban field and the `ScoreboardGames` ban list. Handling only the
+	// ordered path mints an entity named `None` and lets the unordered fallback emit a
+	// "complete" draft containing it.
+	const result = await build();
+	assert.ok(!result.identity.champions.some((champion) => champion.name === "None"), "no champion entity is named None");
+	assert.ok(!result.identity.unresolved.some((row) => row.string === "None"), "None is not reported as unresolved either");
+	for (const game of result.scoreboards.games) {
+		for (const side of game.draft?.sides ?? []) {
+			for (const entry of [...side.picks, ...side.bans]) {
+				assert.notEqual(entry.sourceChampion.toLowerCase(), "none", `${game.source.gameId}: a placeholder is never a champion`);
+			}
+		}
+	}
+});
