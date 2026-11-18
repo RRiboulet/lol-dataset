@@ -4,6 +4,19 @@
 
 Changed:
 
+- **The entity files carry only the entities an emitted record names.** The registry
+  crawl registered every page the source names, so 43 of 111 teams and 32 of 323
+  players sat in `teams.jsonl`/`players.jsonl` named by no game side, match side or
+  player-game row — first seen on the excluded qualifier pages, on pages the rule never
+  considered, or as registry pages no admitted event touches. They stay resolution
+  input (a qualifier-page string identical to an emitted row's string still resolves to
+  the one entity), but the entity files, the alias table and the unresolved report are
+  now filtered on the emitted records themselves at the end of assembly, so a series
+  held back as contradicted cannot keep an entity either: 68 teams, 291 players, 149
+  champions, 647 alias rows, and an unresolved report reduced to the two strings an
+  emitted row still cannot resolve (`Eliade`, `Insta`). The invariant gate refuses an
+  emitted entity that no game side, match side, player-game row or conflict-report row
+  names, so the rule is executable rather than prose (ticket 10's decision log, fix).
 - **The dimensional model states its winner convention, and `dim_match` is sliceable by event.**
   `fact_game_side.is_winner` is now an **empty field** when the source records no winner, instead of
   a `0` that read exactly like a recorded loss, and a winner id that is neither side is refused by

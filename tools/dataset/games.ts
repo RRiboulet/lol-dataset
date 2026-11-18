@@ -42,6 +42,7 @@ import type { IdentityIndex, Resolution } from "./identity.ts";
 import { AmbiguousIdentity, surrogateId } from "./identity.ts";
 import type { SourceDraft, SourceGame, SourceMatch, TeamStatField } from "./normalize.ts";
 import { TEAM_STAT_FIELDS } from "./normalize.ts";
+import { pageUnderEvent } from "./pages.ts";
 
 /** One side of a game. Stats are present only where the source stated a value. */
 export type GameSideRecord = {
@@ -267,31 +268,6 @@ function resolveTeam(identity: IdentityIndex, source: string, date: string, wher
 		);
 	}
 	return found;
-}
-
-/**
- * Is `page` the event's own page, or a stage page under it? The rule selects the event page.
- *
- * One kind of subpage is **not** the event: the qualifiers. The spec's event set
- * (Open assumption 2) excludes "qualifiers for an already-included event", and the
- * wiki puts them beneath the event's page (`2013 World Cyber Games/Qualifiers/China`),
- * so a prefix-only test absorbed 62 qualifier series from five countries into World
- * Cyber Games 2013 — a competition the rule never selected. The boundary is a whole path
- * segment equal to `Qualifiers` (case-insensitive) **anywhere** under the event page, not
- * just at the first segment: `…/Qualifiers/China` and `…/Main Event/Qualifiers` are
- * excluded, while a stage page such as `…/Main Event`, or a page whose name merely
- * contains the word (`…/Qualifier Final`), is not. The rows are still crawled; the build
- * counts them as ignored rather than emitting them as the event's games, which is the
- * same treatment any other page outside the selected window gets.
- *
- * This is the one boundary: `eventForPage` and `namesEvent` both route through it, so a
- * query and a page can never disagree about which side of the qualifier line they fall on.
- */
-export function pageUnderEvent(page: string, overviewPage: string): boolean {
-	if (page === overviewPage) return true;
-	if (!page.startsWith(`${overviewPage}/`)) return false;
-	const under = page.slice(overviewPage.length + 1).split("/");
-	return !under.some((segment) => segment.trim().toLowerCase() === "qualifiers");
 }
 
 function eventForPage(page: string, events: EventRecord[]): EventRecord | undefined {

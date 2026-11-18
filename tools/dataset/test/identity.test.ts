@@ -200,7 +200,11 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 	try {
 		// A fabricated earlier event: a Tournament the fixtures do not carry, dated
 		// before the others, with one game's worth of rows. Nothing here renumbers
-		// anything unless identity depends on read order or on a row counter.
+		// anything unless identity depends on read order or on a row counter. The rows
+			// carry a GameId and the stat key the player-game join needs, because ticket 10's
+		// emission rule emits entities only from rows the build actually emits — a
+			// scoreboard row that names no game would be resolution input and nothing else.
+		const gameId = "IEM Season VI - World Championship_Game 1";
 		const tournaments = path.join(dir, "lol-fandom", "cargoexport", "Tournaments", "fabricated.json");
 		await writeFile(
 			tournaments,
@@ -211,6 +215,22 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 					DateStart: "2012-03-06",
 					League: "Intel Extreme Masters",
 					Region: "International",
+				},
+			]),
+			"utf8",
+			);
+		const gamesFile = path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames", "fabricated.json");
+		await writeFile(
+			gamesFile,
+			JSON.stringify([
+				{
+					OverviewPage: "IEM Season VI - World Championship",
+					GameId: gameId,
+					MatchId: "IEM Season VI - World Championship_Group A_1",
+					Team1: "Fabricated Five",
+					Team2: "T1",
+					WinTeam: "T1",
+					DateTime_UTC: "2012-03-06 10:00:00",
 				},
 			]),
 			"utf8",
@@ -225,7 +245,10 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 					Team: "Fabricated Five",
 					TeamVs: "T1",
 					Champion: "Annie",
+					Kills: 0,
+					IngameRole: "middle",
 					OverviewPage: "IEM Season VI - World Championship",
+					GameId: gameId,
 					"DateTime UTC": "2012-03-06 10:00:00",
 				},
 			]),
@@ -252,7 +275,10 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 		assert.equal(mintedTeam.overviewPage, null, "nothing registers that team, so it has no source page");
 		assert.ok(grown.identity.players.some((player) => player.name === "Fabricated Player"));
 		const reported = new Set(grown.identity.unresolved.map((row) => row.string));
-		for (const string of ["Fabricated Five", "Fabricated Player", "w2w"]) {
+		// `Eliade`, not `w2w`: ticket 10's emission rule narrowed the report to strings an
+		// emitted record still cannot resolve, and the qualifier strings (`w2w` among them)
+		// name no emitted row any more.
+		for (const string of ["Fabricated Five", "Fabricated Player", "Eliade"]) {
 			assert.ok(reported.has(string), `${string} must stay in the unresolved report`);
 		}
 		assert.ok(grown.identity.unresolved.length >= baseline.identity.unresolved.length, "adding material never empties the report");
@@ -261,70 +287,73 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 	}
 })
 
-test("two players with the same display string stay two entities, and a bare handle is ambiguous", async () => {
+test("a duplicate display string is never merged, and its unreferenced entities are not emitted", async () => {
 	const { identity } = await fixtureBuild();
-	const wolves = identity.players.filter((player) => player.name === "Wolf");
-	assert.ok(wolves.length >= 2, "the fixtures must carry the duplicate display string");
-	assert.equal(new Set(wolves.map((wolf) => wolf.id)).size, wolves.length, "duplicates must be distinct entities");
-	assert.equal(new Set(wolves.map((wolf) => wolf.overviewPage)).size, wolves.length, "each wolf is its own page");
-	// The same string in the alias table, one row per entity, and only one of them dated.
-	const rows = identity.aliases.filter((alias) => alias.kind === "player" && alias.string === "Wolf");
-	assert.ok(rows.length >= 2, "the alias table must record the shared handle once per entity");
-	assert.equal(new Set(rows.map((row) => row.entityId)).size, rows.length, "one row per entity, never a merge");
-	assert.deepEqual(rows.filter((row) => row.firstSeen !== null).map((row) => row.firstSeen), ["2015-10-01"]);
+	// The fixtures carry `Wolf`, the handle of eight player pages. Ticket 10's emission
+	// rule narrowed the entity files to the entities an emitted record names, and no
+	// emitted player row names a `Wolf` — the dated row the alias table used to carry
+	// came from a scoreboard payload the selection rule does not emit — so the duplicate
+	// handle now lives in resolution only. That is where a merge would happen, and
+	// refusing to pick is still the point.
+	assert.equal(
+		identity.players.filter((player) => player.name === "Wolf").length,
+		0,
+		"no emitted row names a Wolf, so the entity files carry none",
+	);
 	// Without a date the string names eight people: reporting that is the point.
 	assert.throws(() => identity.index.resolve("player", "Wolf"), (error: unknown) => {
 		assert.ok(error instanceof AmbiguousIdentity);
-		assert.ok(error.candidates.length >= 2);
+		assert.ok(error.candidates.length >= 2, "the duplicates stay distinct candidates");
+		assert.equal(new Set(error.candidates.map((candidate) => candidate.id)).size, error.candidates.length, "one candidate per entity, never a merge");
 		return true;
 	});
+	// The page, unlike the handle, is unambiguous — which is why it is the identity.
+	assert.ok(identity.index.resolve("player", "Wolf (Lee Jae-wan)")?.id);
+	// And a dated lookup still resolves the handle to the entity the corpus saw that day:
+	// the observation eras survive the emission filter, because resolution is unchanged.
 	const dated = identity.index.resolve("player", "Wolf", "2015-10-01");
 	assert.ok(dated);
 	assert.equal(dated.name, "Wolf");
-	assert.equal(dated.id, rows.find((row) => row.firstSeen === "2015-10-01")?.entityId);
-	// The page, unlike the handle, is unambiguous — which is why it is the identity.
-	assert.ok(identity.index.resolve("player", "Wolf (Lee Jae-wan)")?.id);
 })
 
 test("an unresolved source string mints an entity and is reported, rather than failing or vanishing", async () => {
 	const { identity } = await fixtureBuild();
-	const report = identity.unresolved.find((row) => row.string === "w2w");
+	// Ticket 10's emission rule narrowed this report to the strings an emitted record
+	// still cannot resolve. The World Cyber Games 2013 qualifier teams the series rows
+	// carried (`w2w` and seven others) name no emitted row, so they left the report and
+	// stay resolution input; what remains is the IPL 5 pair the dataset itself uses.
+	const report = identity.unresolved.find((row) => row.string === "Eliade");
 	assert.ok(report, `the report must name the minted string, got ${identity.unresolved.map((row) => row.string).join(", ")}`);
-	assert.equal(report.kind, "team");
-	assert.equal(report.string, "w2w");
+	assert.equal(report.kind, "player");
+	assert.equal(report.string, "Eliade");
 	assert.equal(report.reason, "no-source-identity");
-	assert.deepEqual([report.firstSeen, report.lastSeen], ["2013-10-11", "2013-10-11"]);
+	assert.deepEqual([report.firstSeen, report.lastSeen], ["2012-11-29", "2012-11-29"]);
 	assert.ok(report.id);
-	const entity = identity.teams.find((team) => team.id === report.id);
+	const entity = identity.players.find((player) => player.id === report.id);
 	assert.ok(entity, "the report must point at a real entity");
-	assert.equal(entity.name, "w2w", "the minted entity carries the source string as its display name");
+	assert.equal(entity.name, "Eliade", "the minted entity carries the source string as its display name");
 	assert.equal(entity.overviewPage, null, "no registry page exists, and inventing one would hide that");
-	// Games reference teams as display strings too (ticket 03), and the corpus still
-	// carries Teams rows for none of World Cyber Games 2013's qualifier-stage teams, so
-	// they are minted and reported the same way. Ticket 10's crawl fetched the registry
-	// for every observed string and the report fell from 374 rows to 11; what is left is a
-	// source gap, not an identity failure.
-	const fromGames = identity.unresolved.filter((row) => row.kind === "team" && row.string !== "w2w");
-	assert.ok(fromGames.length > 0, "the game payloads contribute minted teams");
-	assert.ok(fromGames.some((row) => row.string === "T1") === false, "a team with a registry page is not reported");
-	// The string resolves from then on, so a later payload citing it joins the same entity.
-	assert.equal(identity.index.resolve("team", "w2w")?.id, report.id);
+	// Games reference players as display strings too (ticket 04), and the corpus still
+	// carries PlayerRedirects rows for none of IPL 5's unregistered players, so they are
+	// minted and reported the same way. The string resolves from then on, so a later
+	// payload citing it joins the same entity.
+	assert.equal(identity.index.resolve("player", "Eliade")?.id, report.id);
 	// And a registry page that later appears under that exact name keeps the ID.
 	const baseline = await fixtureBuild();
 	const dir = await fixtureCopy();
 	try {
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		teams.push({ _pageName: "w2w", Name: "w2w", OverviewPage: "w2w", Region: "China", RenamedTo: null });
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		const playersFile = await payloadFile(dir, "PlayerRedirects");
+		const players = await readRows(playersFile);
+		players.push({ _pageName: "Eliade", AllName: "Eliade", OverviewPage: "Eliade", ID: "Eliade" });
+		await savePayloadBody(playersFile, JSON.stringify(players));
 		const resolved = await buildDataset({ rawDir: dir });
-		const now = resolved.identity.teams.find((team) => team.name === "w2w");
+		const now = resolved.identity.players.find((player) => player.name === "Eliade");
 		assert.equal(now?.id, entity.id, "registering the page later must not renumber the entity");
-		assert.equal(now?.overviewPage, "w2w");
-		// Only the registered string leaves the report; the game-minted teams have no page
+		assert.equal(now?.overviewPage, "Eliade");
+		// Only the registered string leaves the report; the game-minted players have no page
 		// in this corpus and must stay, which is what keeps the report from emptying itself.
 		assert.equal(
-			resolved.identity.unresolved.some((row) => row.string === "w2w"),
+			resolved.identity.unresolved.some((row) => row.string === "Eliade"),
 			false,
 			"a resolved string leaves the report",
 		);
@@ -777,6 +806,21 @@ test("a payload in a table with no normalizer stops the build instead of being s
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
+})
+
+test("a qualifier-page string identical to an emitted team's string resolves to the one entity", async () => {
+	const { identity } = await fixtureBuild();
+	// Ticket 10's crawl carries the World Cyber Games 2013 qualifier series, and CJ Entus
+	// Blaze appears both there (a page the rule excludes, whose series are counted as
+	// ignored) and in the event's own series. The emission filter works on entity ids, so
+	// the string still resolves to the one entity — the qualifier rows are resolution
+	// input, and the entity is emitted because the main-event rows name it.
+	const rows = identity.aliases.filter((alias) => alias.kind === "team" && alias.string === "CJ Entus Blaze");
+	assert.equal(rows.length, 1, "one alias row, never one per page");
+	const hit = identity.index.resolve("team", "CJ Entus Blaze", "2013-11-29");
+	assert.equal(hit?.id, rows[0].entityId, "the qualifier-date lookup lands on the same entity");
+	assert.equal(hit?.name, "CJ Entus Blaze");
+	assert.equal(identity.teams.filter((team) => team.id === rows[0].entityId).length, 1, "and the entity is emitted once");
 })
 
 // ---- display names vs source strings -------------------------------------------

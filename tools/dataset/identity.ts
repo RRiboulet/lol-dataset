@@ -69,6 +69,14 @@
 // check it against, so the corpus must show that the two strings stood on the same side
 // of one series — otherwise a typo would merge two teams that never met.
 //
+// Emission is narrower than registration. Every string the registries and the payloads
+// carry is registered — `index` must resolve a qualifier-page string exactly as it always
+// did — but the entity *files* carry only the entities an emitted record names: a game
+// side, a match side, a player-game row, a draft entry. The rest of the registry (pages
+// the source knows but this dataset's events never touch) and the entities minted by rows
+// the selection rule never emitted stay resolution input and nothing else, so an analyst
+// joining the facts never meets a dimension row no fact reaches.
+//
 // Every emitted record carries the entity's display name beside its ID (spec R12):
 // the entity files do, and so does every alias row, so a reader joins on an ID
 // without having to decode it.
@@ -81,11 +89,13 @@ import { displayName } from "./normalize.ts";
 import type {
 	SourceChampion,
 	SourceDataset,
+	SourceMatch,
 	SourcePlayerName,
 	SourceScoreboardRow,
 	SourceTeam,
 	SourceTeamName,
 } from "./normalize.ts";
+import { pageUnderEvent } from "./pages.ts";
 
 export type EntityKind = "team" | "player" | "champion";
 
@@ -770,7 +780,14 @@ export function assembleIdentity(
 	// states is inert behind the registry and is not checked either.
 	const seriesByMatchId = new Map<string, SourceMatch>();
 	for (const match of sources.matches) {
-		if (options.selectedPages !== undefined && !underAny(match.page, options.selectedPages)) continue;
+		// The emitted series rows only (`pageUnderEvent`, as `eventForPage` judges the
+		// rows the build emits), so the evidence joins records the dataset actually carries.
+		if (
+			options.selectedPages !== undefined &&
+			!options.selectedPages.some((page) => pageUnderEvent(match.page, page))
+		) {
+			continue;
+		}
 		if (!seriesByMatchId.has(match.matchId)) seriesByMatchId.set(match.matchId, match);
 	}
 	const sharesASeriesSide = (declared: DeclaredAlias): boolean => {
@@ -841,6 +858,47 @@ export function assembleIdentity(
 		aliases,
 		unresolved: [...unresolved.values()].sort((a, b) => compare([a.kind, a.string], [b.kind, b.string])),
 		index: { resolve: (kind, source, date) => lookup(kind, source, date) },
+	};
+}
+
+/**
+ * The identity tables the dataset emits, given the entities the emitted records name.
+ *
+ * Emission is narrower than registration. Everything this module registers stays
+ * registered — `index` resolves a qualifier-page string exactly as it always did —
+ * but an entity belongs in the entity files only when some emitted record names it:
+ * a game side, a match side, a player-game row, a draft entry, or a conflict-report
+ * row (ticket 10's decision log). The registries keep every string they carry, so a
+ * registry row that answers a reference to an emitted entity can never have been
+ * dropped — the reference would not resolve. What leaves is the rest: pages the
+ * source registers but this dataset's events never touch (a qualifier's teams, a team
+ * retired before the earliest admitted event), and entities minted by rows the build
+ * never emitted. An entity first seen only on an excluded page is not a reference in
+ * this dataset, and a dimension row no fact can reach is not a member of it either.
+ *
+ * The caller passes the references **from the emitted records themselves** — not from
+ * this module's own observations — because which rows are emitted is decided after
+ * assembly: a series row whose games name other teams is held back by the scoreboard
+ * assembly, and only it knows that. A minted unresolved row survives exactly when its
+ * entity is one of those references — its string minted it, so the string is a
+ * reference too. An `ambiguous` row survives either way: ambiguity is a property of
+ * the string in the corpus, not of one row's reference, and it cannot appear on an
+ * emitted record at all (a row that could not resolve is never emitted), so there is
+ * no emitted-record test for it — dropping it would hide a merge hazard the next
+ * crawl could step into.
+ *
+ * The filter never touches an alias row's *string*, only its entity: a legacy name
+ * observed on an excluded page of a team that also played the main event is still the
+ * identity history of an emitted entity, and dropping it would erase the era it dates.
+ */
+export function emitReferenced(identity: AssembledIdentity, referenced: ReadonlySet<string>): AssembledIdentity {
+	return {
+		teams: identity.teams.filter((team) => referenced.has(team.id)),
+		players: identity.players.filter((player) => referenced.has(player.id)),
+		champions: identity.champions.filter((champion) => referenced.has(champion.id)),
+		aliases: identity.aliases.filter((alias) => referenced.has(alias.entityId)),
+		unresolved: identity.unresolved.filter((row) => row.id === null || referenced.has(row.id)),
+		index: identity.index,
 	};
 }
 
