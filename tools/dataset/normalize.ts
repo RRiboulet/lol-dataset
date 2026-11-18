@@ -474,8 +474,41 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 			});
 		}
 	}
+	// The source can carry two rows for one page that differ only in `RenamedTo` (measured:
+	// Phoenix1 has one row with `RenamedTo=Sentinels` and one with it empty). An empty value
+	// is an absence, not a contradiction of a stated rename, so the stated value wins; two
+	// rows that state *different* renames are still a contradiction and still stop the build.
+	const folded = new Map<string, SourceTeam>();
+	for (const row of rows) {
+		const seen = folded.get(row.page);
+		if (seen === undefined) {
+			folded.set(row.page, row);
+			continue;
+		}
+		const merge = (field: "name" | "region"): string => {
+			if (seen[field] !== "" && row[field] !== "" && seen[field] !== row[field]) {
+				throw new Error(
+					`team page ${JSON.stringify(row.page)}: ${seen.sourceFile} and ${row.sourceFile} state different ${field}s ` +
+						`(${JSON.stringify(seen[field])} vs ${JSON.stringify(row[field])})`,
+				);
+			}
+			return seen[field] !== "" ? seen[field] : row[field];
+		};
+		if (seen.renamedTo !== "" && row.renamedTo !== "" && seen.renamedTo !== row.renamedTo) {
+			throw new Error(
+				`team page ${JSON.stringify(row.page)}: ${seen.sourceFile} and ${row.sourceFile} state different renames ` +
+					`(${JSON.stringify(seen.renamedTo)} vs ${JSON.stringify(row.renamedTo)})`,
+			);
+		}
+		folded.set(row.page, {
+			...seen,
+			name: merge("name"),
+			region: merge("region"),
+			renamedTo: seen.renamedTo !== "" ? seen.renamedTo : row.renamedTo,
+		});
+	}
 	return dedupe(
-		rows,
+		[...folded.values()],
 		(row) => row.page,
 		(a, b) => same([a.name, a.renamedTo, a.region], [b.name, b.renamedTo, b.region]),
 		"team page",

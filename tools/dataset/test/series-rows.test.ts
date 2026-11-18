@@ -273,8 +273,16 @@ test("the corrected evidence prose matches the bytes: 6 CLG Prime series rows an
 	const series = result.scoreboards.matches.filter((match) => underIpl(match.overviewPage));
 	const seriesStrings = (name: string): number =>
 		series.flatMap((match) => match.sides).filter((side) => side.sourceTeam === name).length;
-	assert.equal(seriesStrings("CLG Prime"), 6, "six series rows use the 2012 name");
-	assert.equal(seriesStrings("Counter Logic Gaming"), 3, "the wildcard qualifiers already use the org name");
+	assert.equal(seriesStrings("CLG Prime"), 6, "six emitted series rows use the 2012 name");
+	// The org name on the series table belongs to the wildcard qualifiers, which are not the
+	// event (ticket 10): they are still in the recorded payloads, so the evidence is read
+	// there rather than from the emitted matches.
+	assert.equal(seriesStrings("Counter Logic Gaming"), 0, "no emitted IPL 5 series uses the org name");
+	const source = await iplSource();
+	const qualifierSeries = [...source.series.values()].filter(
+		(match) => match.page.startsWith(`${IPL}/Qualifiers/`) && match.sides.includes("Counter Logic Gaming"),
+	);
+	assert.equal(qualifierSeries.length, 3, "the wildcard qualifiers already use the org name");
 	const games = result.scoreboards.games.filter((game) => underIpl(game.overviewPage));
 	assert.equal(
 		games.flatMap((game) => game.sides).filter((side) => side.sourceTeam === "Counter Logic Gaming").length,
@@ -295,6 +303,8 @@ test("IPL 5 builds, validates and passes the gate, with the event report saying 
 			matches: result.scoreboards.matches,
 			eventGames: result.scoreboards.eventGames,
 			seriesConflicts: result.scoreboards.seriesConflicts,
+			eventCoverage: result.coverage.events,
+			eraCoverage: result.coverage.eras,
 			playerGames: result.playerGames.rows,
 			eras: result.eras,
 		}),
@@ -305,7 +315,7 @@ test("IPL 5 builds, validates and passes the gate, with the event report saying 
 	assert.ok(report, "every selected event is reported on");
 	assert.equal(report.state, "recorded");
 	assert.equal(report.games, 72, "the four recorded payloads carry 72 games");
-	assert.equal(report.matches, 42, "48 series rows, 6 of them contradicted and not emitted");
+	assert.equal(report.matches, 36, "48 series rows: 6 contradicted and not emitted, 6 wildcard-qualifier series that are not the event");
 	// The four payloads that were pending are in the cache the build reads, and the
 	// manifest pins them: a reader can walk from a game's source ids to its bytes.
 	const pinned = new Set(result.manifest.payloads.map((payload) => payload.file));
@@ -336,7 +346,7 @@ test("the build's summary names both counts, so a crawl cannot absorb them silen
 	assert.match(stdout, /6 series row\(s\) every game naming them contradicts — not emitted/);
 	assert.match(stdout, /14 series conflict row\(s\) committed: 8 detached game\(s\), 6 contradicted series/);
 	assert.match(stdout, /committed data matches a rebuild/);
-	assert.match(stdout, /277 game\(s\), 132 match\(es\)/);
+	assert.match(stdout, /377 game\(s\), 230 match\(es\)/);
 });
 
 test("no disagreement is left unclassified: the class decides the handling", async () => {

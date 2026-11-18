@@ -20,7 +20,9 @@ import type { BuildResult } from "../build.ts";
 import { buildDataset } from "../build.ts";
 import { readPayloads } from "../cache.ts";
 import { eraOn } from "../eras.ts";
-import type { GameRecord, MatchRecord } from "../games.ts";
+import type { GameRecord, MatchRecord, ScoreboardInput } from "../games.ts";
+import { assembleScoreboards } from "../games.ts";
+import { pageUnderEvent } from "../pages.ts";
 import { normalizeSources } from "../normalize.ts";
 import { TEAM_STAT_FIELDS } from "../normalize.ts";
 import { FIXTURE_RAW, savePayloadBody, writeTempRule } from "./helpers.ts";
@@ -70,10 +72,18 @@ async function payloadBodies(raw: string, table: string): Promise<string[]> {
 test("a recorded event yields exactly the games the source states, once each", async () => {
 	const result = await build();
 	const { games } = result.scoreboards;
-	assert.equal(games.length, 277, "110 Worlds 2023 + 76 MSI 2023 + 19 IEM 2015 + 72 IPL 5 games");
+	assert.equal(
+		games.length,
+		377,
+		"110 Worlds 2023 + 76 MSI 2023 + 19 IEM 2015 + 72 IPL 5 + 21 Rift Rivals 2017 + 25 Mid-Season Cup 2020 + 19 Esports World Cup 2024 + 35 First Stand 2025",
+	);
 	assert.equal(gamesUnder(result, WORLDS).length, 110);
 	assert.equal(gamesUnder(result, IEM).length, 19);
 	assert.equal(gamesUnder(result, IPL).length, 72);
+	assert.equal(gamesUnder(result, "Rift Rivals 2017/NA-EU").length, 21);
+	assert.equal(gamesUnder(result, "2020 Mid-Season Cup").length, 25);
+	assert.equal(gamesUnder(result, "Esports World Cup 2024").length, 19);
+	assert.equal(gamesUnder(result, "2025 First Stand").length, 35);
 	assert.equal(new Set(games.map((game) => game.id)).size, games.length, "no duplicate game ids");
 	// Exactly once means exactly: the source's own ids are unique too, and every game is
 	// attached to a selected event rather than floating.
@@ -207,8 +217,8 @@ test("matches: every series the source states, with the score the games cannot r
 	const { matches, games } = result.scoreboards;
 	assert.equal(
 		matches.length,
-		132,
-		"52 Worlds 2023 + 25 MSI 2023 + 13 IEM 2015 + 42 IPL 5 series (IPL 5 has 48 rows; 6 are contradicted by every game naming them, ticket 14)",
+		230,
+		"52 Worlds 2023 + 25 MSI 2023 + 13 IEM 2015 + 36 IPL 5 (48 rows: 6 contradicted by every game naming them, ticket 14, 6 wildcard-qualifier series) + 48 World Cyber Games 2013 + 19 Rift Rivals 2017 + 17 Mid-Season Cup 2020 + 7 Esports World Cup 2024 + 13 First Stand 2025",
 	);
 	const byId = new Map(matches.map((match) => [match.id, match]));
 	for (const game of games) {
@@ -269,20 +279,22 @@ test("the per-event report separates 'no games in the source' from 'nobody asked
 	const state = new Map(report.map((row) => [row.overviewPage, row]));
 	assert.equal(state.get(WORLDS)?.state, "recorded");
 	assert.equal(state.get(IEM)?.state, "recorded");
-	// Recorded query, zero rows — the fixture that keeps this state from collapsing into
-	// "missing", which would be a lie about what was fetched. The query is a
-	// `ScoreboardGames` one here (`Tournament='World Cyber Games 2013'`), which is why
-	// `empty` is the same claim as "the source answered zero games".
-	assert.equal(state.get("2013 World Cyber Games")?.state, "empty");
+	// Recorded queries that answer a series table and no game table: the ticket 10 crawl
+	// found 48 `MatchSchedule` rows and no scoreboard at all for World Cyber Games 2013, so
+	// the event is `recorded` with zero games — the state that keeps "thin" apart from
+	// "unfetched". Its 62 qualifier series are not the event (see the qualifier test).
+	assert.equal(state.get("2013 World Cyber Games")?.state, "recorded");
 	assert.equal(state.get("2013 World Cyber Games")?.games, 0);
+	assert.equal(state.get("2013 World Cyber Games")?.matches, 48);
 	// IPL 5 is `recorded` now that ticket 14 settled its series rows: the four recorded
-	// payloads carry 72 games and 48 series, 6 of which are contradicted and not emitted.
+	// payloads carry 72 games and 48 series, 6 of which are contradicted and not emitted,
+	// and 6 of which are wildcard-qualifier series that are not the event (ticket 10).
 	// Before that change the only recorded query for it was a `ScoreboardPlayers` one, and
 	// rows in a player table say nothing about whether the event has games — which is why
 	// the event used to read `missing` rather than `empty`.
 	assert.equal(state.get(IPL)?.state, "recorded");
 	assert.equal(state.get(IPL)?.games, 72);
-	assert.equal(state.get(IPL)?.matches, 42);
+	assert.equal(state.get(IPL)?.matches, 36);
 	// MSI 2023 was crawled for real in this ticket: it carries games, so it is recorded.
 	assert.equal(state.get("2023 Mid-Season Invitational")?.state, "recorded");
 	// WCG 2011 is the earliest era: a real `LIKE '2011 World Cyber Games%'` query came
@@ -300,20 +312,104 @@ test("the per-event report separates 'no games in the source' from 'nobody asked
 });
 
 test("an event name that only appears inside a LIKE pattern is not a query for that event", async () => {
-	// The report must read the query structurally: `LIKE '%MSI 2023%'` names a shape, not
-	// the event, and substring matching used to turn it into `empty`. The body is untouched,
-	// so every other fact about the corpus is unchanged.
+	// The report must read the query structurally: `LIKE '%2011 World Cyber Games%'` names a
+	// shape, not the event, and substring matching used to turn it into `empty`. The body is
+	// untouched, so every other fact about the corpus is unchanged — and the event has no
+	// games in this corpus, so "nobody asked" is the only honest state left for it.
 	const result = await buildAfterEdit(async (raw) => {
-		const [body] = await payloadBodies(raw, "ScoreboardGames");
-		const metaFile = body.replace(/\.json$/, ".meta.json");
-		const meta = JSON.parse(await readFile(metaFile, "utf8")) as { query: Record<string, unknown> };
-		// A substring pattern names a shape, not the event: an unanchored match would make
-		// this event look "empty" although no query ever asked for it.
-		meta.query.where = "OverviewPage LIKE '%2025 First Stand%'";
-		await writeFile(metaFile, JSON.stringify(meta), "utf8");
+		let changed = 0;
+		// Both game-row tables, because "empty" is established by any of them: the 2011
+		// scoreboard, series, picks and player queries all came back empty.
+		for (const table of ["ScoreboardGames", "MatchSchedule", "PicksAndBansS7", "ScoreboardPlayers"]) {
+			for (const body of await payloadBodies(raw, table)) {
+				const metaFile = body.replace(/\.json$/, ".meta.json");
+				const meta = JSON.parse(await readFile(metaFile, "utf8")) as { query: Record<string, unknown> };
+				if (!String(meta.query.where ?? "").includes("2011 World Cyber Games")) continue;
+				// A substring pattern names a shape, not the event: an unanchored match would make
+				// this event look "empty" although no query asked for it by name.
+				meta.query.where = `OverviewPage LIKE '%2011 World Cyber Games%'`;
+				await writeFile(metaFile, JSON.stringify(meta), "utf8");
+				changed += 1;
+			}
+		}
+		assert.equal(changed, 4, "the fixtures carry four 2011 queries");
 	});
 	const state = new Map(result.scoreboards.eventGames.map((row) => [row.overviewPage, row.state]));
-	assert.equal(state.get("2025 First Stand"), "missing", "a substring LIKE pattern is not a literal that names the event");
+	assert.equal(state.get("2011 World Cyber Games"), "missing", "a substring LIKE pattern is not a literal that names the event");
+});
+
+/** A minimal event row, for the report tests below that need no recorded fixture. */
+function eventForReport(overviewPage: string): ScoreboardInput["events"][number] {
+	return {
+		id: overviewPage.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+		name: overviewPage,
+		overviewPage,
+		league: "",
+		region: "",
+		dateStart: "2013-01-01",
+		year: 2013,
+		selection: { rule: "admitted", key: "test" },
+	};
+}
+
+/** A game-table payload that answered with `body`, for a query naming `where`. */
+function gameQuery(where: string, body = "[]"): ScoreboardInput["payloads"][number] {
+	return {
+		file: "lol-fandom/cargoexport/ScoreboardGames/test.json",
+		table: "ScoreboardGames",
+		endpoint: "cargoexport",
+		body,
+		query: { endpoint: "cargoexport", tables: "ScoreboardGames", fields: "GameId", where },
+	};
+}
+
+function reportFor(where: string): string {
+	const input: ScoreboardInput = {
+		games: [],
+		matches: [],
+		drafts: [],
+		events: [eventForReport("2013 World Cyber Games")],
+		identity: {} as ScoreboardInput["identity"],
+		eras: {} as ScoreboardInput["eras"],
+		payloads: [gameQuery(where)],
+		formats: { version: 1, blindPick: [] },
+	};
+	return assembleScoreboards(input).eventGames[0].state;
+}
+
+test("the qualifier boundary is one predicate: a whole `Qualifiers` segment, anywhere under the event page", () => {
+	const page = "2013 World Cyber Games";
+	assert.equal(pageUnderEvent(page, page), true, "the event's own page is under the event");
+	assert.equal(pageUnderEvent(`${page}/Main Event`, page), true, "a stage page is the event");
+	assert.equal(pageUnderEvent(`${page}/Qualifier Final`, page), true, "a page whose name contains the word is not the qualifier segment");
+	assert.equal(pageUnderEvent(`${page}/Qualifiers/China`, page), false);
+	assert.equal(pageUnderEvent(`${page}/Main Event/Qualifiers`, page), false, "the boundary is any segment, not only the first");
+	assert.equal(pageUnderEvent(`${page}/Main Event/Qualifiers/China`, page), false);
+	assert.equal(pageUnderEvent(`${page}/qualifiers`, page), false, "the segment is matched case-insensitively");
+	assert.equal(pageUnderEvent(`${page}/Scoreboards/Qualifiers_1_1_1_1`, page), true, "only a whole segment equal to `Qualifiers` is the boundary");
+	assert.equal(pageUnderEvent("2013 World Cyber Games Extra/Qualifiers", page), false, "a sibling page is not under the event");
+});
+
+test("an empty query for a qualifier does not make its event `empty`", () => {
+	// `empty` is a claim about the event's own games, so an empty query must name the event
+	// through the same boundary a page uses. A stage page does; a qualifier page does not.
+	assert.equal(reportFor("OverviewPage='2013 World Cyber Games/Main Event'"), "empty", "a stage query names the event");
+	assert.equal(reportFor("OverviewPage='2013 World Cyber Games/Qualifiers/China'"), "missing", "a qualifier query does not");
+	assert.equal(reportFor("OverviewPage='2013 World Cyber Games/Main Event/Qualifiers'"), "missing", "nor does a nested qualifier");
+});
+
+test("a payload body that is not JSON fails the build naming the payload, instead of reading as zero rows", () => {
+	const input: ScoreboardInput = {
+		games: [],
+		matches: [],
+		drafts: [],
+		events: [eventForReport("2013 World Cyber Games")],
+		identity: {} as ScoreboardInput["identity"],
+		eras: {} as ScoreboardInput["eras"],
+		payloads: [gameQuery("OverviewPage='2013 World Cyber Games'", "<html>not json</html>")],
+		formats: { version: 1, blindPick: [] },
+	};
+	assert.throws(() => assembleScoreboards(input), /ScoreboardGames\/test\.json: not JSON/);
 });
 
 test("a game whose teams are not its series' teams is detached and reported, not attached", async () => {
@@ -371,11 +467,41 @@ test("a game for an event the rule does not select is ignored, not emitted", asy
 		const result = await buildDataset({ rawDir: FIXTURE_RAW, ruleFile: rulePath });
 		assert.ok(result.scoreboards.games.every((game) => !game.overviewPage.startsWith(WORLDS)));
 		assert.equal(result.scoreboards.ignoredGames.length, 110, "the 110 Worlds games are counted as ignored");
-		assert.equal(result.scoreboards.ignoredMatches.length, 52);
-		assert.equal(result.scoreboards.games.length, 167, "MSI 2023, IEM 2015 and IPL 5 still contribute games");
+		assert.equal(
+			result.scoreboards.ignoredMatches.length,
+			120,
+			"52 Worlds series, 6 IPL 5 qualifier series and 62 World Cyber Games 2013 qualifier series",
+		);
+		assert.equal(result.scoreboards.games.length, 267, "the other seven events still contribute their games");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
+});
+
+test("a qualifier page under a selected event is not that event", async () => {
+	// The spec's event set excludes "qualifiers for an already-included event", and the
+	// wiki records them beneath the event page (`2013 World Cyber Games/Qualifiers/China`).
+	// A prefix-only attachment absorbed 62 such series into World Cyber Games 2013 from the
+	// real crawl, so the boundary is the first path segment after the event page: a stage
+	// page (`…/Main Event`, `…/Play-In`) is the event, a qualifier page is not.
+	const moved = `${WORLDS}/Qualifiers/EU`;
+	const result = await buildAfterEdit(async (raw) => {
+		for (const file of await payloadBodies(raw, "ScoreboardGames")) {
+			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const row = rows.find((candidate) => candidate.OverviewPage === `${WORLDS}/Play-In`);
+			if (row === undefined) continue;
+			row.OverviewPage = moved;
+			await savePayloadBody(file, JSON.stringify(rows));
+			return;
+		}
+		throw new Error(`the fixtures carry no game on ${WORLDS}/Play-In`);
+	});
+	assert.equal(result.scoreboards.games.length, 376, "the moved game is not emitted as the event's");
+	assert.ok(result.scoreboards.ignoredGames.includes(moved), "the page is counted as ignored, not absorbed");
+	assert.ok(
+		result.scoreboards.games.some((game) => game.overviewPage.startsWith(`${WORLDS}/`)),
+		"the event's real stage pages still attach",
+	);
 });
 
 test("a side-swapped series still resolves both of its teams", async () => {
@@ -398,12 +524,13 @@ test("a side-swapped series still resolves both of its teams", async () => {
 		assert.equal(game.sides[0].teamName, "PSG Talon", `${game.source.gameId}: Team1 is the game's blue side`);
 	}
 	assert.deepEqual(
-		match.sides.map((side) => [side.sourceOrder, side.teamName]),
+		match.sides.map((side) => [side.sourceOrder, side.sourceTeam]),
 		[
 			[1, "Movistar R7"],
 			[2, "PSG Talon"],
 		],
-		"the match states its columns, not the games' sides",
+		"the match states its columns, not the games' sides — the source strings, which stay put "
+			+ "when the team is renamed (ticket 10's registry crawl resolves Movistar R7 to the LYON chain)",
 	);
 	assert.deepEqual(
 		[...new Set(match.sides.map((side) => side.teamId))].sort(),

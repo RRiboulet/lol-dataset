@@ -69,6 +69,14 @@
 // check it against, so the corpus must show that the two strings stood on the same side
 // of one series — otherwise a typo would merge two teams that never met.
 //
+// Emission is narrower than registration. Every string the registries and the payloads
+// carry is registered — `index` must resolve a qualifier-page string exactly as it always
+// did — but the entity *files* carry only the entities an emitted record names: a game
+// side, a match side, a player-game row, a draft entry. The rest of the registry (pages
+// the source knows but this dataset's events never touch) and the entities minted by rows
+// the selection rule never emitted stay resolution input and nothing else, so an analyst
+// joining the facts never meets a dimension row no fact reaches.
+//
 // Every emitted record carries the entity's display name beside its ID (spec R12):
 // the entity files do, and so does every alias row, so a reader joins on an ID
 // without having to decode it.
@@ -81,11 +89,13 @@ import { displayName } from "./normalize.ts";
 import type {
 	SourceChampion,
 	SourceDataset,
+	SourceMatch,
 	SourcePlayerName,
 	SourceScoreboardRow,
 	SourceTeam,
 	SourceTeamName,
 } from "./normalize.ts";
+import { pageUnderEvent } from "./pages.ts";
 
 export type EntityKind = "team" | "player" | "champion";
 
@@ -451,7 +461,12 @@ export function assembleIdentity(
 	// ---- team entities: one per rename chain, anchored on the chain's root ---------
 	const teams: TeamRecord[] = [];
 	const teamIdByPage = new Map<string, string>();
-	for (const { root, chain } of teamChains(sources.teams)) {
+	// A redirect name can be what a rename points at (measured: Lyon Gaming (2013 Latin
+	// American Team) → `Rainbow7` → page Movistar R7), so the chain follows the source's
+	// own redirect table rather than failing on a link the registry does carry.
+	const redirectPage = new Map<string, string>();
+	for (const name of sources.teamNames) redirectPage.set(name.allName, name.page);
+	for (const { root, chain } of teamChains(sources.teams, redirectPage)) {
 		const current = chain[chain.length - 1];
 		const id = surrogateId(KIND_PREFIX.team, root.page);
 		teams.push({ id, name: displayName(current.name), overviewPage: current.page, region: current.region });
@@ -765,7 +780,14 @@ export function assembleIdentity(
 	// states is inert behind the registry and is not checked either.
 	const seriesByMatchId = new Map<string, SourceMatch>();
 	for (const match of sources.matches) {
-		if (options.selectedPages !== undefined && !underAny(match.page, options.selectedPages)) continue;
+		// The emitted series rows only (`pageUnderEvent`, as `eventForPage` judges the
+		// rows the build emits), so the evidence joins records the dataset actually carries.
+		if (
+			options.selectedPages !== undefined &&
+			!options.selectedPages.some((page) => pageUnderEvent(match.page, page))
+		) {
+			continue;
+		}
 		if (!seriesByMatchId.has(match.matchId)) seriesByMatchId.set(match.matchId, match);
 	}
 	const sharesASeriesSide = (declared: DeclaredAlias): boolean => {
@@ -839,6 +861,47 @@ export function assembleIdentity(
 	};
 }
 
+/**
+ * The identity tables the dataset emits, given the entities the emitted records name.
+ *
+ * Emission is narrower than registration. Everything this module registers stays
+ * registered — `index` resolves a qualifier-page string exactly as it always did —
+ * but an entity belongs in the entity files only when some emitted record names it:
+ * a game side, a match side, a player-game row, a draft entry, or a conflict-report
+ * row (ticket 10's decision log). The registries keep every string they carry, so a
+ * registry row that answers a reference to an emitted entity can never have been
+ * dropped — the reference would not resolve. What leaves is the rest: pages the
+ * source registers but this dataset's events never touch (a qualifier's teams, a team
+ * retired before the earliest admitted event), and entities minted by rows the build
+ * never emitted. An entity first seen only on an excluded page is not a reference in
+ * this dataset, and a dimension row no fact can reach is not a member of it either.
+ *
+ * The caller passes the references **from the emitted records themselves** — not from
+ * this module's own observations — because which rows are emitted is decided after
+ * assembly: a series row whose games name other teams is held back by the scoreboard
+ * assembly, and only it knows that. A minted unresolved row survives exactly when its
+ * entity is one of those references — its string minted it, so the string is a
+ * reference too. An `ambiguous` row survives either way: ambiguity is a property of
+ * the string in the corpus, not of one row's reference, and it cannot appear on an
+ * emitted record at all (a row that could not resolve is never emitted), so there is
+ * no emitted-record test for it — dropping it would hide a merge hazard the next
+ * crawl could step into.
+ *
+ * The filter never touches an alias row's *string*, only its entity: a legacy name
+ * observed on an excluded page of a team that also played the main event is still the
+ * identity history of an emitted entity, and dropping it would erase the era it dates.
+ */
+export function emitReferenced(identity: AssembledIdentity, referenced: ReadonlySet<string>): AssembledIdentity {
+	return {
+		teams: identity.teams.filter((team) => referenced.has(team.id)),
+		players: identity.players.filter((player) => referenced.has(player.id)),
+		champions: identity.champions.filter((champion) => referenced.has(champion.id)),
+		aliases: identity.aliases.filter((alias) => referenced.has(alias.entityId)),
+		unresolved: identity.unresolved.filter((row) => row.id === null || referenced.has(row.id)),
+		index: identity.index,
+	};
+}
+
 function compare(a: string[], b: string[]): number {
 	for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
 		const left = a[index] ?? "";
@@ -857,11 +920,19 @@ function compare(a: string[], b: string[]): number {
  * a cycle, an edge to a page no payload carries — is a source inconsistency that
  * would otherwise be resolved by whichever payload happened to be read first, so it
  * stops the build instead.
+ *
+ * A `RenamedTo` value is usually the successor **page**, and sometimes a name that page
+ * used to have (`Lyon Gaming (2013 Latin American Team)` → `Rainbow7`, which is now a
+ * `TeamRedirects` name for page `Movistar R7`). Following the source's own redirect row
+ * is not a guess; failing to would split one team into two because a page was renamed
+ * twice. A target that is neither a page nor a redirect name is still a hard stop.
  */
-function teamChains(teams: SourceTeam[]): { root: SourceTeam; chain: SourceTeam[] }[] {
+function teamChains(teams: SourceTeam[], redirectPage: Map<string, string>): { root: SourceTeam; chain: SourceTeam[] }[] {
 	const byPage = new Map(teams.map((team) => [team.page, team]));
+	/** The page a `RenamedTo` target denotes, or `undefined` when the registries cannot say. */
+	const successor = (target: string): SourceTeam | undefined => byPage.get(target) ?? byPage.get(redirectPage.get(target) ?? "");
 	for (const team of teams) {
-		if (team.renamedTo !== "" && !byPage.has(team.renamedTo)) {
+		if (team.renamedTo !== "" && successor(team.renamedTo) === undefined) {
 			throw new Error(
 				`${team.sourceFile}: team ${JSON.stringify(team.page)} says it was renamed to ${JSON.stringify(team.renamedTo)}, ` +
 					"but no Teams payload carries that page — the registry is incomplete, and guessing the successor would split one identity in two",
@@ -871,14 +942,15 @@ function teamChains(teams: SourceTeam[]): { root: SourceTeam; chain: SourceTeam[
 	const predecessor = new Map<string, string>();
 	for (const team of teams) {
 		if (team.renamedTo === "") continue;
-		const seen = predecessor.get(team.renamedTo);
+		const target = successor(team.renamedTo) as SourceTeam;
+		const seen = predecessor.get(target.page);
 		if (seen !== undefined) {
 			throw new Error(
-				`two team pages claim to have been renamed into ${JSON.stringify(team.renamedTo)}: ` +
+				`two team pages claim to have been renamed into ${JSON.stringify(target.page)}: ` +
 					`${JSON.stringify(seen)} and ${JSON.stringify(team.page)} — one identity cannot have two histories`,
 			);
 		}
-		predecessor.set(team.renamedTo, team.page);
+		predecessor.set(target.page, team.page);
 	}
 	const chains: { root: SourceTeam; chain: SourceTeam[] }[] = [];
 	const visited = new Set<string>();
@@ -893,7 +965,7 @@ function teamChains(teams: SourceTeam[]): { root: SourceTeam; chain: SourceTeam[
 			visited.add(current.page);
 			chain.push(current);
 			if (current.renamedTo === "") break;
-			current = byPage.get(current.renamedTo) as SourceTeam;
+			current = successor(current.renamedTo) as SourceTeam;
 		}
 		chains.push({ root: team, chain });
 	}

@@ -1,0 +1,44 @@
+{
+  "queries": [
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "OverviewPage IN ('Movistar KOI')",
+      "order_by": "OverviewPage ASC",
+      "limit": 20
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "_pageName IN ('Rainbow7')",
+      "order_by": "OverviewPage ASC",
+      "limit": 20
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "TeamRedirects",
+      "fields": "_pageName,AllName,OtherName",
+      "where": "AllName IN ('Rainbow7')",
+      "order_by": "AllName ASC",
+      "limit": 20
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "Name IN ('Bs As Fried Chick','Cash','High Hopes','Mook','Power Grip','STAR (Chinese Team)','Sirius Vega','VTG Raon','w2w')",
+      "order_by": "Name ASC",
+      "limit": 50
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "ID IN ('Eliade','Insta')",
+      "order_by": "ID ASC",
+      "limit": 50
+    }
+  ]
+}

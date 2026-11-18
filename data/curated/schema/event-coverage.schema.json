@@ -1,0 +1,155 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:event-coverage:1",
+	"title": "Per-event coverage report",
+	"description": "One row of data/curated/event-coverage.jsonl for every selected event: the aggregation of its games' per-game coverage markers (spec R6) into the three field groups the markers name. `coverage.<group>` counts the event's games by marker, so `complete` is a number of games and not a claim about the event; `state` is the worst case over those games — `complete` only when every game is, `unavailable` when none has anything in the group or the event carries no games at all, `partial` otherwise. The build generates this file from the emitted games, and the invariant gate re-counts it against games.jsonl, so an event can never be reported more complete than its games: that is ticket 10's reconciliation criterion. `eras` lists the era-table windows the event's games fall in, so a game-level report can be joined to the era-level one; it is empty exactly when `games` is 0. `games` reconciles with event-games.jsonl and with the rows of games.jsonl.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"eventId",
+		"eventName",
+		"overviewPage",
+		"eras",
+		"games",
+		"coverage"
+	],
+	"properties": {
+		"eventId": {
+			"type": "string",
+			"pattern": "^evt-[0-9a-f]{12}$"
+		},
+		"eventName": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The event's display name, repeated so the row reads without a join (spec R12)."
+		},
+		"overviewPage": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The event's source page, so a reader can find the payload that answered for it."
+		},
+		"eras": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"minLength": 1
+			},
+			"uniqueItems": true,
+			"description": "The distinct era ids among this event's games, sorted; empty when the event carries no games (an `empty` or `missing` event, per event-games.jsonl)."
+		},
+		"games": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "How many rows this event contributes to games.jsonl, which is also the number of games each group's counts sum to."
+		},
+		"coverage": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"teamStats",
+				"draft",
+				"playerStats"
+			],
+			"description": "The three field groups a game's coverage marker names, aggregated over this event's games. Keys are the ones games.jsonl uses.",
+			"properties": {
+				"teamStats": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"complete",
+						"partial",
+						"unavailable",
+						"state"
+					],
+					"properties": {
+						"complete": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"partial": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"unavailable": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"state": {
+							"type": "string",
+							"enum": [
+								"complete",
+								"partial",
+								"unavailable"
+							],
+							"description": "The group's state over the whole event: `complete` only when every game is, `unavailable` when none carries anything or there are no games, `partial` otherwise."
+						}
+					}
+				},
+				"draft": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"complete",
+						"partial",
+						"unavailable",
+						"state"
+					],
+					"properties": {
+						"complete": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"partial": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"unavailable": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"state": {
+							"type": "string",
+							"enum": [
+								"complete",
+								"partial",
+								"unavailable"
+							]
+						}
+					}
+				},
+				"playerStats": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"complete",
+						"partial",
+						"unavailable",
+						"state"
+					],
+					"properties": {
+						"complete": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"partial": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"unavailable": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"state": {
+							"type": "string",
+							"enum": [
+								"complete",
+								"partial",
+								"unavailable"
+							]
+						}
+					}
+				}
+			}
+		}
+	}
+}

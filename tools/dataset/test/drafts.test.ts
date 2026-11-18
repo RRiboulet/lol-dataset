@@ -68,11 +68,15 @@ test("2023 games carry ordered slots, 2015 games carry unordered sets, and all c
 	const games = result.scoreboards.games;
 	const ordered = games.filter((game) => game.draft?.fidelity === "ordered");
 	const unordered = games.filter((game) => game.draft?.fidelity === "unordered");
-	assert.equal(ordered.length, 186, "the recorded PicksAndBansS7 rows join every 2023 game (Worlds 110 + MSI 76)");
+	assert.equal(
+		ordered.length,
+		283,
+		"every game with a recorded PicksAndBansS7 row: 186 from 2023, 21 Rift Rivals 2017, 22 Mid-Season Cup 2020, 19 Esports World Cup 2024 and 35 First Stand 2025",
+	);
 	assert.equal(
 		unordered.length,
-		91,
-		"the pre-2017 games fall back to the list fields: 19 IEM 2015 and 72 IPL 5 (whose PicksAndBansS7 query returned zero rows)",
+		94,
+		"the rest fall back to the list fields: 19 IEM 2015 and 72 IPL 5 (whose PicksAndBansS7 query returned zero rows) plus the Mid-Season Cup's 3 declared blind picks, which have no ordered row",
 	);
 	const championById = new Map(result.identity.champions.map((champion) => [champion.id, champion]));
 	const championIds = new Set(championById.keys());
@@ -86,14 +90,32 @@ test("2023 games carry ordered slots, 2015 games carry unordered sets, and all c
 	for (const game of games) {
 		// The pre-2017 rows state five picks and at most three bans a side, so R6 calls them
 		// partial: a coverage marker that called them complete would hide the missing slots.
-		const expectedCoverage = game.source.gameId === NONE_SLOT_GAME ? "partial" : game.draft?.fidelity === "ordered" ? "complete" : "partial";
+		// A declared blind pick is complete with five picks and no bans, because the ban
+		// phase does not exist there (ticket 10).
+		const expectedCoverage =
+			game.source.gameId === NONE_SLOT_GAME
+				? "partial"
+				: game.draft?.blindPick === true || game.draft?.fidelity === "ordered"
+					? "complete"
+					: "partial";
 		assert.equal(game.coverage.draft, expectedCoverage, `${game.source.gameId}: honest draft coverage`);
 		assert.ok(game.draft, `${game.source.gameId}: a draft is present`);
 		assert.deepEqual(game.draft.sides.map((side) => side.side), ["blue", "red"]);
 		for (const side of game.draft.sides) {
 			for (const group of ["picks", "bans"] as const) {
 				const placeholder = side.side === "red" && group === "bans" && (game.source.gameId === NONE_SLOT_GAME || game.source.gameId === NONE_UNORDERED_GAME);
-				const expected = game.draft.fidelity === "ordered" ? (placeholder ? 4 : 5) : group === "picks" ? 5 : placeholder ? 2 : 3;
+				const expected =
+					group === "bans" && game.draft.blindPick === true
+						? 0
+						: game.draft.fidelity === "ordered"
+							? placeholder
+								? 4
+								: 5
+							: group === "picks"
+								? 5
+								: placeholder
+									? 2
+									: 3;
 				assert.equal(side[group].length, expected, `${game.source.gameId}: the source's ${group} count per side`);
 				for (const entry of side[group]) {
 					assert.ok(championIds.has(entry.championId), `${game.source.gameId}: ${entry.sourceChampion} has a canonical entity`);
@@ -306,8 +328,10 @@ test("a champion repeated anywhere in a draft fails the build, naming the game",
 				await save(file, source);
 				break;
 			}
+			// The duplicate is refused either way; only the message differs, because a
+			// cross-side duplicate is a blind-pick fact and a same-side one never is.
 			await assert.rejects(buildDataset({ rawDir: dir }), (error: Error) =>
-				error.message.includes(target.source.gameId) && /twice/.test(error.message),
+				error.message.includes(target.source.gameId) && /twice|both sides/.test(error.message),
 			);
 		} finally {
 			await rm(dir, { recursive: true, force: true });
@@ -343,8 +367,12 @@ test("two payloads carrying identical rows are one draft and one game, not a sta
 		status: 200,
 	});
 	const result = await buildDataset({ rawDir: dir });
-	assert.equal(result.scoreboards.games.length, 277, "the overlapping rows did not duplicate a game");
-	assert.equal(result.scoreboards.games.filter((game) => game.coverage.draft === "complete").length, 185, "185 of 186 ordered games; one MSI ban slot is the source's `None`");
+	assert.equal(result.scoreboards.games.length, 377, "the overlapping rows did not duplicate a game");
+	assert.equal(
+		result.scoreboards.games.filter((game) => game.coverage.draft === "complete").length,
+		285,
+		"377 games: 282 ordered drafts are complete (one MSI ban slot is the source's `None`), the 3 Mid-Season Cup blind picks are complete without bans, and the 92 pre-2017 games are partial",
+	);
 });
 
 test("a draft from a rejected event mints no champion or unresolved entity", async () => {

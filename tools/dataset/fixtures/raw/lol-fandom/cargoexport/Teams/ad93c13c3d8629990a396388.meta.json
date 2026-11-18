@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Teams",
+    "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+    "where": "OverviewPage IN ('Lyon Gaming (2013 Latin American Team)','MAD Lions','Meat Playground','MeetYourMakers','MiTH Flashdive','Millenium','Mook','Moscow Five','Movistar R7','NRG','NaJin Black Sword','NaJin White Shield','Oh My God','PSG Talon','Phoenix1','Positive Energy','Power Grip','Quantic Gaming','Rampage','Renegades of Hell','RisingStars Gaming','Royal Club','Royal Paladin eSports','Royal Paladin eSports Eclipse','SK Gaming')",
+    "order_by": "OverviewPage ASC",
+    "limit": 100
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=OverviewPage+IN+%28%27Lyon+Gaming+%282013+Latin+American+Team%29%27%2C%27MAD+Lions%27%2C%27Meat+Playground%27%2C%27MeetYourMakers%27%2C%27MiTH+Flashdive%27%2C%27Millenium%27%2C%27Mook%27%2C%27Moscow+Five%27%2C%27Movistar+R7%27%2C%27NRG%27%2C%27NaJin+Black+Sword%27%2C%27NaJin+White+Shield%27%2C%27Oh+My+God%27%2C%27PSG+Talon%27%2C%27Phoenix1%27%2C%27Positive+Energy%27%2C%27Power+Grip%27%2C%27Quantic+Gaming%27%2C%27Rampage%27%2C%27Renegades+of+Hell%27%2C%27RisingStars+Gaming%27%2C%27Royal+Club%27%2C%27Royal+Paladin+eSports%27%2C%27Royal+Paladin+eSports+Eclipse%27%2C%27SK+Gaming%27%29&order_by=OverviewPage+ASC&limit=100",
+  "fetchedAt": "2026-11-18T09:29:14.792Z",
+  "status": 200,
+  "bodySha256": "4a37b9a4345aeac366b351ef69583b3a9cfb260edc53069e322c00ea6e233ed6"
+}

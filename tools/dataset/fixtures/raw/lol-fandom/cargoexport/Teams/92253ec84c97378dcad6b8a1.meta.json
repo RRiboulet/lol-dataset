@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Teams",
+    "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+    "where": "OverviewPage IN ('Movistar KOI')",
+    "order_by": "OverviewPage ASC",
+    "limit": 20
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=OverviewPage+IN+%28%27Movistar+KOI%27%29&order_by=OverviewPage+ASC&limit=20",
+  "fetchedAt": "2026-11-18T09:52:38.583Z",
+  "status": 200,
+  "bodySha256": "c36246b75cd5d64e80787dbc64f71a26a75e64e94b7ebe862179209c019c846f"
+}

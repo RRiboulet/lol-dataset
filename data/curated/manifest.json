@@ -1,6 +1,6 @@
 {
   "format": "lol-dataset-provenance/1",
-  "entityDigest": "fa9b5714a23a115f5cd18007569bae2d74ec1c18a8d70db313268b5a6577e15b",
+  "entityDigest": "a3162c6e1176c773c74aebbde846c21fa7489030f3507ec8f9ae829ebdb556af",
   "entities": [
     {
       "file": "events.jsonl",
@@ -15,52 +15,62 @@
     {
       "file": "event-games.jsonl",
       "records": 10,
-      "sha256": "9e180f3337412ba0ec67f3ef6e2fb5be033531a62e8d6db66f0799d5c3c138ad"
+      "sha256": "4b9a0d8e267cef67a13834f0cca162bb687d63448aa71c1fdb90b9b26334ee64"
+    },
+    {
+      "file": "event-coverage.jsonl",
+      "records": 10,
+      "sha256": "5b777f53fd64f2353bde7d51eb004634415aa86ef7ce745e37c90f18216f3779"
+    },
+    {
+      "file": "era-coverage.jsonl",
+      "records": 8,
+      "sha256": "ddd9b0f41118f8e0c00352f3ce42bca06c5df81ad8f7c8ba2c8423cf3574aa6f"
     },
     {
       "file": "games.jsonl",
-      "records": 277,
-      "sha256": "40cf62c453680e5f6a648a2154322f58ddd13c8a5676ff94e3f1833ec0f10f06"
+      "records": 377,
+      "sha256": "47856a8e4c704a41f956da489f77761f6c11a3f414bb1743edcf0ae5ec59e5d9"
     },
     {
       "file": "matches.jsonl",
-      "records": 132,
-      "sha256": "17922431fcf63d79aaf6c42c9a19e700e15d9e3e0ec2b93ee6100503e5b9377e"
+      "records": 230,
+      "sha256": "a4872fdfd5ec71c095b36b70e7733fcf135ebca9ed8065eb9996d8ef50dfe5ee"
     },
     {
       "file": "series-conflicts.jsonl",
       "records": 14,
-      "sha256": "1667590bb5c76bb14d00a3911cf1fdba6fde54f21f785cadd5191e1d44aa7554"
+      "sha256": "79b937f59de3ab6c81dd60eb3d5438e8f4d926f97e2d7696fc3b8682d814fff4"
     },
     {
       "file": "player-games.jsonl",
-      "records": 2770,
-      "sha256": "c0f6895e137db5dc6dc22e650b2f4f50db801edc8bed377fa3cfd20aadf39590"
+      "records": 3770,
+      "sha256": "0c678895540a70a6c98042dc3d92e0654110acc690fdfd36f9a4de7bf0c67577"
     },
     {
       "file": "teams.jsonl",
-      "records": 51,
-      "sha256": "df56e460a0860e2b019dad2893d698191823b0b73286f65358a0d1a1d0a63208"
+      "records": 68,
+      "sha256": "ded3b11456c347408d95cd38c37065e792dc910b93b996f5bef883e7b598e91e"
     },
     {
       "file": "players.jsonl",
-      "records": 267,
-      "sha256": "7d3ddfac784961f09d76954317109e7d6b793a546936fc7799e5daac4141205f"
+      "records": 291,
+      "sha256": "7fdccf24bc8583df1e805c6a9ed7ec985c43d6186208a15216fbb8eeaf5f4ac8"
     },
     {
       "file": "champions.jsonl",
-      "records": 173,
-      "sha256": "a28250201509ae4013fb276111cea0092aa6197fd7bead3ed28230c29af5a282"
+      "records": 149,
+      "sha256": "eb8c6f3f7b8c6253acbf64e0be21d90bc51c3165e33055fade076556c9f24f1c"
     },
     {
       "file": "aliases.jsonl",
-      "records": 596,
-      "sha256": "a688346d0be9990b076fd5184367c77096c5ffac165b5032f91332914ba0306b"
+      "records": 647,
+      "sha256": "c25ab1c545d002f81e110b76e3c8f16aae0b7c0884c618f22088db091de98fdd"
     },
     {
       "file": "identity-unresolved.jsonl",
-      "records": 253,
-      "sha256": "d91d21e5bf5e7f8fb2ccf72b5e602d97c70b00a2bfd09fd42ac2e083d4513330"
+      "records": 2,
+      "sha256": "74f2961f0e9f802319f4bd360aa6ddbadac2ef660bff5f49420291a565617358"
     }
   ],
   "payloads": [
@@ -96,6 +106,22 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/MatchSchedule/01fbf5af691fa869a76afbba.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "0fdd20dd471c68fbe5b54146e292e6a96dd2601dc4bb4b4a740397f4164651d7",
+      "fetchedAt": "2026-11-18T09:00:02.518Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE '2013 World Cyber Games%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/MatchSchedule/1b37c11c3fe6aebbcbce6d8c.json",
       "table": "MatchSchedule",
       "endpoint": "cargoexport",
@@ -107,6 +133,22 @@
         "tables": "MatchSchedule",
         "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
         "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/3123a7678a8dbb6027e5ee2f.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "ecae4b97e0242e965eb303141a7ac41ef62c0b3abe4231a50f4b77a2942dc6b3",
+      "fetchedAt": "2026-11-18T09:21:56.194Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE '2025 First Stand%'",
         "order_by": "MatchId",
         "limit": 500
       }
@@ -128,6 +170,22 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/MatchSchedule/7d08b2235947ee553d2c3a1c.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "2812dc69e3a608fca135b9bf13adac4570d126a07f99f946c751f7d9ca4b98b4",
+      "fetchedAt": "2026-11-18T09:05:38.800Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/NA-EU%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/MatchSchedule/879e7d2f18493024fc2fc71c.json",
       "table": "MatchSchedule",
       "endpoint": "cargoexport",
@@ -139,6 +197,38 @@
         "tables": "MatchSchedule",
         "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
         "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/9bbc5636881d31ededc59427.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "5a6acbaaae6a4363f600ffd554117555a2be792fc435bd0a953af3f88cb23ef4",
+      "fetchedAt": "2026-11-18T09:16:25.217Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE 'Esports World Cup 2024%'",
+        "order_by": "MatchId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/MatchSchedule/ca7f26d40ba7664f8875c8d1.json",
+      "table": "MatchSchedule",
+      "endpoint": "cargoexport",
+      "bodySha256": "ad40dbe4b5b8712349aa3b87ec5fb831ad550976360d9d9c7745fca71eb9d812",
+      "fetchedAt": "2026-11-18T09:11:10.208Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "MatchSchedule",
+        "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+        "where": "OverviewPage LIKE '2020 Mid-Season Cup%'",
         "order_by": "MatchId",
         "limit": 500
       }
@@ -208,6 +298,22 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/660a544db72f5db1e8713c49.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "8280e446fd11efc0d88e68df41d0a78b4398f1803f7930f160a1e0a33f187d65",
+      "fetchedAt": "2026-11-18T09:06:56.565Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE 'Rift Rivals 2017/NA-EU%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/PicksAndBansS7/67ee10ba2ee8d1763f8c3753.json",
       "table": "PicksAndBansS7",
       "endpoint": "cargoexport",
@@ -219,6 +325,54 @@
         "tables": "PicksAndBansS7",
         "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
         "where": "GameId LIKE '2011 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/9a0be9438a8ad56797f1dac1.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "d123e83ddebc5cb2785b4c16fcd7d7c3b927bf51082792750741510ecc3b69f7",
+      "fetchedAt": "2026-11-18T09:23:17.899Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE '2025 First Stand%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/9e0c861c1656be6126dfe811.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "1b731d639fa28d88412ea02995d29a7094ad01d67faaa2a28945f30d45524b7c",
+      "fetchedAt": "2026-11-18T09:17:46.134Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE 'Esports World Cup 2024%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/bf9b552c340dc2702795ad06.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "8658dc3c97c427089dc8ca28b80829da54f13ab207476449cc56dc5bbdb56027",
+      "fetchedAt": "2026-11-18T09:12:27.860Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE '2020 Mid-Season Cup%'",
         "order_by": "GameId",
         "limit": 500
       }
@@ -272,6 +426,118 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/PicksAndBansS7/f09592c330034986c6cd5b3c.json",
+      "table": "PicksAndBansS7",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-18T09:01:28.610Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PicksAndBansS7",
+        "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+        "where": "GameId LIKE '2013 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/121a9133599eb8292a801b84.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "6b2f44c687d1ee2b4b66793ccec7efa9541b685f4a1c8ad4c6230d59778155f8",
+      "fetchedAt": "2026-11-18T09:47:01.643Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('Targamas','Tarzan (Lee Seung-yong)','Teddy','TheOddOne','TheShy','Tian','TkSing','Toyz','Trick','Trymbi','UmTi','Viper (Park Do-hyeon)','Vizicsacsi','Vladi','Voyboy','Wako','Weiwei','Weixiao','Wickd','WildTurtle','Woody','XUN','Xerxe','Xiaohu','Xllyra','Xmithie','Xpecial','Yagao','Yike','YuZhe')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/156b2a19db20f31cc13dc70d.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "16fc0a1f317320cc204de690666b587ba4da65508c23e7ebf07212184e973918",
+      "fetchedAt": "2026-11-18T09:42:48.533Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('LemonNation','Lemongod','Levi','Licken','Licorice','Life','Light (Wang Guang-Yu)','LightSludge','Lilballz','Locodoco','LokeN','LvMao','Lwx','Lyonz','MISSING','Madlife','Malunoo','Maple (Huang Yi-Tang)','Massu','Meiko','Meteos','MiSTakE','MikeYeung','Mikyx','Mireu','Misaya','Muffinqt','Mystic','NL (Hsiung Wen-An)','NLgnz')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/30484a6d4e73d16e934c8c32.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "eaf134444c7cdd1e11918f381a241af75ed087d02867893b462dc346c41b948f",
+      "fetchedAt": "2026-11-18T09:41:28.404Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('Hang','Hans Sama','Harp','Hauntzer','HongQ','HotshotGG','Humanoid','Hylissang','IgNar','Impact','Inspired','Insta','JackeyLove','Jensen','Jesiz','JimieN','Jun (Yoon Se-jun)','JunJia','Kaiwing','Kanavi','Karsa','Kati','Kellin','Khan','Kiaya','Kiin','Krepo','Labrov','Lee','Lehends')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/39a55c322b1723da884fc08b.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "2b1881aefa83601e3d4a9a5db535641495d8397f6d3e85716493425e92dc1e23",
+      "fetchedAt": "2026-11-18T09:44:11.057Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('Ning','Nisqy','Nk Inc','Noah (Oh Hyeon-taek)','Nuguri','Nyjacky','ON','Oddie','Oscarinin','P1noy','Palafox','Palette','Patoy','Peanut','Perkz','Peyz','Pobelter','Porschkub','PraY','Puff (Ding Wang)','Quad','Rascal','Ray','Razork','ReD (Lee Siu Hin)','Reginald','Rekkles','Rest','Rhux','River (Kim Dong-woo)')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/451606ae76c68d5d800c8034.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "813d83e56527f5571d58ca0ad89699b916639f576f9b208a53bf889a0d856e42",
+      "fetchedAt": "2026-11-18T09:37:30.540Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('0N','228','369','Adam (Adam Maanane)','Aiming','Alex Ich','Aluka','Angush','Aphromoo','Aria (Lee Ga-eul)','Arrow','Artemis (Trần Quốc Hưng)','Azhi','Balls','Bdd','BeanJ','Berserker (Kim Min-cheol)','BeryL','Betsy','Bie','Bin (Chen Ze-Bin)','Biofrost','Bjergsen','Blaber','Bong (Cho Bo-woong)','BrokenBlade','Broxah','Busio','Bwipo','Cabochard')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/6a9fd6d7fc42cdbb29eb3f12.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "d3881e7d8326a4a115d1fafd8318730a5e83224e8d2626c606cd79bd0fc019c6",
+      "fetchedAt": "2026-11-18T09:40:09.398Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('Doggo','Doinb','Doran (Choi Hyeon-jun)','Driver','EMENES','Edward','Effort','Eliade','Elk','Elyoya','EquivocaL','Exileh','Expect','Extinkt','FBI','FORG1VENGRE','Fox (Hampus Myhre)','Froggen','Fudge','Fzzf','GALA','Gemini','Genja','Ghost (Jang Yong-jun)','Gloryy','GoSu Pepper','Gori','GorillA','HaRleLuYaR','Hai')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/PlayerRedirects/a0528975ce1c5d8a283cb870.json",
       "table": "PlayerRedirects",
       "endpoint": "cargoexport",
@@ -285,6 +551,70 @@
         "where": "AllName IN ('APA','APA (Eain Stearns)','Ambition','Bang','Bengi','CoreJJ','Cpt Jack','Dan Dinh','DontMashMe','Doublelift','Dreilix','Dyrus','Faker','Flame','Flamer','Gumayusi','Helios','Helios (Shin Dong-jin)','Hjarnan','Honest','Keria','Linak','Luncafoer','Lustboy','MaRin','MoMa','NOTTILTEDAD','NintendudeX','Nio','Odoamne','Oner','Owpi','Pixel','Pyosik','Ryu','Salce','Summit','TakashiX','Trailblazer','Trailblazer (Oskar Moreno)','Westrice','Wolf','Wolf (Lee Jae-wan)','Yellowstar','Yeon','Yeon (Sean Sung)','Zeus','ZionSpartan','bbmuffin','denizzz','kaSing','kujaa','loulex','sOAZ') OR OverviewPage IN ('APA','APA (Eain Stearns)','Ambition','Bang','Bengi','CoreJJ','Cpt Jack','Dan Dinh','DontMashMe','Doublelift','Dreilix','Dyrus','Faker','Flame','Flamer','Gumayusi','Helios','Helios (Shin Dong-jin)','Hjarnan','Honest','Keria','Linak','Luncafoer','Lustboy','MaRin','MoMa','NOTTILTEDAD','NintendudeX','Nio','Odoamne','Oner','Owpi','Pixel','Pyosik','Ryu','Salce','Summit','TakashiX','Trailblazer','Trailblazer (Oskar Moreno)','Westrice','Wolf','Wolf (Lee Jae-wan)','Yellowstar','Yeon','Yeon (Sean Sung)','Zeus','ZionSpartan','bbmuffin','denizzz','kaSing','kujaa','loulex','sOAZ') OR ID='Wolf'",
         "order_by": "AllName ASC",
         "limit": 150
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/b99a3911cb067fec7392f5ef.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "26df4a95a91a8df46fd5f18da23b2a097dd67d2c1c565d04b149921fe09f7b6f",
+      "fetchedAt": "2026-11-18T09:45:31.940Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('Robo','Rookie','Route','Ruler','Saintvicious','Samux','Santorin','Scout','Sheo','ShiauC','ShowMaker','Shunn','Shy','Slayder','Smeb','Smoothie','Sneaky','Snoopeh','Southwind','Space (Seon Ho-san)','Sparda','Spirit','Stanley','Steak','Steal (Mun Geon-yeong)','Stixxay','Sty1e','SuperCat','Svenskeren','SwordArt')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/bc3d8c88240682229a14605e.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "a9c01318b3d49df2f815ca181e4fc8a9f458fd47edb09c5811a2e6f0b58f557e",
+      "fetchedAt": "2026-11-18T09:38:49.409Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('Caliste','Canna','Canyon','Caomei','Caps','Carzzy','Ceo','Ceos','Chaox','Chasy','Chauster','Chawy','Chovy','ClearLove','Clid','CoCo','Contractz','Cop','Creaton','Creme','Crisp','Croc','Crownie','Cuzz','Cyanide','Darien','Deft','Delight','Dhokla','Diamondprox')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/c68cc95f2e8c32f88bdf36a2.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "a53e86c9ba1ab704fcaaa5ab742e1f65cd2f26df8051d9ee775b87f034020115",
+      "fetchedAt": "2026-11-18T09:48:21.281Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "AllName IN ('Yutapon','Zeka (Kim Geon-woo)','Zika','Zin','Zoom','Zuna','Zven','apaMEN','bebe (Chang Bo-Wei)','bigfatlp','d4rkness','fredy122','huhi','knight (Zhuo Ding)','kurO','ly4ly4ly4','mancloud','mithy','nRated','nuc','tinowns','tol2','ubao','xHazzard','xPeke','xiye','yellowpete','yuyanjia','zig')",
+        "order_by": "AllName ASC",
+        "limit": 400
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/PlayerRedirects/ead6bb397f8b4a2295b35cd4.json",
+      "table": "PlayerRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-18T09:58:45.271Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "PlayerRedirects",
+        "fields": "_pageName,AllName,OverviewPage,ID",
+        "where": "ID IN ('Eliade','Insta')",
+        "order_by": "ID ASC",
+        "limit": 50
       }
     },
     {
@@ -316,6 +646,38 @@
         "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
         "where": "Tournament IN ('Worlds 2023','Worlds 2023 Main Event','Worlds 2023 Play-In')",
         "order_by": "DateTime_UTC",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/6269527e3f5e5485b884f290.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "de12b0722233b84a9c40e253810f9de6e8216f0f4ba6ed256e3a0db7f8a3b3b0",
+      "fetchedAt": "2026-11-18T09:19:08.908Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE '2025 First Stand%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/971ba07055a25d8aea1eb71b.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-18T08:57:25.270Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE '2013 World Cyber Games%'",
+        "order_by": "GameId",
         "limit": 500
       }
     },
@@ -367,6 +729,22 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/c7cbce8ff87d77f2176546a0.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "a08a288acd28f2bad9774fb3e59a95e990c32f8b25d386b444820ff8d0108814",
+      "fetchedAt": "2026-11-18T09:13:43.032Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE 'Esports World Cup 2024%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/ScoreboardGames/c8c73bc1732bd80108c4814e.json",
       "table": "ScoreboardGames",
       "endpoint": "cargoexport",
@@ -394,6 +772,38 @@
         "tables": "ScoreboardGames",
         "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
         "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/f0c6661d229ed6d011ad5c7c.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "a2183f12532ccb24e04c561dedf9a0aebf9ad86e651afd2748f2f6783c9c41fe",
+      "fetchedAt": "2026-11-18T09:08:13.897Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE '2020 Mid-Season Cup%'",
+        "order_by": "GameId",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardGames/fc75abce44703e8a4323162c.json",
+      "table": "ScoreboardGames",
+      "endpoint": "cargoexport",
+      "bodySha256": "a47a3a762c1bf6d9d8e0be287ac0a1657971543da87330a6e1f5b0c6643a440e",
+      "fetchedAt": "2026-11-18T09:02:52.854Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardGames",
+        "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/NA-EU%'",
         "order_by": "GameId",
         "limit": 500
       }
@@ -431,6 +841,22 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/2465bd5da0ba4b82bc438c56.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "737f0dc1b9aef239e99901ea5c0edbe07b1c49fa3d91a4a1484745dfc884e8d2",
+      "fetchedAt": "2026-11-18T09:04:15.890Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/NA-EU%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/ScoreboardPlayers/37855a8c39b19894ff6890b5.json",
       "table": "ScoreboardPlayers",
       "endpoint": "cargoexport",
@@ -463,6 +889,38 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/5d2028ab0fe47f375319554e.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "9fe1f433e76c90ae51af35cfa36bca114e06ce35a8b6e1f8742bf8b1bba5721e",
+      "fetchedAt": "2026-11-18T09:20:35.814Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE '2025 First Stand%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/766533c45cc31b9b6295f08d.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "cbafc3a17ce84c55bd3d696830f2ae98ac9390528849795500ecb090ed6fe7e1",
+      "fetchedAt": "2026-11-18T09:09:42.510Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE '2020 Mid-Season Cup%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/ScoreboardPlayers/80289c3e35b8d0ac94a62bd6.json",
       "table": "ScoreboardPlayers",
       "endpoint": "cargoexport",
@@ -474,6 +932,22 @@
         "tables": "ScoreboardPlayers",
         "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
         "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/8b02e8acb159c93cadd4e65a.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "e769fb0c8cabf00b39193aeb16a54892389068db9608e6b4b81687d8c230c5f0",
+      "fetchedAt": "2026-11-18T09:15:00.986Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE 'Esports World Cup 2024%'",
         "order_by": "GameId",
         "limit": 2000
       }
@@ -543,6 +1017,86 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/f29457a70bb5f3a10cb8200d.json",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-18T08:58:44.535Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE '2013 World Cyber Games%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/TeamRedirects/17a9c856232702f264d395d7.json",
+      "table": "TeamRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "0f3e398879768c26637ecefee64d19bb4c3d92f6f33069f9a5b6d4b7c04dd97f",
+      "fetchedAt": "2026-11-18T09:55:30.730Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "TeamRedirects",
+        "fields": "_pageName,AllName,OtherName",
+        "where": "AllName IN ('Rainbow7')",
+        "order_by": "AllName ASC",
+        "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/TeamRedirects/1f2f48fbfdf097ddd9208704.json",
+      "table": "TeamRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "4a3bd9d6989cfc603ac27f02fcc5c8147e4cd63d100cdee42cb888bf6f7e7277",
+      "fetchedAt": "2026-11-18T09:36:07.283Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "TeamRedirects",
+        "fields": "_pageName,AllName,OtherName",
+        "where": "AllName IN ('Xenics Storm','ahq eSports Club','compLexity Gaming','w2w','yoe Flash Wolves')",
+        "order_by": "AllName ASC",
+        "limit": 300
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/TeamRedirects/3144b58b7bc54a283d7348bc.json",
+      "table": "TeamRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "7d22d2174ff303f860c715b7dd9fad5accc89110b13e0918978d0f183593836d",
+      "fetchedAt": "2026-11-18T09:27:56.930Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "TeamRedirects",
+        "fields": "_pageName,AllName,OtherName",
+        "where": "AllName IN ('G2 Esports','GAM Esports','GE Tigers','Gambit Gaming','Gen.G','Golden Guardians','Hanwha Life Esports','High Hopes','IceLanD','Invictus Gaming','Isurus','JD Gaming','Jin Air Green Wings Falcons','Jin Air Green Wings Stealths','KT Rolster','KT Rolster Arrows','KT Rolster Bullets','KaBuM! Esports','Karmine Corp','Kx.Happy','LGD Gaming','LMQ','LNG Esports','LOUD','Lemondogs Argentina')",
+        "order_by": "AllName ASC",
+        "limit": 300
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/TeamRedirects/7d1dafa717cef828da634d10.json",
+      "table": "TeamRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "3b5338fad9a285facdd1a466ffcf77dfb6cb389ef04b761a8eaae430bb36295b",
+      "fetchedAt": "2026-11-18T09:33:14.631Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "TeamRedirects",
+        "fields": "_pageName,AllName,OtherName",
+        "where": "AllName IN ('STAR (Chinese Team)','Samsung Blue','Samsung Ozone','Singapore Sentinels','Sirius Vega','TSM','Taipei Assassins','Taipei Snipers','Team ANG','Team BDS','Team Curse','Team Curse Europe','Team FeaR','Team Immunity','Team Livemore','Team WE','Team Whales','The Bandits Prime','The RED','Top Esports','Unicorns of Love','VTG Raon','Vici Gaming','Weibo Gaming','Wings of Aurora')",
+        "order_by": "AllName ASC",
+        "limit": 300
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/TeamRedirects/97c977a238ecff061b8ceb03.json",
       "table": "TeamRedirects",
       "endpoint": "cargoexport",
@@ -559,6 +1113,86 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/TeamRedirects/abce1c59027d9cd07ffaf6ae.json",
+      "table": "TeamRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "b207d8ac3274a0fe0888442e642a23aaa176042a279d89f2f146c44bbfb54096",
+      "fetchedAt": "2026-11-18T09:30:32.056Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "TeamRedirects",
+        "fields": "_pageName,AllName,OtherName",
+        "where": "AllName IN ('Lyon Gaming (2013 Latin American Team)','MAD Lions','Meat Playground','MeetYourMakers','MiTH Flashdive','Millenium','Mook','Moscow Five','Movistar R7','NRG','NaJin Black Sword','NaJin White Shield','Oh My God','PSG Talon','Phoenix1','Positive Energy','Power Grip','Quantic Gaming','Rampage','Renegades of Hell','RisingStars Gaming','Royal Club','Royal Paladin eSports','Royal Paladin eSports Eclipse','SK Gaming')",
+        "order_by": "AllName ASC",
+        "limit": 300
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/TeamRedirects/f4ebf704e242e6911ef3f390.json",
+      "table": "TeamRedirects",
+      "endpoint": "cargoexport",
+      "bodySha256": "94241a2621c21354ccc91354176367f0ee1b0f6e6845f4a94903bccc2b792beb",
+      "fetchedAt": "2026-11-18T09:25:25.233Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "TeamRedirects",
+        "fields": "_pageName,AllName,OtherName",
+        "where": "AllName IN ('Absolute Legends NA','Bilibili Gaming','Blackbean','Bs As Fried Chick','CJ Entus','CJ Entus Blaze','CJ Entus Frost','CTBC Flying Oyster','Cash','ChiLeanFivE The Legacy','Chunnam Techno University','Cloud9','Counter Logic Gaming Europe','DAMWON Gaming','Dark Passage','Dash9 Gaming','DetonatioN FocusMe','Dignitas','Dplus Kia','DragonX','ESC Gaming','Energy Pacemaker.HK','FlyQuest','Fnatic','FunPlus Phoenix')",
+        "order_by": "AllName ASC",
+        "limit": 300
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/27bc601f8c7e0a08d62207a4.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-18T09:57:28.722Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "Name IN ('Bs As Fried Chick','Cash','High Hopes','Mook','Power Grip','STAR (Chinese Team)','Sirius Vega','VTG Raon','w2w')",
+        "order_by": "Name ASC",
+        "limit": 50
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/3cfb9544033a822368ee6701.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-18T09:54:08.405Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "_pageName IN ('Rainbow7')",
+        "order_by": "OverviewPage ASC",
+        "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/602db5e29fce88086f89b9fa.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "b02e918eb5698ed1a3d85e653e0af885526508533b6c75d43e94ce19056b67bc",
+      "fetchedAt": "2026-11-18T09:50:33.132Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('Energy Pacemaker','Flash Wolves','KaBuM! Ilha das Lendas','Kiwoom DRX','LYON (2024 American Team)','MAD Lions KOI','PENTAGRAM','ROX Tigers','Rainbow7','Rare Atom','Revenger (Chinese Team)','Samsung White','Sentinels','Shifters','Team Impulse','Team LoLPro','Team Secret Whales','Unicorns of Love.CIS')",
+        "order_by": "OverviewPage ASC",
+        "limit": 100
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/Teams/6389610085e1eeb7bdab22d7.json",
       "table": "Teams",
       "endpoint": "cargoexport",
@@ -572,6 +1206,102 @@
         "where": "OverviewPage IN ('Azubu Blaze','DKB XPERION NXT','Epik Gamer','H2k-Gaming','SK Telecom T1','T1','Team Dynamic','Team Liquid','The Bandits Prime','against All authority')",
         "order_by": "OverviewPage ASC",
         "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/92253ec84c97378dcad6b8a1.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "c36246b75cd5d64e80787dbc64f71a26a75e64e94b7ebe862179209c019c846f",
+      "fetchedAt": "2026-11-18T09:52:38.583Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('Movistar KOI')",
+        "order_by": "OverviewPage ASC",
+        "limit": 20
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/95daed506d8ac354995543de.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "a26f80ca97902b94b4c9d3e11439d8816b14d6da55ee061bfce1a3ebef0cb959",
+      "fetchedAt": "2026-11-18T09:31:50.451Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('STAR (Chinese Team)','Samsung Blue','Samsung Ozone','Singapore Sentinels','Sirius Vega','TSM','Taipei Assassins','Taipei Snipers','Team ANG','Team BDS','Team Curse','Team Curse Europe','Team FeaR','Team Immunity','Team Livemore','Team WE','Team Whales','The Bandits Prime','The RED','Top Esports','Unicorns of Love','VTG Raon','Vici Gaming','Weibo Gaming','Wings of Aurora')",
+        "order_by": "OverviewPage ASC",
+        "limit": 100
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/ad93c13c3d8629990a396388.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "4a37b9a4345aeac366b351ef69583b3a9cfb260edc53069e322c00ea6e233ed6",
+      "fetchedAt": "2026-11-18T09:29:14.792Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('Lyon Gaming (2013 Latin American Team)','MAD Lions','Meat Playground','MeetYourMakers','MiTH Flashdive','Millenium','Mook','Moscow Five','Movistar R7','NRG','NaJin Black Sword','NaJin White Shield','Oh My God','PSG Talon','Phoenix1','Positive Energy','Power Grip','Quantic Gaming','Rampage','Renegades of Hell','RisingStars Gaming','Royal Club','Royal Paladin eSports','Royal Paladin eSports Eclipse','SK Gaming')",
+        "order_by": "OverviewPage ASC",
+        "limit": 100
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/c08e2d18c131168eed7207f2.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "8b3792fdbc6153cb077386827fa6b6c1ca4b5f0ed60500a2600aa8d6b8604bee",
+      "fetchedAt": "2026-11-18T09:24:08.458Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('Absolute Legends NA','Bilibili Gaming','Blackbean','Bs As Fried Chick','CJ Entus','CJ Entus Blaze','CJ Entus Frost','CTBC Flying Oyster','Cash','ChiLeanFivE The Legacy','Chunnam Techno University','Cloud9','Counter Logic Gaming Europe','DAMWON Gaming','Dark Passage','Dash9 Gaming','DetonatioN FocusMe','Dignitas','Dplus Kia','DragonX','ESC Gaming','Energy Pacemaker.HK','FlyQuest','Fnatic','FunPlus Phoenix')",
+        "order_by": "OverviewPage ASC",
+        "limit": 100
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/dbcb7025bb744c9b06d83d04.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "29f830a246e6c334ffb7af06ef4a1c6e966578606945416dfc1a338b133e0c69",
+      "fetchedAt": "2026-11-18T09:34:37.793Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('Xenics Storm','ahq eSports Club','compLexity Gaming','w2w','yoe Flash Wolves')",
+        "order_by": "OverviewPage ASC",
+        "limit": 100
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/Teams/e8dc327d725bf61ad83707e9.json",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "19ab1337a54b62af084305a97aacc0edecf7d478dad1fad82a8299e89f63bb84",
+      "fetchedAt": "2026-11-18T09:26:41.454Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "where": "OverviewPage IN ('G2 Esports','GAM Esports','GE Tigers','Gambit Gaming','Gen.G','Golden Guardians','Hanwha Life Esports','High Hopes','IceLanD','Invictus Gaming','Isurus','JD Gaming','Jin Air Green Wings Falcons','Jin Air Green Wings Stealths','KT Rolster','KT Rolster Arrows','KT Rolster Bullets','KaBuM! Esports','Karmine Corp','Kx.Happy','LGD Gaming','LMQ','LNG Esports','LOUD','Lemondogs Argentina')",
+        "order_by": "OverviewPage ASC",
+        "limit": 100
       }
     },
     {

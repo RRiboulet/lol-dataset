@@ -68,14 +68,24 @@ is never encoded as `0`.
 and bans per side. Where the source preserves **order**, the dataset preserves
 order; where it only preserves **sets**, the dataset says so, per game, with a
 `ordered` / `unordered` marker. Order is never fabricated or inferred from role
-order.
+order. A game played **without a pick-ban phase** is a third fidelity, and it is
+declared rather than inferred: it carries five picks a side, no bans, the same
+champion may stand on both sides — legal there and impossible in a draft — and the
+game says `draft.blindPick: true` so the absent bans read as the format rather than
+as a gap. The declarations live in `tools/dataset/rules/game-formats.json` with a
+citation, because absent bans alone cannot distinguish a blind pick from an
+early-era game whose bans the wiki never recorded (measured: IEM Season IX 2015
+states three bans a side and has no ordered row).
 
 **R6 — Completeness is per-field and machine-readable.** "Complete" means
 complete *for the era the source covers*, and the dataset states which era it is
 in. Each game carries a coverage record naming, per field group (team stats,
 player stats, ordered draft), whether it is present, partially present, or
 unavailable for that event. No game is silently half-empty; no aggregate hides
-a blank.
+a blank. The dataset-level aggregate (per event and per era) is **generated from the
+per-game markers** rather than written beside them, and the invariant gate re-counts it
+against `games.jsonl`, so an event can never be reported more complete than its games
+(ticket 10: `event-coverage.jsonl`, `era-coverage.jsonl`).
 
 **R7 — Identity is canonical and stable.** Events, teams, players, champions and
 patches have canonical IDs that do not change when an alias, spelling or display
@@ -160,9 +170,13 @@ dataframe library.
 - **Rate limiting.** Verified, not theoretical: a handful of Cargo requests
   triggers `ratelimited`, persisting for minutes. A full crawl is a slow,
   cached, resumable job measured in tens of minutes, not a tight loop.
-- **Volume (estimate, to be replaced by a measurement).** Order of 3–4 thousand
-  games across 2011–2026 international events, ~10 player rows per game. JSON
-  text at this size is a few megabytes; git-friendly.
+- **Volume (measured by ticket 10 on the ten selected events).** 377 games, 230 series
+  and 3 770 player rows today, in 4.6 MB of curated JSONL plus 10.8 MB of committed
+  payload fixtures — 8.9 MB of that one table (`ScoreboardPlayers`), because a player
+  row per player per game is what makes a player-coverage claim checkable. The original
+  "3–4 thousand games" estimate is for the full 2011–2026 window; the ten events now
+  covered are the international majors the rule admits, and each one's crawl is pinned
+  by hash rather than re-fetched.
 - **Determinism** (R8) rules out "fetched at" fields inside entity files, and
   forces explicit sort keys on every emitted record.
 - **Toolchain.** Node runs TypeScript directly with no build step, and the repo
@@ -375,7 +389,14 @@ re-derived on every run.
    vision, keystone or runes, and no ordered draft. No era boundary moved. R5 and R6 are written to survive that. The measurement
    that replaces the expectation is ticket 09's; the shape question behind it is
    closed, because starting the dataset in 2014/2017 instead was rejected on
-   2026-11-12 in favour of keeping 2011 and marking it.
+   2026-11-12 in favour of keeping 2011 and marking it. **Completed by ticket 10
+   (`docs/specs/tickets/lol-esports-dataset/10-coverage-report.md`):** with all ten
+   selected events crawled, five eras carry games and the thinness is group-specific
+   rather than uniform — 2012 states player kills/gold and *no* team statistic at all,
+   2015 adds a thin team row, 2017 adds the ordered draft while player detail stays at
+   trinket, 2020 adds vision and keystone, and 2023 is the first fully complete year.
+   Team statistics and player statistics recover on different dates, and no era boundary
+   moved to accommodate them.
 2. **What counts as a "major international event"** beyond Worlds and MSI.
    *(Decided 2026-11-12: the third-party-majors scope, with All-Star excluded.)* The
    admitted set is: World Championship (2011–2026), MSI (2015–2026, none in 2020),
@@ -389,6 +410,12 @@ re-derived on every run.
    set lives in the repository as data, so a later change to it is a reviewable diff
    rather than a rewrite. Size estimates used to make this call were computed from
    team counts and format, not measured: ticket 09 measures, ticket 10 counts.
+   *(Counted by ticket 10: the ten admitted events yield 377 games and 230 series. The
+   exclusion of qualifiers had to be made real rather than assumed — the wiki records
+   them beneath the event page, and a prefix-only attachment had pulled 62 qualifier
+   series into World Cyber Games 2013 and 6 into IPL 5. A page under an event whose first
+   path segment is `Qualifiers` is not that event; the rows stay crawled and are counted
+   as ignored.)*
 3. **Licence and public release.** CC BY-SA share-alike on Leaguepedia-derived
    data, and what that means for the repository when it stops being private.
    *(Partly decided 2026-11-12: attribution lands in the same change as the first

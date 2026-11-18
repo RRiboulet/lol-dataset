@@ -5,17 +5,19 @@ from the first tournament through the one being played right now (2026). It is
 the first step of a larger project, so the shape of the data matters more than
 speed: expect schema decisions to outlive the scrapers that fill them.
 
-**Current state: the event, identity, game, draft and player layers, with an invariant gate and a provenance manifest, on top of the scaffold.** The
+**Current state: the full dataset for the ten admitted events, with coverage reports, an invariant gate and a provenance manifest, on top of the scaffold.** The
 devcontainer, pi extensions, skills and templates are in place, and the project's
 own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
 holds what the build emits today — the selected events with the report of every
 rejection, the team, player, champion and alias identity tables, the games and
-matches of the four events crawled so far — each game carrying its champion draft
-with the source's fidelity and a player row per participant, with kills and gold
-reconciled against the team totals — a per-event report of which events the
-corpus carries games for, a series-conflict report of every game detached from a
-series that names other teams and every series the games contradict, and
+matches of **eight events** (377 games, 230 series, 3 770 player rows), each game carrying
+its champion draft with the source's fidelity and a player row per participant, with
+kills and gold reconciled against the team totals — the per-event report of which
+events the corpus carries rows for, the generated per-event and per-era coverage
+reports (`event-coverage.jsonl`, `era-coverage.jsonl`, re-counted against the games'
+own markers by the invariant gate), a series-conflict report of every game detached from
+a series that names other teams and every series the games contradict, and
 `manifest.json`, which pins every cached payload the
 build read by sha256 (with its query and fetch time, the only timestamp in the
 repository) and digests every emitted file. Its `file` pins are relative to the cache
@@ -35,16 +37,26 @@ current — and fails on a file in the directory the build no longer emits. The 
 validates the curated rows it reads at its own seam (ids, references, a winner that
 is one of the two sides, a player row's event matching its game) and checks that the
 facts agree with each other, so a row the invariant gate never saw cannot survive
-into `data/model/`. Those four events — Worlds 2023, MSI 2023, IEM IX 2015 and IPL 5
-2012 — are the only ones with games; ticket 10 is the crawl that fills the rest, and
-ticket 13 builds the model over the full dataset. IPL 5 is the one that took a
-decision rather than a crawl: its `MatchSchedule` spells one team's name two ways and
-swaps three pairs of `MatchId`s, so a legacy alias is declared and the swapped games
-are emitted without a `matchId` (ticket 14, which also removed `fixtures/pending/`).
+into `data/model/`. Ticket 10's crawl filled the rest of the event list: **WCG 2011 has
+no games in the source at all** (`event-games.jsonl` says `empty`, and its four
+game-bearing queries are committed as the evidence), **World Cyber Games 2013 carries 48
+series and no games**, and the other eight events carry 377 games between them. The crawl
+also forced three decisions now in the repo as data: a page under an event whose first
+segment is `Qualifiers` is not that event (62 WCG 2013 series and 6 IPL 5 series are
+counted as ignored, not absorbed); a game played without a pick-ban phase is declared in
+`tools/dataset/rules/game-formats.json` (the 2020 Mid-Season Cup's best-of-five game 1s
+were blind pick, so they may state the same champion on both sides and no bans); and
+identity is itself a registry crawl, which took the provisional-entity report from 374
+rows to 11 (all confirmed absent from `Teams`/`PlayerRedirects`). IPL 5 is the earlier
+decision of the same kind: its `MatchSchedule` spells one team's name two ways and swaps
+three pairs of `MatchId`s, so a legacy alias is declared and the swapped games are
+emitted without a `matchId` (ticket 14, which also removed `fixtures/pending/`).
 Ticket 15 made that alias's declared window bound every lookup and required an
 `aliasOf` target to be evidenced by a game and its series row, and committed the
 conflict report to `data/curated/series-conflicts.jsonl` so the contradiction is
-visible in the data rather than only in the build's stdout. There is no
+visible in the data rather than only in the build's stdout. Ticket 13 is the model over
+this full dataset; the model in the tree today was built by ticket 12 over the four
+events that existed then and is regenerated here. There is no
 `README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
 a schema, a scraper or a README as a side effect of an unrelated task; those are
 their own changes.

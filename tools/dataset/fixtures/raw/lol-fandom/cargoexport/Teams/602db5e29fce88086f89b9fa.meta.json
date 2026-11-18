@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Teams",
+    "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+    "where": "OverviewPage IN ('Energy Pacemaker','Flash Wolves','KaBuM! Ilha das Lendas','Kiwoom DRX','LYON (2024 American Team)','MAD Lions KOI','PENTAGRAM','ROX Tigers','Rainbow7','Rare Atom','Revenger (Chinese Team)','Samsung White','Sentinels','Shifters','Team Impulse','Team LoLPro','Team Secret Whales','Unicorns of Love.CIS')",
+    "order_by": "OverviewPage ASC",
+    "limit": 100
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=OverviewPage+IN+%28%27Energy+Pacemaker%27%2C%27Flash+Wolves%27%2C%27KaBuM%21+Ilha+das+Lendas%27%2C%27Kiwoom+DRX%27%2C%27LYON+%282024+American+Team%29%27%2C%27MAD+Lions+KOI%27%2C%27PENTAGRAM%27%2C%27ROX+Tigers%27%2C%27Rainbow7%27%2C%27Rare+Atom%27%2C%27Revenger+%28Chinese+Team%29%27%2C%27Samsung+White%27%2C%27Sentinels%27%2C%27Shifters%27%2C%27Team+Impulse%27%2C%27Team+LoLPro%27%2C%27Team+Secret+Whales%27%2C%27Unicorns+of+Love.CIS%27%29&order_by=OverviewPage+ASC&limit=100",
+  "fetchedAt": "2026-11-18T09:50:33.132Z",
+  "status": 200,
+  "bodySha256": "b02e918eb5698ed1a3d85e653e0af885526508533b6c75d43e94ce19056b67bc"
+}

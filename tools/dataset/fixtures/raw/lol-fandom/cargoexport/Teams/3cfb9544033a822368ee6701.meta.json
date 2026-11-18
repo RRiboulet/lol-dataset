@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Teams",
+    "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+    "where": "_pageName IN ('Rainbow7')",
+    "order_by": "OverviewPage ASC",
+    "limit": 20
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=_pageName+IN+%28%27Rainbow7%27%29&order_by=OverviewPage+ASC&limit=20",
+  "fetchedAt": "2026-11-18T09:54:08.405Z",
+  "status": 200,
+  "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+}

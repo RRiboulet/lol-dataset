@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "TeamRedirects",
+    "fields": "_pageName,AllName,OtherName",
+    "where": "AllName IN ('Absolute Legends NA','Bilibili Gaming','Blackbean','Bs As Fried Chick','CJ Entus','CJ Entus Blaze','CJ Entus Frost','CTBC Flying Oyster','Cash','ChiLeanFivE The Legacy','Chunnam Techno University','Cloud9','Counter Logic Gaming Europe','DAMWON Gaming','Dark Passage','Dash9 Gaming','DetonatioN FocusMe','Dignitas','Dplus Kia','DragonX','ESC Gaming','Energy Pacemaker.HK','FlyQuest','Fnatic','FunPlus Phoenix')",
+    "order_by": "AllName ASC",
+    "limit": 300
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=TeamRedirects&fields=_pageName%2CAllName%2COtherName&where=AllName+IN+%28%27Absolute+Legends+NA%27%2C%27Bilibili+Gaming%27%2C%27Blackbean%27%2C%27Bs+As+Fried+Chick%27%2C%27CJ+Entus%27%2C%27CJ+Entus+Blaze%27%2C%27CJ+Entus+Frost%27%2C%27CTBC+Flying+Oyster%27%2C%27Cash%27%2C%27ChiLeanFivE+The+Legacy%27%2C%27Chunnam+Techno+University%27%2C%27Cloud9%27%2C%27Counter+Logic+Gaming+Europe%27%2C%27DAMWON+Gaming%27%2C%27Dark+Passage%27%2C%27Dash9+Gaming%27%2C%27DetonatioN+FocusMe%27%2C%27Dignitas%27%2C%27Dplus+Kia%27%2C%27DragonX%27%2C%27ESC+Gaming%27%2C%27Energy+Pacemaker.HK%27%2C%27FlyQuest%27%2C%27Fnatic%27%2C%27FunPlus+Phoenix%27%29&order_by=AllName+ASC&limit=300",
+  "fetchedAt": "2026-11-18T09:25:25.233Z",
+  "status": 200,
+  "bodySha256": "94241a2621c21354ccc91354176367f0ee1b0f6e6845f4a94903bccc2b792beb"
+}

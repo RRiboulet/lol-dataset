@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PlayerRedirects",
+    "fields": "_pageName,AllName,OverviewPage,ID",
+    "where": "ID IN ('Eliade','Insta')",
+    "order_by": "ID ASC",
+    "limit": 50
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=ID+IN+%28%27Eliade%27%2C%27Insta%27%29&order_by=ID+ASC&limit=50",
+  "fetchedAt": "2026-11-18T09:58:45.271Z",
+  "status": 200,
+  "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+}

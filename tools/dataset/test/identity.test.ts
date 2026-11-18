@@ -8,7 +8,7 @@
 // Three cases live in the fixtures as recorded payloads:
 //   - a team rebrand (`SK Telecom T1` -> `T1`, a `Teams.RenamedTo` edge),
 //   - a duplicate display string (`Wolf`, the handle of eight player pages),
-//   - a string the source registers nothing for (`The Bandits Prime`, a 2026 team).
+//   - a string the source registers nothing for (`w2w`, a 2013 qualifier team).
 // The champion rename is measured too, but not as a rename pair: the source rewrites
 // retired champion names retroactively, so the retired string is declared in
 // `rules/identity-aliases.json` and the test below feeds a payload the source can no
@@ -30,9 +30,10 @@ import { validateAgainst } from "../validate.ts";
 import { CURATED_DIR, FIXTURE_RAW, savePayloadBody, SCHEMA_DIR } from "./helpers.ts";
 
 // The windows are the observed use in the whole recorded corpus, and ticket 03 makes
-// games observations too: `T1` is dated by the 2023 scoreboard row and by the Worlds
-// final on 2023-11-19, so its era is the span the corpus saw it in.
-const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2015-10-01", currentSeen: "2023-11-19", currentFirstSeen: "2023-05-10" } as const;
+// games observations too: `SK Telecom T1` is dated from the 2013 World Cyber Games rows
+// to the 2015 IEM rows, and `T1` from the 2020 Mid-Season Cup to the 2024 Esports World
+// Cup, so each alias carries the span the corpus saw it in.
+const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2013-10-14", fromLastSeen: "2015-10-01", currentSeen: "2024-07-07", currentFirstSeen: "2020-05-28" } as const;
 
 async function fixtureBuild(): Promise<BuildResult> {
 	return buildDataset({ rawDir: FIXTURE_RAW });
@@ -53,11 +54,23 @@ async function payloadFiles(root: string, table: string): Promise<string[]> {
 	return names.sort().map((name) => path.join(dir, name));
 }
 
-/** The one recorded payload for a table that only needs one. */
+/**
+ * The first recorded payload for a table, for cases that only append a row.
+ *
+ * A crawl leaves several payloads per table (one per query batch), so a test that needs a
+ * *particular* row edits every payload and lets the matching one change — see `editRows`.
+ */
 async function payloadFile(root: string, table: string): Promise<string> {
 	const files = await payloadFiles(root, table);
-	assert.equal(files.length, 1, `expected one recorded ${table} payload, found ${files.length}`);
 	return files[0];
+}
+
+/** Apply `edit` to every payload of a table, saving the ones it changed. */
+async function editRows(root: string, table: string, edit: (rows: Record<string, unknown>[]) => boolean): Promise<void> {
+	for (const file of await payloadFiles(root, table)) {
+		const rows = await readRows(file);
+		if (edit(rows)) await savePayloadBody(file, JSON.stringify(rows));
+	}
 }
 
 async function readRows(file: string): Promise<Record<string, unknown>[]> {
@@ -77,7 +90,7 @@ test("a team rebrand in the fixtures is one entity carrying both strings and the
 	const current = rows.find((alias) => alias.string === TEAM_RENAME.entity);
 	assert.ok(old, `the entity must carry its old display string ${TEAM_RENAME.from}`);
 	assert.ok(current, "the entity must carry its current display string");
-	assert.deepEqual([old.firstSeen, old.lastSeen], [TEAM_RENAME.fromSeen, TEAM_RENAME.fromSeen]);
+	assert.deepEqual([old.firstSeen, old.lastSeen], [TEAM_RENAME.fromSeen, TEAM_RENAME.fromLastSeen]);
 	// A span, not a point: the name is dated by the 2023 scoreboard row and again by the
 	// Worlds final the games payload carries (ticket 03).
 	assert.deepEqual([current.firstSeen, current.lastSeen], [TEAM_RENAME.currentFirstSeen, TEAM_RENAME.currentSeen]);
@@ -104,13 +117,20 @@ test("the entity's ID does not change when its display name changes", async () =
 		// A rebrand is a new page in the source, so the *name* is the part a payload
 		// can change without touching identity: rename the page's display name and the
 		// champion's display name, and assert the IDs stand still.
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		for (const row of teams) {
-			if (row.OverviewPage === "T1") row.Name = "T1 Esports";
-			if (row.OverviewPage === "Team Liquid") row.Name = "Team Liquid Rebranded";
-		}
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		await editRows(dir, "Teams", (teams) => {
+			let changed = false;
+			for (const row of teams) {
+				if (row.OverviewPage === "T1") {
+					row.Name = "T1 Esports";
+					changed = true;
+				}
+				if (row.OverviewPage === "Team Liquid") {
+					row.Name = "Team Liquid Rebranded";
+					changed = true;
+				}
+			}
+			return changed;
+		});
 
 		// The source rewrites the *current* champion name retroactively (measured: 2011
 		// and 2012 rows already say `Nunu &amp; Willump`), so a display rename arrives as
@@ -135,6 +155,18 @@ test("the entity's ID does not change when its display name changes", async () =
 					const champions = row[field];
 					if (!Array.isArray(champions)) continue;
 					row[field] = champions.map((champion: unknown) => (champion === "Nunu &amp; Willump" ? "Nunu" : champion));
+				}
+			}
+			await savePayloadBody(file, JSON.stringify(rows));
+		}
+		// The ordered draft path states champions too, in one column per slot. Ticket 10's
+		// crawl added ordered rows for five more events, so leaving this path out would mint
+		// a second Nunu from a single column rather than measure the rename.
+		for (const file of await payloadFiles(dir, "PicksAndBansS7")) {
+			const rows = await readRows(file);
+			for (const row of rows) {
+				for (const [field, value] of Object.entries(row)) {
+					if (/^Team[12](Pick|Ban)[1-5]$/.test(field) && value === "Nunu &amp; Willump") row[field] = "Nunu";
 				}
 			}
 			await savePayloadBody(file, JSON.stringify(rows));
@@ -168,7 +200,11 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 	try {
 		// A fabricated earlier event: a Tournament the fixtures do not carry, dated
 		// before the others, with one game's worth of rows. Nothing here renumbers
-		// anything unless identity depends on read order or on a row counter.
+		// anything unless identity depends on read order or on a row counter. The rows
+			// carry a GameId and the stat key the player-game join needs, because ticket 10's
+		// emission rule emits entities only from rows the build actually emits — a
+			// scoreboard row that names no game would be resolution input and nothing else.
+		const gameId = "IEM Season VI - World Championship_Game 1";
 		const tournaments = path.join(dir, "lol-fandom", "cargoexport", "Tournaments", "fabricated.json");
 		await writeFile(
 			tournaments,
@@ -179,6 +215,22 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 					DateStart: "2012-03-06",
 					League: "Intel Extreme Masters",
 					Region: "International",
+				},
+			]),
+			"utf8",
+			);
+		const gamesFile = path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames", "fabricated.json");
+		await writeFile(
+			gamesFile,
+			JSON.stringify([
+				{
+					OverviewPage: "IEM Season VI - World Championship",
+					GameId: gameId,
+					MatchId: "IEM Season VI - World Championship_Group A_1",
+					Team1: "Fabricated Five",
+					Team2: "T1",
+					WinTeam: "T1",
+					DateTime_UTC: "2012-03-06 10:00:00",
 				},
 			]),
 			"utf8",
@@ -193,7 +245,10 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 					Team: "Fabricated Five",
 					TeamVs: "T1",
 					Champion: "Annie",
+					Kills: 0,
+					IngameRole: "middle",
 					OverviewPage: "IEM Season VI - World Championship",
+					GameId: gameId,
 					"DateTime UTC": "2012-03-06 10:00:00",
 				},
 			]),
@@ -220,7 +275,10 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 		assert.equal(mintedTeam.overviewPage, null, "nothing registers that team, so it has no source page");
 		assert.ok(grown.identity.players.some((player) => player.name === "Fabricated Player"));
 		const reported = new Set(grown.identity.unresolved.map((row) => row.string));
-		for (const string of ["Fabricated Five", "Fabricated Player", "The Bandits Prime"]) {
+		// `Eliade`, not `w2w`: ticket 10's emission rule narrowed the report to strings an
+		// emitted record still cannot resolve, and the qualifier strings (`w2w` among them)
+		// name no emitted row any more.
+		for (const string of ["Fabricated Five", "Fabricated Player", "Eliade"]) {
 			assert.ok(reported.has(string), `${string} must stay in the unresolved report`);
 		}
 		assert.ok(grown.identity.unresolved.length >= baseline.identity.unresolved.length, "adding material never empties the report");
@@ -229,68 +287,73 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 	}
 })
 
-test("two players with the same display string stay two entities, and a bare handle is ambiguous", async () => {
+test("a duplicate display string is never merged, and its unreferenced entities are not emitted", async () => {
 	const { identity } = await fixtureBuild();
-	const wolves = identity.players.filter((player) => player.name === "Wolf");
-	assert.ok(wolves.length >= 2, "the fixtures must carry the duplicate display string");
-	assert.equal(new Set(wolves.map((wolf) => wolf.id)).size, wolves.length, "duplicates must be distinct entities");
-	assert.equal(new Set(wolves.map((wolf) => wolf.overviewPage)).size, wolves.length, "each wolf is its own page");
-	// The same string in the alias table, one row per entity, and only one of them dated.
-	const rows = identity.aliases.filter((alias) => alias.kind === "player" && alias.string === "Wolf");
-	assert.ok(rows.length >= 2, "the alias table must record the shared handle once per entity");
-	assert.equal(new Set(rows.map((row) => row.entityId)).size, rows.length, "one row per entity, never a merge");
-	assert.deepEqual(rows.filter((row) => row.firstSeen !== null).map((row) => row.firstSeen), ["2015-10-01"]);
+	// The fixtures carry `Wolf`, the handle of eight player pages. Ticket 10's emission
+	// rule narrowed the entity files to the entities an emitted record names, and no
+	// emitted player row names a `Wolf` — the dated row the alias table used to carry
+	// came from a scoreboard payload the selection rule does not emit — so the duplicate
+	// handle now lives in resolution only. That is where a merge would happen, and
+	// refusing to pick is still the point.
+	assert.equal(
+		identity.players.filter((player) => player.name === "Wolf").length,
+		0,
+		"no emitted row names a Wolf, so the entity files carry none",
+	);
 	// Without a date the string names eight people: reporting that is the point.
 	assert.throws(() => identity.index.resolve("player", "Wolf"), (error: unknown) => {
 		assert.ok(error instanceof AmbiguousIdentity);
-		assert.ok(error.candidates.length >= 2);
+		assert.ok(error.candidates.length >= 2, "the duplicates stay distinct candidates");
+		assert.equal(new Set(error.candidates.map((candidate) => candidate.id)).size, error.candidates.length, "one candidate per entity, never a merge");
 		return true;
 	});
+	// The page, unlike the handle, is unambiguous — which is why it is the identity.
+	assert.ok(identity.index.resolve("player", "Wolf (Lee Jae-wan)")?.id);
+	// And a dated lookup still resolves the handle to the entity the corpus saw that day:
+	// the observation eras survive the emission filter, because resolution is unchanged.
 	const dated = identity.index.resolve("player", "Wolf", "2015-10-01");
 	assert.ok(dated);
 	assert.equal(dated.name, "Wolf");
-	assert.equal(dated.id, rows.find((row) => row.firstSeen === "2015-10-01")?.entityId);
-	// The page, unlike the handle, is unambiguous — which is why it is the identity.
-	assert.ok(identity.index.resolve("player", "Wolf (Lee Jae-wan)")?.id);
 })
 
 test("an unresolved source string mints an entity and is reported, rather than failing or vanishing", async () => {
 	const { identity } = await fixtureBuild();
-	const report = identity.unresolved.find((row) => row.string === "The Bandits Prime");
+	// Ticket 10's emission rule narrowed this report to the strings an emitted record
+	// still cannot resolve. The World Cyber Games 2013 qualifier teams the series rows
+	// carried (`w2w` and seven others) name no emitted row, so they left the report and
+	// stay resolution input; what remains is the IPL 5 pair the dataset itself uses.
+	const report = identity.unresolved.find((row) => row.string === "Eliade");
 	assert.ok(report, `the report must name the minted string, got ${identity.unresolved.map((row) => row.string).join(", ")}`);
-	assert.equal(report.kind, "team");
-	assert.equal(report.string, "The Bandits Prime");
+	assert.equal(report.kind, "player");
+	assert.equal(report.string, "Eliade");
 	assert.equal(report.reason, "no-source-identity");
-	assert.deepEqual([report.firstSeen, report.lastSeen], ["2026-10-13", "2026-10-13"]);
+	assert.deepEqual([report.firstSeen, report.lastSeen], ["2012-11-29", "2012-11-29"]);
 	assert.ok(report.id);
-	const entity = identity.teams.find((team) => team.id === report.id);
+	const entity = identity.players.find((player) => player.id === report.id);
 	assert.ok(entity, "the report must point at a real entity");
-	assert.equal(entity.name, "The Bandits Prime", "the minted entity carries the source string as its display name");
+	assert.equal(entity.name, "Eliade", "the minted entity carries the source string as its display name");
 	assert.equal(entity.overviewPage, null, "no registry page exists, and inventing one would hide that");
-	// Games reference teams as display strings too (ticket 03), and the recorded corpus
-	// carries a Teams page for almost none of them, so they are minted and reported the
-	// same way. That is a corpus gap the full crawl closes, not an identity failure.
-	const fromGames = identity.unresolved.filter((row) => row.kind === "team" && row.string !== "The Bandits Prime");
-	assert.ok(fromGames.length > 0, "the game payloads contribute minted teams");
-	assert.ok(fromGames.some((row) => row.string === "T1") === false, "a team with a registry page is not reported");
-	// The string resolves from then on, so a later payload citing it joins the same entity.
-	assert.equal(identity.index.resolve("team", "The Bandits Prime")?.id, report.id);
+	// Games reference players as display strings too (ticket 04), and the corpus still
+	// carries PlayerRedirects rows for none of IPL 5's unregistered players, so they are
+	// minted and reported the same way. The string resolves from then on, so a later
+	// payload citing it joins the same entity.
+	assert.equal(identity.index.resolve("player", "Eliade")?.id, report.id);
 	// And a registry page that later appears under that exact name keeps the ID.
 	const baseline = await fixtureBuild();
 	const dir = await fixtureCopy();
 	try {
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		const playersFile = await payloadFile(dir, "PlayerRedirects");
+		const players = await readRows(playersFile);
+		players.push({ _pageName: "Eliade", AllName: "Eliade", OverviewPage: "Eliade", ID: "Eliade" });
+		await savePayloadBody(playersFile, JSON.stringify(players));
 		const resolved = await buildDataset({ rawDir: dir });
-		const now = resolved.identity.teams.find((team) => team.name === "The Bandits Prime");
+		const now = resolved.identity.players.find((player) => player.name === "Eliade");
 		assert.equal(now?.id, entity.id, "registering the page later must not renumber the entity");
-		assert.equal(now?.overviewPage, "The Bandits Prime");
-		// Only the registered string leaves the report; the game-minted teams have no page
+		assert.equal(now?.overviewPage, "Eliade");
+		// Only the registered string leaves the report; the game-minted players have no page
 		// in this corpus and must stay, which is what keeps the report from emptying itself.
 		assert.equal(
-			resolved.identity.unresolved.some((row) => row.string === "The Bandits Prime"),
+			resolved.identity.unresolved.some((row) => row.string === "Eliade"),
 			false,
 			"a resolved string leaves the report",
 		);
@@ -575,7 +638,7 @@ test("every identity file satisfies its checked-in schema, and an empty file is 
 		await rm(path.join(dir, "lol-fandom", "cargoexport", "PicksAndBansS7"), { recursive: true, force: true });
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
-		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
+		teams.push({ _pageName: "w2w", Name: "w2w", OverviewPage: "w2w", Region: "China", RenamedTo: null });
 		await savePayloadBody(teamsFile, JSON.stringify(teams));
 		const built = await buildDataset({ rawDir: dir });
 		assert.equal(built.files["identity-unresolved.jsonl"], "");
@@ -659,10 +722,16 @@ test("a string that names two entities is reported with its candidates and mints
 test("a team rename edge the payloads cannot complete stops the build", async () => {
 	const dir = await fixtureCopy();
 	try {
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		for (const row of teams) if (row.OverviewPage === "H2k-Gaming") row.RenamedTo = "H2k-Gaming Esports";
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		await editRows(dir, "Teams", (teams) => {
+			let changed = false;
+			for (const row of teams) {
+				if (row.OverviewPage === "H2k-Gaming") {
+					row.RenamedTo = "H2k-Gaming Esports";
+					changed = true;
+				}
+			}
+			return changed;
+		});
 		await assert.rejects(
 			buildDataset({ rawDir: dir }),
 			/team "H2k-Gaming" says it was renamed to "H2k-Gaming Esports", but no Teams payload carries that page/,
@@ -675,13 +744,16 @@ test("a team rename edge the payloads cannot complete stops the build", async ()
 test("two pages renamed into one successor stop the build", async () => {
 	const dir = await fixtureCopy();
 	try {
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		for (const row of teams) {
-			if (row.OverviewPage === "H2k-Gaming") row.RenamedTo = "T1";
-			if (row.OverviewPage === "Team Dynamic") row.RenamedTo = "T1";
-		}
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		await editRows(dir, "Teams", (teams) => {
+			let changed = false;
+			for (const row of teams) {
+				if (row.OverviewPage === "H2k-Gaming" || row.OverviewPage === "Team Dynamic") {
+					row.RenamedTo = "T1";
+					changed = true;
+				}
+			}
+			return changed;
+		});
 		await assert.rejects(buildDataset({ rawDir: dir }), /two team pages claim to have been renamed into "T1"/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
@@ -734,6 +806,21 @@ test("a payload in a table with no normalizer stops the build instead of being s
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
+})
+
+test("a qualifier-page string identical to an emitted team's string resolves to the one entity", async () => {
+	const { identity } = await fixtureBuild();
+	// Ticket 10's crawl carries the World Cyber Games 2013 qualifier series, and CJ Entus
+	// Blaze appears both there (a page the rule excludes, whose series are counted as
+	// ignored) and in the event's own series. The emission filter works on entity ids, so
+	// the string still resolves to the one entity — the qualifier rows are resolution
+	// input, and the entity is emitted because the main-event rows name it.
+	const rows = identity.aliases.filter((alias) => alias.kind === "team" && alias.string === "CJ Entus Blaze");
+	assert.equal(rows.length, 1, "one alias row, never one per page");
+	const hit = identity.index.resolve("team", "CJ Entus Blaze", "2013-11-29");
+	assert.equal(hit?.id, rows[0].entityId, "the qualifier-date lookup lands on the same entity");
+	assert.equal(hit?.name, "CJ Entus Blaze");
+	assert.equal(identity.teams.filter((team) => team.id === rows[0].entityId).length, 1, "and the entity is emitted once");
 })
 
 // ---- display names vs source strings -------------------------------------------

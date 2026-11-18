@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Teams",
+    "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+    "where": "Name IN ('Bs As Fried Chick','Cash','High Hopes','Mook','Power Grip','STAR (Chinese Team)','Sirius Vega','VTG Raon','w2w')",
+    "order_by": "Name ASC",
+    "limit": 50
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=Name+IN+%28%27Bs+As+Fried+Chick%27%2C%27Cash%27%2C%27High+Hopes%27%2C%27Mook%27%2C%27Power+Grip%27%2C%27STAR+%28Chinese+Team%29%27%2C%27Sirius+Vega%27%2C%27VTG+Raon%27%2C%27w2w%27%29&order_by=Name+ASC&limit=50",
+  "fetchedAt": "2026-11-18T09:57:28.722Z",
+  "status": 200,
+  "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+}

@@ -42,10 +42,24 @@ async function rows(file: string): Promise<Record<string, unknown>[]> {
 	return JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
 }
 
+/**
+ * A player row whose source row lives in `file`.
+ *
+ * A crawl leaves one payload per query batch, so the "first row with damage" can belong to
+ * a payload other than the one a test edits — the edit would then change nothing and the
+ * assertion would measure the wrong file. Selecting the row *through* the payload keeps
+ * the two in step.
+ */
+async function damageRowIn(base: BuildResult, file: string) {
+	const source = await rows(file);
+	const inFile = new Set(source.filter((row) => typeof row.GameId === "string").map((row) => `${row.GameId}\u0000${row.Link}`));
+	return base.playerGames.rows.find((row) => "damage" in row && inFile.has(`${row.source.gameId}\u0000${row.sourcePlayer}`));
+}
+
 test("ten rows per game, five played roles per side, and sums that reconcile", async () => {
 	const result = await build();
 	const rowsOut = result.playerGames.rows;
-	assert.equal(rowsOut.length, 2770, "110 Worlds + 76 MSI + 19 IEM + 72 IPL 5 games, ten players each");
+	assert.equal(rowsOut.length, 3770, "the eight events with scoreboards, ten players each");
 	const games = new Map(result.scoreboards.games.map((game) => [game.id, game]));
 	const perGame = new Map<string, typeof rowsOut>();
 	for (const row of rowsOut) {
@@ -53,10 +67,10 @@ test("ten rows per game, five played roles per side, and sums that reconcile", a
 		list.push(row);
 		perGame.set(row.gameId, list);
 	}
-	assert.equal(perGame.size, 277);
+	assert.equal(perGame.size, 377);
 	const coverage = new Map(result.scoreboards.games.map((game) => [game.id, game.coverage.playerStats]));
-	assert.equal([...coverage.values()].filter((state) => state === "complete").length, 186);
-	assert.equal([...coverage.values()].filter((state) => state === "partial").length, 91);
+	assert.equal([...coverage.values()].filter((state) => state === "complete").length, 240);
+	assert.equal([...coverage.values()].filter((state) => state === "partial").length, 137);
 	for (const [gameId, players] of perGame) {
 		assert.equal(players.length, 10, `${gameId}: ten player rows`);
 		const game = games.get(gameId);
@@ -96,11 +110,11 @@ test("a source without damage marks the game partial and leaves the key absent",
 
 test("the played position wins when the source's role label disagrees", async () => {
 	const base = await build();
-	const target = base.playerGames.rows.find((row) => "damage" in row);
-	assert.ok(target);
 	const dir = await scratch();
 	try {
 		const file = await broadFile(dir);
+		const target = await damageRowIn(base, file);
+		assert.ok(target);
 		const source = await rows(file);
 		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === target.sourcePlayer);
 		assert.ok(row);
@@ -117,11 +131,11 @@ test("the played position wins when the source's role label disagrees", async ()
 
 test("a player appearing twice in one game fails the build, naming the game", async () => {
 	const base = await build();
-	const target = base.playerGames.rows.find((row) => "damage" in row);
-	assert.ok(target);
 	const dir = await scratch();
 	try {
 		const file = await broadFile(dir);
+		const target = await damageRowIn(base, file);
+		assert.ok(target);
 		const source = await rows(file);
 		const sameGame = source.filter((row) => row.GameId === target.source.gameId);
 		assert.ok(sameGame.length > 1);
@@ -137,11 +151,11 @@ test("a player appearing twice in one game fails the build, naming the game", as
 
 test("a broken sum fails the build, naming the game and the team", async () => {
 	const base = await build();
-	const target = base.playerGames.rows.find((row) => "damage" in row);
-	assert.ok(target);
 	const dir = await scratch();
 	try {
 		const file = await broadFile(dir);
+		const target = await damageRowIn(base, file);
+		assert.ok(target);
 		const source = await rows(file);
 		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === target.sourcePlayer);
 		assert.ok(row);
@@ -180,18 +194,18 @@ test("rejected IEM games mint no teams, players or unresolved references", async
 		assert.ok(!result.identity.players.some((player) => player.name === name), `${name} is not a player in this dataset`);
 		assert.ok(!result.identity.unresolved.some((row) => row.string === name), `${name} is not unresolved either`);
 	}
-	assert.equal(result.playerGames.rows.length, 2770, "filtering identity observations does not remove real player rows");
+	assert.equal(result.playerGames.rows.length, 3770, "filtering identity observations does not remove real player rows");
 });
 
 test("a game with duplicate roles is partial, not complete", async () => {
 	const base = await build();
-	const target = base.playerGames.rows.find((row) => "damage" in row);
-	assert.ok(target);
-	const sameSide = base.playerGames.rows.filter((row) => row.gameId === target.gameId && row.side === target.side && row.id !== target.id);
-	assert.ok(sameSide.length > 0);
 	const dir = await scratch();
 	try {
 		const file = await broadFile(dir);
+		const target = await damageRowIn(base, file);
+		assert.ok(target);
+		const sameSide = base.playerGames.rows.filter((row) => row.gameId === target.gameId && row.side === target.side && row.id !== target.id);
+		assert.ok(sameSide.length > 0);
 		const source = await rows(file);
 		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === sameSide[0].sourcePlayer);
 		assert.ok(row);
@@ -207,11 +221,11 @@ test("a game with duplicate roles is partial, not complete", async () => {
 
 test("an identical duplicate player row in one payload fails the build", async () => {
 	const base = await build();
-	const target = base.playerGames.rows.find((row) => "damage" in row);
-	assert.ok(target);
 	const dir = await scratch();
 	try {
 		const file = await broadFile(dir);
+		const target = await damageRowIn(base, file);
+		assert.ok(target);
 		const source = await rows(file);
 		const original = source.find((row) => row.GameId === target.source.gameId && row.Link === target.sourcePlayer);
 		assert.ok(original);
@@ -340,13 +354,13 @@ test("games and matches under a rejected event mint no teams", async () => {
 
 test("a role differing only in case still counts as one played position", async () => {
 	const base = await build();
-	const target = base.playerGames.rows.find((row) => "damage" in row);
-	assert.ok(target);
-	const sameSide = base.playerGames.rows.filter((row) => row.gameId === target.gameId && row.side === target.side && row.id !== target.id);
-	assert.ok(sameSide.length > 0);
 	const dir = await scratch();
 	try {
 		const file = await broadFile(dir);
+		const target = await damageRowIn(base, file);
+		assert.ok(target);
+		const sameSide = base.playerGames.rows.filter((row) => row.gameId === target.gameId && row.side === target.side && row.id !== target.id);
+		assert.ok(sameSide.length > 0);
 		const source = await rows(file);
 		const row = source.find((candidate) => candidate.GameId === target.source.gameId && candidate.Link === sameSide[0].sourcePlayer);
 		assert.ok(row);
@@ -385,7 +399,7 @@ test("an identity-only row cannot blank a stat row's GameId through deduplicatio
 			"utf8",
 		);
 		const result = await buildDataset({ rawDir: dir });
-		assert.equal(result.playerGames.rows.length, 2770, "the stat rows survive the overlapping identity copy");
+		assert.equal(result.playerGames.rows.length, 3770, "the stat rows survive the overlapping identity copy");
 		assert.ok(
 			result.playerGames.rows.some((row) => row.id === target.id && "damage" in row),
 			"the stat row is still a stat row",

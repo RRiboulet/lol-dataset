@@ -29,13 +29,17 @@ import * as path from "node:path";
 import type { AssembledDataset } from "./assemble.ts";
 import { assembleDataset } from "./assemble.ts";
 import { readPayloads } from "./cache.ts";
+import type { CoverageReport } from "./coverage.ts";
+import { assembleCoverage } from "./coverage.ts";
 import { toJsonl } from "./emit.ts";
 import type { EraTable } from "./eras.ts";
 import { DEFAULT_ERA_FILE, loadEraTable } from "./eras.ts";
+import type { GameFormats } from "./formats.ts";
+import { DEFAULT_FORMAT_FILE, loadGameFormats } from "./formats.ts";
 import type { ScoreboardAssembly } from "./games.ts";
 import { assembleScoreboards, selectedGameIds } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
-import { assembleIdentity, DEFAULT_ALIAS_FILE, loadDeclaredAliases } from "./identity.ts";
+import { assembleIdentity, DEFAULT_ALIAS_FILE, emitReferenced, loadDeclaredAliases } from "./identity.ts";
 import type { Manifest } from "./manifest.ts";
 import { assertPayloadHashes, buildManifest, MANIFEST_FILE, renderManifest } from "./manifest.ts";
 import { normalizeSources } from "./normalize.ts";
@@ -54,6 +58,8 @@ export const OUTPUTS = {
 	"events.jsonl": { schema: "event.schema.json" },
 	"event-selection.jsonl": { schema: "event-selection.schema.json" },
 	"event-games.jsonl": { schema: "event-games.schema.json" },
+	"event-coverage.jsonl": { schema: "event-coverage.schema.json" },
+	"era-coverage.jsonl": { schema: "era-coverage.schema.json" },
 	"games.jsonl": { schema: "game.schema.json" },
 	"matches.jsonl": { schema: "match.schema.json" },
 	"series-conflicts.jsonl": { schema: "series-conflicts.schema.json" },
@@ -76,6 +82,8 @@ export type BuildOptions = {
 	aliasFile?: string;
 	/** The era table that judges coverage. Defaults to `rules/game-eras.json`. */
 	eraFile?: string;
+	/** The declared game formats (blind pick). Defaults to `rules/game-formats.json`. */
+	formatFile?: string;
 	/** Directory holding the checked-in schemas. Defaults to `data/curated/schema/`. */
 	schemaDir?: string;
 };
@@ -91,12 +99,16 @@ export type BuildResult = AssembledDataset & {
 	identity: AssembledIdentity;
 	/** Games, matches and the per-event game report (ticket 03). */
 	scoreboards: ScoreboardAssembly;
+	/** The per-event and per-era aggregation of the games' coverage markers (ticket 10). */
+	coverage: CoverageReport;
 	/** One row per player per game (ticket 04). */
 	playerGames: PlayerGamesAssembly;
 	/** The rule that produced the events, so a caller can explain a decision. */
 	rule: EventSelectionRule;
 	/** The era table coverage was judged against, for callers that explain a marker. */
 	eras: EraTable;
+	/** The declared game formats (blind pick), for callers that explain a draft. */
+	formats: GameFormats;
 };
 
 const TOOL_DIR = import.meta.dirname;
@@ -132,6 +144,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 
 	const rule = await loadRule(ruleFile);
 	const eras = await loadEraTable(options.eraFile ?? DEFAULT_ERA_FILE);
+	const formats = await loadGameFormats(options.formatFile ?? DEFAULT_FORMAT_FILE);
 	const payloads = await readPayloads(options.rawDir);
 	if (payloads.length === 0) {
 		// An empty cache is a failed build, not an empty dataset: emitting zero rows
@@ -154,7 +167,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 			.filter((record) => record.decision === "rejected" && record.overviewPage !== "")
 			.map((record) => record.overviewPage),
 	);
-	const identity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE), {
+	const assembledIdentity = assembleIdentity(sources, await loadDeclaredAliases(options.aliasFile ?? DEFAULT_ALIAS_FILE), {
 		selectedGameIds: selected,
 		selectedPages,
 		rejectedPages,
@@ -164,22 +177,62 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		matches: sources.matches,
 		drafts: sources.drafts,
 		events: assembled.events,
-		identity: identity.index,
+		identity: assembledIdentity.index,
 		eras,
 		payloads,
+		formats,
 	});
 
 	const playerGames = assemblePlayerGames({
 		source: sources.playerGames,
 		games: scoreboards.games,
-		identity: identity.index,
+		identity: assembledIdentity.index,
 	});
 	for (const game of scoreboards.games) game.coverage.playerStats = playerGames.coverageByGame.get(game.id) ?? "unavailable";
+
+	// After the player rows, because `playerStats` is the marker they set: aggregating
+	// before it would report every game's player coverage as unavailable.
+	const coverage = assembleCoverage({ events: assembled.events, games: scoreboards.games, eras });
+
+	// The identity tables the dataset emits, named by the emitted records themselves.
+	// This is the last assembly step on purpose: which rows are emitted is fully known
+	// only here — a series row whose games name other teams is held back above — so the
+	// entity files cannot carry a dimension row no fact reaches (ticket 10's decision
+	// log: registries are resolution input, the entity files carry what the dataset uses).
+	const referencedIds = new Set<string>();
+	for (const game of scoreboards.games) {
+		for (const side of game.sides) referencedIds.add(side.teamId);
+		if (game.draft !== undefined) {
+			for (const side of game.draft.sides) {
+				for (const entry of [...side.picks, ...side.bans]) referencedIds.add(entry.championId);
+			}
+		}
+	}
+	for (const match of scoreboards.matches) {
+		for (const side of match.sides) referencedIds.add(side.teamId);
+	}
+	// The conflict report is committed data too (ticket 15), and its team pairs are the
+	// ids an analyst needs to join it — including the pairs a contradiction put there
+	// precisely because the rows naming them disagree.
+	for (const row of scoreboards.seriesConflicts) {
+		for (const pair of [row.gameTeams, row.matchTeams]) {
+			if (pair === null) continue;
+			for (const team of pair) referencedIds.add(team.teamId);
+		}
+	}
+	for (const row of playerGames.rows) {
+		referencedIds.add(row.playerId);
+		referencedIds.add(row.teamId);
+		referencedIds.add(row.championId);
+	}
+	const identity = emitReferenced(assembledIdentity, referencedIds);
 
 	const files: Record<OutputFile, string> = {
 		"events.jsonl": toJsonl(assembled.events),
 		"event-selection.jsonl": toJsonl(assembled.selection),
 		"event-games.jsonl": toJsonl(scoreboards.eventGames),
+		"event-coverage.jsonl": toJsonl(coverage.events),
+		"era-coverage.jsonl": toJsonl(coverage.eras),
 		"games.jsonl": toJsonl(scoreboards.games),
 		"matches.jsonl": toJsonl(scoreboards.matches),
 		"series-conflicts.jsonl": toJsonl(scoreboards.seriesConflicts),
@@ -214,11 +267,13 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		matches: scoreboards.matches,
 		eventGames: scoreboards.eventGames,
 		seriesConflicts: scoreboards.seriesConflicts,
+		eventCoverage: coverage.events,
+		eraCoverage: coverage.eras,
 		playerGames: playerGames.rows,
 		eras,
 	});
 
-	return { ...assembled, files, manifest, manifestText, identity, scoreboards, playerGames, rule, eras };
+	return { ...assembled, files, manifest, manifestText, identity, scoreboards, coverage, playerGames, rule, eras, formats };
 }
 
 /**
