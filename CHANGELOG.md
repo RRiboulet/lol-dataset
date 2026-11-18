@@ -182,6 +182,29 @@ Changed:
 
 Added:
 
+- **The dataset's documentation, for a reader who was not in the room.**
+  `docs/dataset/using-the-dataset.md` covers both layers: what each file holds and at
+  which grain, which layer answers which kind of question, canonical identity and the
+  alias bridge, how coverage is expressed and why eras are thinner (with the questions
+  the data cannot answer: no per-minute data, no draft order before 2017, no team
+  statistics at all for IPL 5), one game walked from its curated row to its fact rows,
+  four runnable questions against the model — including one that lands on the era caveat —
+  the rebuild commands with their honest cost (75 s between requests, so the 79 committed
+  payloads are roughly an hour and three quarters of wall-clock, resumable), and the
+  CC BY-SA obligations. It deliberately does not create a `README.md`: that is its own
+  decision.
+- **`data/ATTRIBUTION.md` and `node tools/dataset/cli.ts dictionary`.** The attribution
+  now travels with the data, restating the licence and the four things it requires of
+  anyone publishing output built on the dataset, naming the nine Cargo tables the crawl
+  actually read, and pointing at commit `827d63f` — where attribution landed *before* the
+  first source content, not after. The curated layer's field-level dictionary is
+  generated from the JSON schemas that guard each file, so it cannot claim a field the
+  data does not have and cannot go stale without failing the suite; it marks each of 231
+  fields' presence in three states (`always`, `when present`, `no`) because two would lie
+  about a field inside an optional object. The attribution notice's event table is now
+  named by the dataset's own event names and checked against the committed counts, so a
+  crawled event cannot be committed without attribution (ticket 11).
+
 - `data/curated/series-conflicts.jsonl`, with
   `data/curated/schema/series-conflicts.schema.json`: one row per game detached from a
   series that names other teams and per series every game naming it contradicts, carrying

@@ -80,20 +80,30 @@ fetch time and body hash. Counts are the committed rows (`games.jsonl` /
 
 | Event | Games | Series |
 |---|---|---|
-| World Cyber Games 2011 | 0 | 0 (queries that returned no rows, kept as evidence) |
-| IPL 5 2012 | 72 | 36 |
+| WCG 2011 (World Cyber Games 2011) | 0 | 0 (queries that returned no rows, kept as evidence) |
+| IPL 5 (2012) | 72 | 36 |
 | World Cyber Games 2013 | 0 | 48 |
-| IEM Season IX World Championship 2015 | 19 | 13 |
+| IEM Season 9 World Championship (IX, 2015) | 19 | 13 |
 | Rift Rivals 2017 NA-EU | 21 | 19 |
 | Mid-Season Cup 2020 | 25 | 17 |
-| 2023 Mid-Season Invitational | 76 | 25 |
-| 2023 Season World Championship | 110 | 52 |
+| MSI 2023 (2023 Mid-Season Invitational) | 76 | 25 |
+| Worlds 2023 (2023 Season World Championship) | 110 | 52 |
 | Esports World Cup 2024 | 19 | 7 |
 | First Stand 2025 | 35 | 13 |
 
 Ticket 10's crawl also fetched the identity registries (`Teams`, `TeamRedirects`,
 `PlayerRedirects`, `Champions`, `Tournaments`), so the team, player and champion tables
 are derived from Leaguepedia pages as well as from scoreboard rows.
+
+Every payload the build read is a Cargo query over one of nine wiki tables —
+`Tournaments`, `ScoreboardGames`, `ScoreboardPlayers`, `MatchSchedule`, `PicksAndBansS7`,
+`Teams`, `TeamRedirects`, `PlayerRedirects` and `Champions` — cached with its query, URL,
+fetch time and body hash, and pinned by path in `data/curated/manifest.json` (79 payloads
+at the time of writing). Those cached bodies are the wiki's response bodies, so they are
+covered by this attribution too, not only the rows derived from them. The attribution
+that travels with the data lives in [`data/ATTRIBUTION.md`](../data/ATTRIBUTION.md), which
+restates the CC BY-SA obligations for anyone publishing output built on the dataset; the
+analyst-facing guide is [`docs/dataset/using-the-dataset.md`](../docs/dataset/using-the-dataset.md).
 
 The notice grows with the data: an event whose **games** are committed is named here in
 the same change that commits them. Recorded payloads that name other events — the
