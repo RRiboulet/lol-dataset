@@ -4,6 +4,15 @@
 
 Changed:
 
+- **The dimensional model states its winner convention, and `dim_match` is sliceable by event.**
+  `fact_game_side.is_winner` is now an **empty field** when the source records no winner, instead of
+  a `0` that read exactly like a recorded loss, and a winner id that is neither side is refused by
+  the build rather than silently encoded as "no winner". `dim_match` carries `event_key`, so a
+  series can be sliced by event without joining through its games, with the unknown member joining
+  to the unknown event. The no-derived-measure guard also catches the `kda`, `gpm` and `per_min`
+  name shapes, and the data dictionary states both its remaining limit (a naming heuristic, not a
+  semantic guarantee) and which dimensions' unknown members can actually be joined to — only
+  `match_key` and `patch_key`; the rest are kept for uniformity (ticket 12, review pass).
 - A game whose `MatchSchedule` row names two other teams is now emitted **without** a
   canonical `matchId` and counted in the build's summary, instead of stopping the build;
   a series row that **every** game naming it contradicts is not emitted at all and is
@@ -50,7 +59,11 @@ Changed:
   field order. The manifest keeps its `format` marker because it is a committed document
   other tools parse, while a sidecar has none because it is a cache-local artifact
   rewritten with its body.
-
+- `AGENTS.md`'s "current state" paragraph now names the dimensional model beside
+  the curated layer: the dimensions and facts, the alias bridge, the unknown
+  member, the generated DDL and dictionary, the `model` command and its
+  `--check`. The earlier bullet above records the curated-layer update this one
+  follows; neither claims a README exists.
 - `AGENTS.md`'s "current state" paragraph describes what the repository now
   holds — the dataset spec, its ticket series, and the curated event and identity
   layer — instead of claiming there is no dataset yet, which had been untrue
@@ -94,6 +107,35 @@ Added:
   12 legacy-name games (6 series) and 8 cross-match games (3 reciprocal `MatchId` swaps),
   and asserts that the class decides the handling. Ticket 09's figure of 11 pairings
   (9 + 3) does not reproduce on these bytes; the derived counts are what the test pins.
+- A dimensional model at `data/model/`, derived from `data/curated/` and never
+  written back: `dim_event`, `dim_match`, `dim_game`, `dim_team`, `dim_player`,
+  `dim_champion`, `dim_patch` and `dim_date`; `fact_game_side` at one row per
+  game per side, `fact_player_game` at one row per game per player and
+  `fact_draft_slot` at one row per draft entry; and `bridge_alias`, which keeps a
+  rename as one dimension row with dated source strings instead of a type-2
+  duplicate. Every dimension carries a natural key, a display name and an
+  unknown member at key 0, so a thin-era fact joins to `Unknown` rather than
+  disappearing from an inner join. Facts hold source measures and grain
+  attributes only; no rate, average or percentage is computed, and a test fails
+  if a column of that shape appears.
+- `node tools/dataset/cli.ts model`, which rebuilds `data/model/` from the
+  committed curated records, and `model --check`, which compares every generated
+  byte. The emitted artifact is one CSV per table plus generated `schema.sql`
+  (SQLite dialect, primary keys, natural-key uniqueness and fact foreign keys)
+  and `data-dictionary.md` (every column, its absence rule, the unknown member,
+  the bridge and the key/sort rules). The format is RFC 4180 quoting with LF
+  terminators, UTF-8 without a BOM, a header row, fixed column order, ISO-8601
+  dates, unformatted integers and an empty field for an absent value — distinct
+  from a recorded `0`. The LF choice is deliberate: `.gitattributes` normalizes
+  the repository to LF, so CRLF output would not match a checkout.
+- `tools/dataset/test/model.test.ts`, which proves the committed model is exactly
+  a rebuild; every grain is unique; row counts reconcile per event and per game
+  for sides, player rows and draft slots; every fact foreign key resolves
+  (including the unknown member); the T1 rename is one dimension row and two
+  dated bridge rows; coverage and draft fidelity survive into `dim_game`; no
+  derived-measure column can pass; the CSV quoting round-trips and contains no
+  BOM or CR; two builds are byte-identical; and the DDL plus CSVs load into an
+  in-memory SQLite database whose inner joins keep every fact row.
 - A provenance manifest at `data/curated/manifest.json`, written by the build: every
   cached payload the build read, sorted by cache-relative path, with its table,
   endpoint, recorded query, fetch time, HTTP status and sha256 of the body; plus a
@@ -277,6 +319,23 @@ Added:
   fixtures moved accordingly and the committed event files are unchanged.
 
 Fixed:
+
+- **`model --check` fails on a model file the build does not emit.** It compared only the files the
+  rebuild produces, so a stray file left in `data/model/` by an older build still printed
+  "committed model matches a rebuild". It now enumerates the directory and names anything the build
+  does not emit, as well as any emitted file that is missing. Found by the independent review of the
+  dimensional model, and reproduced before the fix.
+- **The model no longer trusts curated rows the invariant gate never saw.** `model` read the curated
+  JSONL directly, so a hand-edited player row whose `eventId` disagreed with its game's was accepted
+  and the facts then contradicted each other while every per-fact check passed self-consistently.
+  The build now validates at the seam the curated fields the model relies on — non-empty ids,
+  resolvable references, a winner that is one of the two sides, a player row's event matching its
+  game — and the conformance gate asserts cross-fact consistency: one `game_key` presents one
+  `event_key` across all three facts, and a player row's team and side must be one of the game's two
+  sides, naming the game and the disagreeing events when they are not. Found by the independent
+  review of the dimensional model, and reproduced before the fix.
+
+Maintenance:
 
 - **The single-query form of the manual fetch command is accepted again, and stays
   as strict as a plan file.** `tools/dataset/cli.ts` has always documented
