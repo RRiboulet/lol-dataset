@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "ScoreboardPlayers",
+    "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+    "where": "OverviewPage='Season 1 World Championship'",
+    "order_by": "DateTime_UTC ASC",
+    "limit": 10
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardPlayers&fields=Name%2CLink%2CTeam%2CTeamVs%2CChampion%2COverviewPage%2CDateTime_UTC&where=OverviewPage%3D%27Season+1+World+Championship%27&order_by=DateTime_UTC+ASC&limit=10",
+  "fetchedAt": "2026-11-12T22:53:07.231Z",
+  "status": 200,
+  "bodySha256": "c064180d34112248146bb7e6e5fc091d64360d808858ad2a6873305dce338f0c"
+}

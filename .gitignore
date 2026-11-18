@@ -13,3 +13,10 @@ node_modules/
 .worktrees/
 
 lab/
+
+# Raw source payload cache (spec D6). Not committed: it is large, it duplicates
+# third-party content, and the manifest plus body hashes pin it (spec R9).
+# Ticket 01 commits its recorded fixtures under tools/dataset/fixtures/ instead.
+# Anchored to the repository root on purpose: a bare `raw/` would also hide
+# tools/dataset/fixtures/raw/, which is committed.
+/raw/

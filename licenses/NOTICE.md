@@ -59,3 +59,58 @@ The skills were edited to fit this repository rather than kept as copies:
   `show-me-your-work/scripts/log.sh` are executable here; upstream ships them
   mode 100644 while its own `validate.py` requires the bit, so its quality gate
   fails on a fresh clone.
+
+# Data source attribution
+
+The dataset under `data/`, and the recorded source payloads used as test fixtures,
+are derived from **Leaguepedia | League of Legends Esports Wiki**
+(<https://lol.fandom.com>), which is licensed **CC BY-SA 3.0**
+(<https://www.fandom.com/licensing>). The wiki reports that licence itself in its
+`siteinfo` (`rightsinfo`), and this notice states it rather than assumes it.
+
+Attribution starts at the first commit that contains source-derived material —
+which is the transcribed field inventory in `docs/specs/` and the recorded payload
+fixtures, not the first committed dataset. Reusing the derived data therefore
+requires crediting Leaguepedia and sharing derivative work alike.
+
+The committed dataset carries real crawled data for every event the selection rule
+admits, each fetched through `tools/dataset/fetch.ts` and recorded with its query, URL,
+fetch time and body hash. Counts are the committed rows (`games.jsonl` /
+`matches.jsonl`):
+
+| Event | Games | Series |
+|---|---|---|
+| WCG 2011 (World Cyber Games 2011) | 0 | 0 (queries that returned no rows, kept as evidence) |
+| IPL 5 (2012) | 72 | 36 |
+| World Cyber Games 2013 | 0 | 48 |
+| IEM Season 9 World Championship (IX, 2015) | 19 | 13 |
+| Rift Rivals 2017 NA-EU | 21 | 19 |
+| Mid-Season Cup 2020 | 25 | 17 |
+| MSI 2023 (2023 Mid-Season Invitational) | 76 | 25 |
+| Worlds 2023 (2023 Season World Championship) | 110 | 52 |
+| Esports World Cup 2024 | 19 | 7 |
+| First Stand 2025 | 35 | 13 |
+
+Ticket 10's crawl also fetched the identity registries (`Teams`, `TeamRedirects`,
+`PlayerRedirects`, `Champions`, `Tournaments`), so the team, player and champion tables
+are derived from Leaguepedia pages as well as from scoreboard rows.
+
+Every payload the build read is a Cargo query over one of nine wiki tables —
+`Tournaments`, `ScoreboardGames`, `ScoreboardPlayers`, `MatchSchedule`, `PicksAndBansS7`,
+`Teams`, `TeamRedirects`, `PlayerRedirects` and `Champions` — cached with its query, URL,
+fetch time and body hash, and pinned by path in `data/curated/manifest.json` (79 payloads
+at the time of writing). Those cached bodies are the wiki's response bodies, so they are
+covered by this attribution too, not only the rows derived from them. The attribution
+that travels with the data lives in [`data/ATTRIBUTION.md`](../data/ATTRIBUTION.md), which
+restates the CC BY-SA obligations for anyone publishing output built on the dataset; the
+analyst-facing guide is [`docs/dataset/using-the-dataset.md`](../docs/dataset/using-the-dataset.md).
+
+The notice grows with the data: an event whose **games** are committed is named here in
+the same change that commits them. Recorded payloads that name other events — the
+ticket-02 identity probes for IPL 5 and the 2015 season, for example — are covered by
+the general attribution above rather than listed one by one; they carry players and
+teams, not games, and none of their rows is in the committed dataset.
+
+Riot Games' own material — champion and item data from Data Dragon, anything from
+the LoL Esports API — is not covered by that licence and is used under Riot's terms,
+not CC BY-SA.

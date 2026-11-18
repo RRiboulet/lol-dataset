@@ -1,0 +1,51 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:alias:1",
+	"title": "Curated identity alias",
+	"description": "One row of data/curated/aliases.jsonl: a source string that denotes an entity, with the window the source is known to have used it. This is the table a reader consults to translate a source string — or a value in an older payload — into a canonical ID, and the table a rename pair shows up in as two rows with one entityId. `firstSeen`/`lastSeen` are observed use in the recorded corpus; where the corpus never dates a string, they are the window a declared alias in tools/dataset/rules/identity-aliases.json states. A row may share its `string` with another entity's row: `Wolf` names eight players, and which one answers depends on the date the source used it.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["kind", "string", "entityId", "entityName", "firstSeen", "lastSeen", "evidence"],
+	"properties": {
+		"kind": {
+			"type": "string",
+			"enum": ["team", "player", "champion"],
+			"description": "Which entity table `entityId` belongs to."
+		},
+		"string": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source string, verbatim — the exact bytes the source used, including its casing and HTML entities (spec R7)."
+		},
+		"entityId": {
+			"type": "string",
+			"pattern": "^(tm|pl|ch)-[0-9a-f]{12}$",
+			"description": "The canonical ID this string denotes."
+		},
+		"entityName": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The entity's current display name, repeated here so an alias row reads without a join (spec R12)."
+		},
+		"firstSeen": {
+			"type": ["string", "null"],
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+			"description": "Earliest UTC date on which a recorded source row used this string for this entity. Null means the corpus does not date it, not that it was never used."
+		},
+		"lastSeen": {
+			"type": ["string", "null"],
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+			"description": "Latest UTC date on which a recorded source row used this string for this entity. Null means the corpus does not date it."
+		},
+		"evidence": {
+			"type": "array",
+			"minItems": 1,
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"enum": ["registry", "rename", "redirect", "handle", "observed", "declared"]
+			},
+			"description": "Why this mapping is believed: the source's own registry states it (`registry`), it is an old page in a Teams.RenamedTo chain (`rename`), it is a TeamRedirects/PlayerRedirects AllName (`redirect`), it is a player handle (`handle`), a recorded scoreboard row used it (`observed`), or rules/identity-aliases.json declares it (`declared`)."
+		}
+	}
+}

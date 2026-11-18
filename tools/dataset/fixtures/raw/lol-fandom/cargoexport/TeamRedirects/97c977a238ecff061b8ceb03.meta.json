@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "TeamRedirects",
+    "fields": "_pageName,AllName,OtherName",
+    "where": "AllName IN ('Azubu Blaze','DKB XPERION NXT','Epik Gamer','H2k-Gaming','SK Telecom T1','T1','Team Dynamic','Team Liquid','The Bandits Prime','against All authority','SKT T1','SK Telecom')",
+    "order_by": "AllName ASC",
+    "limit": 40
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=TeamRedirects&fields=_pageName%2CAllName%2COtherName&where=AllName+IN+%28%27Azubu+Blaze%27%2C%27DKB+XPERION+NXT%27%2C%27Epik+Gamer%27%2C%27H2k-Gaming%27%2C%27SK+Telecom+T1%27%2C%27T1%27%2C%27Team+Dynamic%27%2C%27Team+Liquid%27%2C%27The+Bandits+Prime%27%2C%27against+All+authority%27%2C%27SKT+T1%27%2C%27SK+Telecom%27%29&order_by=AllName+ASC&limit=40",
+  "fetchedAt": "2026-11-12T23:03:34.659Z",
+  "status": 200,
+  "bodySha256": "d13e7345361ef005f0812aa05c5bff9cb91cd4d120c40653bf08521fd3a94c37"
+}

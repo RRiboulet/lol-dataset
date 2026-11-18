@@ -1,0 +1,102 @@
+[
+    {
+        "Name": "Bang",
+        "Link": "Bang",
+        "Team": "SK Telecom T1",
+        "TeamVs": "H2k-Gaming",
+        "Champion": "Tristana",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "Wolf",
+        "Link": "Wolf (Lee Jae-wan)",
+        "Team": "SK Telecom T1",
+        "TeamVs": "H2k-Gaming",
+        "Champion": "Alistar",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "Odoamne",
+        "Link": "Odoamne",
+        "Team": "H2k-Gaming",
+        "TeamVs": "SK Telecom T1",
+        "Champion": "Gnar",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "Bengi",
+        "Link": "Bengi",
+        "Team": "SK Telecom T1",
+        "TeamVs": "H2k-Gaming",
+        "Champion": "Elise",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "MaRin",
+        "Link": "MaRin",
+        "Team": "SK Telecom T1",
+        "TeamVs": "H2k-Gaming",
+        "Champion": "Fiora",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "Faker",
+        "Link": "Faker",
+        "Team": "SK Telecom T1",
+        "TeamVs": "H2k-Gaming",
+        "Champion": "Azir",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "Hjarnan",
+        "Link": "Hjarnan",
+        "Team": "H2k-Gaming",
+        "TeamVs": "SK Telecom T1",
+        "Champion": "Sivir",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "Ryu",
+        "Link": "Ryu",
+        "Team": "H2k-Gaming",
+        "TeamVs": "SK Telecom T1",
+        "Champion": "LeBlanc",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "kaSing",
+        "Link": "kaSing",
+        "Team": "H2k-Gaming",
+        "TeamVs": "SK Telecom T1",
+        "Champion": "Braum",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    },
+    {
+        "Name": "loulex",
+        "Link": "loulex",
+        "Team": "H2k-Gaming",
+        "TeamVs": "SK Telecom T1",
+        "Champion": "Gragas",
+        "OverviewPage": "2015 Season World Championship",
+        "DateTime UTC": "2015-10-01 16:18:00",
+        "DateTime UTC__precision": 0
+    }
+]

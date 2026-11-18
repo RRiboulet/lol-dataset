@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Tournaments",
+    "fields": "Name,OverviewPage,DateStart,League,Region",
+    "where": "OverviewPage IN ('2023 Season World Championship','2023 Season World Championship/Main Event','2023 Season World Championship/Play-In','2023 Worlds Qualifying Series','2023 Mid-Season Invitational','All-Star Las Vegas 2019','LCK/2023 Season/Spring Season','Curse King Of The Hill','2011 World Cyber Games')",
+    "order_by": "OverviewPage ASC",
+    "limit": 20
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Tournaments&fields=Name%2COverviewPage%2CDateStart%2CLeague%2CRegion&where=OverviewPage+IN+%28%272023+Season+World+Championship%27%2C%272023+Season+World+Championship%2FMain+Event%27%2C%272023+Season+World+Championship%2FPlay-In%27%2C%272023+Worlds+Qualifying+Series%27%2C%272023+Mid-Season+Invitational%27%2C%27All-Star+Las+Vegas+2019%27%2C%27LCK%2F2023+Season%2FSpring+Season%27%2C%27Curse+King+Of+The+Hill%27%2C%272011+World+Cyber+Games%27%29&order_by=OverviewPage+ASC&limit=20",
+  "fetchedAt": "2026-11-12T22:16:25.131Z",
+  "status": 200,
+  "bodySha256": "dfca8611e698178dedf4f34a11fde8eed80f0bc6c6c7ea446e23c44e9287b6f3"
+}

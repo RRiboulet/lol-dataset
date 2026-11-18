@@ -1,0 +1,65 @@
+[
+    {
+        "_pageName": "Against All authority",
+        "Name": "against All authority",
+        "OverviewPage": "Against All authority",
+        "Region": "Europe",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Azubu Blaze",
+        "Name": "Azubu Blaze",
+        "OverviewPage": "Azubu Blaze",
+        "Region": "Korea",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "DKB XPERION NXT",
+        "Name": "DKB XPERION NXT",
+        "OverviewPage": "DKB XPERION NXT",
+        "Region": "EMEA",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Epik Gamer",
+        "Name": "EPIK Gamer",
+        "OverviewPage": "Epik Gamer",
+        "Region": "North America",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "H2k-Gaming",
+        "Name": "H2k-Gaming",
+        "OverviewPage": "H2k-Gaming",
+        "Region": "Europe",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "SK Telecom T1",
+        "Name": "SK Telecom T1",
+        "OverviewPage": "SK Telecom T1",
+        "Region": "Korea",
+        "RenamedTo": "T1"
+    },
+    {
+        "_pageName": "T1",
+        "Name": "T1",
+        "OverviewPage": "T1",
+        "Region": "Korea",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team Dynamic",
+        "Name": "Team Dynamic",
+        "OverviewPage": "Team Dynamic",
+        "Region": "North America",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team Liquid",
+        "Name": "Team Liquid",
+        "OverviewPage": "Team Liquid",
+        "Region": "North America",
+        "RenamedTo": null
+    }
+]

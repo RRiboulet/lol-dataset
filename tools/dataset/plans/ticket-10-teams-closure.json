@@ -1,0 +1,12 @@
+{
+  "queries": [
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "OverviewPage IN ('Movistar KOI','Rainbow7')",
+      "order_by": "OverviewPage ASC",
+      "limit": 100
+    }
+  ]
+}

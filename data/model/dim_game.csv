@@ -1,0 +1,379 @@
+game_key,game_id,game_name,date_time_utc,era,team_stats_coverage,draft_coverage,player_stats_coverage,draft_fidelity,draft_switched_sides
+0,,Unknown,,,,,,,
+1,gm-00a3d746cd96,IPL 5 — Team Liquid vs Blackbean — 2012-11-29,2012-11-29T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+2,gm-00b48ada7af4,Worlds 2023 — KT Rolster vs LNG Esports — 2023-10-27,2023-10-27T08:51:00Z,chemtech-restored,complete,complete,complete,ordered,0
+3,gm-01537706d008,IPL 5 — IceLanD vs Counter Logic Gaming Europe — 2012-11-29,2012-11-29T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+4,gm-01dfb1021503,Worlds 2023 — LNG Esports vs T1 — 2023-11-05,2023-11-05T08:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+5,gm-029cff7e1380,Worlds 2023 — T1 vs Bilibili Gaming — 2023-10-28,2023-10-28T08:57:00Z,chemtech-restored,complete,complete,complete,ordered,0
+6,gm-053dcaead794,MSI 2023 — JD Gaming vs Bilibili Gaming — 2023-05-21,2023-05-21T12:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+7,gm-0581ab8a0e6a,IPL 5 — Moscow 5 vs Azubu Blaze — 2012-12-02,2012-12-02T00:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+8,gm-05bcaaabfc33,First Stand 2025 — CTBC Flying Oyster vs Karmine Corp — 2025-03-11,2025-03-11T08:15:00Z,atakhan,complete,complete,complete,ordered,0
+9,gm-067ac30fc84a,Worlds 2023 — Movistar KOI vs Weibo Gaming — 2023-10-26,2023-10-26T10:55:00Z,chemtech-restored,complete,complete,complete,ordered,0
+10,gm-069889f0a4cf,MSI 2023 — Movistar KOI vs T1 — 2023-05-10,2023-05-10T13:04:00Z,chemtech-restored,complete,complete,complete,ordered,0
+11,gm-06e343684e4f,Rift Rivals 2017 NA-EU — Sentinels vs Unicorns of Love.CIS — 2017-07-07,2017-07-07T18:11:00Z,elemental-drakes,partial,complete,partial,ordered,0
+12,gm-075171afda47,Worlds 2023 — LYON vs GAM Esports — 2023-10-13,2023-10-13T07:56:00Z,chemtech-restored,complete,complete,complete,ordered,0
+13,gm-07ec016cb708,MSI 2023 — Movistar KOI vs G2 Esports — 2023-05-13,2023-05-13T15:31:00Z,chemtech-restored,complete,complete,complete,ordered,0
+14,gm-07fb902440bf,MSI 2023 — G2 Esports vs Movistar KOI — 2023-05-13,2023-05-13T16:15:00Z,chemtech-restored,complete,complete,complete,ordered,0
+15,gm-09b3524e7289,Worlds 2023 — CTBC Flying Oyster vs Team Secret Whales — 2023-10-12,2023-10-12T09:05:00Z,chemtech-restored,complete,complete,complete,ordered,0
+16,gm-09e74b5d12ee,IPL 5 — Moscow 5 vs Team Liquid — 2012-11-29,2012-11-29T23:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+17,gm-0a22790f0452,IPL 5 — Fnatic vs Azubu Blaze — 2012-11-29,2012-11-29T23:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+18,gm-0a55a3d34423,Mid-Season Cup 2020 — Dplus Kia vs FunPlus Phoenix — 2020-05-28,2020-05-28T10:13:00Z,elemental-drakes,partial,complete,partial,ordered,0
+19,gm-0e00d3451411,Worlds 2023 — GAM Esports vs Team Secret Whales — 2023-10-15,2023-10-15T03:58:00Z,chemtech-restored,complete,complete,complete,ordered,0
+20,gm-0ea7cc2cefd3,Worlds 2023 — Movistar KOI vs Shifters — 2023-10-20,2023-10-20T07:33:00Z,chemtech-restored,complete,complete,complete,ordered,0
+21,gm-0f07fd042fb7,Worlds 2023 — Cloud9 vs Fnatic — 2023-10-26,2023-10-26T08:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+22,gm-0f7c95a806c9,MSI 2023 — JD Gaming vs Bilibili Gaming — 2023-05-21,2023-05-21T11:15:00Z,chemtech-restored,complete,complete,complete,ordered,0
+23,gm-100e4770c4e7,Worlds 2023 — CTBC Flying Oyster vs Team Secret Whales — 2023-10-12,2023-10-12T10:47:00Z,chemtech-restored,complete,complete,complete,ordered,0
+24,gm-119734b96348,MSI 2023 — Bilibili Gaming vs JD Gaming — 2023-05-14,2023-05-14T11:56:00Z,chemtech-restored,complete,complete,complete,ordered,0
+25,gm-11998985434c,MSI 2023 — Bilibili Gaming vs T1 — 2023-05-20,2023-05-20T13:55:00Z,chemtech-restored,complete,complete,complete,ordered,0
+26,gm-13314ff3d8d6,Esports World Cup 2024 — Gen.G vs Top Esports — 2024-07-05,2024-07-05T16:02:00Z,voidgrubs,complete,complete,complete,ordered,0
+27,gm-1434d5cf459d,First Stand 2025 — CTBC Flying Oyster vs Karmine Corp — 2025-03-15,2025-03-15T05:16:00Z,atakhan,complete,complete,complete,ordered,0
+28,gm-148172721398,Mid-Season Cup 2020 — Top Esports vs FunPlus Phoenix — 2020-05-31,2020-05-31T09:44:00Z,elemental-drakes,partial,complete,partial,ordered,0
+29,gm-1546356a13f1,First Stand 2025 — Hanwha Life Esports vs Karmine Corp — 2025-03-16,2025-03-16T09:13:00Z,atakhan,complete,complete,complete,ordered,0
+30,gm-16c2ce3abbfa,First Stand 2025 — Top Esports vs Karmine Corp — 2025-03-12,2025-03-12T10:46:00Z,atakhan,complete,complete,complete,ordered,0
+31,gm-172e620dc010,First Stand 2025 — Karmine Corp vs Team Liquid — 2025-03-10,2025-03-10T08:17:00Z,atakhan,complete,complete,complete,ordered,0
+32,gm-175a2dd08d92,Mid-Season Cup 2020 — FunPlus Phoenix vs T1 — 2020-05-28,2020-05-28T03:36:00Z,elemental-drakes,partial,complete,partial,ordered,0
+33,gm-176321fc8b17,Worlds 2023 — Bilibili Gaming vs Weibo Gaming — 2023-11-11,2023-11-11T10:50:00Z,chemtech-restored,complete,complete,complete,ordered,0
+34,gm-176d3da68aed,Worlds 2023 — CTBC Flying Oyster vs Shifters — 2023-10-14,2023-10-14T09:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+35,gm-1973203ecb0b,MSI 2023 — G2 Esports vs LOUD — 2023-05-02,2023-05-02T15:34:00Z,chemtech-restored,complete,complete,complete,ordered,0
+36,gm-1975eaaf2662,MSI 2023 — LOUD vs DetonatioN FocusMe — 2023-05-05,2023-05-05T14:54:00Z,chemtech-restored,complete,complete,complete,ordered,0
+37,gm-1a102cb884ae,Esports World Cup 2024 — Team Liquid vs Fnatic — 2024-07-04,2024-07-04T18:59:00Z,voidgrubs,complete,complete,complete,ordered,0
+38,gm-1a1516bf25ed,MSI 2023 — JD Gaming vs T1 — 2023-05-18,2023-05-18T14:28:00Z,chemtech-restored,complete,complete,complete,ordered,0
+39,gm-1ae38f8711c0,IPL 5 — IceLanD vs Singapore Sentinels — 2012-11-30,2012-11-30T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+40,gm-1b25ac3b9172,First Stand 2025 — Top Esports vs Hanwha Life Esports — 2025-03-15,2025-03-15T10:45:00Z,atakhan,complete,complete,complete,ordered,0
+41,gm-1b29be12be8f,IPL 5 — Moscow 5 vs Taipei Assassins — 2012-12-02,2012-12-02T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+42,gm-1becaf2bba14,IEM Season 9 World Championship — ROX Tigers vs Cloud9 — 2015-03-13,2015-03-13T10:33:00Z,pre-herald,partial,partial,partial,unordered,
+43,gm-1cc90164c4cd,First Stand 2025 — Hanwha Life Esports vs Top Esports — 2025-03-15,2025-03-15T09:04:00Z,atakhan,complete,complete,complete,ordered,0
+44,gm-1cdc28b0918e,IPL 5 — Singapore Sentinels vs Meat Playground — 2012-11-29,2012-11-29T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+45,gm-1d3b7e19139a,Worlds 2023 — PSG Talon vs Shifters — 2023-10-15,2023-10-15T10:19:00Z,chemtech-restored,complete,complete,complete,ordered,0
+46,gm-1e35bdfddb14,MSI 2023 — Golden Guardians vs JD Gaming — 2023-05-12,2023-05-12T12:56:00Z,chemtech-restored,complete,complete,complete,ordered,0
+47,gm-1e6bf1fd1773,Worlds 2023 — Fnatic vs Cloud9 — 2023-10-26,2023-10-26T08:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+48,gm-1e742177012a,Esports World Cup 2024 — Top Esports vs T1 — 2024-07-07,2024-07-07T18:16:00Z,voidgrubs,complete,complete,complete,ordered,0
+49,gm-1eba1ebf0227,Worlds 2023 — NRG vs Weibo Gaming — 2023-11-02,2023-11-02T10:05:00Z,chemtech-restored,complete,complete,complete,ordered,0
+50,gm-1f68d983bc78,First Stand 2025 — Top Esports vs Hanwha Life Esports — 2025-03-10,2025-03-10T11:53:00Z,atakhan,complete,complete,complete,ordered,0
+51,gm-1f96885c66bc,MSI 2023 — Cloud9 vs Gen.G — 2023-05-17,2023-05-17T13:43:00Z,chemtech-restored,complete,complete,complete,ordered,0
+52,gm-20da7a2e158b,Worlds 2023 — T1 vs Team Liquid — 2023-10-19,2023-10-19T05:16:00Z,chemtech-restored,complete,complete,complete,ordered,0
+53,gm-21930f0e11db,IPL 5 — Taipei Assassins vs Moscow 5 — 2012-11-29,2012-11-29T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+54,gm-220f01f237fe,MSI 2023 — PSG Talon vs G2 Esports — 2023-05-04,2023-05-04T16:07:00Z,chemtech-restored,complete,complete,complete,ordered,0
+55,gm-22d1e9b14e59,First Stand 2025 — Hanwha Life Esports vs Karmine Corp — 2025-03-16,2025-03-16T10:52:00Z,atakhan,complete,complete,complete,ordered,0
+56,gm-22e103a06580,IPL 5 — Singapore Sentinels vs TSM — 2012-11-30,2012-11-30T00:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+57,gm-234882f7e2f9,First Stand 2025 — Hanwha Life Esports vs Team Liquid — 2025-03-14,2025-03-14T11:50:00Z,atakhan,complete,complete,complete,ordered,0
+58,gm-248dfae039c5,First Stand 2025 — CTBC Flying Oyster vs Karmine Corp — 2025-03-15,2025-03-15T04:18:00Z,atakhan,complete,complete,complete,ordered,0
+59,gm-2545543ad53e,Worlds 2023 — G2 Esports vs Weibo Gaming — 2023-10-20,2023-10-20T10:16:00Z,chemtech-restored,complete,complete,complete,ordered,0
+60,gm-264e32766bc7,IEM Season 9 World Championship — Team WE vs ROX Tigers — 2015-03-14,2015-03-14T19:07:00Z,pre-herald,partial,partial,partial,unordered,
+61,gm-26d545c72621,Rift Rivals 2017 NA-EU — Unicorns of Love.CIS vs TSM — 2017-07-08,2017-07-08T15:31:00Z,elemental-drakes,partial,complete,partial,ordered,0
+62,gm-273b13713cc8,Worlds 2023 — PSG Talon vs Shifters — 2023-10-15,2023-10-15T09:32:00Z,chemtech-restored,complete,complete,complete,ordered,0
+63,gm-27c0ae594678,Worlds 2023 — NRG vs Weibo Gaming — 2023-11-02,2023-11-02T09:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+64,gm-27df263246c4,Worlds 2023 — GAM Esports vs Team Liquid — 2023-10-23,2023-10-23T08:47:00Z,chemtech-restored,complete,complete,complete,ordered,0
+65,gm-2819476490cd,MSI 2023 — Bilibili Gaming vs JD Gaming — 2023-05-21,2023-05-21T12:04:00Z,chemtech-restored,complete,complete,complete,ordered,0
+66,gm-291ac71a7fb9,First Stand 2025 — Karmine Corp vs CTBC Flying Oyster — 2025-03-15,2025-03-15T06:11:00Z,atakhan,complete,complete,complete,ordered,0
+67,gm-293b37438932,MSI 2023 — Bilibili Gaming vs JD Gaming — 2023-05-14,2023-05-14T12:57:00Z,chemtech-restored,complete,complete,complete,ordered,0
+68,gm-2a19f242be6e,Mid-Season Cup 2020 — Gen.G vs Kiwoom DRX — 2020-05-29,2020-05-29T12:29:00Z,elemental-drakes,partial,complete,partial,ordered,0
+69,gm-2a1d7a75e46a,First Stand 2025 — Top Esports vs Team Liquid — 2025-03-11,2025-03-11T10:09:00Z,atakhan,complete,complete,complete,ordered,0
+70,gm-2ac516d44562,Worlds 2023 — Cloud9 vs Fnatic — 2023-10-26,2023-10-26T07:11:00Z,chemtech-restored,complete,complete,complete,ordered,0
+71,gm-2b81f1c5f0f5,First Stand 2025 — Team Liquid vs CTBC Flying Oyster — 2025-03-13,2025-03-13T09:05:00Z,atakhan,complete,complete,complete,ordered,0
+72,gm-2bc3f6f0776b,Worlds 2023 — Bilibili Gaming vs Gen.G — 2023-11-03,2023-11-03T10:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+73,gm-2c7f578f858f,IPL 5 — Moscow 5 vs Meat Playground — 2012-12-01,2012-12-01T03:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+74,gm-2c9599ecee4b,Rift Rivals 2017 NA-EU — G2 Esports vs Cloud9 — 2017-07-06,2017-07-06T17:48:00Z,elemental-drakes,partial,complete,partial,ordered,0
+75,gm-2cab3c2c6d73,MSI 2023 — Cloud9 vs Bilibili Gaming — 2023-05-11,2023-05-11T12:11:00Z,chemtech-restored,complete,complete,complete,ordered,0
+76,gm-2cf83f19a3f4,Worlds 2023 — Bilibili Gaming vs Gen.G — 2023-11-03,2023-11-03T11:54:00Z,chemtech-restored,complete,complete,complete,ordered,0
+77,gm-2dbe2d3035f9,MSI 2023 — Bilibili Gaming vs Cloud9 — 2023-05-11,2023-05-11T14:02:00Z,chemtech-restored,complete,complete,complete,ordered,0
+78,gm-2ec28f1477b1,Worlds 2023 — LNG Esports vs JD Gaming — 2023-10-21,2023-10-21T07:58:00Z,chemtech-restored,complete,complete,complete,ordered,0
+79,gm-3063073b5c2b,Worlds 2023 — LNG Esports vs Fnatic — 2023-10-19,2023-10-19T11:36:00Z,chemtech-restored,complete,complete,complete,ordered,0
+80,gm-308bb9a773c6,Worlds 2023 — Bilibili Gaming vs T1 — 2023-10-28,2023-10-28T09:45:00Z,chemtech-restored,complete,complete,complete,ordered,0
+81,gm-313c4b18c1f1,Worlds 2023 — DetonatioN FocusMe vs Shifters — 2023-10-13,2023-10-13T08:52:00Z,chemtech-restored,complete,complete,complete,ordered,0
+82,gm-3254832b2f9c,First Stand 2025 — Hanwha Life Esports vs Karmine Corp — 2025-03-13,2025-03-13T12:03:00Z,atakhan,complete,complete,complete,ordered,0
+83,gm-32d2ab41a264,Esports World Cup 2024 — Bilibili Gaming vs T1 — 2024-07-04,2024-07-04T15:07:00Z,voidgrubs,complete,complete,complete,ordered,0
+84,gm-3340d9cccffe,First Stand 2025 — Team Liquid vs Top Esports — 2025-03-11,2025-03-11T11:00:00Z,atakhan,complete,complete,complete,ordered,0
+85,gm-3351d0053e73,Worlds 2023 — GAM Esports vs Team Secret Whales — 2023-10-15,2023-10-15T05:44:00Z,chemtech-restored,complete,complete,complete,ordered,0
+86,gm-354d467268fd,IPL 5 — TSM vs Meat Playground — 2012-11-29,2012-11-29T22:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+87,gm-3672a18c72c0,First Stand 2025 — Karmine Corp vs Hanwha Life Esports — 2025-03-13,2025-03-13T11:01:00Z,atakhan,complete,complete,complete,ordered,0
+88,gm-36e3f34389c9,IEM Season 9 World Championship — ROX Tigers vs Team WE — 2015-03-14,2015-03-14T17:57:00Z,pre-herald,partial,partial,partial,unordered,
+89,gm-375398a91b11,MSI 2023 — Golden Guardians vs JD Gaming — 2023-05-12,2023-05-12T13:49:00Z,chemtech-restored,complete,partial,complete,ordered,0
+90,gm-378d513198b3,IPL 5 — Azubu Blaze vs Moscow 5 — 2012-12-01,2012-12-01T23:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+91,gm-37d094c026fc,MSI 2023 — T1 vs JD Gaming — 2023-05-18,2023-05-18T12:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+92,gm-39e0d67b5a54,Worlds 2023 — G2 Esports vs Gen.G — 2023-10-21,2023-10-21T09:38:00Z,chemtech-restored,complete,complete,complete,ordered,0
+93,gm-3a08ff6b321f,Worlds 2023 — G2 Esports vs Dplus Kia — 2023-10-19,2023-10-19T09:25:00Z,chemtech-restored,complete,complete,complete,ordered,0
+94,gm-3ac157f4096a,Worlds 2023 — JD Gaming vs Bilibili Gaming — 2023-10-20,2023-10-20T11:23:00Z,chemtech-restored,complete,complete,complete,ordered,0
+95,gm-3c0283b3b6fb,MSI 2023 — Golden Guardians vs LYON — 2023-05-06,2023-05-06T11:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+96,gm-3c8502fc2302,MSI 2023 — T1 vs Bilibili Gaming — 2023-05-20,2023-05-20T12:13:00Z,chemtech-restored,complete,complete,complete,ordered,0
+97,gm-3ce49d6263bd,MSI 2023 — GAM Esports vs LYON — 2023-05-05,2023-05-05T13:55:00Z,chemtech-restored,complete,complete,complete,ordered,0
+98,gm-3d36942a91c6,IPL 5 — Team LoLPro vs Team Liquid — 2012-12-01,2012-12-01T19:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+99,gm-3dd3a1e374a8,IPL 5 — Singapore Sentinels vs Taipei Assassins — 2012-12-01,2012-12-01T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+100,gm-3e2eb1eb7b80,IPL 5 — Counter Logic Gaming Europe vs Team WE — 2012-12-01,2012-12-01T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+101,gm-3fefae3a6552,MSI 2023 — Gen.G vs Cloud9 — 2023-05-17,2023-05-17T12:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+102,gm-40320b1f110e,IPL 5 — Team WE vs Counter Logic Gaming Europe — 2012-12-01,2012-12-01T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+103,gm-4245e116978a,Rift Rivals 2017 NA-EU — Sentinels vs Fnatic — 2017-07-06,2017-07-06T18:57:00Z,elemental-drakes,partial,complete,partial,ordered,0
+104,gm-4262eee7b1f5,MSI 2023 — G2 Esports vs Bilibili Gaming — 2023-05-16,2023-05-16T13:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+105,gm-42800587e8e2,Esports World Cup 2024 — G2 Esports vs Top Esports — 2024-07-06,2024-07-06T19:24:00Z,voidgrubs,complete,complete,complete,ordered,0
+106,gm-42cd0446e045,Worlds 2023 — Team Secret Whales vs Shifters — 2023-10-11,2023-10-11T10:47:00Z,chemtech-restored,complete,complete,complete,ordered,0
+107,gm-42ecfe76c357,IPL 5 — Taipei Assassins vs Counter Logic Gaming Europe — 2012-12-02,2012-12-02T03:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+108,gm-43c187890022,First Stand 2025 — CTBC Flying Oyster vs Top Esports — 2025-03-14,2025-03-14T08:12:00Z,atakhan,complete,complete,complete,ordered,0
+109,gm-43cf6f8ade3d,Worlds 2023 — Weibo Gaming vs T1 — 2023-11-19,2023-11-19T10:44:00Z,chemtech-restored,complete,complete,complete,ordered,0
+110,gm-4509632729b4,IPL 5 — Azubu Blaze vs Blackbean — 2012-11-30,2012-11-30T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+111,gm-4545a3157766,Worlds 2023 — Team Liquid vs GAM Esports — 2023-10-23,2023-10-23T08:01:00Z,chemtech-restored,complete,complete,complete,ordered,0
+112,gm-45ae4168cc7d,Worlds 2023 — Dplus Kia vs GAM Esports — 2023-10-27,2023-10-27T07:13:00Z,chemtech-restored,complete,complete,complete,ordered,0
+113,gm-4673afdd5eae,Rift Rivals 2017 NA-EU — TSM vs Unicorns of Love.CIS — 2017-07-06,2017-07-06T19:57:00Z,elemental-drakes,partial,complete,partial,ordered,0
+114,gm-467c6a1a327c,MSI 2023 — Bilibili Gaming vs Gen.G — 2023-05-19,2023-05-19T12:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+115,gm-4868b714b6c9,IPL 5 — TSM vs Team LoLPro — 2012-11-29,2012-11-29T19:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+116,gm-48da2f3f145b,Mid-Season Cup 2020 — JD Gaming vs Invictus Gaming — 2020-05-29,2020-05-29T09:09:00Z,elemental-drakes,partial,complete,partial,ordered,0
+117,gm-49f050852e69,MSI 2023 — Gen.G vs Bilibili Gaming — 2023-05-19,2023-05-19T14:01:00Z,chemtech-restored,complete,complete,complete,ordered,0
+118,gm-4a4fc4285ec0,IPL 5 — Team WE vs Fnatic — 2012-11-29,2012-11-29T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+119,gm-4a5d28ce450f,First Stand 2025 — Team Liquid vs Karmine Corp — 2025-03-10,2025-03-10T10:00:00Z,atakhan,complete,complete,complete,ordered,0
+120,gm-4b499c4c915f,Mid-Season Cup 2020 — Gen.G vs Top Esports — 2020-05-30,2020-05-30T08:38:00Z,elemental-drakes,partial,complete,partial,ordered,0
+121,gm-4bb3802cb6c8,Worlds 2023 — Fnatic vs GAM Esports — 2023-10-20,2023-10-20T08:29:00Z,chemtech-restored,complete,complete,complete,ordered,0
+122,gm-4cc1630b8e83,Worlds 2023 — Weibo Gaming vs T1 — 2023-11-19,2023-11-19T09:51:00Z,chemtech-restored,complete,complete,complete,ordered,0
+123,gm-4cc633ea84d4,IPL 5 — Team Liquid vs Team LoLPro — 2012-12-01,2012-12-01T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+124,gm-4d080c574990,IPL 5 — Fnatic vs Team WE — 2012-12-02,2012-12-02T23:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+125,gm-4ec1f4297d20,Rift Rivals 2017 NA-EU — Unicorns of Love.CIS vs TSM — 2017-07-08,2017-07-08T17:37:00Z,elemental-drakes,partial,complete,partial,ordered,0
+126,gm-4f2e9eee5641,Rift Rivals 2017 NA-EU — G2 Esports vs TSM — 2017-07-05,2017-07-05T14:33:00Z,elemental-drakes,partial,complete,partial,ordered,0
+127,gm-4fbca6896a8b,Worlds 2023 — T1 vs Cloud9 — 2023-10-22,2023-10-22T07:11:00Z,chemtech-restored,complete,complete,complete,ordered,0
+128,gm-4fcc85f2b737,IPL 5 — Taipei Assassins vs Fnatic — 2012-12-02,2012-12-02T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+129,gm-5116733918f0,First Stand 2025 — Top Esports vs Karmine Corp — 2025-03-12,2025-03-12T09:51:00Z,atakhan,complete,complete,complete,ordered,0
+130,gm-522da536b37b,Worlds 2023 — LYON vs GAM Esports — 2023-10-13,2023-10-13T07:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+131,gm-526f0661627c,MSI 2023 — JD Gaming vs T1 — 2023-05-18,2023-05-18T13:44:00Z,chemtech-restored,complete,complete,complete,ordered,0
+132,gm-52748d73c9a2,Worlds 2023 — Gen.G vs Bilibili Gaming — 2023-11-03,2023-11-03T09:53:00Z,chemtech-restored,complete,complete,complete,ordered,0
+133,gm-52d85262f961,IEM Season 9 World Championship — Team WE vs TSM — 2015-03-15,2015-03-15T18:35:00Z,pre-herald,partial,partial,partial,unordered,
+134,gm-53d0aaa83cba,Esports World Cup 2024 — T1 vs Team Liquid — 2024-07-06,2024-07-06T16:19:00Z,voidgrubs,complete,complete,complete,ordered,0
+135,gm-54a3d48c32ef,Worlds 2023 — GAM Esports vs Team Secret Whales — 2023-10-15,2023-10-15T04:46:00Z,chemtech-restored,complete,complete,complete,ordered,0
+136,gm-54cec23f5496,First Stand 2025 — Karmine Corp vs Team Liquid — 2025-03-10,2025-03-10T09:11:00Z,atakhan,complete,complete,complete,ordered,0
+137,gm-553f85f02a8a,First Stand 2025 — Hanwha Life Esports vs CTBC Flying Oyster — 2025-03-12,2025-03-12T08:13:00Z,atakhan,complete,complete,complete,ordered,0
+138,gm-557e1f5399e2,MSI 2023 — Cloud9 vs Gen.G — 2023-05-17,2023-05-17T12:56:00Z,chemtech-restored,complete,complete,complete,ordered,0
+139,gm-57ccfae0ee73,MSI 2023 — PSG Talon vs LOUD — 2023-05-06,2023-05-06T12:44:00Z,chemtech-restored,complete,complete,complete,ordered,0
+140,gm-5865f28a7d67,IPL 5 — Team Liquid vs Taipei Assassins — 2012-12-02,2012-12-02T00:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+141,gm-5a37b47d8503,MSI 2023 — LOUD vs PSG Talon — 2023-05-06,2023-05-06T13:40:00Z,chemtech-restored,complete,complete,complete,ordered,0
+142,gm-5a83dfacf033,IPL 5 — Fnatic vs Counter Logic Gaming — 2012-12-01,2012-12-01T22:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+143,gm-5a92cd2cea5a,IPL 5 — Taipei Assassins vs Moscow 5 — 2012-12-02,2012-12-02T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+144,gm-5bdfc978bf9b,Esports World Cup 2024 — Top Esports vs T1 — 2024-07-07,2024-07-07T16:08:00Z,voidgrubs,complete,complete,complete,ordered,0
+145,gm-5cb6cfe52050,MSI 2023 — Bilibili Gaming vs Golden Guardians — 2023-05-04,2023-05-04T14:01:00Z,chemtech-restored,complete,complete,complete,ordered,0
+146,gm-5cfd9d53d90a,IPL 5 — IceLanD vs Team FeaR — 2012-11-29,2012-11-29T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+147,gm-5ddf515143ba,Mid-Season Cup 2020 — Top Esports vs Gen.G — 2020-05-30,2020-05-30T09:26:00Z,elemental-drakes,partial,complete,partial,ordered,0
+148,gm-5e49f42b7747,Worlds 2023 — Team Secret Whales vs CTBC Flying Oyster — 2023-10-12,2023-10-12T09:56:00Z,chemtech-restored,complete,complete,complete,ordered,0
+149,gm-603ba28aa036,MSI 2023 — G2 Esports vs Bilibili Gaming — 2023-05-16,2023-05-16T12:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+150,gm-606bd5b2949b,IPL 5 — Counter Logic Gaming Europe vs TSM — 2012-11-30,2012-11-30T04:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+151,gm-608249b3b217,IPL 5 — Meat Playground vs Team FeaR — 2012-11-30,2012-11-30T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+152,gm-63c772df98c4,IPL 5 — Counter Logic Gaming vs Team FeaR — 2012-11-29,2012-11-29T19:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+153,gm-6527ee2632f9,Worlds 2023 — Weibo Gaming vs NRG — 2023-10-19,2023-10-19T10:40:00Z,chemtech-restored,complete,complete,complete,ordered,0
+154,gm-652841e3565d,Mid-Season Cup 2020 — Kiwoom DRX vs Gen.G — 2020-05-29,2020-05-29T07:59:00Z,elemental-drakes,partial,complete,partial,ordered,0
+155,gm-65a521825529,Worlds 2023 — LNG Esports vs T1 — 2023-11-05,2023-11-05T08:58:00Z,chemtech-restored,complete,complete,complete,ordered,0
+156,gm-662de0f7648b,IPL 5 — Fnatic vs Taipei Assassins — 2012-11-30,2012-11-30T23:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+157,gm-66a3aa3f2ee2,MSI 2023 — Cloud9 vs Golden Guardians — 2023-05-14,2023-05-14T14:48:00Z,chemtech-restored,complete,complete,complete,ordered,0
+158,gm-6774c5e3c3f1,Rift Rivals 2017 NA-EU — TSM vs Unicorns of Love.CIS — 2017-07-05,2017-07-05T20:11:00Z,elemental-drakes,partial,complete,partial,ordered,0
+159,gm-679f33e9ddd6,Worlds 2023 — Shifters vs Team Secret Whales — 2023-10-11,2023-10-11T09:46:00Z,chemtech-restored,complete,complete,complete,ordered,0
+160,gm-67f2ced5d2d1,MSI 2023 — Gen.G vs Bilibili Gaming — 2023-05-19,2023-05-19T12:57:00Z,chemtech-restored,complete,complete,complete,ordered,0
+161,gm-68d0e9e037bc,MSI 2023 — JD Gaming vs Bilibili Gaming — 2023-05-14,2023-05-14T11:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+162,gm-695d4ef01808,IPL 5 — Team WE vs Azubu Blaze — 2012-11-29,2012-11-29T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+163,gm-6a57a1d48825,IPL 5 — Counter Logic Gaming vs Moscow 5 — 2012-12-02,2012-12-02T02:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+164,gm-6a6addc9074a,IPL 5 — Counter Logic Gaming vs Fnatic — 2012-12-01,2012-12-01T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+165,gm-6a77306037cc,Worlds 2023 — Weibo Gaming vs Bilibili Gaming — 2023-11-11,2023-11-11T11:37:00Z,chemtech-restored,complete,complete,complete,ordered,0
+166,gm-6a95070dd02e,Rift Rivals 2017 NA-EU — TSM vs G2 Esports — 2017-07-07,2017-07-07T19:58:00Z,elemental-drakes,partial,complete,partial,ordered,0
+167,gm-6c36913eba46,Rift Rivals 2017 NA-EU — Fnatic vs TSM — 2017-07-07,2017-07-07T17:08:00Z,elemental-drakes,partial,complete,partial,ordered,0
+168,gm-6cc89aae3ec0,Esports World Cup 2024 — Top Esports vs G2 Esports — 2024-07-06,2024-07-06T18:28:00Z,voidgrubs,complete,complete,complete,ordered,0
+169,gm-6d408d9e95b4,IPL 5 — Singapore Sentinels vs IceLanD — 2012-11-30,2012-11-30T21:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+170,gm-6d96cc4cad85,Worlds 2023 — G2 Esports vs NRG — 2023-10-28,2023-10-28T08:05:00Z,chemtech-restored,complete,complete,complete,ordered,0
+171,gm-6dc086d6cdc1,First Stand 2025 — Team Liquid vs CTBC Flying Oyster — 2025-03-13,2025-03-13T08:14:00Z,atakhan,complete,complete,complete,ordered,0
+172,gm-6e00cbdd2452,MSI 2023 — Gen.G vs T1 — 2023-05-13,2023-05-13T11:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+173,gm-6e752ed91d1d,MSI 2023 — Bilibili Gaming vs T1 — 2023-05-20,2023-05-20T11:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+174,gm-6ecf7d4bb9c1,MSI 2023 — DetonatioN FocusMe vs PSG Talon — 2023-05-02,2023-05-02T13:04:00Z,chemtech-restored,complete,complete,complete,ordered,0
+175,gm-6f022b5a005f,MSI 2023 — G2 Esports vs Gen.G — 2023-05-09,2023-05-09T13:39:00Z,chemtech-restored,complete,complete,complete,ordered,0
+176,gm-6fd6460f0b08,Worlds 2023 — T1 vs JD Gaming — 2023-11-12,2023-11-12T09:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+177,gm-704032fbb3d6,Worlds 2023 — LOUD vs GAM Esports — 2023-10-10,2023-10-10T09:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+178,gm-707e7dd5b52c,MSI 2023 — Bilibili Gaming vs JD Gaming — 2023-05-21,2023-05-21T13:44:00Z,chemtech-restored,complete,complete,complete,ordered,0
+179,gm-7111da24071d,Worlds 2023 — G2 Esports vs Bilibili Gaming — 2023-10-29,2023-10-29T09:44:00Z,chemtech-restored,complete,complete,complete,ordered,0
+180,gm-72a8269de959,MSI 2023 — Golden Guardians vs GAM Esports — 2023-05-03,2023-05-03T13:57:00Z,chemtech-restored,complete,complete,complete,ordered,0
+181,gm-72e38cf578cf,Worlds 2023 — Team Liquid vs GAM Esports — 2023-10-23,2023-10-23T07:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+182,gm-73c34d221b78,Mid-Season Cup 2020 — T1 vs Top Esports — 2020-05-28,2020-05-28T11:18:00Z,elemental-drakes,partial,complete,partial,ordered,0
+183,gm-73c3ac366f4f,IPL 5 — Team WE vs Moscow 5 — 2012-11-30,2012-11-30T05:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+184,gm-73eb4a84d0f6,IPL 5 — Counter Logic Gaming vs Team LoLPro — 2012-11-30,2012-11-30T23:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+185,gm-77030ab851ea,MSI 2023 — Bilibili Gaming vs Golden Guardians — 2023-05-04,2023-05-04T12:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+186,gm-7705ca020783,IPL 5 — Team FeaR vs Meat Playground — 2012-11-30,2012-11-30T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+187,gm-78b88b1ae85c,Worlds 2023 — Bilibili Gaming vs Weibo Gaming — 2023-11-11,2023-11-11T09:07:00Z,chemtech-restored,complete,complete,complete,ordered,0
+188,gm-79f91aef610e,IEM Season 9 World Championship — Flash Wolves vs TSM — 2015-03-14,2015-03-14T15:45:00Z,pre-herald,partial,partial,partial,unordered,
+189,gm-7b508858c9a4,Worlds 2023 — Fnatic vs Weibo Gaming — 2023-10-29,2023-10-29T07:58:00Z,chemtech-restored,complete,complete,complete,ordered,0
+190,gm-7c086130e226,MSI 2023 — G2 Esports vs Bilibili Gaming — 2023-05-16,2023-05-16T12:09:00Z,chemtech-restored,complete,complete,complete,ordered,0
+191,gm-7c421fc81ffa,Worlds 2023 — Shifters vs JD Gaming — 2023-10-19,2023-10-19T08:30:00Z,chemtech-restored,complete,complete,complete,ordered,0
+192,gm-7c94108e3eaf,IPL 5 — Team Dynamic vs Team Liquid — 2012-11-30,2012-11-30T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+193,gm-7caa0283674c,Worlds 2023 — CTBC Flying Oyster vs DetonatioN FocusMe — 2023-10-11,2023-10-11T08:09:00Z,chemtech-restored,complete,complete,complete,ordered,0
+194,gm-7e0dd5f6c7e2,IPL 5 — TSM vs Counter Logic Gaming Europe — 2012-11-30,2012-11-30T05:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+195,gm-7fb786b628ff,Worlds 2023 — LNG Esports vs T1 — 2023-11-05,2023-11-05T09:50:00Z,chemtech-restored,complete,complete,complete,ordered,0
+196,gm-7fc94af84af6,MSI 2023 — Movistar KOI vs T1 — 2023-05-10,2023-05-10T12:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+197,gm-808286bec1d6,MSI 2023 — PSG Talon vs Golden Guardians — 2023-05-07,2023-05-07T12:06:00Z,chemtech-restored,complete,complete,complete,ordered,0
+198,gm-812935b35c24,IEM Season 9 World Championship — Team WE vs CJ Entus — 2015-03-14,2015-03-14T13:01:00Z,pre-herald,partial,partial,partial,unordered,
+199,gm-81664b3752e4,MSI 2023 — Gen.G vs T1 — 2023-05-13,2023-05-13T12:06:00Z,chemtech-restored,complete,complete,complete,ordered,0
+200,gm-8218fd7b8437,First Stand 2025 — Top Esports vs Hanwha Life Esports — 2025-03-15,2025-03-15T09:54:00Z,atakhan,complete,complete,complete,ordered,0
+201,gm-831888064721,IPL 5 — Blackbean vs Azubu Blaze — 2012-11-30,2012-11-30T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+202,gm-83541deddbe2,MSI 2023 — G2 Esports vs PSG Talon — 2023-05-04,2023-05-04T15:04:00Z,chemtech-restored,complete,complete,complete,ordered,0
+203,gm-8421be25b13e,Mid-Season Cup 2020 — JD Gaming vs Gen.G — 2020-05-29,2020-05-29T03:21:00Z,elemental-drakes,partial,complete,partial,ordered,0
+204,gm-856980d51c73,MSI 2023 — DetonatioN FocusMe vs LOUD — 2023-05-05,2023-05-05T15:39:00Z,chemtech-restored,complete,complete,complete,ordered,0
+205,gm-85e3e939c606,IEM Season 9 World Championship — Team WE vs Gambit Gaming — 2015-03-13,2015-03-13T21:06:00Z,pre-herald,partial,partial,partial,unordered,
+206,gm-861515587478,Worlds 2023 — GAM Esports vs LOUD — 2023-10-10,2023-10-10T09:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+207,gm-8657b5b360af,Mid-Season Cup 2020 — FunPlus Phoenix vs JD Gaming — 2020-05-30,2020-05-30T02:58:00Z,elemental-drakes,partial,complete,partial,unordered,
+208,gm-86c407f5fb3b,Worlds 2023 — NRG vs G2 Esports — 2023-10-28,2023-10-28T07:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+209,gm-8860fdccb927,First Stand 2025 — Karmine Corp vs Hanwha Life Esports — 2025-03-13,2025-03-13T10:04:00Z,atakhan,complete,complete,complete,ordered,0
+210,gm-88eb88225ab5,MSI 2023 — Cloud9 vs Bilibili Gaming — 2023-05-11,2023-05-11T13:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+211,gm-8945fe46c177,MSI 2023 — Gen.G vs T1 — 2023-05-13,2023-05-13T13:46:00Z,chemtech-restored,complete,complete,complete,ordered,0
+212,gm-89f11de0fe9b,Worlds 2023 — PSG Talon vs Shifters — 2023-10-15,2023-10-15T06:45:00Z,chemtech-restored,complete,complete,complete,ordered,0
+213,gm-8b316283f2ca,First Stand 2025 — Team Liquid vs Hanwha Life Esports — 2025-03-14,2025-03-14T10:03:00Z,atakhan,complete,complete,complete,ordered,0
+214,gm-8cb0a8f48446,Worlds 2023 — Dplus Kia vs KT Rolster — 2023-10-29,2023-10-29T05:04:00Z,chemtech-restored,complete,complete,complete,ordered,0
+215,gm-8cb515d19eff,IPL 5 — Team FeaR vs Counter Logic Gaming — 2012-11-30,2012-11-30T00:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+216,gm-8d22d431fbca,Worlds 2023 — PSG Talon vs LYON — 2023-10-10,2023-10-10T08:06:00Z,chemtech-restored,complete,complete,complete,ordered,0
+217,gm-8d40d85979e2,IPL 5 — Moscow 5 vs Team WE — 2012-11-30,2012-11-30T04:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+218,gm-8d8f242e2496,Worlds 2023 — Gen.G vs GAM Esports — 2023-10-19,2023-10-19T07:26:00Z,chemtech-restored,complete,complete,complete,ordered,0
+219,gm-8de9496c5856,IPL 5 — Counter Logic Gaming vs Moscow 5 — 2012-12-02,2012-12-02T04:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+220,gm-8e35fea8fdcf,Esports World Cup 2024 — Top Esports vs T1 — 2024-07-07,2024-07-07T19:38:00Z,voidgrubs,complete,complete,complete,ordered,0
+221,gm-8f3f9b43fb42,IEM Season 9 World Championship — ROX Tigers vs SK Gaming — 2015-03-13,2015-03-13T14:24:00Z,pre-herald,partial,partial,partial,unordered,
+222,gm-8fffc8fabf82,IPL 5 — Meat Playground vs Moscow 5 — 2012-12-01,2012-12-01T02:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+223,gm-9163e4b396b0,IPL 5 — Team WE vs Fnatic — 2012-12-02,2012-12-02T19:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+224,gm-9171a127aa73,IPL 5 — Taipei Assassins vs Fnatic — 2012-12-01,2012-12-01T00:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+225,gm-91e6de459ec7,IPL 5 — Fnatic vs Team Dynamic — 2012-11-29,2012-11-29T19:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+226,gm-9210f31e4dfa,Worlds 2023 — G2 Esports vs Gen.G — 2023-10-21,2023-10-21T10:28:00Z,chemtech-restored,complete,complete,complete,ordered,0
+227,gm-9213fe5b011c,Worlds 2023 — JD Gaming vs LNG Esports — 2023-10-21,2023-10-21T08:47:00Z,chemtech-restored,complete,complete,complete,ordered,0
+228,gm-92ada8939d45,Mid-Season Cup 2020 — JD Gaming vs FunPlus Phoenix — 2020-05-30,2020-05-30T05:39:00Z,elemental-drakes,partial,complete,partial,ordered,0
+229,gm-9322159b0e4d,Worlds 2023 — Cloud9 vs Movistar KOI — 2023-10-19,2023-10-19T06:27:00Z,chemtech-restored,complete,complete,complete,ordered,0
+230,gm-934cf083786f,IPL 5 — Fnatic vs Taipei Assassins — 2012-12-02,2012-12-02T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+231,gm-9409374ddaf6,Rift Rivals 2017 NA-EU — Unicorns of Love.CIS vs Cloud9 — 2017-07-07,2017-07-07T16:05:00Z,elemental-drakes,partial,complete,partial,ordered,0
+232,gm-957b9e6653db,Worlds 2023 — T1 vs JD Gaming — 2023-11-12,2023-11-12T08:17:00Z,chemtech-restored,complete,complete,complete,ordered,0
+233,gm-96bc8093b6c5,Rift Rivals 2017 NA-EU — TSM vs Fnatic — 2017-07-06,2017-07-06T16:49:00Z,elemental-drakes,partial,complete,partial,ordered,0
+234,gm-971f5167b3bc,Worlds 2023 — LNG Esports vs KT Rolster — 2023-10-27,2023-10-27T10:40:00Z,chemtech-restored,complete,complete,complete,ordered,0
+235,gm-9725bd012453,IPL 5 — Team LoLPro vs Singapore Sentinels — 2012-11-29,2012-11-29T22:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+236,gm-97653b7e2e06,IPL 5 — Moscow 5 vs Counter Logic Gaming — 2012-12-02,2012-12-02T03:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+237,gm-9889b434985c,Mid-Season Cup 2020 — Invictus Gaming vs Kiwoom DRX — 2020-05-29,2020-05-29T06:57:00Z,elemental-drakes,partial,complete,partial,ordered,0
+238,gm-9925872f82f9,IEM Season 9 World Championship — SK Gaming vs Flash Wolves — 2015-03-13,2015-03-13T12:49:00Z,pre-herald,partial,partial,partial,unordered,
+239,gm-9957f18ef0b8,MSI 2023 — Gen.G vs G2 Esports — 2023-05-09,2023-05-09T12:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+240,gm-9a5170cfbcd4,Worlds 2023 — JD Gaming vs T1 — 2023-11-12,2023-11-12T09:01:00Z,chemtech-restored,complete,complete,complete,ordered,0
+241,gm-9ad4336203b1,Mid-Season Cup 2020 — FunPlus Phoenix vs JD Gaming — 2020-05-30,2020-05-30T04:40:00Z,elemental-drakes,partial,complete,partial,ordered,0
+242,gm-9b551ad60719,Worlds 2023 — DetonatioN FocusMe vs CTBC Flying Oyster — 2023-10-11,2023-10-11T07:14:00Z,chemtech-restored,complete,complete,complete,ordered,0
+243,gm-9b994c4a1704,Worlds 2023 — JD Gaming vs LNG Esports — 2023-10-21,2023-10-21T07:11:00Z,chemtech-restored,complete,complete,complete,ordered,0
+244,gm-9cb602a8b2fb,Worlds 2023 — Cloud9 vs LNG Esports — 2023-10-20,2023-10-20T06:51:00Z,chemtech-restored,complete,complete,complete,ordered,0
+245,gm-9d3556755293,First Stand 2025 — Karmine Corp vs CTBC Flying Oyster — 2025-03-11,2025-03-11T09:09:00Z,atakhan,complete,complete,complete,ordered,0
+246,gm-9ef878d49ce3,IEM Season 9 World Championship — Team WE vs TSM — 2015-03-15,2015-03-15T20:45:00Z,pre-herald,partial,partial,partial,unordered,
+247,gm-9f6c4b6ea36d,Worlds 2023 — LOUD vs GAM Esports — 2023-10-14,2023-10-14T07:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+248,gm-a1261f10bd88,IPL 5 — Azubu Blaze vs Team Dynamic — 2012-11-29,2012-11-29T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+249,gm-a241410cbfc5,Esports World Cup 2024 — Team Liquid vs T1 — 2024-07-06,2024-07-06T17:13:00Z,voidgrubs,complete,complete,complete,ordered,0
+250,gm-a2a31615544b,Worlds 2023 — Shifters vs Team Secret Whales — 2023-10-11,2023-10-11T09:04:00Z,chemtech-restored,complete,complete,complete,ordered,0
+251,gm-a35461cedaa6,Rift Rivals 2017 NA-EU — Unicorns of Love.CIS vs Cloud9 — 2017-07-06,2017-07-06T13:33:00Z,elemental-drakes,partial,complete,partial,ordered,0
+252,gm-a356549e665d,First Stand 2025 — Top Esports vs CTBC Flying Oyster — 2025-03-14,2025-03-14T09:03:00Z,atakhan,complete,complete,complete,ordered,0
+253,gm-a3932fcb721a,Worlds 2023 — Gen.G vs T1 — 2023-10-20,2023-10-20T09:21:00Z,chemtech-restored,complete,complete,complete,ordered,0
+254,gm-a3ea6bf76013,Esports World Cup 2024 — Team Liquid vs T1 — 2024-07-06,2024-07-06T15:15:00Z,voidgrubs,complete,complete,complete,ordered,0
+255,gm-a4a3eb2be61f,MSI 2023 — Cloud9 vs Golden Guardians — 2023-05-14,2023-05-14T15:40:00Z,chemtech-restored,complete,complete,complete,ordered,0
+256,gm-a6ea012a2c69,MSI 2023 — Golden Guardians vs LYON — 2023-05-06,2023-05-06T11:54:00Z,chemtech-restored,complete,complete,complete,ordered,0
+257,gm-a7e360d39770,MSI 2023 — Golden Guardians vs PSG Talon — 2023-05-07,2023-05-07T11:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+258,gm-a8351b695535,IPL 5 — Taipei Assassins vs Team Liquid — 2012-12-01,2012-12-01T23:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+259,gm-a8c0e401863d,Rift Rivals 2017 NA-EU — G2 Esports vs Sentinels — 2017-07-07,2017-07-07T13:47:00Z,elemental-drakes,partial,complete,partial,ordered,0
+260,gm-a8e79d813750,Mid-Season Cup 2020 — FunPlus Phoenix vs Top Esports — 2020-05-31,2020-05-31T08:50:00Z,elemental-drakes,partial,complete,partial,ordered,0
+261,gm-aacba5deee08,Esports World Cup 2024 — T1 vs Bilibili Gaming — 2024-07-04,2024-07-04T16:15:00Z,voidgrubs,complete,complete,complete,ordered,0
+262,gm-aae7b46727c5,Mid-Season Cup 2020 — FunPlus Phoenix vs Top Esports — 2020-05-31,2020-05-31T07:10:00Z,elemental-drakes,partial,complete,partial,unordered,
+263,gm-ac40aa961640,IEM Season 9 World Championship — Cloud9 vs Flash Wolves — 2015-03-13,2015-03-13T15:38:00Z,pre-herald,partial,partial,partial,unordered,
+264,gm-ac7ca3ef6a5a,Worlds 2023 — LOUD vs GAM Esports — 2023-10-14,2023-10-14T08:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+265,gm-acb6d7a44e54,IPL 5 — Team WE vs Fnatic — 2012-12-03,2012-12-03T00:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+266,gm-acdb94766bc4,Rift Rivals 2017 NA-EU — G2 Esports vs Sentinels — 2017-07-06,2017-07-06T15:51:00Z,elemental-drakes,partial,complete,partial,ordered,0
+267,gm-ad68420e09a8,Worlds 2023 — CTBC Flying Oyster vs Shifters — 2023-10-14,2023-10-14T10:14:00Z,chemtech-restored,complete,complete,complete,ordered,0
+268,gm-ae7e02cdd126,MSI 2023 — Bilibili Gaming vs LYON — 2023-05-03,2023-05-03T12:57:00Z,chemtech-restored,complete,complete,complete,ordered,0
+269,gm-af164da4497e,IPL 5 — Azubu Blaze vs TSM — 2012-12-01,2012-12-01T03:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+270,gm-af8089801827,MSI 2023 — Golden Guardians vs Cloud9 — 2023-05-14,2023-05-14T14:03:00Z,chemtech-restored,complete,complete,complete,ordered,0
+271,gm-afd459fe62da,Esports World Cup 2024 — Fnatic vs Team Liquid — 2024-07-04,2024-07-04T19:46:00Z,voidgrubs,complete,complete,complete,ordered,0
+272,gm-b045f71080c1,Worlds 2023 — Weibo Gaming vs Fnatic — 2023-10-29,2023-10-29T07:06:00Z,chemtech-restored,complete,complete,complete,ordered,0
+273,gm-b058f6812626,Worlds 2023 — KT Rolster vs LNG Esports — 2023-10-27,2023-10-27T09:47:00Z,chemtech-restored,complete,complete,complete,ordered,0
+274,gm-b0b1bd50d8e6,Worlds 2023 — Bilibili Gaming vs G2 Esports — 2023-10-29,2023-10-29T10:48:00Z,chemtech-restored,complete,complete,complete,ordered,0
+275,gm-b22fd107d17d,Worlds 2023 — G2 Esports vs Bilibili Gaming — 2023-10-29,2023-10-29T08:46:00Z,chemtech-restored,complete,complete,complete,ordered,0
+276,gm-b44387665cff,MSI 2023 — G2 Esports vs Movistar KOI — 2023-05-13,2023-05-13T17:05:00Z,chemtech-restored,complete,complete,complete,ordered,0
+277,gm-b642380d43fb,IEM Season 9 World Championship — Flash Wolves vs TSM — 2015-03-14,2015-03-14T16:57:00Z,pre-herald,partial,partial,partial,unordered,
+278,gm-b80d15b4eebb,Rift Rivals 2017 NA-EU — G2 Esports vs Cloud9 — 2017-07-05,2017-07-05T17:03:00Z,elemental-drakes,partial,complete,partial,ordered,0
+279,gm-b86d28e494f1,Worlds 2023 — Shifters vs DetonatioN FocusMe — 2023-10-13,2023-10-13T09:38:00Z,chemtech-restored,complete,complete,complete,ordered,0
+280,gm-b8c46b8083e7,First Stand 2025 — CTBC Flying Oyster vs Hanwha Life Esports — 2025-03-12,2025-03-12T08:59:00Z,atakhan,complete,complete,complete,ordered,0
+281,gm-b9d410186312,Mid-Season Cup 2020 — Gen.G vs Top Esports — 2020-05-30,2020-05-30T07:47:00Z,elemental-drakes,partial,complete,partial,unordered,
+282,gm-ba000c9a53ac,Esports World Cup 2024 — G2 Esports vs FlyQuest — 2024-07-05,2024-07-05T17:23:00Z,voidgrubs,complete,complete,complete,ordered,0
+283,gm-ba724b715611,Worlds 2023 — LOUD vs PSG Talon — 2023-10-12,2023-10-12T08:07:00Z,chemtech-restored,complete,complete,complete,ordered,0
+284,gm-bb52026175e5,MSI 2023 — JD Gaming vs T1 — 2023-05-18,2023-05-18T12:08:00Z,chemtech-restored,complete,complete,complete,ordered,0
+285,gm-bd77c6be9173,MSI 2023 — GAM Esports vs LYON — 2023-05-05,2023-05-05T13:03:00Z,chemtech-restored,complete,complete,complete,ordered,0
+286,gm-bda3068956d0,IEM Season 9 World Championship — TSM vs CJ Entus — 2015-03-13,2015-03-13T19:56:00Z,pre-herald,partial,partial,partial,unordered,
+287,gm-bdd7e9e7a5cd,Worlds 2023 — Dplus Kia vs Shifters — 2023-10-23,2023-10-23T09:51:00Z,chemtech-restored,complete,complete,complete,ordered,0
+288,gm-be2ad8810d99,Mid-Season Cup 2020 — Invictus Gaming vs Gen.G — 2020-05-29,2020-05-29T10:19:00Z,elemental-drakes,partial,complete,partial,ordered,0
+289,gm-be563efac44b,First Stand 2025 — Hanwha Life Esports vs Karmine Corp — 2025-03-16,2025-03-16T08:15:00Z,atakhan,complete,complete,complete,ordered,0
+290,gm-c02089d93424,Rift Rivals 2017 NA-EU — Unicorns of Love.CIS vs TSM — 2017-07-08,2017-07-08T16:49:00Z,elemental-drakes,partial,complete,partial,ordered,0
+291,gm-c0e1d477efeb,Worlds 2023 — Movistar KOI vs Weibo Gaming — 2023-10-26,2023-10-26T09:58:00Z,chemtech-restored,complete,complete,complete,ordered,0
+292,gm-c17d7305cd80,MSI 2023 — G2 Esports vs Bilibili Gaming — 2023-05-16,2023-05-16T15:11:00Z,chemtech-restored,complete,complete,complete,ordered,0
+293,gm-c1b983af7b84,MSI 2023 — T1 vs Bilibili Gaming — 2023-05-20,2023-05-20T13:02:00Z,chemtech-restored,complete,complete,complete,ordered,0
+294,gm-c3d2abeadaaf,Mid-Season Cup 2020 — FunPlus Phoenix vs Top Esports — 2020-05-31,2020-05-31T10:41:00Z,elemental-drakes,partial,complete,partial,ordered,0
+295,gm-c40ebeb43076,IPL 5 — Counter Logic Gaming Europe vs Counter Logic Gaming — 2012-11-29,2012-11-29T22:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+296,gm-c4fd20649a63,Worlds 2023 — Fnatic vs Weibo Gaming — 2023-10-29,2023-10-29T06:13:00Z,chemtech-restored,complete,complete,complete,ordered,0
+297,gm-c5ac5e01050c,Worlds 2023 — NRG vs Movistar KOI — 2023-10-22,2023-10-22T07:58:00Z,chemtech-restored,complete,complete,complete,ordered,0
+298,gm-c64348ab2fe1,Mid-Season Cup 2020 — Kiwoom DRX vs JD Gaming — 2020-05-29,2020-05-29T11:21:00Z,elemental-drakes,partial,complete,partial,ordered,0
+299,gm-c745ffd277b2,Worlds 2023 — JD Gaming vs KT Rolster — 2023-11-04,2023-11-04T08:13:00Z,chemtech-restored,complete,complete,complete,ordered,0
+300,gm-c82a9bce2008,IEM Season 9 World Championship — Gambit Gaming vs CJ Entus — 2015-03-13,2015-03-13T17:02:00Z,pre-herald,partial,partial,partial,unordered,
+301,gm-c9ab35ebbba9,IPL 5 — Fnatic vs Team WE — 2012-12-03,2012-12-03T01:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+302,gm-ca020f31bf1c,MSI 2023 — G2 Esports vs LOUD — 2023-05-02,2023-05-02T14:35:00Z,chemtech-restored,complete,complete,complete,ordered,0
+303,gm-cb111ce22369,Worlds 2023 — JD Gaming vs KT Rolster — 2023-11-04,2023-11-04T09:02:00Z,chemtech-restored,complete,complete,complete,ordered,0
+304,gm-cbac8742f25f,Esports World Cup 2024 — T1 vs Top Esports — 2024-07-07,2024-07-07T16:55:00Z,voidgrubs,complete,complete,complete,ordered,0
+305,gm-cbf813ebd900,First Stand 2025 — CTBC Flying Oyster vs Karmine Corp — 2025-03-15,2025-03-15T07:04:00Z,atakhan,complete,complete,complete,ordered,0
+306,gm-ccb4e36efb2b,Worlds 2023 — KT Rolster vs JD Gaming — 2023-11-04,2023-11-04T10:34:00Z,chemtech-restored,complete,complete,complete,ordered,0
+307,gm-ccbebbe1797a,IPL 5 — Counter Logic Gaming Europe vs Taipei Assassins — 2012-12-02,2012-12-02T04:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+308,gm-cd6b21420e5f,Worlds 2023 — PSG Talon vs LYON — 2023-10-10,2023-10-10T07:17:00Z,chemtech-restored,complete,complete,complete,ordered,0
+309,gm-ce2abff43972,Rift Rivals 2017 NA-EU — Fnatic vs Sentinels — 2017-07-05,2017-07-05T15:55:00Z,elemental-drakes,partial,complete,partial,ordered,0
+310,gm-ce8a8be91252,MSI 2023 — Cloud9 vs Golden Guardians — 2023-05-14,2023-05-14T16:36:00Z,chemtech-restored,complete,complete,complete,ordered,0
+311,gm-ce9af851b527,IEM Season 9 World Championship — SK Gaming vs Flash Wolves — 2015-03-14,2015-03-14T11:45:00Z,pre-herald,partial,partial,partial,unordered,
+312,gm-ceaf35d35c0c,Esports World Cup 2024 — Gen.G vs Top Esports — 2024-07-05,2024-07-05T15:07:00Z,voidgrubs,complete,complete,complete,ordered,0
+313,gm-cece9ad40c5a,Worlds 2023 — PSG Talon vs LOUD — 2023-10-12,2023-10-12T07:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+314,gm-cfb47d7ca81d,IPL 5 — Counter Logic Gaming Europe vs Taipei Assassins — 2012-12-02,2012-12-02T02:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+315,gm-cff1acc2b888,Worlds 2023 — NRG vs Weibo Gaming — 2023-11-02,2023-11-02T08:13:00Z,chemtech-restored,complete,complete,complete,ordered,0
+316,gm-d0436227eb27,Worlds 2023 — Weibo Gaming vs Bilibili Gaming — 2023-11-11,2023-11-11T10:01:00Z,chemtech-restored,complete,complete,complete,ordered,0
+317,gm-d08f77e27d65,Rift Rivals 2017 NA-EU — Fnatic vs Cloud9 — 2017-07-05,2017-07-05T19:16:00Z,elemental-drakes,partial,complete,partial,ordered,0
+318,gm-d1767844d494,MSI 2023 — Bilibili Gaming vs LYON — 2023-05-03,2023-05-03T12:09:00Z,chemtech-restored,complete,complete,complete,ordered,0
+319,gm-d266622f20f6,Worlds 2023 — Shifters vs PSG Talon — 2023-10-15,2023-10-15T08:30:00Z,chemtech-restored,complete,complete,complete,ordered,0
+320,gm-d3f40b49d1f0,Mid-Season Cup 2020 — Top Esports vs Dplus Kia — 2020-05-28,2020-05-28T06:52:00Z,elemental-drakes,partial,complete,partial,ordered,0
+321,gm-d473403a0e37,MSI 2023 — JD Gaming vs Golden Guardians — 2023-05-12,2023-05-12T12:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+322,gm-d6142318d978,MSI 2023 — T1 vs JD Gaming — 2023-05-18,2023-05-18T15:20:00Z,chemtech-restored,complete,complete,complete,ordered,0
+323,gm-d74de6d38b0e,Worlds 2023 — KT Rolster vs Dplus Kia — 2023-10-29,2023-10-29T04:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+324,gm-d93648a33677,Worlds 2023 — GAM Esports vs Team Secret Whales — 2023-10-15,2023-10-15T03:11:00Z,chemtech-restored,complete,complete,complete,ordered,0
+325,gm-da3d4f47344a,Mid-Season Cup 2020 — Top Esports vs FunPlus Phoenix — 2020-05-28,2020-05-28T09:12:00Z,elemental-drakes,partial,complete,partial,ordered,0
+326,gm-db0a877f0671,MSI 2023 — T1 vs Gen.G — 2023-05-13,2023-05-13T14:37:00Z,chemtech-restored,complete,complete,complete,ordered,0
+327,gm-db2ab716263a,IPL 5 — Team Liquid vs Team Dynamic — 2012-11-30,2012-11-30T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+328,gm-db361cc8051e,Esports World Cup 2024 — FlyQuest vs G2 Esports — 2024-07-05,2024-07-05T19:26:00Z,voidgrubs,complete,complete,complete,ordered,0
+329,gm-db43798f4100,IPL 5 — Team Liquid vs Moscow 5 — 2012-11-29,2012-11-29T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+330,gm-dc060bd9568c,IEM Season 9 World Championship — TSM vs Flash Wolves — 2015-03-14,2015-03-14T14:28:00Z,pre-herald,partial,partial,partial,unordered,
+331,gm-ded6d99169b1,IPL 5 — Fnatic vs Team WE — 2012-12-02,2012-12-02T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+332,gm-df2de253f5d4,Worlds 2023 — Gen.G vs Bilibili Gaming — 2023-11-03,2023-11-03T08:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+333,gm-e08e64e11347,Worlds 2023 — Shifters vs Dplus Kia — 2023-10-23,2023-10-23T10:36:00Z,chemtech-restored,complete,complete,complete,ordered,0
+334,gm-e0acda3273f2,First Stand 2025 — Karmine Corp vs Hanwha Life Esports — 2025-03-16,2025-03-16T10:04:00Z,atakhan,complete,complete,complete,ordered,0
+335,gm-e2802e9f2139,IPL 5 — Taipei Assassins vs Blackbean — 2012-11-29,2012-11-29T18:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+336,gm-e2f109fafa28,Worlds 2023 — JD Gaming vs T1 — 2023-11-12,2023-11-12T10:49:00Z,chemtech-restored,complete,complete,complete,ordered,0
+337,gm-e4826141227c,Worlds 2023 — Bilibili Gaming vs KT Rolster — 2023-10-19,2023-10-19T12:33:00Z,chemtech-restored,complete,complete,complete,ordered,0
+338,gm-e5bd449c8413,Worlds 2023 — GAM Esports vs Dplus Kia — 2023-10-27,2023-10-27T08:01:00Z,chemtech-restored,complete,complete,complete,ordered,0
+339,gm-e6056e6f03c8,IPL 5 — TSM vs Azubu Blaze — 2012-12-01,2012-12-01T02:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+340,gm-e6463ba67f01,IEM Season 9 World Championship — TSM vs Team WE — 2015-03-15,2015-03-15T19:52:00Z,pre-herald,partial,partial,partial,unordered,
+341,gm-e717f5757a9a,IPL 5 — Taipei Assassins vs Singapore Sentinels — 2012-12-01,2012-12-01T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+342,gm-e71e3253a5b0,IPL 5 — Fnatic vs Counter Logic Gaming — 2012-12-01,2012-12-01T20:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+343,gm-e864c4d483a6,Worlds 2023 — Dplus Kia vs KT Rolster — 2023-10-20,2023-10-20T12:12:00Z,chemtech-restored,complete,complete,complete,ordered,0
+344,gm-e8698eb45585,Mid-Season Cup 2020 — JD Gaming vs FunPlus Phoenix — 2020-05-30,2020-05-30T06:40:00Z,elemental-drakes,partial,complete,partial,ordered,0
+345,gm-e9f5d736b800,MSI 2023 — Bilibili Gaming vs Golden Guardians — 2023-05-04,2023-05-04T12:59:00Z,chemtech-restored,complete,complete,complete,ordered,0
+346,gm-e9f87ed0995c,IPL 5 — Azubu Blaze vs Moscow 5 — 2012-12-02,2012-12-02T01:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+347,gm-eac844dde561,Mid-Season Cup 2020 — Kiwoom DRX vs JD Gaming — 2020-05-29,2020-05-29T13:26:00Z,elemental-drakes,partial,complete,partial,ordered,0
+348,gm-ead73a8830e2,IEM Season 9 World Championship — Team WE vs ROX Tigers — 2015-03-14,2015-03-14T20:01:00Z,pre-herald,partial,partial,partial,unordered,
+349,gm-ec767b28480a,First Stand 2025 — Hanwha Life Esports vs Top Esports — 2025-03-10,2025-03-10T11:02:00Z,atakhan,complete,complete,complete,ordered,0
+350,gm-ed1e3a683bc1,MSI 2023 — PSG Talon vs Golden Guardians — 2023-05-07,2023-05-07T13:02:00Z,chemtech-restored,complete,complete,complete,ordered,0
+351,gm-ed7ef23ea0c1,IPL 5 — Team WE vs Fnatic — 2012-12-02,2012-12-02T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+352,gm-ee1f3b0b3762,Rift Rivals 2017 NA-EU — Fnatic vs Cloud9 — 2017-07-07,2017-07-07T19:06:00Z,elemental-drakes,partial,complete,partial,ordered,0
+353,gm-ee2b6e214884,MSI 2023 — Movistar KOI vs T1 — 2023-05-10,2023-05-10T13:52:00Z,chemtech-restored,complete,complete,complete,ordered,0
+354,gm-ee7244da9c25,Esports World Cup 2024 — G2 Esports vs FlyQuest — 2024-07-05,2024-07-05T18:25:00Z,voidgrubs,complete,complete,complete,ordered,0
+355,gm-ee9cf84ded97,IPL 5 — Team LoLPro vs Team Liquid — 2012-12-01,2012-12-01T17:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+356,gm-ef160eaa78d7,Esports World Cup 2024 — Bilibili Gaming vs T1 — 2024-07-04,2024-07-04T17:33:00Z,voidgrubs,complete,complete,complete,ordered,0
+357,gm-efb2ea356ec2,MSI 2023 — GAM Esports vs Golden Guardians — 2023-05-03,2023-05-03T14:46:00Z,chemtech-restored,complete,complete,complete,ordered,0
+358,gm-f0f0c674a76d,Rift Rivals 2017 NA-EU — Sentinels vs Unicorns of Love.CIS — 2017-07-05,2017-07-05T18:16:00Z,elemental-drakes,partial,complete,partial,ordered,0
+359,gm-f2a886ec67c0,Worlds 2023 — NRG vs Team Liquid — 2023-10-20,2023-10-20T05:11:00Z,chemtech-restored,complete,complete,complete,ordered,0
+360,gm-f323d06cb324,Worlds 2023 — Weibo Gaming vs T1 — 2023-11-19,2023-11-19T08:57:00Z,chemtech-restored,complete,complete,complete,ordered,0
+361,gm-f4ac92e25cd1,IPL 5 — Team LoLPro vs Counter Logic Gaming — 2012-12-01,2012-12-01T00:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+362,gm-f568518ddd04,Worlds 2023 — Bilibili Gaming vs Fnatic — 2023-10-22,2023-10-22T09:09:00Z,chemtech-restored,complete,complete,complete,ordered,0
+363,gm-f5689045e892,MSI 2023 — Gen.G vs G2 Esports — 2023-05-09,2023-05-09T14:33:00Z,chemtech-restored,complete,complete,complete,ordered,0
+364,gm-f63d7b245674,IEM Season 9 World Championship — Team WE vs TSM — 2015-03-13,2015-03-13T18:36:00Z,pre-herald,partial,partial,partial,unordered,
+365,gm-f71ce7d7f889,IPL 5 — Counter Logic Gaming vs Team LoLPro — 2012-12-01,2012-12-01T01:00:00Z,pre-herald,unavailable,partial,partial,unordered,
+366,gm-f7528c110755,Worlds 2023 — Shifters vs PSG Talon — 2023-10-15,2023-10-15T07:41:00Z,chemtech-restored,complete,complete,complete,ordered,0
+367,gm-f8c9ac8e07b2,Worlds 2023 — Weibo Gaming vs Bilibili Gaming — 2023-11-11,2023-11-11T08:17:00Z,chemtech-restored,complete,complete,complete,ordered,0
+368,gm-f92715b1959d,MSI 2023 — PSG Talon vs DetonatioN FocusMe — 2023-05-02,2023-05-02T12:10:00Z,chemtech-restored,complete,complete,complete,ordered,0
+369,gm-fa39b8216e1f,Worlds 2023 — KT Rolster vs Weibo Gaming — 2023-10-22,2023-10-22T10:06:00Z,chemtech-restored,complete,complete,complete,ordered,0
+370,gm-fa82727435e4,MSI 2023 — G2 Esports vs Gen.G — 2023-05-09,2023-05-09T12:58:00Z,chemtech-restored,complete,complete,complete,ordered,0
+371,gm-fb828b6b3b67,Worlds 2023 — KT Rolster vs JD Gaming — 2023-11-04,2023-11-04T09:48:00Z,chemtech-restored,complete,complete,complete,ordered,0
+372,gm-fbd7403572da,MSI 2023 — GAM Esports vs LYON — 2023-05-05,2023-05-05T12:07:00Z,chemtech-restored,complete,complete,complete,ordered,0
+373,gm-fbdc4bafc884,First Stand 2025 — Team Liquid vs Hanwha Life Esports — 2025-03-14,2025-03-14T10:51:00Z,atakhan,complete,complete,complete,ordered,0
+374,gm-fe9dd386863d,Worlds 2023 — Bilibili Gaming vs Gen.G — 2023-11-03,2023-11-03T09:06:00Z,chemtech-restored,complete,complete,complete,ordered,0
+375,gm-fe9ef818c774,MSI 2023 — T1 vs Gen.G — 2023-05-13,2023-05-13T12:54:00Z,chemtech-restored,complete,complete,complete,ordered,0
+376,gm-fedce7529e40,First Stand 2025 — Karmine Corp vs CTBC Flying Oyster — 2025-03-15,2025-03-15T07:58:00Z,atakhan,complete,complete,complete,ordered,0
+377,gm-ff25c4141cdb,Mid-Season Cup 2020 — T1 vs Dplus Kia — 2020-05-28,2020-05-28T07:55:00Z,elemental-drakes,partial,complete,partial,ordered,0

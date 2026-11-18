@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PlayerRedirects",
+    "fields": "_pageName,AllName,OverviewPage,ID",
+    "where": "AllName IN ('Ning','Nisqy','Nk Inc','Noah (Oh Hyeon-taek)','Nuguri','Nyjacky','ON','Oddie','Oscarinin','P1noy','Palafox','Palette','Patoy','Peanut','Perkz','Peyz','Pobelter','Porschkub','PraY','Puff (Ding Wang)','Quad','Rascal','Ray','Razork','ReD (Lee Siu Hin)','Reginald','Rekkles','Rest','Rhux','River (Kim Dong-woo)')",
+    "order_by": "AllName ASC",
+    "limit": 400
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27Ning%27%2C%27Nisqy%27%2C%27Nk+Inc%27%2C%27Noah+%28Oh+Hyeon-taek%29%27%2C%27Nuguri%27%2C%27Nyjacky%27%2C%27ON%27%2C%27Oddie%27%2C%27Oscarinin%27%2C%27P1noy%27%2C%27Palafox%27%2C%27Palette%27%2C%27Patoy%27%2C%27Peanut%27%2C%27Perkz%27%2C%27Peyz%27%2C%27Pobelter%27%2C%27Porschkub%27%2C%27PraY%27%2C%27Puff+%28Ding+Wang%29%27%2C%27Quad%27%2C%27Rascal%27%2C%27Ray%27%2C%27Razork%27%2C%27ReD+%28Lee+Siu+Hin%29%27%2C%27Reginald%27%2C%27Rekkles%27%2C%27Rest%27%2C%27Rhux%27%2C%27River+%28Kim+Dong-woo%29%27%29&order_by=AllName+ASC&limit=400",
+  "fetchedAt": "2026-11-18T09:44:11.057Z",
+  "status": 200,
+  "bodySha256": "2b1881aefa83601e3d4a9a5db535641495d8397f6d3e85716493425e92dc1e23"
+}

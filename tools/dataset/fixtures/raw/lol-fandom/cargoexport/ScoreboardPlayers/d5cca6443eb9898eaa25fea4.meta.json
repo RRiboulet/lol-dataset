@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "ScoreboardPlayers",
+    "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+    "where": "OverviewPage='2023 Season World Championship/Main Event' AND Team IN ('T1','Team Liquid')",
+    "order_by": "DateTime_UTC ASC",
+    "limit": 10
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardPlayers&fields=Name%2CLink%2CTeam%2CTeamVs%2CChampion%2COverviewPage%2CDateTime_UTC&where=OverviewPage%3D%272023+Season+World+Championship%2FMain+Event%27+AND+Team+IN+%28%27T1%27%2C%27Team+Liquid%27%29&order_by=DateTime_UTC+ASC&limit=10",
+  "fetchedAt": "2026-11-12T22:59:48.738Z",
+  "status": 200,
+  "bodySha256": "0f78942edc456e2c4469bb74bdcc64866335884c95c0c47caecda8c82a7d70e7"
+}

@@ -1,0 +1,99 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:series-conflicts:1",
+	"title": "Series conflict report",
+	"description": "One row of data/curated/series-conflicts.jsonl for every game whose `MatchSchedule` row names two other teams, and for every series row that every game naming it contradicts. The two states the build acts on are committed here because a build's stdout is not a dataset: without this file, a reader of `data/curated/` cannot tell a series the source contradicted from a series nobody fetched. A `detached-game` row says the game is still emitted (its own data is not in doubt) but carries no canonical `matchId`; a `contradicted-series` row says the series is not emitted at all. `matchId` is the canonical id of the series the row is about, present on both kinds even though a detached game no longer points at it; `sourceGameId`/`sourceMatchId` are the source's own identifiers, so the report can be checked against the payloads. The two team pairs are canonical ids with display names, sorted by id so a side swap cannot move them; the source strings stay on the game and match rows themselves (spec R7).",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"kind",
+		"eventId",
+		"eventName",
+		"gameId",
+		"matchId",
+		"sourceGameId",
+		"sourceMatchId",
+		"gameTeams",
+		"matchTeams"
+	],
+	"properties": {
+		"kind": {
+			"type": "string",
+			"enum": ["detached-game", "contradicted-series"],
+			"description": "`detached-game`: the game is emitted without a canonical `matchId` because its series row names other teams. `contradicted-series`: the series row is not emitted because every game naming it names other teams."
+		},
+		"eventId": {
+			"type": "string",
+			"pattern": "^evt-[0-9a-f]{12}$",
+			"description": "The selected event both the game and the series belong to; a game and its series cannot sit in different events."
+		},
+		"eventName": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The event's display name, repeated so the row reads without a join."
+		},
+		"gameId": {
+			"type": ["string", "null"],
+			"pattern": "^gm-[0-9a-f]{12}$",
+			"description": "The canonical id of the detached game, or null on a contradicted-series row (which has no emitted game)."
+		},
+		"matchId": {
+			"type": "string",
+			"pattern": "^mt-[0-9a-f]{12}$",
+			"description": "The canonical id of the series the row is about. On a detached-game row this id is deliberately absent from the game record; on a contradicted-series row it is absent from matches.jsonl."
+		},
+		"sourceGameId": {
+			"type": ["string", "null"],
+			"description": "The source `GameId` of the detached game, verbatim; null on a contradicted-series row."
+		},
+		"sourceMatchId": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The source `MatchId` of the series row, verbatim, so the row can be found in the recorded `MatchSchedule` payload."
+		},
+		"gameTeams": {
+			"type": ["array", "null"],
+			"minItems": 2,
+			"maxItems": 2,
+			"description": "The detached game's two canonical teams, sorted by `teamId`; null on a contradicted-series row.",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["teamId", "teamName"],
+				"properties": {
+					"teamId": {
+						"type": "string",
+						"pattern": "^tm-[0-9a-f]{12}$"
+					},
+					"teamName": {
+						"type": "string",
+						"minLength": 1,
+						"description": "The team's display name, so the pair reads without a join."
+					}
+				}
+			}
+		},
+		"matchTeams": {
+			"type": "array",
+			"minItems": 2,
+			"maxItems": 2,
+			"description": "The series row's two canonical teams, sorted by `teamId` — the pair the game's own teams disagree with.",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["teamId", "teamName"],
+				"properties": {
+					"teamId": {
+						"type": "string",
+						"pattern": "^tm-[0-9a-f]{12}$"
+					},
+					"teamName": {
+						"type": "string",
+						"minLength": 1,
+						"description": "The team's display name, so the pair reads without a join."
+					}
+				}
+			}
+		}
+	}
+}

@@ -5,11 +5,69 @@ from the first tournament through the one being played right now (2026). It is
 the first step of a larger project, so the shape of the data matters more than
 speed: expect schema decisions to outlive the scrapers that fill them.
 
-**Current state: the agent scaffold only.** There is no dataset yet and no
-`README.md` on purpose. The devcontainer, pi extensions, skills and templates
-are in place so that project-specific structure can be added on top without
-redoing the environment. Do not invent a schema, a scraper or a README as a
-side effect of an unrelated task; those are their own changes.
+**Current state: the full dataset for the ten admitted events, with coverage reports, an invariant gate and a provenance manifest, on top of the scaffold.** The
+devcontainer, pi extensions, skills and templates are in place, and the project's
+own structure has grown on them: `docs/specs/` holds the dataset's spec and the
+ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
+holds what the build emits today — the selected events with the report of every
+rejection, the team, player, champion and alias identity tables, the games and
+matches of **eight events** (377 games, 230 series, 3 770 player rows), each game carrying
+its champion draft with the source's fidelity and a player row per participant, with
+kills and gold reconciled against the team totals — the per-event report of which
+events the corpus carries rows for, the generated per-event and per-era coverage
+reports (`event-coverage.jsonl`, `era-coverage.jsonl`, re-counted against the games'
+own markers by the invariant gate), a series-conflict report of every game detached from
+a series that names other teams and every series the games contradict, and
+`manifest.json`, which pins every cached payload the
+build read by sha256 (with its query and fetch time, the only timestamp in the
+repository) and digests every emitted file. Its `file` pins are relative to the cache
+root, so the committed ones resolve under `tools/dataset/fixtures/raw/` and a reader can
+walk from a game's source identifiers to its payload with the manifest alone. A build
+also verifies each payload against its sidecar's hash and runs an invariant gate
+over the emitted records, so a tampered payload, a hand-edit or a bad merge that
+contradicts the data fails before anything is written; `build --check` compares the entity files byte for byte
+and the manifest on everything but `fetchedAt`, and `node tools/check.ts` runs both
+suites. `data/model/` holds the star schema derived from that curated layer:
+dimensions for event, match, game, team, player, champion, patch and date; facts at
+one row per game per side, per game per player and per draft slot; an alias bridge
+with validity dates; an unknown member at key 0 in every dimension; and the
+generated DDL and per-column data dictionary. `node tools/dataset/cli.ts model`
+rebuilds it from `data/curated/` and `model --check` proves the committed bytes are
+current — and fails on a file in the directory the build no longer emits. The model
+validates the curated rows it reads at its own seam (ids, references, a winner that
+is one of the two sides, a player row's event matching its game) and checks that the
+facts agree with each other, so a row the invariant gate never saw cannot survive
+into `data/model/`. Ticket 10's crawl filled the rest of the event list: **WCG 2011 has
+no games in the source at all** (`event-games.jsonl` says `empty`, and its four
+game-bearing queries are committed as the evidence), **World Cyber Games 2013 carries 48
+series and no games**, and the other eight events carry 377 games between them. The crawl
+also forced three decisions now in the repo as data: a page under an event whose first
+segment is `Qualifiers` is not that event (62 WCG 2013 series and 6 IPL 5 series are
+counted as ignored, not absorbed); a game played without a pick-ban phase is declared in
+`tools/dataset/rules/game-formats.json` (the 2020 Mid-Season Cup's best-of-five game 1s
+were blind pick, so they may state the same champion on both sides and no bans); and
+identity is itself a registry crawl, which took the provisional-entity report from 374
+rows to 11 (all confirmed absent from `Teams`/`PlayerRedirects`). IPL 5 is the earlier
+decision of the same kind: its `MatchSchedule` spells one team's name two ways and swaps
+three pairs of `MatchId`s, so a legacy alias is declared and the swapped games are
+emitted without a `matchId` (ticket 14, which also removed `fixtures/pending/`).
+Ticket 15 made that alias's declared window bound every lookup and required an
+`aliasOf` target to be evidenced by a game and its series row, and committed the
+conflict report to `data/curated/series-conflicts.jsonl` so the contradiction is
+visible in the data rather than only in the build's stdout. Ticket 13 proved the model
+over this full dataset: 377 games, 230 series, 3 770 player rows and 7 144 draft entries,
+with every grain unique, every foreign key resolving, and the per-game, per-event and
+per-era counts reconciling against the curated layer — including a coverage rollup
+(`rollupCoverage`) that re-derives `event-coverage.jsonl` and `era-coverage.jsonl` from
+`data/model/` alone and must equal the committed reports, and a load path proved through
+both SQLite and an independent RFC 4180 reader. The dataset's documentation is
+`docs/dataset/using-the-dataset.md`, with the curated layer's field-level dictionary
+generated from its JSON schemas by `node tools/dataset/cli.ts dictionary` (and the
+model's by `model`), and `data/ATTRIBUTION.md` carrying the licence obligations beside
+the data. There is no
+`README.md` on purpose: a README is its own decision, not something a ticket adds.
+Do not invent a schema, a scraper or a README as a side effect of an unrelated task;
+those are their own changes.
 
 The scaffold — `.devcontainer/`, `.pi/extensions/`, `.pi/skills/`, `bin/devc`,
 `package.json`, this file, `REVIEW_GUIDELINES.md` — is copied from
@@ -80,15 +138,19 @@ out in a worktree and run the suite before assuming it stands alone.
 
 Branches reach GitHub through `gh`, which is baked into the devcontainer image
 (`.devcontainer/Dockerfile`) rather than installed at runtime, so a rebuild does
-not silently drop it. The token lives in the `pi-agent-config` volume via
-`GH_CONFIG_DIR=/home/vscode/.pi/gh`, which is what makes one `gh auth login` last
-across rebuilds — `/home/vscode` itself is container-local and is discarded.
+not silently drop it. The token is not on a shared volume: it arrives as
+`GH_TOKEN` from the host environment, and gh's non-secret config lives at
+`GH_CONFIG_DIR=/home/vscode/.pi/gh` on this container's private volume.
 
 One-time setup, run by the human (it needs a browser):
 
 ```bash
 gh auth login --hostname github.com --git-protocol https --web
 ```
+
+The host-side value comes from `~/.config/devc/env`, which `devc` sources before
+`devcontainer up`. One login inside a container writes only that container's
+private volume; the host file is what makes every project start authenticated.
 
 That is the whole setup. `git push` then works with no credential in
 `.git/config`, because the Dockerfile registers gh as git's credential helper
@@ -165,6 +227,19 @@ accumulates on `dev`; `main` is brought forward and tagged.
 Versions are git tags. `package.json` also carries a `pi` manifest listing the
 extension entry points and skills, which is what lets this repository be
 installed into another project as a pi package.
+
+The devcontainer does **not** load the vendored `.pi/extensions`/`.pi/skills`
+tree: `.pi/settings.json` excludes both, and the image bakes
+`RRiboulet/my-agent-setup` at the tag in `.devcontainer/pi-agent-setup.version`
+under `/opt/pi-packages/my-agent-setup`. `postCreate.sh` declares that baked path
+in the container's own agent settings and fails when the running image carries a
+different tag than the checkout pins. The pin tracks the latest
+`my-agent-setup` release (currently `v1.14.0`); a new tag there is followed by a
+bump here, not by letting the image fall behind. To bump: change
+`.devcontainer/pi-agent-setup.version`, change the `ARG PI_AGENT_SETUP_TAG=` line
+in the Dockerfile, run `sh .devcontainer/check-pi-agent-setup.sh`, then
+`devc rebuild lol-dataset`. The vendored tree stays in the repo for the test
+suite, not for runtime discovery.
 
 ## Extensions
 
@@ -284,10 +359,17 @@ commissioned, hand the trail to that one reviewer alongside the diff.
 ## Tests
 
 ```bash
+node tools/check.ts                                        # everything: dataset + scaffold suites
 bash .pi/extensions/subagent/test/setup-deps.sh              # once: link pi's packages
 node --test .pi/extensions/subagent/test/*.test.ts
+node --test tools/dataset/test/*.test.ts                 # dataset: recorded fixtures, no network
 (cd .pi/extensions/opencode-go-provider && node --test)  # provider package tests (separate tree)
 ```
+
+`node tools/check.ts` is the one command that answers "is the repo green": it links
+pi's packages if needed and runs both suites, exiting non-zero if either fails. The
+individual commands below stay for a single suite while iterating. The provider tests
+are a separate tree and are not part of `check.ts`.
 
 Run it with `bash` (or `sh`), not as `./setup-deps.sh` — see "Line endings"
 below. Node runs the TypeScript directly; there is no build step. See

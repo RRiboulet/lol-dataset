@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "ScoreboardPlayers",
+    "fields": "Name,Link,Team,TeamVs,Champion,OverviewPage,DateTime_UTC",
+    "where": "Team='The Bandits Prime' OR TeamVs='The Bandits Prime'",
+    "order_by": "DateTime_UTC ASC",
+    "limit": 10
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardPlayers&fields=Name%2CLink%2CTeam%2CTeamVs%2CChampion%2COverviewPage%2CDateTime_UTC&where=Team%3D%27The+Bandits+Prime%27+OR+TeamVs%3D%27The+Bandits+Prime%27&order_by=DateTime_UTC+ASC&limit=10",
+  "fetchedAt": "2026-11-12T23:01:03.997Z",
+  "status": 200,
+  "bodySha256": "8e1491504ea69c40e856150551a2316430e4cd95bd7a92d07d05648b73e0a1dc"
+}

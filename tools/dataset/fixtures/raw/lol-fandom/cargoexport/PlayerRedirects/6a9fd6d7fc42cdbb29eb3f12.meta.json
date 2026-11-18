@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PlayerRedirects",
+    "fields": "_pageName,AllName,OverviewPage,ID",
+    "where": "AllName IN ('Doggo','Doinb','Doran (Choi Hyeon-jun)','Driver','EMENES','Edward','Effort','Eliade','Elk','Elyoya','EquivocaL','Exileh','Expect','Extinkt','FBI','FORG1VENGRE','Fox (Hampus Myhre)','Froggen','Fudge','Fzzf','GALA','Gemini','Genja','Ghost (Jang Yong-jun)','Gloryy','GoSu Pepper','Gori','GorillA','HaRleLuYaR','Hai')",
+    "order_by": "AllName ASC",
+    "limit": 400
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27Doggo%27%2C%27Doinb%27%2C%27Doran+%28Choi+Hyeon-jun%29%27%2C%27Driver%27%2C%27EMENES%27%2C%27Edward%27%2C%27Effort%27%2C%27Eliade%27%2C%27Elk%27%2C%27Elyoya%27%2C%27EquivocaL%27%2C%27Exileh%27%2C%27Expect%27%2C%27Extinkt%27%2C%27FBI%27%2C%27FORG1VENGRE%27%2C%27Fox+%28Hampus+Myhre%29%27%2C%27Froggen%27%2C%27Fudge%27%2C%27Fzzf%27%2C%27GALA%27%2C%27Gemini%27%2C%27Genja%27%2C%27Ghost+%28Jang+Yong-jun%29%27%2C%27Gloryy%27%2C%27GoSu+Pepper%27%2C%27Gori%27%2C%27GorillA%27%2C%27HaRleLuYaR%27%2C%27Hai%27%29&order_by=AllName+ASC&limit=400",
+  "fetchedAt": "2026-11-18T09:40:09.398Z",
+  "status": 200,
+  "bodySha256": "d3881e7d8326a4a115d1fafd8318730a5e83224e8d2626c606cd79bd0fc019c6"
+}

@@ -1,0 +1,11 @@
+{
+	"$comment": "Games the source records without a pick-ban phase, declared rather than inferred. A game with no bans and no PicksAndBansS7 row is indistinguishable from an early-era game whose bans the wiki never recorded (IEM Season IX 2015 states three bans a side and has no ordered row), so only a declaration can say which one it is. The build refuses a declaration that contradicts the rows it covers: a blind pick that states bans, or a declaration matching no game of an event the corpus carries. See tools/dataset/formats.ts.",
+	"version": 1,
+	"blindPick": [
+		{
+			"overviewPage": "2020 Mid-Season Cup",
+			"gameIdPattern": "^2020 Mid-Season Cup_(Semifinals|Finals)_[0-9]+_1$",
+			"cites": "The 2020 Mid-Season Cup format played the first game of every best-of-five in blind pick (Riot's announced format, reported 2020-05-23; the wiki's 2020 Mid-Season Cup page states the same). Measured on the corpus: those three games carry no PicksAndBansS7 row and no ban on either side, and Semifinals_1_1 and Finals_1_1 state the same champion on both sides — legal in blind pick, impossible in a draft. The group stage was a single game per series with a normal draft, which is why the pattern is limited to the best-of-five rounds."
+		}
+	]
+}

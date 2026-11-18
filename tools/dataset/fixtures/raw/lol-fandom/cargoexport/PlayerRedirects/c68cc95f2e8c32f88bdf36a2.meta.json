@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PlayerRedirects",
+    "fields": "_pageName,AllName,OverviewPage,ID",
+    "where": "AllName IN ('Yutapon','Zeka (Kim Geon-woo)','Zika','Zin','Zoom','Zuna','Zven','apaMEN','bebe (Chang Bo-Wei)','bigfatlp','d4rkness','fredy122','huhi','knight (Zhuo Ding)','kurO','ly4ly4ly4','mancloud','mithy','nRated','nuc','tinowns','tol2','ubao','xHazzard','xPeke','xiye','yellowpete','yuyanjia','zig')",
+    "order_by": "AllName ASC",
+    "limit": 400
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27Yutapon%27%2C%27Zeka+%28Kim+Geon-woo%29%27%2C%27Zika%27%2C%27Zin%27%2C%27Zoom%27%2C%27Zuna%27%2C%27Zven%27%2C%27apaMEN%27%2C%27bebe+%28Chang+Bo-Wei%29%27%2C%27bigfatlp%27%2C%27d4rkness%27%2C%27fredy122%27%2C%27huhi%27%2C%27knight+%28Zhuo+Ding%29%27%2C%27kurO%27%2C%27ly4ly4ly4%27%2C%27mancloud%27%2C%27mithy%27%2C%27nRated%27%2C%27nuc%27%2C%27tinowns%27%2C%27tol2%27%2C%27ubao%27%2C%27xHazzard%27%2C%27xPeke%27%2C%27xiye%27%2C%27yellowpete%27%2C%27yuyanjia%27%2C%27zig%27%29&order_by=AllName+ASC&limit=400",
+  "fetchedAt": "2026-11-18T09:48:21.281Z",
+  "status": 200,
+  "bodySha256": "a53e86c9ba1ab704fcaaa5ab742e1f65cd2f26df8051d9ee775b87f034020115"
+}

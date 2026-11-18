@@ -1,0 +1,12 @@
+event_key,event_id,event_name,overview_page,league,region,date_start,year
+0,,Unknown,,,,,
+1,evt-1cbe48816dfc,IPL 5,IGN ProLeague Season 5,IGN Pro League,International,2012-11-29,2012
+2,evt-54fe38dcc8fd,IEM Season 9 World Championship,IEM Season IX - World Championship,Intel Extreme Masters,International,2015-03-13,2015
+3,evt-56418090dc65,Esports World Cup 2024,Esports World Cup 2024,Esports World Cup,International,2024-07-04,2024
+4,evt-ae98c0ad8d75,Worlds 2023,2023 Season World Championship,World Championship,International,2023-10-10,2023
+5,evt-af6150c4e6f5,MSI 2023,2023 Mid-Season Invitational,Mid-Season Invitational,International,2023-05-02,2023
+6,evt-bf947e338ef3,World Cyber Games 2013,2013 World Cyber Games,World Cyber Games,International,2013-11-28,2013
+7,evt-c2ef89c0bcab,Rift Rivals 2017 NA-EU,Rift Rivals 2017/NA-EU,Rift Rivals 2017 NA-EU,International,2017-07-05,2017
+8,evt-d5e50b3ce136,First Stand 2025,2025 First Stand,First Stand,International,2025-03-10,2025
+9,evt-de5f664a9400,Mid-Season Cup 2020,2020 Mid-Season Cup,Mid-Season Cup 2020,International,2020-05-28,2020
+10,evt-e07355d020ef,WCG 2011,2011 World Cyber Games,,International,2011-12-08,2011

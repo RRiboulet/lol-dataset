@@ -66,6 +66,26 @@ RUN npm cache clean --force \
     && npm install -g --no-audit --no-fund @earendil-works/pi-coding-agent@latest \
     && pi --version
 
+# The shared pi package (extensions + skills), baked at a pinned tag. The tag is
+# recorded once in .devcontainer/pi-agent-setup.version; the build fails if this
+# ARG and that file disagree, so a half-done bump cannot produce an image. The
+# clone lives outside $AGENT_DIR on purpose: a named volume mounted at ~/.pi
+# copies the image's content only when the volume is empty, so a package baked
+# there would freeze at the first container's copy.
+COPY .devcontainer/pi-agent-setup.version /tmp/pi-agent-setup.version
+ARG PI_AGENT_SETUP_TAG=v1.14.0
+RUN test "${PI_AGENT_SETUP_TAG}" = "$(tr -d '\r\n' < /tmp/pi-agent-setup.version)" \
+    && mkdir -p /opt/pi-packages \
+    && git clone --depth 1 --branch "${PI_AGENT_SETUP_TAG}" \
+         https://github.com/RRiboulet/my-agent-setup.git \
+         "/opt/pi-packages/my-agent-setup-${PI_AGENT_SETUP_TAG}" \
+    && ln -sfn "my-agent-setup-${PI_AGENT_SETUP_TAG}" /opt/pi-packages/my-agent-setup \
+    && test -f /opt/pi-packages/my-agent-setup/package.json \
+    && printf '%s\n' "${PI_AGENT_SETUP_TAG}" > "/opt/pi-packages/my-agent-setup-${PI_AGENT_SETUP_TAG}/.pi-agent-setup-tag" \
+    && rm -f /tmp/pi-agent-setup.version
+ENV PI_AGENT_SETUP_TAG=${PI_AGENT_SETUP_TAG}
+LABEL org.rriboulet.pi-package="${PI_AGENT_SETUP_TAG}"
+
 # Powerlevel10k (standalone; no Oh My Zsh required)
 RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/vscode/powerlevel10k \
     && chown -R vscode:vscode /home/vscode/powerlevel10k

@@ -1,0 +1,68 @@
+{
+  "queries": [
+    {
+      "endpoint": "cargoexport",
+      "tables": "ScoreboardGames",
+      "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+      "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+      "order_by": "GameId",
+      "limit": 500
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "ScoreboardPlayers",
+      "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+      "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+      "order_by": "GameId",
+      "limit": 2000
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "MatchSchedule",
+      "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+      "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+      "order_by": "MatchId",
+      "limit": 500
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PicksAndBansS7",
+      "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+      "where": "GameId LIKE '2011 World Cyber Games%'",
+      "order_by": "GameId",
+      "limit": 500
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "ScoreboardGames",
+      "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+      "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+      "order_by": "GameId",
+      "limit": 500
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "ScoreboardPlayers",
+      "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+      "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+      "order_by": "GameId",
+      "limit": 2000
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "MatchSchedule",
+      "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+      "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+      "order_by": "MatchId",
+      "limit": 500
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PicksAndBansS7",
+      "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+      "where": "GameId LIKE '2023 Mid-Season Invitational%'",
+      "order_by": "GameId",
+      "limit": 500
+    }
+  ]
+}
