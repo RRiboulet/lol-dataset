@@ -77,6 +77,14 @@ function describe(result: BuildResult): string {
 		.map(([state, count]) => `${count} ${state}`)
 		.join(", ");
 	lines.push(`${scoreboards.games.length} game(s), ${scoreboards.matches.length} match(es) — events: ${stateText}`);
+	for (const rule of scoreboards.blindPickMatches) {
+		// Every declared rule is reported, including one that matched nothing: a pattern whose
+		// reach changed, or a dead declaration, must be visible in the build a reviewer reads
+		// rather than only in the `cites` prose no gate reads (ticket 10).
+		lines.push(
+			`blind-pick rule ${JSON.stringify(rule.overviewPage)} ${JSON.stringify(rule.gameIdPattern)}: ${rule.games} game(s)`,
+		);
+	}
 	// The per-era aggregate is a file of its own, so the summary says what it will show
 	// rather than leaving the reader to open it for a one-line answer.
 	const erasWithGames = coverage.eras.filter((record) => record.games > 0);
@@ -221,6 +229,7 @@ async function main(): Promise<void> {
 			rule: { type: "string" },
 			aliases: { type: "string" },
 			eras: { type: "string" },
+			formats: { type: "string" },
 			schema: { type: "string" },
 			offline: { type: "boolean", default: false },
 			check: { type: "boolean", default: false },
@@ -304,6 +313,7 @@ async function main(): Promise<void> {
 		ruleFile: values.rule ?? DEFAULT_RULE_FILE,
 		aliasFile: values.aliases,
 		eraFile: values.eras,
+		formatFile: values.formats,
 		schemaDir: values.schema ?? DEFAULT_SCHEMA_DIR,
 	}).catch((error: Error) => {
 		if (values.raw === undefined && /no recorded payloads/.test(error.message)) {

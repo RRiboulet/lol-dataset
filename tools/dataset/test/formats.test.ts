@@ -9,19 +9,22 @@
 // declaration that contradicts the rows stops the build.
 
 import assert from "node:assert/strict";
+import { execFile } from "node:child_process";
 import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { test } from "node:test";
+import { promisify } from "node:util";
 
 import type { BuildResult } from "../build.ts";
 import { buildDataset } from "../build.ts";
 import { parseGameFormats } from "../formats.ts";
 import { findInvariantViolations } from "../invariants.ts";
-import { FIXTURE_RAW, savePayloadBody } from "./helpers.ts";
+import { FIXTURE_RAW, REPO_ROOT, savePayloadBody } from "./helpers.ts";
 
 const MSC = "2020 Mid-Season Cup";
 const RULES = path.join(import.meta.dirname, "..", "rules", "game-formats.json");
+const run = promisify(execFile);
 
 let built: Promise<BuildResult> | undefined;
 function build(): Promise<BuildResult> {
@@ -138,6 +141,67 @@ test("a declaration is checked against the rows it covers", async () => {
 		blindPick: [...committed.blindPick, { overviewPage: "2011 World Cyber Games", gameIdPattern: "^2011", cites: "test" }],
 	});
 	assert.equal(inert.formats.blindPick.length, 2, "the declaration is accepted and simply matches nothing here");
+});
+
+/** The committed declarations, for a build that adds one of its own. */
+async function committedFormats(): Promise<{ version: number; blindPick: { overviewPage: string; gameIdPattern: string; cites: string }[] }> {
+	return JSON.parse(await readFile(RULES, "utf8")) as {
+		version: number;
+		blindPick: { overviewPage: string; gameIdPattern: string; cites: string }[];
+	};
+}
+
+test("the build reports how many games each blind-pick rule matched, zero included", async () => {
+	const result = await build();
+	const committed = result.scoreboards.blindPickMatches.find((entry) => entry.overviewPage === MSC);
+	assert.ok(committed, "the committed rule has a count");
+	assert.equal(committed.games, 3, "the Mid-Season Cup declaration covers the three best-of-five game 1s");
+	assert.equal(
+		result.scoreboards.blindPickMatches.length,
+		result.formats.blindPick.length,
+		"one count per declaration, so a rule cannot disappear from the report",
+	);
+
+	// A declaration for an event the corpus carries no games for is accepted and must still be
+	// reported: a silent zero is how a pattern that stopped matching becomes invisible.
+	const formats = await committedFormats();
+	const inert = await buildWithFormats({
+		version: 1,
+		blindPick: [...formats.blindPick, { overviewPage: "2011 World Cyber Games", gameIdPattern: "^2011", cites: "test: inert" }],
+	});
+	assert.deepEqual(
+		inert.scoreboards.blindPickMatches.find((entry) => entry.overviewPage === "2011 World Cyber Games"),
+		{ overviewPage: "2011 World Cyber Games", gameIdPattern: "^2011", games: 0 },
+		"a rule matching nothing is reported as zero, not omitted",
+	);
+});
+
+test("the CLI summary prints every rule's match count, including zero", async () => {
+	// The build's stdout is what a reviewer reads after a crawl, so the count is asserted
+	// through the CLI rather than only through the assembly it prints.
+	const dir = await mkdtemp(path.join(tmpdir(), "dataset-formats-cli-"));
+	try {
+		const formats = await committedFormats();
+		const file = path.join(dir, "game-formats.json");
+		await writeFile(
+			file,
+			JSON.stringify({
+				version: 1,
+				blindPick: [...formats.blindPick, { overviewPage: "2011 World Cyber Games", gameIdPattern: "^2011", cites: "test: inert" }],
+			}),
+			"utf8",
+		);
+		const { stdout } = await run(
+			process.execPath,
+			[path.join(REPO_ROOT, "tools", "dataset", "cli.ts"), "build", "--raw", FIXTURE_RAW, "--formats", file, "--check"],
+			{ cwd: REPO_ROOT },
+		);
+		assert.match(stdout, /blind-pick rule "2020 Mid-Season Cup"[^\n]*: 3 game\(s\)/);
+		assert.match(stdout, /blind-pick rule "2011 World Cyber Games"[^\n]*: 0 game\(s\)/);
+		assert.match(stdout, /committed data matches a rebuild/);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
 });
 
 test("the gate refuses a blind-pick claim the row contradicts", async () => {

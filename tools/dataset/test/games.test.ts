@@ -20,7 +20,8 @@ import type { BuildResult } from "../build.ts";
 import { buildDataset } from "../build.ts";
 import { readPayloads } from "../cache.ts";
 import { eraOn } from "../eras.ts";
-import type { GameRecord, MatchRecord } from "../games.ts";
+import type { GameRecord, MatchRecord, ScoreboardInput } from "../games.ts";
+import { assembleScoreboards, pageUnderEvent } from "../games.ts";
 import { normalizeSources } from "../normalize.ts";
 import { TEAM_STAT_FIELDS } from "../normalize.ts";
 import { FIXTURE_RAW, savePayloadBody, writeTempRule } from "./helpers.ts";
@@ -334,6 +335,80 @@ test("an event name that only appears inside a LIKE pattern is not a query for t
 	});
 	const state = new Map(result.scoreboards.eventGames.map((row) => [row.overviewPage, row.state]));
 	assert.equal(state.get("2011 World Cyber Games"), "missing", "a substring LIKE pattern is not a literal that names the event");
+});
+
+/** A minimal event row, for the report tests below that need no recorded fixture. */
+function eventForReport(overviewPage: string): ScoreboardInput["events"][number] {
+	return {
+		id: overviewPage.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+		name: overviewPage,
+		overviewPage,
+		league: "",
+		region: "",
+		dateStart: "2013-01-01",
+		year: 2013,
+		selection: { rule: "admitted", key: "test" },
+	};
+}
+
+/** A game-table payload that answered with `body`, for a query naming `where`. */
+function gameQuery(where: string, body = "[]"): ScoreboardInput["payloads"][number] {
+	return {
+		file: "lol-fandom/cargoexport/ScoreboardGames/test.json",
+		table: "ScoreboardGames",
+		endpoint: "cargoexport",
+		body,
+		query: { endpoint: "cargoexport", tables: "ScoreboardGames", fields: "GameId", where },
+	};
+}
+
+function reportFor(where: string): string {
+	const input: ScoreboardInput = {
+		games: [],
+		matches: [],
+		drafts: [],
+		events: [eventForReport("2013 World Cyber Games")],
+		identity: {} as ScoreboardInput["identity"],
+		eras: {} as ScoreboardInput["eras"],
+		payloads: [gameQuery(where)],
+		formats: { version: 1, blindPick: [] },
+	};
+	return assembleScoreboards(input).eventGames[0].state;
+}
+
+test("the qualifier boundary is one predicate: a whole `Qualifiers` segment, anywhere under the event page", () => {
+	const page = "2013 World Cyber Games";
+	assert.equal(pageUnderEvent(page, page), true, "the event's own page is under the event");
+	assert.equal(pageUnderEvent(`${page}/Main Event`, page), true, "a stage page is the event");
+	assert.equal(pageUnderEvent(`${page}/Qualifier Final`, page), true, "a page whose name contains the word is not the qualifier segment");
+	assert.equal(pageUnderEvent(`${page}/Qualifiers/China`, page), false);
+	assert.equal(pageUnderEvent(`${page}/Main Event/Qualifiers`, page), false, "the boundary is any segment, not only the first");
+	assert.equal(pageUnderEvent(`${page}/Main Event/Qualifiers/China`, page), false);
+	assert.equal(pageUnderEvent(`${page}/qualifiers`, page), false, "the segment is matched case-insensitively");
+	assert.equal(pageUnderEvent(`${page}/Scoreboards/Qualifiers_1_1_1_1`, page), true, "only a whole segment equal to `Qualifiers` is the boundary");
+	assert.equal(pageUnderEvent("2013 World Cyber Games Extra/Qualifiers", page), false, "a sibling page is not under the event");
+});
+
+test("an empty query for a qualifier does not make its event `empty`", () => {
+	// `empty` is a claim about the event's own games, so an empty query must name the event
+	// through the same boundary a page uses. A stage page does; a qualifier page does not.
+	assert.equal(reportFor("OverviewPage='2013 World Cyber Games/Main Event'"), "empty", "a stage query names the event");
+	assert.equal(reportFor("OverviewPage='2013 World Cyber Games/Qualifiers/China'"), "missing", "a qualifier query does not");
+	assert.equal(reportFor("OverviewPage='2013 World Cyber Games/Main Event/Qualifiers'"), "missing", "nor does a nested qualifier");
+});
+
+test("a payload body that is not JSON fails the build naming the payload, instead of reading as zero rows", () => {
+	const input: ScoreboardInput = {
+		games: [],
+		matches: [],
+		drafts: [],
+		events: [eventForReport("2013 World Cyber Games")],
+		identity: {} as ScoreboardInput["identity"],
+		eras: {} as ScoreboardInput["eras"],
+		payloads: [gameQuery("OverviewPage='2013 World Cyber Games'", "<html>not json</html>")],
+		formats: { version: 1, blindPick: [] },
+	};
+	assert.throws(() => assembleScoreboards(input), /ScoreboardGames\/test\.json: not JSON/);
 });
 
 test("a game whose teams are not its series' teams is detached and reported, not attached", async () => {

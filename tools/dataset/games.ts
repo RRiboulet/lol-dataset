@@ -178,10 +178,24 @@ export type SeriesConflictRecord = {
 	matchTeams: [ConflictTeam, ConflictTeam];
 };
 
+/** One declared blind-pick rule and how many source games it actually selected. */
+export type BlindPickMatch = {
+	overviewPage: string;
+	gameIdPattern: string;
+	/** Zero is reported rather than omitted: a rule that stopped matching is the failure to see. */
+	games: number;
+};
+
 export type ScoreboardAssembly = {
 	games: GameRecord[];
 	matches: MatchRecord[];
 	eventGames: EventGamesRecord[];
+	/**
+	 * One entry per declaration in `rules/game-formats.json`, in file order, including the
+	 * ones that matched zero games. `cites` is prose no gate reads, so the summary is where
+	 * a widening or a dead pattern becomes visible.
+	 */
+	blindPickMatches: BlindPickMatch[];
 	/** Pages the rule does not select: counted by the caller, never emitted. */
 	ignoredGames: string[];
 	ignoredMatches: string[];
@@ -262,17 +276,22 @@ function resolveTeam(identity: IdentityIndex, source: string, date: string, wher
  * (Open assumption 2) excludes "qualifiers for an already-included event", and the
  * wiki puts them beneath the event's page (`2013 World Cyber Games/Qualifiers/China`),
  * so a prefix-only test absorbed 62 qualifier series from five countries into World
- * Cyber Games 2013 — a competition the rule never selected. The boundary is the first
- * path segment, so `…/Qualifiers/China` and `…/Qualifier/…` are excluded while a stage
- * page such as `…/Main Event` is not. The rows are still crawled; the build counts
- * them as ignored rather than emitting them as the event's games, which is the same
- * treatment any other page outside the selected window gets.
+ * Cyber Games 2013 — a competition the rule never selected. The boundary is a whole path
+ * segment equal to `Qualifiers` (case-insensitive) **anywhere** under the event page, not
+ * just at the first segment: `…/Qualifiers/China` and `…/Main Event/Qualifiers` are
+ * excluded, while a stage page such as `…/Main Event`, or a page whose name merely
+ * contains the word (`…/Qualifier Final`), is not. The rows are still crawled; the build
+ * counts them as ignored rather than emitting them as the event's games, which is the
+ * same treatment any other page outside the selected window gets.
+ *
+ * This is the one boundary: `eventForPage` and `namesEvent` both route through it, so a
+ * query and a page can never disagree about which side of the qualifier line they fall on.
  */
 export function pageUnderEvent(page: string, overviewPage: string): boolean {
 	if (page === overviewPage) return true;
 	if (!page.startsWith(`${overviewPage}/`)) return false;
-	const section = page.slice(overviewPage.length + 1).split("/")[0].trim().toLowerCase();
-	return section !== "qualifiers" && section !== "qualifier";
+	const under = page.slice(overviewPage.length + 1).split("/");
+	return !under.some((segment) => segment.trim().toLowerCase() === "qualifiers");
 }
 
 function eventForPage(page: string, events: EventRecord[]): EventRecord | undefined {
@@ -638,22 +657,28 @@ function whereLiterals(where: string, columns: ReadonlySet<string>): string[] {
 
 /** Does a query literal name this event: its page, a stage page under it, or its name? */
 function namesEvent(literal: string, event: EventRecord): boolean {
-	if (literal === event.overviewPage || literal === event.name) return true;
-	// The source splits an event across stage pages (`…/Play-In`, `…/Main Event`), the same
-	// boundary `eventForPage` uses, so asking for a stage page is asking for the event.
-	return literal.startsWith(`${event.overviewPage}/`);
+	if (literal === event.name) return true;
+	// The source splits an event across stage pages (`…/Play-In`, `…/Main Event`), and the
+	// qualifier boundary is the same one `eventForPage` uses, so this must be that predicate
+	// rather than a bare prefix: an empty qualifier query is not a query for the event.
+	return pageUnderEvent(literal, event.overviewPage);
 }
 
-/** How many rows a payload body holds, without trusting it to be well formed. */
+/**
+ * How many rows a payload body holds. A body that is not JSON is a build error naming the
+ * payload: the normalizer would refuse it later anyway, and reading it as zero rows here
+ * could back an `empty` verdict on bytes that were never understood.
+ */
 function rowCount(payload: CachedPayload): number {
+	let parsed: unknown;
 	try {
-		const parsed: unknown = JSON.parse(payload.body);
-		if (Array.isArray(parsed)) return parsed.length;
-		const envelope = parsed as { cargoquery?: unknown } | null;
-		return Array.isArray(envelope?.cargoquery) ? envelope.cargoquery.length : 0;
-	} catch {
-		return 0;
+		parsed = JSON.parse(payload.body);
+	} catch (error) {
+		throw new Error(`${payload.file}: not JSON (${(error as Error).message})`);
 	}
+	if (Array.isArray(parsed)) return parsed.length;
+	const envelope = parsed as { cargoquery?: unknown } | null;
+	return Array.isArray(envelope?.cargoquery) ? envelope.cargoquery.length : 0;
 }
 
 function wasAsked(payload: CachedPayload, event: EventRecord): boolean {
@@ -780,11 +805,17 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	// here is silent in the worst way: the games it meant to cover would fail as a duplicate
 	// champion instead of pointing at the file to fix. An event the corpus does not carry is
 	// skipped, so a narrow fixture set can still use the same rules file.
+	//
+	// Every declaration is counted, matching or not, and the count travels to the CLI summary:
+	// a pattern that silently widened as the corpus grew would otherwise be invisible.
+	const blindPickMatches: BlindPickMatch[] = [];
 	for (const rule of input.formats.blindPick) {
 		const under = input.games.filter((game) => eventForPage(game.page, input.events)?.overviewPage === rule.overviewPage);
-		if (under.length === 0) continue;
 		const pattern = new RegExp(rule.gameIdPattern, "u");
-		if (!under.some((game) => pattern.test(game.gameId))) {
+		const games = under.filter((game) => pattern.test(game.gameId)).length;
+		blindPickMatches.push({ overviewPage: rule.overviewPage, gameIdPattern: rule.gameIdPattern, games });
+		if (under.length === 0) continue;
+		if (games === 0) {
 			throw new Error(
 				`rules/game-formats.json: the blind-pick declaration for ${JSON.stringify(rule.overviewPage)} ` +
 					`(pattern ${JSON.stringify(rule.gameIdPattern)}) matches none of its ${under.length} game(s) — the corpus has games for that event, so this is a typo`,
@@ -814,5 +845,5 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	});
 	eventGames.sort((a, b) => (a.eventId < b.eventId ? -1 : a.eventId > b.eventId ? 1 : 0));
 
-	return { games, matches, eventGames, ignoredGames, ignoredMatches, gamesWithoutMatch, detachedGames, contradictedMatches, seriesConflicts };
+	return { games, matches, eventGames, blindPickMatches, ignoredGames, ignoredMatches, gamesWithoutMatch, detachedGames, contradictedMatches, seriesConflicts };
 }
