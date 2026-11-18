@@ -114,6 +114,48 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 	const playerIds = new Set(identity.players.map((player) => player.id));
 	const championIds = new Set(identity.champions.map((champion) => champion.id));
 	const entityIds = new Set([...teamIds, ...playerIds, ...championIds]);
+	// The reverse direction of the checks below: an entity belongs in the entity files
+	// only when some emitted record names it — a game side, a match side, a player-game
+	// row, a draft entry. Without this, a registry page the dataset's events never
+	// touch (or an entity minted by a row the selection rule never emitted) would sit
+	// in `teams.jsonl` as a dimension row no fact can reach, and nothing else would
+	// notice the gap between the registries and the dataset.
+	const referencedTeams = new Set<string>();
+	const referencedPlayers = new Set<string>();
+	const referencedChampions = new Set<string>();
+	for (const game of games) {
+		for (const side of game.sides) referencedTeams.add(side.teamId);
+		referencedTeams.add(game.winnerTeamId);
+		if (game.draft !== undefined) {
+			for (const side of game.draft.sides) {
+				for (const entry of [...side.picks, ...side.bans]) referencedChampions.add(entry.championId);
+			}
+		}
+	}
+	for (const match of matches) {
+		for (const side of match.sides) referencedTeams.add(side.teamId);
+		if (match.winnerTeamId !== undefined) referencedTeams.add(match.winnerTeamId);
+	}
+	for (const row of seriesConflicts) {
+		for (const pair of [row.gameTeams, row.matchTeams]) {
+			if (pair === null) continue;
+			for (const team of pair) referencedTeams.add(team.teamId);
+		}
+	}
+	for (const row of playerGames) {
+		referencedPlayers.add(row.playerId);
+		referencedTeams.add(row.teamId);
+		referencedChampions.add(row.championId);
+	}
+	for (const team of identity.teams) {
+		if (!referencedTeams.has(team.id)) collector.add(`team ${team.id} (${team.name})`, "is emitted but no game side, match side, player-game row or conflict-report row names it");
+	}
+	for (const player of identity.players) {
+		if (!referencedPlayers.has(player.id)) collector.add(`player ${player.id} (${player.name})`, "is emitted but no player-game row names it");
+	}
+	for (const champion of identity.champions) {
+		if (!referencedChampions.has(champion.id)) collector.add(`champion ${champion.id} (${champion.name})`, "is emitted but no draft entry or player-game row names it");
+	}
 	collector.unique("team", identity.teams);
 	collector.unique("player", identity.players);
 	collector.unique("champion", identity.champions);

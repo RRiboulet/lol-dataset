@@ -180,6 +180,23 @@ The crawl added five events' worth of games and series, and the ticket-14 rule h
 contradicted series are not emitted. No new detachment appeared in the newly crawled
 events.
 
+### 5. Entities are emitted only when referenced
+
+The registry crawl fetched every page the source names — the build registered 111 teams and
+323 players — but the entity files are the dataset's join surface, and 43 of those teams and
+32 of those players were named by no emitted record: first seen on the excluded qualifier
+pages whose games and series this dataset deliberately does not carry, or on pages the rule
+never considered (Season 1's scoreboard payload, kept as ticket 02's identity evidence), or
+registry pages no admitted event touches (`NaJin Black Sword`, `Samsung Blue`). They stay
+resolution input — a qualifier-page string identical to a string an emitted row uses still
+resolves to the one entity — but they left `teams.jsonl`, `players.jsonl`, `champions.jsonl`,
+the alias table and the unresolved report, which now carries only the two strings an emitted
+row still cannot resolve (`Eliade`, `Insta`). The filter runs on the emitted records
+themselves at the end of assembly, so a series the build holds back as contradicted cannot
+keep an entity either; and the invariant gate refuses an emitted entity that no game side,
+match side, player-game row or conflict-report row names, so the rule is executable rather
+than prose.
+
 ## What is left
 
 - **11 unresolved references** with no registry row at all (above). They are reported, not
