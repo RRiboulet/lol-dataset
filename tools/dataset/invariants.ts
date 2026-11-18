@@ -18,7 +18,7 @@
 
 import type { EventRecord, SelectionRecord } from "./assemble.ts";
 import type { Coverage, EraTable } from "./eras.ts";
-import type { EventGamesRecord, GameRecord, MatchRecord } from "./games.ts";
+import type { EventGamesRecord, GameRecord, MatchRecord, SeriesConflictRecord } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { TEAM_STAT_FIELDS } from "./normalize.ts";
 import type { PlayerGameRecord } from "./playerGames.ts";
@@ -31,6 +31,7 @@ export type InvariantInput = {
 	games: GameRecord[];
 	matches: MatchRecord[];
 	eventGames: EventGamesRecord[];
+	seriesConflicts: SeriesConflictRecord[];
 	playerGames: PlayerGameRecord[];
 	eras: EraTable;
 };
@@ -100,7 +101,7 @@ function eligibleByEra(eras: EraTable): Map<string, Set<string>> {
  */
 export function findInvariantViolations(input: InvariantInput): string[] {
 	const collector = new Collector();
-	const { events, selection, identity, games, matches, eventGames, playerGames, eras } = input;
+	const { events, selection, identity, games, matches, eventGames, seriesConflicts, playerGames, eras } = input;
 
 	// ---- identity: the tables every other record references ----------------------
 	const teamIds = new Set(identity.teams.map((team) => team.id));
@@ -286,6 +287,54 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 		}
 		if (match.winnerTeamId !== undefined && !match.sides.some((side) => side.teamId === match.winnerTeamId)) {
 			collector.add(where, `names winner ${match.winnerTeamId}, which is not one of its sides`);
+		}
+	}
+
+	// ---- the conflict report: a detached game, or a series that is not emitted ---
+	// The report is committed data, so its references are checked like any other file's.
+	// It cannot be re-derived from the emitted rows (a contradicted series is absent by
+	// definition), but a row that names the wrong game, event or team is a hand-edit or a
+	// bad merge and is refused here.
+	const conflictKeys = new Set<string>();
+	for (const row of seriesConflicts) {
+		const key = row.kind === "detached-game" ? `game\u0000${row.gameId ?? ""}` : `series\u0000${row.matchId}`;
+		const where = `series-conflict ${row.sourceGameId ?? row.sourceMatchId}`;
+		if (conflictKeys.has(key)) collector.add(where, "appears more than once — one row per detached game or contradicted series");
+		conflictKeys.add(key);
+		if (!eventIds.has(row.eventId)) collector.add(where, `references event ${row.eventId}, which is not emitted`);
+		for (const team of [...(row.gameTeams ?? []), ...row.matchTeams]) {
+			if (!teamIds.has(team.teamId)) collector.add(where, `references team ${team.teamId}, which is not emitted`);
+		}
+		if (row.kind === "detached-game") {
+			if (row.gameId === null || row.sourceGameId === null) {
+				collector.add(where, "is a detached game without a canonical or source game id");
+				continue;
+			}
+			const game = games.find((candidate) => candidate.id === row.gameId);
+			if (game === undefined) {
+				collector.add(where, `names game ${row.gameId}, which is not emitted`);
+			} else {
+				if (game.matchId !== undefined) collector.add(where, `says game ${row.gameId} is detached but the game carries matchId ${game.matchId}`);
+				if (game.source.matchId !== row.sourceMatchId) collector.add(where, `names source series ${row.sourceMatchId}, but game ${row.gameId} names ${game.source.matchId}`);
+				if (game.eventId !== row.eventId) collector.add(where, `names event ${row.eventId}, but game ${row.gameId} belongs to ${game.eventId}`);
+				const gameTeams = game.sides.map((side) => side.teamId).sort().join("|");
+				if (row.gameTeams?.map((team) => team.teamId).sort().join("|") !== gameTeams) {
+					collector.add(where, `names game teams ${row.gameTeams?.map((team) => team.teamId).join(" and ") ?? "none"}, but game ${row.gameId} has ${gameTeams}`);
+				}
+			}
+			// The series may still be emitted for the other games that name it; only this
+			// game's link to it was refused. A contradicted-series row is where absence is claimed.
+			const series = matches.find((match) => match.id === row.matchId);
+			if (series !== undefined) {
+				const seriesTeams = series.sides.map((side) => side.teamId).sort().join("|");
+				if (row.matchTeams.map((team) => team.teamId).sort().join("|") !== seriesTeams) {
+					collector.add(where, `names series teams ${row.matchTeams.map((team) => team.teamId).join(" and ")}, but series ${row.matchId} has ${seriesTeams}`);
+				}
+			}
+		} else {
+			if (row.gameId !== null || row.sourceGameId !== null) collector.add(where, "is a contradicted series that still names an emitted game");
+			if (matchIds.has(row.matchId)) collector.add(where, `names series ${row.matchId}, which is emitted — a contradicted series is not`);
+			if (games.some((game) => game.matchId === row.matchId)) collector.add(where, `names series ${row.matchId}, which an emitted game still claims`);
 		}
 	}
 

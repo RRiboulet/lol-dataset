@@ -56,6 +56,7 @@ export const OUTPUTS = {
 	"event-games.jsonl": { schema: "event-games.schema.json" },
 	"games.jsonl": { schema: "game.schema.json" },
 	"matches.jsonl": { schema: "match.schema.json" },
+	"series-conflicts.jsonl": { schema: "series-conflicts.schema.json" },
 	"player-games.jsonl": { schema: "player-game.schema.json" },
 	"teams.jsonl": { schema: "team.schema.json" },
 	"players.jsonl": { schema: "player.schema.json" },
@@ -181,6 +182,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		"event-games.jsonl": toJsonl(scoreboards.eventGames),
 		"games.jsonl": toJsonl(scoreboards.games),
 		"matches.jsonl": toJsonl(scoreboards.matches),
+		"series-conflicts.jsonl": toJsonl(scoreboards.seriesConflicts),
 		"player-games.jsonl": toJsonl(playerGames.rows),
 		"teams.jsonl": toJsonl(identity.teams),
 		"players.jsonl": toJsonl(identity.players),
@@ -211,6 +213,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		games: scoreboards.games,
 		matches: scoreboards.matches,
 		eventGames: scoreboards.eventGames,
+		seriesConflicts: scoreboards.seriesConflicts,
 		playerGames: playerGames.rows,
 		eras,
 	});

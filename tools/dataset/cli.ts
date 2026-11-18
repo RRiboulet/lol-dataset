@@ -94,6 +94,13 @@ function describe(result: BuildResult): string {
 				`(${scoreboards.contradictedMatches.join(", ")})`,
 		);
 	}
+	if (scoreboards.seriesConflicts.length > 0) {
+		// The same facts are committed in series-conflicts.jsonl, so a reader who was not
+		// watching this terminal can still tell a contradicted series from an unfetched one.
+		const detached = scoreboards.seriesConflicts.filter((row) => row.kind === "detached-game").length;
+		const contradicted = scoreboards.seriesConflicts.filter((row) => row.kind === "contradicted-series").length;
+		lines.push(`  ${scoreboards.seriesConflicts.length} series conflict row(s) committed: ${detached} detached game(s), ${contradicted} contradicted series`);
+	}
 	if (scoreboards.ignoredGames.length > 0 || scoreboards.ignoredMatches.length > 0) {
 		// A payload that covers a page the rule rejected is normal for a crawl window, but
 		// it must never be silently absorbed: these rows are counted, not emitted.

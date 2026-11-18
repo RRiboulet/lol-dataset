@@ -144,6 +144,32 @@ export type EventGamesRecord = {
 	matches: number;
 };
 
+/** One team in a conflict pair, with its display name so the row reads without a join. */
+export type ConflictTeam = { teamId: string; teamName: string };
+
+/**
+ * One row of `series-conflicts.jsonl`: a game whose series row names other teams, or the
+ * series row every game naming it contradicts (ticket 15). Committed beside the entities
+ * because a build's stdout is not a dataset: without it, "this series is contradicted"
+ * and "this series was never fetched" look identical in `data/curated/`.
+ *
+ * `gameId`/`sourceGameId` are null on a contradicted-series row, which has no emitted
+ * game; `matchId` is present on both, because a detached game still names the series it
+ * claims. The team pairs are canonical ids and names, sorted by id so a side swap cannot
+ * move them, and the source strings stay on the game and match rows themselves (R7).
+ */
+export type SeriesConflictRecord = {
+	kind: "detached-game" | "contradicted-series";
+	eventId: string;
+	eventName: string;
+	gameId: string | null;
+	matchId: string;
+	sourceGameId: string | null;
+	sourceMatchId: string;
+	gameTeams: [ConflictTeam, ConflictTeam] | null;
+	matchTeams: [ConflictTeam, ConflictTeam];
+};
+
 export type ScoreboardAssembly = {
 	games: GameRecord[];
 	matches: MatchRecord[];
@@ -166,6 +192,8 @@ export type ScoreboardAssembly = {
 	 * it would read as "games missing" rather than "this row is contradicted".
 	 */
 	contradictedMatches: string[];
+	/** One row per detached game and per contradicted series, for `series-conflicts.jsonl`. */
+	seriesConflicts: SeriesConflictRecord[];
 };
 
 export type ScoreboardInput = {
@@ -180,6 +208,24 @@ export type ScoreboardInput = {
 };
 
 const byId = <T extends { id: string }>(a: T, b: T): number => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+
+/** Lexicographic compare, for the conflict report's deterministic order. */
+function compareKeys(a: readonly string[], b: readonly string[]): number {
+	for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+		const left = a[index] ?? "";
+		const right = b[index] ?? "";
+		if (left < right) return -1;
+		if (left > right) return 1;
+	}
+	return 0;
+}
+
+/** The two sides of a game or series as a pair sorted by canonical id. */
+function conflictTeamPair(sides: readonly { teamId: string; teamName: string }[]): [ConflictTeam, ConflictTeam] {
+	const pair = sides.map((side) => ({ teamId: side.teamId, teamName: side.teamName }));
+	pair.sort((left, right) => (left.teamId < right.teamId ? -1 : left.teamId > right.teamId ? 1 : 0));
+	return pair as [ConflictTeam, ConflictTeam];
+}
 
 function resolveTeam(identity: IdentityIndex, source: string, date: string, where: string): Resolution {
 	if (source.trim() === "") throw new Error(`${where}: an empty team string cannot be resolved`);
@@ -238,7 +284,7 @@ function gameSide(sideIndex: 0 | 1, side: SourceGame["sides"][number], identity:
 }
 
 /** What a game needs to know about its series: which event it sits in, and its two teams. */
-type MatchSeries = { eventId: string; teamIds: [string, string] };
+type MatchSeries = { eventId: string; teamIds: [string, string]; record: MatchRecord };
 
 /**
  * The draft of one game, with fidelity taken from the source rather than inferred.
@@ -568,6 +614,7 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	const gamesWithoutMatch: string[] = [];
 	const detachedGames: { gameId: string; matchId: string }[] = [];
 	const contradictedMatches: string[] = [];
+	const seriesConflicts: SeriesConflictRecord[] = [];
 	const perEvent = new Map<string, { games: number; matches: number }>();
 	const count = (eventId: string, field: "games" | "matches"): void => {
 		const seen = perEvent.get(eventId) ?? { games: 0, matches: 0 };
@@ -594,7 +641,7 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 		}
 		const record = assembleMatch(match, event, input);
 		candidates.push({ match, event, record });
-		seriesById.set(match.matchId, { eventId: event.id, teamIds: [record.sides[0].teamId, record.sides[1].teamId] });
+		seriesById.set(match.matchId, { eventId: event.id, teamIds: [record.sides[0].teamId, record.sides[1].teamId], record });
 	}
 	for (const game of input.games) {
 		const event = eventForPage(game.page, input.events);
@@ -605,12 +652,26 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 		const { record, attached } = assembleGame(game, event, input, seriesById);
 		games.push(record);
 		count(event.id, "games");
-		if (!seriesById.has(game.matchId)) {
+		const series = seriesById.get(game.matchId);
+		if (series === undefined) {
 			gamesWithoutMatch.push(game.gameId);
 			continue;
 		}
 		held.set(game.matchId, (held.get(game.matchId) ?? 0) + (attached ? 1 : 0));
-		if (!attached) detachedGames.push({ gameId: game.gameId, matchId: game.matchId });
+		if (!attached) {
+			detachedGames.push({ gameId: game.gameId, matchId: game.matchId });
+			seriesConflicts.push({
+				kind: "detached-game",
+				eventId: event.id,
+				eventName: event.name,
+				gameId: record.id,
+				matchId: series.record.id,
+				sourceGameId: game.gameId,
+				sourceMatchId: game.matchId,
+				gameTeams: conflictTeamPair(record.sides),
+				matchTeams: conflictTeamPair(series.record.sides),
+			});
+		}
 	}
 	for (const candidate of candidates) {
 		const agreed = held.get(candidate.match.matchId);
@@ -618,6 +679,17 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 		// says nothing against it, so it is emitted as it always was.
 		if (agreed === 0) {
 			contradictedMatches.push(candidate.match.matchId);
+			seriesConflicts.push({
+				kind: "contradicted-series",
+				eventId: candidate.event.id,
+				eventName: candidate.event.name,
+				gameId: null,
+				matchId: candidate.record.id,
+				sourceGameId: null,
+				sourceMatchId: candidate.match.matchId,
+				gameTeams: null,
+				matchTeams: conflictTeamPair(candidate.record.sides),
+			});
 			continue;
 		}
 		matches.push(candidate.record);
@@ -626,6 +698,12 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 
 	games.sort(byId);
 	matches.sort(byId);
+	seriesConflicts.sort((a, b) =>
+		compareKeys(
+			[a.kind, a.eventId, a.matchId, a.gameId ?? "", a.sourceGameId ?? ""],
+			[b.kind, b.eventId, b.matchId, b.gameId ?? "", b.sourceGameId ?? ""],
+		),
+	);
 
 	const eventGames: EventGamesRecord[] = input.events.map((event) => {
 		const seen = perEvent.get(event.id) ?? { games: 0, matches: 0 };
@@ -649,5 +727,5 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	});
 	eventGames.sort((a, b) => (a.eventId < b.eventId ? -1 : a.eventId > b.eventId ? 1 : 0));
 
-	return { games, matches, eventGames, ignoredGames, ignoredMatches, gamesWithoutMatch, detachedGames, contradictedMatches };
+	return { games, matches, eventGames, ignoredGames, ignoredMatches, gamesWithoutMatch, detachedGames, contradictedMatches, seriesConflicts };
 }

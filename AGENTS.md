@@ -14,7 +14,9 @@ rejection, the team, player, champion and alias identity tables, the games and
 matches of the four events crawled so far — each game carrying its champion draft
 with the source's fidelity and a player row per participant, with kills and gold
 reconciled against the team totals — a per-event report of which events the
-corpus carries games for, and `manifest.json`, which pins every cached payload the
+corpus carries games for, a series-conflict report of every game detached from a
+series that names other teams and every series the games contradict, and
+`manifest.json`, which pins every cached payload the
 build read by sha256 (with its query and fetch time, the only timestamp in the
 repository) and digests every emitted file. Its `file` pins are relative to the cache
 root, so the committed ones resolve under `tools/dataset/fixtures/raw/` and a reader can
@@ -33,12 +35,16 @@ current — and fails on a file in the directory the build no longer emits. The 
 validates the curated rows it reads at its own seam (ids, references, a winner that
 is one of the two sides, a player row's event matching its game) and checks that the
 facts agree with each other, so a row the invariant gate never saw cannot survive
-into `data/model/`. Those four events — Worlds 2023, MSI 2023, IEM IX 2015 and IPL 5 2012 — are
-the only ones with games; ticket 10 is the crawl that fills the rest, and ticket 13
-builds the model over the full dataset. IPL 5 is the one that took a decision rather
-than a crawl: its `MatchSchedule` spells one team's name two ways and swaps three
-pairs of `MatchId`s, so a legacy alias is declared and the swapped games are emitted
-without a `matchId` (ticket 14, which also removed `fixtures/pending/`). There is no
+into `data/model/`. Those four events — Worlds 2023, MSI 2023, IEM IX 2015 and IPL 5
+2012 — are the only ones with games; ticket 10 is the crawl that fills the rest, and
+ticket 13 builds the model over the full dataset. IPL 5 is the one that took a
+decision rather than a crawl: its `MatchSchedule` spells one team's name two ways and
+swaps three pairs of `MatchId`s, so a legacy alias is declared and the swapped games
+are emitted without a `matchId` (ticket 14, which also removed `fixtures/pending/`).
+Ticket 15 made that alias's declared window bound every lookup and required an
+`aliasOf` target to be evidenced by a game and its series row, and committed the
+conflict report to `data/curated/series-conflicts.jsonl` so the contradiction is
+visible in the data rather than only in the build's stdout. There is no
 `README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
 a schema, a scraper or a README as a side effect of an unrelated task; those are
 their own changes.

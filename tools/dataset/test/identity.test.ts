@@ -21,9 +21,11 @@ import * as path from "node:path";
 import { test } from "node:test";
 
 import { buildDataset } from "../build.ts";
-import { AmbiguousIdentity } from "../identity.ts";
-import { displayName } from "../normalize.ts";
+import { readPayloads } from "../cache.ts";
+import { AmbiguousIdentity, assembleIdentity, loadDeclaredAliases, surrogateId } from "../identity.ts";
+import { displayName, normalizeSources } from "../normalize.ts";
 import type { BuildResult } from "../build.ts";
+import type { SourceDataset } from "../normalize.ts";
 import { validateAgainst } from "../validate.ts";
 import { CURATED_DIR, FIXTURE_RAW, savePayloadBody, SCHEMA_DIR } from "./helpers.ts";
 
@@ -336,6 +338,175 @@ test("the champion rename the source cannot record resolves through the declared
 		await rm(dir, { recursive: true, force: true });
 	}
 })
+
+test("a declared era bounds a single candidate, and an inverted window is refused", async () => {
+	const rules = await mkdtemp(path.join(tmpdir(), "dataset-aliases-window-"));
+	try {
+		const aliasFile = path.join(rules, "identity-aliases.json");
+		const declaration = {
+			kind: "team",
+			string: "CLG Prime",
+			aliasOf: "Counter Logic Gaming",
+			from: "2012-11-29",
+			until: "2012-11-30",
+			reason: "the recorded series rows use this string for five days; the window bounds it",
+		};
+		await writeFile(aliasFile, JSON.stringify({ version: 1, aliases: [declaration] }), "utf8");
+		const empty: SourceDataset = {
+			tournaments: [],
+			teams: [],
+			teamNames: [],
+			playerNames: [],
+			champions: [],
+			scoreboard: [],
+			games: [],
+			matches: [],
+			drafts: [],
+			playerGames: [],
+		};
+		const identity = assembleIdentity(empty, await loadDeclaredAliases(aliasFile));
+		const inside = identity.index.resolve("team", "CLG Prime", "2012-11-30");
+		assert.equal(inside?.name, "Counter Logic Gaming", "inside the declared window the alias answers");
+		assert.equal(
+			identity.index.resolve("team", "CLG Prime", "2012-12-02"),
+			null,
+			"outside it the declaration says nothing, even though there is only one candidate",
+		);
+		assert.equal(
+			identity.index.resolve("team", "clg prime", "2012-12-02"),
+			null,
+			"a case-folded lookup cannot escape the declared window either",
+		);
+		assert.equal(identity.index.resolve("team", "clg prime", "2012-11-30")?.name, "Counter Logic Gaming");
+		const row = identity.aliases.find((alias) => alias.kind === "team" && alias.string === "CLG Prime");
+		assert.deepEqual([row?.firstSeen, row?.lastSeen], ["2012-11-29", "2012-11-30"], "the alias row carries the declared window");
+
+		await writeFile(
+			aliasFile,
+			JSON.stringify({ version: 1, aliases: [{ ...declaration, from: "2012-12-02", until: "2012-11-29" }] }),
+			"utf8",
+		);
+		await assert.rejects(
+			loadDeclaredAliases(aliasFile),
+			/from 2012-12-02 is after until 2012-11-29 — a declared era cannot end before it starts \(team "CLG Prime"\)/,
+		);
+	} finally {
+		await rm(rules, { recursive: true, force: true });
+	}
+});
+
+test("an observation outside a declared window mints a separate entity instead of silently joining it", async () => {
+	const rules = await mkdtemp(path.join(tmpdir(), "dataset-aliases-window-"));
+	try {
+		const aliasFile = path.join(rules, "identity-aliases.json");
+		await writeFile(
+			aliasFile,
+			JSON.stringify({
+				version: 1,
+				aliases: [
+					{
+						kind: "team",
+						string: "CLG Prime",
+						aliasOf: "Counter Logic Gaming",
+						from: "2012-11-29",
+						until: "2012-11-30",
+						reason: "a deliberately short window, to prove the era bounds every observation",
+					},
+				],
+			}),
+			"utf8",
+		);
+		const sources = normalizeSources(await readPayloads(FIXTURE_RAW));
+		const identity = assembleIdentity(sources, await loadDeclaredAliases(aliasFile));
+		const declared = identity.aliases.find((alias) => alias.kind === "team" && alias.string === "CLG Prime" && alias.evidence.includes("declared"));
+		assert.ok(declared, "the declaration still resolves inside its window");
+		const outside = identity.unresolved.find((row) => row.kind === "team" && row.string === "CLG Prime");
+		assert.ok(outside, "the series rows after the window are an unresolved reference, not a silent merge");
+		assert.notEqual(outside.id, identity.index.resolve("team", "Counter Logic Gaming", "2012-12-02")?.id, "it is not the declared team");
+		const minted = identity.teams.find((team) => team.id === outside.id);
+		assert.equal(minted?.name, "CLG Prime", "the string keeps its own entity outside the declared era");
+	} finally {
+		await rm(rules, { recursive: true, force: true });
+	}
+});
+
+test("self-targeting and chained declarations are refused, and a wrong target stops the build", async () => {
+	const rules = await mkdtemp(path.join(tmpdir(), "dataset-aliases-check-"));
+	try {
+		const aliasFile = path.join(rules, "identity-aliases.json");
+		const write = async (aliases: unknown[]): Promise<void> => {
+			await writeFile(aliasFile, JSON.stringify({ version: 1, aliases }), "utf8");
+		};
+		await write([{ kind: "team", string: "CLG Prime", aliasOf: "CLG Prime", reason: "self" }]);
+		await assert.rejects(loadDeclaredAliases(aliasFile), /a declared alias cannot name itself/);
+
+		await write([
+			{ kind: "team", string: "A", aliasOf: "B", reason: "chain one" },
+			{ kind: "team", string: "B", aliasOf: "C", reason: "chain two" },
+		]);
+		await assert.rejects(loadDeclaredAliases(aliasFile), /one declaration cannot chain onto another/);
+
+		await write([
+			{
+				kind: "team",
+				string: "CLG Prime",
+				aliasOf: "TSM",
+				from: "2012-11-29",
+				until: null,
+				reason: "a typo that names another team the corpus never puts on its side of a series",
+			},
+		]);
+		await assert.rejects(
+			buildDataset({ rawDir: FIXTURE_RAW, aliasFile }),
+			/no recorded game and its series row put the two strings on the same side/,
+			"an aliasOf target has to be evidenced by the corpus, or a typo merges two teams",
+		);
+	} finally {
+		await rm(rules, { recursive: true, force: true });
+	}
+});
+
+test("an aliasOf target the registries do not carry mints the target string's provisional id", async () => {
+	const { identity } = await fixtureBuild();
+	const declared = identity.aliases.find((alias) => alias.kind === "team" && alias.string === "CLG Prime");
+	assert.ok(declared);
+	assert.equal(declared.entityId, surrogateId("tm", "Counter Logic Gaming"), "the id is the target's hash, not the alias's");
+	const entity = identity.teams.find((team) => team.id === declared.entityId);
+	assert.ok(entity);
+	assert.equal(entity.overviewPage, null, "no registry page exists, and inventing one would hide that");
+});
+
+test("a declaration behind a registry identity is inert, so it needs no corpus evidence", async () => {
+	const rules = await mkdtemp(path.join(tmpdir(), "dataset-aliases-registry-"));
+	try {
+		const aliasFile = path.join(rules, "identity-aliases.json");
+		await writeFile(
+			aliasFile,
+			JSON.stringify({
+				version: 1,
+				aliases: [
+					{
+						kind: "team",
+						string: "T1",
+						aliasOf: "The Bandits Prime",
+						from: null,
+						until: null,
+						reason: "a declaration the registry already answers for; it must not override the registry",
+					},
+				],
+			}),
+			"utf8",
+		);
+		// The two strings never share a series side, so evidence would fail if the declaration
+		// were active. `T1` is the registry's own identity, which wins: the declaration is inert.
+		const built = await buildDataset({ rawDir: FIXTURE_RAW, aliasFile });
+		const t1 = built.identity.teams.find((team) => team.name === "T1");
+		assert.ok(t1);
+		assert.equal(built.identity.index.resolve("team", "T1", "2023-11-19")?.id, t1.id, "the registry's statement wins");
+	} finally {
+		await rm(rules, { recursive: true, force: true });
+	}
+});
 
 test("names are folded only as a last resort, and a folded match naming two entities is an error", async () => {
 	const { identity } = await fixtureBuild();

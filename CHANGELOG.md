@@ -13,6 +13,21 @@ Changed:
   name shapes, and the data dictionary states both its remaining limit (a naming heuristic, not a
   semantic guarantee) and which dimensions' unknown members can actually be joined to — only
   `match_key` and `patch_key`; the rest are kept for uniformity (ticket 12, review pass).
+- A declared alias's `from`/`until` window now bounds every lookup, not only one that is
+  already ambiguous: outside the window the string resolves to no entity, so an
+  observation mints and reports instead of silently joining the declared entity. An
+  inverted window (`from` after `until`) stops the load, naming the declaration (ticket
+  15, follow-up to ticket 14).
+- An `aliasOf` declaration must now be evidenced by the corpus: a recorded game and the
+  series row it names have to put the declared string on one side and its target on the
+  same side, because there is no registry row to check the target against. A typo that
+  names a team the declared string never meets fails the build instead of only moving the
+  detached/contradicted counts; an inert declaration behind a registry identity and a
+  string no corpus row uses are not failed for want of evidence (ticket 15).
+- The evidence prose for IPL 5's legacy name now matches the bytes: six series rows say
+  `CLG Prime`, three say `Counter Logic Gaming`, `from` is the first date the declared
+  string is used, and ticket 14 no longer implies the swapped series' scores survive
+  under the neighbouring key — both halves of each swap are dropped (ticket 15).
 - A game whose `MatchSchedule` row names two other teams is now emitted **without** a
   canonical `matchId` and counted in the build's summary, instead of stopping the build;
   a series row that **every** game naming it contradicts is not emitted at all and is
@@ -85,6 +100,13 @@ Changed:
 
 Added:
 
+- `data/curated/series-conflicts.jsonl`, with
+  `data/curated/schema/series-conflicts.schema.json`: one row per game detached from a
+  series that names other teams and per series every game naming it contradicts, carrying
+  the event, canonical and source ids, and both team pairs. It makes "series contradicted"
+  distinguishable from "series never fetched" in the committed data rather than only in a
+  build's stdout; the recorded fixtures produce 14 rows (8 detached games, 6 contradicted
+  series). The file is in `OUTPUTS` and the manifest's entity digests (ticket 15).
 - **IPL 5 2012**, the earliest event the source still carries games for, in the
   committed dataset: 72 games, 720 player rows, 48 series rows of which 42 are emitted.
   Its four recorded payloads moved out of `tools/dataset/fixtures/pending/` (which is
