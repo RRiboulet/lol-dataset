@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.0.0 — 2026-11-18
+
 Changed:
 
 - **The model is proven over the whole committed dataset, and its coverage rolls up to the
@@ -490,8 +492,6 @@ Maintenance:
   silently re-keying the cache still applies, and the error names the flag rather
   than an index (`--query: unknown query field "orderBy"`). Found by the
   independent review of the fetch layer, and the failing command is now a test.
-
-Maintenance:
 
 - **A subagent launch no longer names an extension copy this project excluded.** The
   child used to be started with `--extension .pi/extensions/subagent/index.ts` *and*
