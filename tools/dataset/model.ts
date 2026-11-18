@@ -44,6 +44,9 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 
 import type { EventRecord } from "./assemble.ts";
+import type { CoverageGroups, EraCoverageRecord, EventCoverageRecord } from "./coverage.ts";
+import { COVERAGE_GROUPS, summariseGroup } from "./coverage.ts";
+import type { Coverage } from "./eras.ts";
 import type { GameRecord, MatchRecord } from "./games.ts";
 import type { AliasRecord, ChampionRecord, EntityKind, PlayerRecord, TeamRecord } from "./identity.ts";
 import type { PlayerGameRecord } from "./playerGames.ts";
@@ -1308,6 +1311,129 @@ export function assertModelConforms(input: ModelInput, result: ModelBuild): void
 	throw new Error(
 		`the dimensional model violates ${violations.length} conformance rule${violations.length === 1 ? "" : "s"}:\n  - ${violations.join("\n  - ")}`,
 	);
+}
+
+// ---- coverage rollup --------------------------------------------------------
+
+/**
+ * The model reduced to what a rollup needs: a table name and its rows.
+ *
+ * Deliberately narrower than `ModelBuild`, so the rollup runs as well over tables read
+ * back from the committed CSVs as over the in-memory build. That is the point: an
+ * analyst who has only `data/model/` must be able to derive the same answer.
+ */
+export type RollupTables = readonly { name: string; rows: readonly ModelRow[] }[];
+
+/** The two grains of the curated coverage report, as the model can state them. */
+export type ModelCoverageRollup = {
+	events: EventCoverageRecord[];
+	eras: Omit<EraCoverageRecord, "from">[];
+};
+
+/**
+ * The curated coverage report's two grains, re-derived from the model alone.
+ *
+ * `event-coverage.jsonl` and `era-coverage.jsonl` are aggregation of the per-game
+ * markers (spec R6). Because the markers live on `dim_game`, the same rollup is
+ * computable from the modelled layer — and it must agree with the curated report, or a
+ * fact consumer and a curated consumer would answer "what does this era hold?"
+ * differently. The suite asserts that agreement against the committed bytes.
+ *
+ * Two fields are honestly out of reach here, and neither is a game fact:
+ *
+ *   - an era's `from` is the era table's declaration, not something a game states; and
+ *   - a declared era with **no** games has no row to roll up (its absence is the era
+ *     table's business, the same way `event-games.jsonl` records an empty event). The
+ *     suite asserts every era the report has and the rollup lacks carries `games: 0`,
+ *     so an era cannot be missing because games vanished from the model.
+ *
+ * `dim_game` deliberately carries no event key (ticket 12, A7), so a game's event comes
+ * from its fact rows: every modelled game has exactly two side rows, and the conformance
+ * gate proves they agree on the event, which makes this join total and consistent.
+ */
+export function rollupCoverage(tables: RollupTables): ModelCoverageRollup {
+	const rowsOf = (name: ModelTableName): readonly ModelRow[] => {
+		const found = tables.find((candidate) => candidate.name === name);
+		if (found === undefined) throw new Error(`rollupCoverage: the model has no ${name}`);
+		return found.rows;
+	};
+
+	const COVERAGE_COLUMN: Record<(typeof COVERAGE_GROUPS)[number], string> = {
+		teamStats: "team_stats_coverage",
+		draft: "draft_coverage",
+		playerStats: "player_stats_coverage",
+	};
+	const STATES: readonly string[] = ["complete", "partial", "unavailable"];
+
+	const eventByGame = new Map<string, string>();
+	for (const row of rowsOf("fact_game_side")) {
+		const gameKey = String(row.game_key);
+		const eventKey = String(row.event_key);
+		const known = eventByGame.get(gameKey);
+		if (known === undefined) eventByGame.set(gameKey, eventKey);
+		else if (known !== eventKey) throw new Error(`rollupCoverage: game ${gameKey} sits in events ${known} and ${eventKey}`);
+	}
+
+	const gamesByEvent = new Map<string, ModelRow[]>();
+	const gamesByEra = new Map<string, ModelRow[]>();
+	for (const row of rowsOf("dim_game")) {
+		const gameKey = String(row.game_key);
+		if (gameKey === "0") continue; // the unknown member is not a game
+		const eventKey = eventByGame.get(gameKey);
+		if (eventKey === undefined) {
+			throw new Error(`rollupCoverage: game ${row.game_id} has no side row, so the event it belongs to is unknown`);
+		}
+		const perEvent = gamesByEvent.get(eventKey) ?? [];
+		perEvent.push(row);
+		gamesByEvent.set(eventKey, perEvent);
+		const era = String(row.era);
+		const perEra = gamesByEra.get(era) ?? [];
+		perEra.push(row);
+		gamesByEra.set(era, perEra);
+	}
+
+	const coverageOf = (games: readonly ModelRow[]): CoverageGroups => {
+		const groups = {} as CoverageGroups;
+		for (const group of COVERAGE_GROUPS) {
+			const markers = games.map((row) => {
+				const marker = String(row[COVERAGE_COLUMN[group]]);
+				if (!STATES.includes(marker)) {
+					throw new Error(
+						`rollupCoverage: game ${row.game_id} states ${JSON.stringify(marker)} for ${group}; expected complete, partial or unavailable`,
+				);
+				}
+				return marker as Coverage;
+			});
+			groups[group] = summariseGroup(markers);
+		}
+		return groups;
+	};
+
+	const events: EventCoverageRecord[] = rowsOf("dim_event")
+		.filter((row) => String(row.event_key) !== "0")
+		.map((row) => {
+			const games = gamesByEvent.get(String(row.event_key)) ?? [];
+			return {
+				eventId: String(row.event_id),
+				eventName: String(row.event_name),
+				overviewPage: String(row.overview_page),
+				eras: [...new Set(games.map((game) => String(game.era)))].sort(compareText),
+				games: games.length,
+				coverage: coverageOf(games),
+			};
+		})
+		.sort((a, b) => compareText(a.eventId, b.eventId));
+
+	const eras = [...gamesByEra.entries()]
+		.map(([era, games]) => ({
+			era,
+			games: games.length,
+			events: new Set(games.map((game) => eventByGame.get(String(game.game_key)))).size,
+			coverage: coverageOf(games),
+		}))
+		.sort((a, b) => compareText(a.era, b.era));
+
+	return { events, eras };
 }
 
 // ---- entry points -----------------------------------------------------------

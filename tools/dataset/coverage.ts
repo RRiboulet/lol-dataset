@@ -76,20 +76,30 @@ export type CoverageReport = {
 
 const byString = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
+/**
+ * The state of one group over a multiset of markers: `complete` only when every one is,
+ * `unavailable` when there is nothing in it at all, `partial` otherwise.
+ *
+ * Extracted so the state derivation has one implementation rather than two that can
+ * drift: this module derives it for the curated report, and `model.ts` derives the same
+ * state when it re-rolls the markers out of the committed CSV layer (ticket 13).
+ */
+export function summariseGroup(markers: readonly Coverage[]): GroupCoverage {
+	const counts = { complete: 0, partial: 0, unavailable: 0 } as GroupCoverage;
+	for (const marker of markers) counts[marker] += 1;
+	counts.state =
+		markers.length === 0 || counts.unavailable === markers.length
+			? "unavailable"
+			: counts.complete === markers.length
+				? "complete"
+				: "partial";
+	return counts;
+}
+
 /** Count the group states of a set of games. Pure, so the invariant gate can reuse it. */
 export function countGroups(games: readonly GameRecord[]): CoverageGroups {
 	const groups = {} as CoverageGroups;
-	for (const group of COVERAGE_GROUPS) {
-		const counts = { complete: 0, partial: 0, unavailable: 0 } as GroupCoverage;
-		for (const game of games) counts[game.coverage[group]] += 1;
-		counts.state =
-			games.length === 0 || counts.unavailable === games.length
-				? "unavailable"
-				: counts.complete === games.length
-					? "complete"
-					: "partial";
-		groups[group] = counts;
-	}
+	for (const group of COVERAGE_GROUPS) groups[group] = summariseGroup(games.map((game) => game.coverage[group]));
 	return groups;
 }
 
