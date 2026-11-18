@@ -25,12 +25,13 @@ ticket 11's.
 ## Acceptance criteria
 
 - [x] Every event selected by the rule is present with at least one game, or its
-      absence is recorded as an explicit exclusion with a reason. Nine of the ten carry
-      games; **World Cyber Games 2011** is `empty` — four game-bearing queries and a
-      `Tournament LIKE '%Cyber Games%'` probe all returned zero rows, and the reason is
-      recorded in `event-games.jsonl` and in the measurement document. **World Cyber Games
-      2013** is `recorded` with zero games and 48 series: the source carries the series
-      table and no scoreboard, which is a different fact from "nobody asked".
+      absence is recorded as an explicit exclusion with a reason. Eight of the ten carry
+      games, and a ninth carries series but no games; **World Cyber Games 2011** is
+      `empty` — four game-bearing queries and a `Tournament LIKE '%Cyber Games%'` probe
+      all returned zero rows, and the reason is recorded in `event-games.jsonl` and in the
+      measurement document. **World Cyber Games 2013** is `recorded` with zero games and
+      48 series: the source carries the series table and no scoreboard, which is a
+      different fact from "nobody asked".
 - [x] The dataset validates clean end to end: 377 games, 230 series, 3 770 player rows,
       the schema gate, the provenance gate and the invariant gate all pass on the
       committed bytes.
@@ -43,7 +44,7 @@ ticket 11's.
       above skips every payload it already holds; the second half of the crawl ran over
       the first half's cache and issued only its own requests.
 - [x] The manifest pins the payload hashes the committed dataset came from: 79 payloads
-      under `tools/dataset/fixtures/raw/`, 13 entity files under one digest.
+      under `tools/dataset/fixtures/raw/`, 14 entity files under one digest.
 - [x] A person can point at any game in the dataset and reach the source payload it came
       from using only committed files plus the manifest: the game carries `source.gameId`
       and `source.matchId`, and the manifest names each payload's relative path, query and

@@ -11,7 +11,7 @@ own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
 holds what the build emits today — the selected events with the report of every
 rejection, the team, player, champion and alias identity tables, the games and
-matches of **nine events** (377 games, 230 series, 3 770 player rows), each game carrying
+matches of **eight events** (377 games, 230 series, 3 770 player rows), each game carrying
 its champion draft with the source's fidelity and a player row per participant, with
 kills and gold reconciled against the team totals — the per-event report of which
 events the corpus carries rows for, the generated per-event and per-era coverage
@@ -20,7 +20,7 @@ own markers by the invariant gate), a series-conflict report of every game detac
 a series that names other teams and every series the games contradict, and
 `manifest.json`, which pins every cached payload the
 build read by sha256 (with its query and fetch time, the only timestamp in the
- and digests every emitted file. Its `file` pins are relative to the cache
+repository) and digests every emitted file. Its `file` pins are relative to the cache
 root, so the committed ones resolve under `tools/dataset/fixtures/raw/` and a reader can
 walk from a game's source identifiers to its payload with the manifest alone. A build
 also verifies each payload against its sidecar's hash and runs an invariant gate
