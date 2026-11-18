@@ -118,6 +118,7 @@ test("the gate refuses a coverage row that over-claims, or drops a game", async 
 		games: result.scoreboards.games,
 		matches: result.scoreboards.matches,
 		eventGames: result.scoreboards.eventGames,
+		seriesConflicts: result.scoreboards.seriesConflicts,
 		eventCoverage: result.coverage.events,
 		eraCoverage: result.coverage.eras,
 		playerGames: result.playerGames.rows,

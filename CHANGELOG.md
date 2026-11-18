@@ -133,6 +133,12 @@ Changed:
   different renames still stop the build), and a rename can point at a `TeamRedirects`
   name rather than a page (`Lyon Gaming … → Rainbow7 → Movistar R7 → LYON`), which the
   chain now follows.
+- **`data/model/` is rebuilt over the full dataset.** Ticket 12's star schema merged while
+  this crawl was running, so its committed CSVs described the four events that existed
+  then. `node tools/dataset/cli.ts model` regenerates them from the new curated layer
+  (754 game-side rows, 3 770 player rows, 7 144 draft-slot rows) and `model --check`
+  confirms the committed bytes are current. Ticket 13 is the deeper model work; this is
+  only keeping the model in step with the data.
 
 Added:
 

@@ -184,8 +184,12 @@ events.
 
 - **11 unresolved references** with no registry row at all (above). They are reported, not
   guessed; resolving them is a human statement in `rules/identity-aliases.json`.
-- **Ticket 12/13's model layer** does not exist in this tree yet, so there was nothing to
-  rebuild; the coverage report is a curated-layer deliverable.
+- **`data/model/` was rebuilt over the full dataset**, because ticket 12's dimensional
+  model merged while this crawl was running and its CSVs would otherwise describe four
+  events while the curated layer carries nine. Ticket 13 is the deeper model work (the
+  full-dimension review); keeping the committed model current is all this ticket does:
+  `node tools/dataset/cli.ts model` and `model --check` both pass, 3 770 fact rows at the
+  player grain and 7 144 at the draft-slot grain.
 - **R12's "loads into a spreadsheet with no preprocessing"** is only partly met by the
   curated layer: JSONL loads directly into pandas (`read_json(lines=True)`) and DuckDB
   (`read_json_auto`), and needs an import step in spreadsheet-grade tools. The CSV model

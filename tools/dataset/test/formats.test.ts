@@ -155,6 +155,7 @@ test("the gate refuses a blind-pick claim the row contradicts", async () => {
 		games: result.scoreboards.games,
 		matches: result.scoreboards.matches,
 		eventGames: result.scoreboards.eventGames,
+		seriesConflicts: result.scoreboards.seriesConflicts,
 		eventCoverage: result.coverage.events,
 		eraCoverage: result.coverage.eras,
 		playerGames: result.playerGames.rows,

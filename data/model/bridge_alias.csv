@@ -1,597 +1,792 @@
 alias_key,kind,alias_string,entity_key,entity_id,entity_name,valid_from,valid_to,evidence
-1,champion,Hwei,1,ch-01ef89acfea0,Hwei,,,registry
+1,champion,Hwei,1,ch-01ef89acfea0,Hwei,2024-07-04,2025-03-16,registry;observed
 2,champion,Jarvan IV,2,ch-028a48ac2577,Jarvan IV,2012-11-29,2023-11-19,registry;observed
 3,champion,Rammus,3,ch-038096aafcbc,Rammus,,,registry
 4,champion,Soraka,4,ch-07ce834c13e3,Soraka,2011-06-18,2023-10-26,registry;observed
-5,champion,Zac,5,ch-09ca25c70f1e,Zac,2023-10-19,2023-10-19,registry;observed
-6,champion,Sion,6,ch-0a56cd6ed480,Sion,2015-03-13,2023-10-15,registry;observed
+5,champion,Zac,5,ch-09ca25c70f1e,Zac,2017-07-05,2025-03-16,registry;observed
+6,champion,Sion,6,ch-0a56cd6ed480,Sion,2015-03-13,2025-03-14,registry;observed
 7,champion,Briar,7,ch-0b41211e7c71,Briar,,,registry
-8,champion,Udyr,8,ch-0c1169d43be4,Udyr,,,registry
+8,champion,Udyr,8,ch-0c1169d43be4,Udyr,2024-07-05,2024-07-06,registry;observed
 9,champion,Lucian,9,ch-0c7a585070be,Lucian,2015-03-13,2026-10-13,registry;observed
-10,champion,Twitch,10,ch-0d315ed8d3cd,Twitch,2012-11-29,2012-12-01,registry;observed
+10,champion,Twitch,10,ch-0d315ed8d3cd,Twitch,2012-11-29,2017-07-08,registry;observed
 11,champion,Darius,11,ch-0db0da815a48,Darius,2012-11-29,2023-10-23,registry;observed
 12,champion,Malzahar,12,ch-0efdd83b5b27,Malzahar,,,registry
 13,champion,Volibear,13,ch-1098c7ed303b,Volibear,2023-10-23,2023-10-23,registry;observed
-14,champion,Kled,14,ch-13cd18f6bd47,Kled,,,registry
-15,champion,Gangplank,15,ch-1642df326df8,Gangplank,,,registry
-16,champion,Nilah,16,ch-199bc2d80a8a,Nilah,2023-10-22,2023-11-05,registry;observed
+14,champion,Kled,14,ch-13cd18f6bd47,Kled,2017-07-05,2017-07-07,registry;observed
+15,champion,Gangplank,15,ch-1642df326df8,Gangplank,2020-05-29,2025-03-16,registry;observed
+16,champion,Nilah,16,ch-199bc2d80a8a,Nilah,2023-10-22,2025-03-15,registry;observed
 17,champion,Mel,17,ch-1a2e21c4b71d,Mel,,,registry
 18,champion,Olaf,18,ch-1a3ad80c596f,Olaf,2012-11-29,2023-10-29,registry;observed
-19,champion,Nami,19,ch-1b3e82769223,Nami,2015-03-13,2023-05-17,registry;observed
+19,champion,Nami,19,ch-1b3e82769223,Nami,2015-03-13,2025-03-10,registry;observed
 20,champion,Shaco,20,ch-1e31c331c8e3,Shaco,,,registry
 21,champion,Lissandra,21,ch-1f36e4f34c28,Lissandra,2015-03-13,2023-10-29,registry;observed
 22,champion,Malphite,22,ch-217e747bd333,Malphite,2012-11-29,2023-10-23,registry;observed
-23,champion,Gragas,23,ch-2195d2b0a636,Gragas,2012-11-29,2023-11-04,registry;observed
+23,champion,Gragas,23,ch-2195d2b0a636,Gragas,2012-11-29,2025-03-16,registry;observed
 24,champion,Fizz,24,ch-21c6b1d69b1c,Fizz,,,registry
-25,champion,Draven,25,ch-2380c353cad4,Draven,2012-11-29,2023-11-19,registry;observed
-26,champion,Nocturne,26,ch-238731b0e0dd,Nocturne,2012-11-29,2023-11-19,registry;observed
-27,champion,Pyke,27,ch-24af30b7f89f,Pyke,2023-05-10,2023-11-12,registry;observed
-28,champion,Anivia,28,ch-27049826f521,Anivia,2012-11-29,2012-12-02,registry;observed
+25,champion,Draven,25,ch-2380c353cad4,Draven,2012-11-29,2025-03-16,registry;observed
+26,champion,Nocturne,26,ch-238731b0e0dd,Nocturne,2012-11-29,2025-03-16,registry;observed
+27,champion,Pyke,27,ch-24af30b7f89f,Pyke,2020-05-29,2025-03-16,registry;observed
+28,champion,Anivia,28,ch-27049826f521,Anivia,2012-11-29,2017-07-06,registry;observed
 29,champion,Akshan,29,ch-28667a82df96,Akshan,,,registry
-30,champion,Kennen,30,ch-299f85b68247,Kennen,2015-03-13,2023-11-19,registry;observed
+30,champion,Kennen,30,ch-299f85b68247,Kennen,2015-03-13,2025-03-16,registry;observed
 31,champion,K'Sante,31,ch-29b29f6f5579,K'Sante,2023-05-02,2026-10-13,registry;observed
-32,champion,Aurora,32,ch-2dd8f20c4091,Aurora,2026-10-13,2026-10-13,registry;observed
-33,champion,Rakan,33,ch-2e776ae07de1,Rakan,2023-05-02,2023-11-19,registry;observed
-34,champion,Ziggs,34,ch-2ed9ee7444ff,Ziggs,2023-10-19,2023-11-02,registry;observed
-35,champion,Ekko,35,ch-2f2d83b1b827,Ekko,,,registry
-36,champion,Twisted Fate,36,ch-2ff9fe46d270,Twisted Fate,2012-11-29,2023-05-10,registry;observed
+32,champion,Aurora,32,ch-2dd8f20c4091,Aurora,2025-03-10,2026-10-13,registry;observed
+33,champion,Rakan,33,ch-2e776ae07de1,Rakan,2017-07-05,2025-03-16,registry;observed
+34,champion,Ziggs,34,ch-2ed9ee7444ff,Ziggs,2023-10-19,2025-03-16,registry;observed
+35,champion,Ekko,35,ch-2f2d83b1b827,Ekko,2020-05-28,2020-05-30,registry;observed
+36,champion,Twisted Fate,36,ch-2ff9fe46d270,Twisted Fate,2012-11-29,2024-07-06,registry;observed
 37,champion,Amumu,37,ch-3099838c52e4,Amumu,2011-06-18,2023-05-03,registry;observed
-38,champion,Akali,38,ch-30dbb04a9bf0,Akali,2012-11-29,2023-11-19,registry;observed
-39,champion,Tristana,39,ch-318fdd9ba2a1,Tristana,2012-11-30,2023-11-02,registry;observed
+38,champion,Akali,38,ch-30dbb04a9bf0,Akali,2012-11-29,2025-03-16,registry;observed
+39,champion,Tristana,39,ch-318fdd9ba2a1,Tristana,2012-11-30,2025-03-15,registry;observed
 40,champion,Bel'Veth,40,ch-33979b22892a,Bel'Veth,2023-05-04,2023-11-19,registry;observed
 41,champion,Kalista,41,ch-370e11d46c76,Kalista,2015-03-14,2026-10-13,registry;observed
-42,champion,Yone,42,ch-38091199d65e,Yone,2023-05-12,2023-11-19,registry;observed
-43,champion,Rek'Sai,43,ch-3b8428b1520e,Rek'Sai,2015-03-13,2015-03-15,registry;observed
-44,champion,Kayle,44,ch-3badce680268,Kayle,,,registry
+42,champion,Yone,42,ch-38091199d65e,Yone,2023-05-12,2025-03-16,registry;observed
+43,champion,Rek'Sai,43,ch-3b8428b1520e,Rek'Sai,2015-03-13,2020-05-30,registry;observed
+44,champion,Kayle,44,ch-3badce680268,Kayle,2020-05-31,2025-03-14,registry;observed
 45,champion,Zaahen,45,ch-3c7f3b376b0e,Zaahen,,,registry
 46,champion,Talon,46,ch-3ce9a0e3e72c,Talon,,,registry
-47,champion,Riven,47,ch-3e54a829b995,Riven,2012-11-29,2012-11-29,registry;observed
-48,champion,Ashe,48,ch-3eb8a4f545ea,Ashe,2012-11-29,2023-11-19,registry;observed
-49,champion,Poppy,49,ch-41bcc2d90da4,Poppy,2023-05-02,2023-11-19,registry;observed
-50,champion,Ezreal,50,ch-45ccbcaf1dca,Ezreal,2012-11-29,2023-11-02,registry;observed
+47,champion,Riven,47,ch-3e54a829b995,Riven,2012-11-29,2017-07-06,registry;observed
+48,champion,Ashe,48,ch-3eb8a4f545ea,Ashe,2012-11-29,2025-03-16,registry;observed
+49,champion,Poppy,49,ch-41bcc2d90da4,Poppy,2023-05-02,2025-03-16,registry;observed
+50,champion,Ezreal,50,ch-45ccbcaf1dca,Ezreal,2012-11-29,2025-03-16,registry;observed
 51,champion,Yunara,51,ch-467149d7aec8,Yunara,,,registry
-52,champion,Warwick,52,ch-478f808fc478,Warwick,2011-06-18,2011-06-18,registry;observed
-53,champion,Xayah,53,ch-4849e2d6efd2,Xayah,2023-05-02,2023-11-19,registry;observed
-54,champion,Alistar,54,ch-486309ec2ff8,Alistar,2012-11-30,2023-11-12,registry;observed
+52,champion,Warwick,52,ch-478f808fc478,Warwick,2011-06-18,2017-07-08,registry;observed
+53,champion,Xayah,53,ch-4849e2d6efd2,Xayah,2017-07-05,2025-03-16,registry;observed
+54,champion,Alistar,54,ch-486309ec2ff8,Alistar,2012-11-30,2025-03-16,registry;observed
 55,champion,Evelynn,55,ch-49271a76381b,Evelynn,2012-11-29,2012-12-03,registry;observed
-56,champion,Vladimir,56,ch-49594002e001,Vladimir,2012-11-29,2012-12-02,registry;observed
-57,champion,Aatrox,57,ch-49ea57cd196a,Aatrox,2023-05-05,2023-11-19,registry;observed
-58,champion,Thresh,58,ch-4aab1dd189ec,Thresh,2015-03-13,2023-10-23,registry;observed
-59,champion,Zeri,59,ch-4b9f017582ba,Zeri,2023-05-02,2023-11-12,registry;observed
+56,champion,Vladimir,56,ch-49594002e001,Vladimir,2012-11-29,2025-03-15,registry;observed
+57,champion,Aatrox,57,ch-49ea57cd196a,Aatrox,2020-05-28,2025-03-16,registry;observed
+58,champion,Thresh,58,ch-4aab1dd189ec,Thresh,2015-03-13,2025-03-15,registry;observed
+59,champion,Zeri,59,ch-4b9f017582ba,Zeri,2023-05-02,2025-03-15,registry;observed
 60,champion,Shyvana,60,ch-4cbfcaec9534,Shyvana,2012-11-30,2012-11-30,registry;observed
-61,champion,Ryze,61,ch-4eefbce3b523,Ryze,2012-11-29,2023-10-29,registry;observed
-62,champion,Cassiopeia,62,ch-4fae1e4f33d3,Cassiopeia,2012-11-29,2023-10-19,registry;observed
+61,champion,Ryze,61,ch-4eefbce3b523,Ryze,2012-11-29,2025-03-16,registry;observed
+62,champion,Cassiopeia,62,ch-4fae1e4f33d3,Cassiopeia,2012-11-29,2025-03-14,registry;observed
 63,champion,Yorick,63,ch-50f3e6784315,Yorick,2012-12-01,2012-12-01,registry;observed
-64,champion,Miss Fortune,64,ch-52cc91b436d4,Miss Fortune,2011-06-18,2012-12-02,registry;observed
-65,champion,Renekton,65,ch-57c126fca96f,Renekton,2012-12-02,2023-11-12,registry;observed
-66,champion,Neeko,66,ch-5b6e0b58b47b,Neeko,2023-10-10,2023-11-19,registry;observed
+64,champion,Miss Fortune,64,ch-52cc91b436d4,Miss Fortune,2011-06-18,2025-03-16,registry;observed
+65,champion,Renekton,65,ch-57c126fca96f,Renekton,2012-12-02,2025-03-16,registry;observed
+66,champion,Neeko,66,ch-5b6e0b58b47b,Neeko,2023-10-10,2025-03-11,registry;observed
 67,champion,Elise,67,ch-5c3a228d9609,Elise,2012-11-29,2023-05-13,registry;observed
-68,champion,Kha'Zix,68,ch-5f30074e07ef,Kha'Zix,2012-11-29,2023-10-20,registry;observed
+68,champion,Kha'Zix,68,ch-5f30074e07ef,Kha'Zix,2012-11-29,2024-07-04,registry;observed
 69,champion,Diana,69,ch-606a0c34d626,Diana,2012-11-29,2015-03-15,registry;observed
-70,champion,Orianna,70,ch-607acddc0484,Orianna,2012-11-29,2023-11-19,registry;observed
-71,champion,Nidalee,71,ch-635d4eca2d29,Nidalee,2012-12-02,2023-10-28,registry;observed
-72,champion,Taliyah,72,ch-640a42466a0a,Taliyah,2023-05-03,2023-11-12,registry;observed
-73,champion,Pantheon,73,ch-64a7667f7da8,Pantheon,,,registry
-74,champion,Skarner,74,ch-65d5aaa00f3e,Skarner,2012-11-29,2012-12-02,registry;observed
+70,champion,Orianna,70,ch-607acddc0484,Orianna,2012-11-29,2025-03-15,registry;observed
+71,champion,Nidalee,71,ch-635d4eca2d29,Nidalee,2012-12-02,2025-03-16,registry;observed
+72,champion,Taliyah,72,ch-640a42466a0a,Taliyah,2017-07-05,2025-03-16,registry;observed
+73,champion,Pantheon,73,ch-64a7667f7da8,Pantheon,2020-05-28,2025-03-16,registry;observed
+74,champion,Skarner,74,ch-65d5aaa00f3e,Skarner,2012-11-29,2025-03-16,registry;observed
 75,champion,Milio,75,ch-68dddbcc1c0c,Milio,2023-10-29,2026-10-13,registry;observed
-76,champion,Blitzcrank,76,ch-6b85ab67b186,Blitzcrank,2012-11-29,2023-11-12,registry;observed
-77,champion,Renata Glasc,77,ch-6e5a3a3ed10b,Renata Glasc,2023-05-02,2023-11-19,registry;observed
-78,champion,Yuumi,78,ch-6ed039eb7594,Yuumi,,,registry
+76,champion,Blitzcrank,76,ch-6b85ab67b186,Blitzcrank,2012-11-29,2025-03-15,registry;observed
+77,champion,Renata Glasc,77,ch-6e5a3a3ed10b,Renata Glasc,2023-05-02,2025-03-16,registry;observed
+78,champion,Yuumi,78,ch-6ed039eb7594,Yuumi,2020-05-28,2025-03-15,registry;observed
 79,champion,Garen,79,ch-6efac4ff7f2f,Garen,2023-10-15,2023-10-23,registry;observed
-80,champion,Braum,80,ch-6f23ff6ab975,Braum,2015-10-01,2023-11-03,registry;observed
+80,champion,Braum,80,ch-6f23ff6ab975,Braum,2015-10-01,2025-03-16,registry;observed
 81,champion,Taric,81,ch-6f4296c779ad,Taric,2012-11-30,2023-10-14,registry;observed
 82,champion,Graves,82,ch-70e9ce0e1eba,Graves,2012-11-29,2023-11-11,registry;observed
-83,champion,Zyra,83,ch-730c18927405,Zyra,2012-11-29,2012-12-03,registry;observed
+83,champion,Zyra,83,ch-730c18927405,Zyra,2012-11-29,2025-03-15,registry;observed
 84,champion,Cho'Gath,84,ch-735b0d547ef3,Cho'Gath,2012-11-29,2026-10-13,registry;observed
 85,champion,Katarina,85,ch-75880768dcbc,Katarina,2012-11-29,2012-12-02,registry;observed
-86,champion,Gwen,86,ch-75f565126734,Gwen,2023-05-02,2023-11-19,registry;observed
+86,champion,Gwen,86,ch-75f565126734,Gwen,2023-05-02,2025-03-15,registry;observed
 87,champion,Fiddlesticks,87,ch-79fe82f8253e,Fiddlesticks,,,registry
-88,champion,Kassadin,88,ch-7b3d8273758c,Kassadin,,,registry
-89,champion,Maokai,89,ch-7baf60689d41,Maokai,2012-11-29,2023-11-19,registry;observed
-90,champion,Ahri,90,ch-7c9709f61f91,Ahri,2012-11-30,2023-11-19,registry;observed
-91,champion,Wukong,91,ch-7dd4256a5ccb,Wukong,2023-05-02,2026-10-13,registry;observed
+88,champion,Kassadin,88,ch-7b3d8273758c,Kassadin,2017-07-05,2025-03-14,registry;observed
+89,champion,Maokai,89,ch-7baf60689d41,Maokai,2012-11-29,2025-03-16,registry;observed
+90,champion,Ahri,90,ch-7c9709f61f91,Ahri,2012-11-30,2025-03-16,registry;observed
+91,champion,Wukong,91,ch-7dd4256a5ccb,Wukong,2020-05-28,2026-10-13,registry;observed
 92,champion,Annie,92,ch-813fa9100589,Annie,2011-06-18,2023-05-21,registry;observed
 93,champion,Teemo,93,ch-81822d18a826,Teemo,,,registry
 94,champion,Lux,94,ch-8187030b4048,Lux,2012-11-29,2023-11-11,registry;observed
 95,champion,Rengar,95,ch-8311cb7997ed,Rengar,2012-11-29,2023-05-12,registry;observed
-96,champion,Syndra,96,ch-8343bfa8f091,Syndra,2023-05-02,2026-10-13,registry;observed
-97,champion,Ornn,97,ch-88a007e9644d,Ornn,2023-05-07,2023-11-11,registry;observed
-98,champion,Ivern,98,ch-8ad6015ece44,Ivern,2023-10-11,2023-10-29,registry;observed
+96,champion,Syndra,96,ch-8343bfa8f091,Syndra,2017-07-05,2026-10-13,registry;observed
+97,champion,Ornn,97,ch-88a007e9644d,Ornn,2020-05-28,2025-03-15,registry;observed
+98,champion,Ivern,98,ch-8ad6015ece44,Ivern,2017-07-06,2025-03-16,registry;observed
 99,champion,Illaoi,99,ch-8bd3fe15c0dc,Illaoi,,,registry
-100,champion,Shen,100,ch-8e86e941642e,Shen,2012-11-29,2012-12-03,registry;observed
-101,champion,Vi,101,ch-8f2b1592a60e,Vi,2015-03-13,2023-11-12,registry;observed
-102,champion,Corki,102,ch-8ffe2d0d51f1,Corki,2012-11-29,2015-03-14,registry;observed
-103,champion,Lee Sin,103,ch-910b6ad4b21e,Lee Sin,2012-11-29,2023-11-19,registry;observed
-104,champion,Quinn,104,ch-9162340afbb4,Quinn,2023-11-11,2023-11-11,registry;observed
-105,champion,Galio,105,ch-91e35535a70d,Galio,2012-12-01,2023-05-20,registry;observed
+100,champion,Shen,100,ch-8e86e941642e,Shen,2012-11-29,2017-07-08,registry;observed
+101,champion,Vi,101,ch-8f2b1592a60e,Vi,2015-03-13,2025-03-16,registry;observed
+102,champion,Corki,102,ch-8ffe2d0d51f1,Corki,2012-11-29,2025-03-16,registry;observed
+103,champion,Lee Sin,103,ch-910b6ad4b21e,Lee Sin,2012-11-29,2024-07-05,registry;observed
+104,champion,Quinn,104,ch-9162340afbb4,Quinn,2023-11-11,2025-03-14,registry;observed
+105,champion,Galio,105,ch-91e35535a70d,Galio,2012-12-01,2025-03-16,registry;observed
 106,champion,Jayce,106,ch-93fca10c9ec4,Jayce,2012-11-29,2026-10-13,registry;observed
-107,champion,Sett,107,ch-9567bf055458,Sett,2023-05-03,2023-10-19,registry;observed
+107,champion,Sett,107,ch-9567bf055458,Sett,2020-05-28,2025-03-16,registry;observed
 108,champion,Qiyana,108,ch-95bb0f906a74,Qiyana,,,registry
-109,champion,Zed,109,ch-998873c53490,Zed,2015-03-13,2015-03-15,registry;observed
-110,champion,Ambessa,110,ch-9b1e7681d4dc,Ambessa,,,registry
+109,champion,Zed,109,ch-998873c53490,Zed,2015-03-13,2025-03-12,registry;observed
+110,champion,Ambessa,110,ch-9b1e7681d4dc,Ambessa,2025-03-10,2025-03-16,registry;observed
 111,champion,Irelia,111,ch-9b85c436dcf4,Irelia,2011-06-18,2023-05-13,registry;observed
 112,champion,Fiora,112,ch-9bc077a0ef78,Fiora,2015-10-01,2023-05-21,registry;observed
 113,champion,Samira,113,ch-9d1b8c4421c6,Samira,,,registry
-114,champion,Jax,114,ch-9fa2e63d35b5,Jax,2012-11-29,2023-11-11,registry;observed
-115,champion,Camille,115,ch-a28358099942,Camille,2023-10-21,2023-10-21,registry;observed
-116,champion,Sivir,116,ch-a2c028767552,Sivir,2015-03-13,2023-11-04,registry;observed
-117,champion,Brand,117,ch-a3538dc325f1,Brand,,,registry
-118,champion,Dr. Mundo,118,ch-a4336f61ff51,Dr. Mundo,2012-11-29,2015-03-13,registry;observed
+114,champion,Jax,114,ch-9fa2e63d35b5,Jax,2012-11-29,2025-03-16,registry;observed
+115,champion,Camille,115,ch-a28358099942,Camille,2017-07-05,2025-03-16,registry;observed
+116,champion,Sivir,116,ch-a2c028767552,Sivir,2015-03-13,2025-03-15,registry;observed
+117,champion,Brand,117,ch-a3538dc325f1,Brand,2024-07-04,2025-03-11,registry;observed
+118,champion,Dr. Mundo,118,ch-a4336f61ff51,Dr. Mundo,2012-11-29,2024-07-05,registry;observed
 119,champion,Vel'Koz,119,ch-a92699744671,Vel'Koz,,,registry
-120,champion,Kog'Maw,120,ch-a9e776eabfa3,Kog'Maw,2012-11-29,2023-10-29,registry;observed
-121,champion,Kai'Sa,121,ch-aae255815c47,Kai'Sa,2023-05-07,2023-11-12,registry;observed
+120,champion,Kog'Maw,120,ch-a9e776eabfa3,Kog'Maw,2012-11-29,2024-07-05,registry;observed
+121,champion,Kai'Sa,121,ch-aae255815c47,Kai'Sa,2020-05-30,2025-03-16,registry;observed
 122,champion,Zilean,122,ch-aea8a5e7f55b,Zilean,2012-11-30,2012-11-30,registry;observed
 123,champion,Nasus,123,ch-b04097aedbb0,Nasus,,,registry
-124,champion,Yasuo,124,ch-b09cfe612243,Yasuo,2015-03-14,2023-10-23,registry;observed
+124,champion,Yasuo,124,ch-b09cfe612243,Yasuo,2015-03-14,2024-07-07,registry;observed
 125,champion,Vayne,125,ch-b3163d69ac2d,Vayne,2011-06-18,2023-05-21,registry;observed
-126,champion,Bard,126,ch-b3bb94f84fe9,Bard,2023-10-22,2023-11-19,registry;observed
+126,champion,Bard,126,ch-b3bb94f84fe9,Bard,2017-07-05,2025-03-15,registry;observed
 127,champion,Tryndamere,127,ch-b3c82c422ebb,Tryndamere,,,registry
-128,champion,Azir,128,ch-b5466bf84aa2,Azir,2015-10-01,2023-11-19,registry;observed
-129,champion,Hecarim,129,ch-b5ad2a6c0368,Hecarim,2015-03-13,2015-03-15,registry;observed
-130,champion,Trundle,130,ch-ba96383b1040,Trundle,,,registry
-131,champion,Kindred,131,ch-bb47fba40e68,Kindred,2023-05-03,2023-10-23,registry;observed
+128,champion,Azir,128,ch-b5466bf84aa2,Azir,2015-10-01,2025-03-16,registry;observed
+129,champion,Hecarim,129,ch-b5ad2a6c0368,Hecarim,2015-03-13,2020-05-30,registry;observed
+130,champion,Trundle,130,ch-ba96383b1040,Trundle,2020-05-28,2020-05-31,registry;observed
+131,champion,Kindred,131,ch-bb47fba40e68,Kindred,2020-05-28,2025-03-15,registry;observed
 132,champion,Kayn,132,ch-bc10ceb95382,Kayn,,,registry
-133,champion,Aurelion Sol,133,ch-bd5174fc916a,Aurelion Sol,2023-05-03,2023-05-13,registry;observed
+133,champion,Aurelion Sol,133,ch-bd5174fc916a,Aurelion Sol,2023-05-03,2025-03-10,registry;observed
 134,champion,Vex,134,ch-bd5df3f38244,Vex,2023-05-17,2023-10-20,registry;observed
-135,champion,Senna,135,ch-beea8c680d96,Senna,2023-10-10,2023-11-19,registry;observed
-136,champion,Zoe,136,ch-bfe7d9a2568a,Zoe,,,registry
-137,champion,Sejuani,137,ch-c04f9a9ad95f,Sejuani,2023-05-02,2023-11-19,registry;observed
+135,champion,Senna,135,ch-beea8c680d96,Senna,2020-05-28,2025-03-15,registry;observed
+136,champion,Zoe,136,ch-bfe7d9a2568a,Zoe,2020-05-28,2020-05-31,registry;observed
+137,champion,Sejuani,137,ch-c04f9a9ad95f,Sejuani,2020-05-29,2025-03-16,registry;observed
 138,champion,Smolder,138,ch-c1f0499ec4fd,Smolder,,,registry
-139,champion,Leona,139,ch-c2187f28ed10,Leona,2012-11-29,2023-10-27,registry;observed
+139,champion,Leona,139,ch-c2187f28ed10,Leona,2012-11-29,2025-03-16,registry;observed
 140,champion,Naafiri,140,ch-c2520a6e7ddf,Naafiri,,,registry
 141,champion,Jinx,141,ch-c49d2799d6f2,Jinx,2023-05-02,2023-11-04,registry;observed
 142,champion,Locke,142,ch-c62cb8d43363,Locke,,,registry
-143,champion,Caitlyn,143,ch-c66cabcee8a9,Caitlyn,2012-11-29,2023-11-12,registry;observed
-144,champion,LeBlanc,144,ch-c8f4d10d0778,LeBlanc,2015-03-13,2023-10-26,registry;observed
-145,champion,Mordekaiser,145,ch-cb61ec3f7c79,Mordekaiser,,,registry
+143,champion,Caitlyn,143,ch-c66cabcee8a9,Caitlyn,2012-11-29,2025-03-16,registry;observed
+144,champion,LeBlanc,144,ch-c8f4d10d0778,LeBlanc,2015-03-13,2024-07-06,registry;observed
+145,champion,Mordekaiser,145,ch-cb61ec3f7c79,Mordekaiser,2020-05-28,2024-07-06,registry;observed
 146,champion,Morgana,146,ch-cc82a4b45f77,Morgana,2012-11-29,2023-05-04,registry;observed
-147,champion,Sylas,147,ch-d260923b40ba,Sylas,2023-05-03,2023-11-19,registry;observed
+147,champion,Sylas,147,ch-d260923b40ba,Sylas,2020-05-28,2025-03-16,registry;observed
 148,champion,Veigar,148,ch-d3bf9280bd1c,Veigar,,,registry
-149,champion,Varus,149,ch-d3c3883fedaf,Varus,2023-05-02,2023-11-19,registry;observed
-150,champion,Seraphine,150,ch-d8f47926f97f,Seraphine,,,registry
-151,champion,Rell,151,ch-db39a1c9d0ae,Rell,2023-05-02,2023-11-19,registry;observed
+149,champion,Varus,149,ch-d3c3883fedaf,Varus,2017-07-05,2025-03-16,registry;observed
+150,champion,Seraphine,150,ch-d8f47926f97f,Seraphine,2025-03-12,2025-03-13,registry;observed
+151,champion,Rell,151,ch-db39a1c9d0ae,Rell,2023-05-02,2025-03-16,registry;observed
 152,champion,Janna,152,ch-de0942215aa1,Janna,2011-06-18,2023-05-16,registry;observed
 153,champion,Heimerdinger,153,ch-df762f6ffc62,Heimerdinger,2023-05-14,2023-11-11,registry;observed
 154,champion,Singed,154,ch-dffa18f54d9b,Singed,2011-06-18,2011-06-18,registry;observed
 155,champion,Swain,155,ch-e09bc55583fb,Swain,2023-05-05,2023-05-05,registry;observed
-156,champion,Rumble,156,ch-e29c323fabff,Rumble,2012-11-29,2023-11-19,registry;observed
+156,champion,Rumble,156,ch-e29c323fabff,Rumble,2012-11-29,2025-03-16,registry;observed
 157,champion,Master Yi,157,ch-ec9f120f445b,Master Yi,2012-11-29,2012-12-02,registry;observed
 158,champion,Urgot,158,ch-ef76ee3c83f5,Urgot,2012-11-29,2012-11-30,registry;observed
-159,champion,Lillia,159,ch-efe49a38b544,Lillia,,,registry
-160,champion,Karthus,160,ch-f077031d4227,Karthus,2011-06-18,2012-12-02,registry;observed
-161,champion,Xin Zhao,161,ch-f0850b1b0fe8,Xin Zhao,2012-11-29,2023-05-18,registry;observed
+159,champion,Lillia,159,ch-efe49a38b544,Lillia,2024-07-05,2025-03-15,registry;observed
+160,champion,Karthus,160,ch-f077031d4227,Karthus,2011-06-18,2025-03-12,registry;observed
+161,champion,Xin Zhao,161,ch-f0850b1b0fe8,Xin Zhao,2012-11-29,2025-03-16,registry;observed
 162,champion,Xerath,162,ch-f2c012630900,Xerath,2015-03-13,2015-03-13,registry;observed
-163,champion,Viktor,163,ch-f2d6088139dd,Viktor,2015-03-13,2023-10-15,registry;observed
-164,champion,Lulu,164,ch-f4419988dc95,Lulu,2012-11-29,2023-11-12,registry;observed
-165,champion,Karma,165,ch-f5026eef9190,Karma,2012-11-29,2023-11-02,registry;observed
-166,champion,Aphelios,166,ch-f6025682d2e0,Aphelios,2023-05-02,2023-11-11,registry;observed
-167,champion,Jhin,167,ch-f741268a320b,Jhin,2023-11-12,2023-11-12,registry;observed
+163,champion,Viktor,163,ch-f2d6088139dd,Viktor,2015-03-13,2025-03-16,registry;observed
+164,champion,Lulu,164,ch-f4419988dc95,Lulu,2012-11-29,2025-03-15,registry;observed
+165,champion,Karma,165,ch-f5026eef9190,Karma,2012-11-29,2025-03-15,registry;observed
+166,champion,Aphelios,166,ch-f6025682d2e0,Aphelios,2020-05-28,2024-07-05,registry;observed
+167,champion,Jhin,167,ch-f741268a320b,Jhin,2017-07-05,2025-03-16,registry;observed
 168,champion,Nunu,168,ch-f93dac5db740,Nunu & Willump,2009-02-21,,declared
-169,champion,Nunu &amp; Willump,168,ch-f93dac5db740,Nunu & Willump,2012-11-29,2012-12-03,registry;observed
+169,champion,Nunu &amp; Willump,168,ch-f93dac5db740,Nunu & Willump,2012-11-29,2017-07-05,registry;observed
 170,champion,Sona,169,ch-fb06392484a8,Sona,2012-11-29,2012-12-03,registry;observed
-171,champion,Gnar,170,ch-fc45acd92dda,Gnar,2015-03-13,2023-11-11,registry;observed
-172,champion,Nautilus,171,ch-fd31ef9235c6,Nautilus,2023-05-02,2026-10-13,registry;observed
-173,champion,Viego,172,ch-fe193330f121,Viego,2023-05-02,2023-11-04,registry;observed
-174,champion,Tahm Kench,173,ch-ffe0b3686ab9,Tahm Kench,2023-05-02,2023-11-19,registry;observed
-175,player,River,1,pl-01ef75ee8852,River (Kim Dong-woo),2023-05-03,2023-05-14,handle
-176,player,River (Kim Dong-woo),1,pl-01ef75ee8852,River (Kim Dong-woo),2023-05-03,2023-05-14,observed
-177,player,Creaton,2,pl-03f75bf209ea,Creaton,2012-11-29,2012-12-01,handle;observed
-178,player,Angush,3,pl-046a36995f64,Angush,2012-11-29,2012-12-01,handle;observed
-179,player,ubao,4,pl-052c973a8796,ubao,2023-05-02,2023-05-07,handle;observed
-180,player,Rest,5,pl-05863ec2c378,Rest,2023-10-11,2023-10-14,handle;observed
-181,player,Smeb,6,pl-06caf9f960e3,Smeb,2015-03-13,2015-03-14,handle;observed
-182,player,Noah,7,pl-0891d3b7aebd,Noah (Oh Hyeon-taek),2023-10-19,2023-10-29,handle
-183,player,Noah (Oh Hyeon-taek),7,pl-0891d3b7aebd,Noah (Oh Hyeon-taek),2023-10-19,2023-10-29,observed
-184,player,Lyonz,8,pl-08a0278714aa,Lyonz,2023-05-03,2023-10-13,handle;observed
-185,player,Woody,9,pl-08bb39b964dc,Woody,2023-05-02,2023-10-15,handle;observed
-186,player,MoMa,10,pl-097d84eb5f9c,MoMa,2011-06-18,2011-06-18,registry;handle;observed
-187,player,Trymbi,11,pl-0a5641ab7fe2,Trymbi,2023-10-19,2023-10-29,handle;observed
-188,player,Cuzz,12,pl-0c0f58a08ada,Cuzz,2023-10-19,2023-11-04,handle;observed
-189,player,Chawy,13,pl-0c5739d70c93,Chawy,2012-11-29,2012-12-01,handle;observed
-190,player,Balls,14,pl-0cd48bab889c,Balls,2015-03-13,2015-03-13,handle;observed
-191,player,Maple,15,pl-0ce3ac5ab599,Maple (Huang Yi-Tang),2015-03-13,2023-10-15,handle
-192,player,Maple (Huang Yi-Tang),15,pl-0ce3ac5ab599,Maple (Huang Yi-Tang),2015-03-13,2023-10-15,observed
-193,player,Yutapon,16,pl-0d544b2a250f,Yutapon,2023-05-02,2023-10-13,handle;observed
-194,player,Bie,17,pl-0e7d8b8f16d4,Bie,2023-10-11,2023-10-15,handle;observed
-195,player,Harp,18,pl-0f4b5ea26038,Harp,2023-05-02,2023-10-13,handle;observed
-196,player,Robo,19,pl-0f7d46d154f5,Robo,2023-05-02,2023-10-14,handle;observed
-197,player,Sheo,20,pl-0f7ec5b4cd52,Sheo,2023-10-11,2023-10-23,handle;observed
-198,player,CHOI,21,pl-0ff0ef099ecb,Zeus,,,handle
-199,player,CHOI (Choi Woo-je),21,pl-0ff0ef099ecb,Zeus,,,redirect
-200,player,W CHOI,21,pl-0ff0ef099ecb,Zeus,,,redirect;handle
-201,player,Wooje,21,pl-0ff0ef099ecb,Zeus,,,redirect;handle
-202,player,Zeus,21,pl-0ff0ef099ecb,Zeus,2023-05-10,2023-11-19,registry;handle;observed
-203,player,Genja,22,pl-100790398d79,Genja,2012-11-29,2012-12-02,handle;observed
-204,player,GorillA,23,pl-148d5881d19f,GorillA,2015-03-13,2015-03-14,handle;observed
-205,player,Artemis,24,pl-14fab91aa21e,Artemis (Trần Quốc Hưng),2023-10-11,2023-10-15,handle
-206,player,Artemis (Trần Quốc Hưng),24,pl-14fab91aa21e,Artemis (Trần Quốc Hưng),2023-10-11,2023-10-15,observed
-207,player,Delight,25,pl-1643635c12ca,Delight,2023-05-09,2023-11-03,handle;observed
-208,player,BeanJ,26,pl-164e299203d2,BeanJ,2023-10-11,2023-10-15,handle;observed
-209,player,0N,27,pl-17576d04a48f,0N,2023-10-19,2023-10-19,handle;observed
-210,player,Westrice,28,pl-19642f162d1f,Westrice,2011-06-18,2011-06-18,registry;handle;observed
-211,player,Croc,29,pl-1acb5d8e4238,Croc,2023-05-02,2023-10-14,handle;observed
-212,player,Oner,30,pl-1bba52c3bd63,Oner,2023-05-10,2023-11-19,registry;handle;observed
-213,player,Odoamne,31,pl-1c27d71dfb68,Odoamne,2015-10-01,2015-10-01,registry;handle;observed
-214,player,Kati,32,pl-1cb93156743c,Kati,2023-05-03,2023-10-27,handle;observed
-215,player,Steak,33,pl-1df249fb3a6c,Steak,2015-03-13,2015-03-14,handle;observed
-216,player,GALA,34,pl-1df6af42bc6e,GALA,2023-10-19,2023-11-05,handle;observed
-217,player,NL,35,pl-1e921f71c3df,NL (Hsiung Wen-An),2015-03-13,2015-03-14,handle
-218,player,NL (Hsiung Wen-An),35,pl-1e921f71c3df,NL (Hsiung Wen-An),2015-03-13,2015-03-14,observed
-219,player,Patoy,36,pl-1f23a5071faa,Patoy,2012-11-29,2012-12-01,handle;observed
-220,player,Pyosik,37,pl-206ae5da084f,Pyosik,2023-10-19,2023-10-23,registry;handle;observed
-221,player,Loulex,38,pl-2261f3b72b2d,Loulex,,,registry
-222,player,loulex,38,pl-2261f3b72b2d,Loulex,2015-10-01,2015-10-01,handle;observed
-223,player,Krepo,39,pl-22ade83ec679,Krepo,2012-11-29,2012-12-02,handle;observed
-224,player,KimChi,40,pl-231a8c82e108,Summit,,,redirect;handle
-225,player,Summit,40,pl-231a8c82e108,Summit,2023-10-19,2023-10-23,registry;handle;observed
-226,player,WooTae,40,pl-231a8c82e108,Summit,,,redirect;handle
-227,player,Oddie,41,pl-238880bb94a6,Oddie,2023-05-03,2023-10-13,handle;observed
-228,player,Xpecial,42,pl-249333b189a5,Xpecial,2012-11-29,2012-12-01,handle;observed
-229,player,Froggen,43,pl-25478da9e18c,Froggen,2012-11-29,2012-12-02,handle;observed
-230,player,LemonNation,44,pl-2674a570564d,LemonNation,2015-03-13,2015-03-13,handle;observed
-231,player,Madlife,45,pl-2700c2ef34db,Madlife,2015-03-13,2015-03-14,handle;observed
-232,player,Dreilix,46,pl-273916e38c1f,Dreilix,2026-10-13,2026-10-13,registry;handle;observed
-233,player,Linak,47,pl-2892dc360f6c,Linak,2011-06-18,2011-06-18,registry;handle;observed
-234,player,APA,48,pl-29a4b2e61911,APA,2023-10-19,2023-10-23,handle
-235,player,APA (Eain Stearns),48,pl-29a4b2e61911,APA,2023-10-19,2023-10-23,registry;observed
-236,player,Always plan ahea,48,pl-29a4b2e61911,APA,,,redirect;handle
-237,player,Always think ahe,48,pl-29a4b2e61911,APA,,,redirect;handle
-238,player,Nyjacky,49,pl-2b4e63011142,Nyjacky,2012-11-29,2012-12-02,handle;observed
-239,player,Zuna,50,pl-2d05d2cf5155,Zuna,2012-11-29,2012-11-30,handle;observed
-240,player,Muffinqt,51,pl-2de6a50f48a3,Muffinqt,2012-11-29,2012-11-30,handle;observed
-241,player,Diamondprox,52,pl-2f2697c08a6e,Diamondprox,2012-11-29,2015-03-13,handle;observed
-242,player,Aluka,53,pl-30d6a49cfa0c,Aluka,2015-03-13,2015-03-15,handle;observed
-243,player,Edward,54,pl-34405d46cb25,Edward,2015-03-13,2015-03-13,handle;observed
-244,player,Crownie,55,pl-34aae5fa20fa,Crownie,2023-10-11,2023-10-23,handle;observed
-245,player,Canna,56,pl-34af2eba65bf,Canna,2023-10-19,2023-10-29,handle;observed
-246,player,Ambition,57,pl-352086c0b39c,Ambition,2012-11-29,2015-03-14,registry;handle;observed
-247,player,Crisp,58,pl-36cda857e1b1,Crisp,2023-10-19,2023-11-19,handle;observed
-248,player,Hans Sama,59,pl-36e7db6a24db,Hans Sama,2023-05-02,2023-10-29,handle;observed
-249,player,Xiaohu,60,pl-3b47125e9a17,Xiaohu,2023-10-19,2023-11-19,handle;observed
-250,player,bebe,61,pl-3c28c16ba44a,bebe (Chang Bo-Wei),2012-11-29,2012-12-02,handle
-251,player,bebe (Chang Bo-Wei),61,pl-3c28c16ba44a,bebe (Chang Bo-Wei),2012-11-29,2012-12-02,observed
-252,player,Wolf,62,pl-3c725e8d5b01,Wolf,,,handle
-253,player,Wolf (Yang Jiang),62,pl-3c725e8d5b01,Wolf,,,registry
-254,player,NDudeX,63,pl-3d5309045116,NintendudeX,,,redirect;handle
-255,player,Nintendude,63,pl-3d5309045116,NintendudeX,,,redirect;handle
-256,player,NintendudeX,63,pl-3d5309045116,NintendudeX,2012-11-29,2012-11-30,registry;handle;observed
-257,player,kurO,64,pl-3f277a126c6b,kurO,2015-03-13,2015-03-14,handle;observed
-258,player,JimieN,65,pl-40a375d8d94b,JimieN,2023-10-11,2023-10-14,handle;observed
-259,player,YuZhe,66,pl-41ea8213a2a8,YuZhe,2015-03-13,2015-03-15,handle;observed
-260,player,YellOwStaR,67,pl-428ba3eadb03,YellOwStaR,,,registry
-261,player,YellowS,67,pl-428ba3eadb03,YellOwStaR,,,redirect;handle
-262,player,Yellowstar,67,pl-428ba3eadb03,YellOwStaR,2011-06-18,2011-06-18,handle;observed
-263,player,Catan,68,pl-436bedb688e4,Gumayusi,,,handle
-264,player,Catan (Lee Min-hyeong),68,pl-436bedb688e4,Gumayusi,,,redirect
-265,player,Finale,68,pl-436bedb688e4,Gumayusi,,,redirect;handle
-266,player,Gumayushi,68,pl-436bedb688e4,Gumayusi,,,redirect;handle
-267,player,Gumayusi,68,pl-436bedb688e4,Gumayusi,2023-05-10,2023-11-19,registry;handle;observed
-268,player,M LEE,68,pl-436bedb688e4,Gumayusi,,,redirect;handle
-269,player,이민형,68,pl-436bedb688e4,Gumayusi,,,redirect;handle
-270,player,Zika,69,pl-46005cad7fa5,Zika,2023-10-19,2023-11-05,handle;observed
-271,player,EMENES,70,pl-46d2b0e8bc76,EMENES,2023-05-11,2023-10-26,handle;observed
-272,player,FORG1VENGRE,71,pl-470cd746d66c,FORG1VENGRE,2015-03-13,2015-03-14,handle;observed
-273,player,SOAZ,72,pl-4717e665617d,SOAZ,,,registry
-274,player,sOAZ,72,pl-4717e665617d,SOAZ,2011-06-18,2012-12-03,handle;observed
-275,player,Wako,73,pl-48c0044b8eb3,Wako,2023-05-02,2023-10-15,handle;observed
-276,player,Fzzf,74,pl-48f116f1fdb8,Fzzf,2012-11-29,2012-12-03,handle;observed
-277,player,Xmithie,75,pl-48f9d1a48eb1,Xmithie,2012-11-29,2012-11-30,handle;observed
-278,player,Dyrus,76,pl-49101179ee26,Dyrus,2011-06-18,2015-03-15,registry;handle;observed
-279,player,Bengi,77,pl-4ab0fbb7fb06,Bengi,2015-10-01,2015-10-01,registry;handle;observed
-280,player,JangTa,77,pl-4ab0fbb7fb06,Bengi,,,redirect;handle
-281,player,Azhi,78,pl-4b494dc78064,Azhi,2023-05-02,2023-10-15,handle;observed
-282,player,mancloud,79,pl-4cc6356be38b,mancloud,2012-11-29,2012-11-30,handle;observed
-283,player,Space,80,pl-4dd5ba8d4c3f,Space (Seon Ho-san),2015-03-13,2015-03-14,handle
-284,player,Space (Seon Ho-san),80,pl-4dd5ba8d4c3f,Space (Seon Ho-san),2015-03-13,2015-03-14,observed
-285,player,Pobelter,81,pl-4e5fc04987a2,Pobelter,2012-11-29,2012-12-01,handle;observed
-286,player,Helios,82,pl-4eba474eb02c,Helios,2012-11-29,2012-12-02,handle
-287,player,Helios (Shin Dong-jin),82,pl-4eba474eb02c,Helios,2012-11-29,2012-12-02,registry;observed
-288,player,FL4MER,83,pl-51788e5dee25,Flamer,,,redirect;handle
-289,player,Flamer,83,pl-51788e5dee25,Flamer,2026-10-13,2026-10-13,registry;handle;observed
-290,player,Labrov,84,pl-521952344656,Labrov,2023-10-11,2023-10-23,handle;observed
-291,player,Gori,85,pl-5259efb749c2,Gori,2023-05-03,2023-05-14,handle;observed
-292,player,Bjergsen,86,pl-52d54c389563,Bjergsen,2015-03-13,2015-03-15,handle;observed
-293,player,knight,87,pl-52fd64b5e32c,knight (Zhuo Ding),2023-05-12,2023-11-12,handle
-294,player,knight (Zhuo Ding),87,pl-52fd64b5e32c,knight (Zhuo Ding),2023-05-12,2023-11-12,observed
-295,player,Peanut,88,pl-532e896395d0,Peanut,2023-05-09,2023-11-03,handle;observed
-296,player,ly4ly4ly4,89,pl-549d07070555,ly4ly4ly4,2012-11-29,2012-12-01,handle;observed
-297,player,Wolf,90,pl-54f48e941f53,Wolf,,,handle
-298,player,Wolf (Nicole Sølvmose),90,pl-54f48e941f53,Wolf,,,registry
-299,player,Azog,91,pl-5561a5e75191,Azog,,,registry
-300,player,Wolf,91,pl-5561a5e75191,Azog,,,handle
-301,player,Wolf (Gabriel Eckenroth),91,pl-5561a5e75191,Azog,,,redirect
-302,player,Luncafoer,92,pl-564c201ceb75,Luncafoer,2026-10-13,2026-10-13,registry;handle;observed
-303,player,Spirit,93,pl-57e39463d863,Spirit,2015-03-13,2015-03-15,handle;observed
-304,player,Stixxay,94,pl-57eb7d5f745b,Stixxay,2023-05-03,2023-05-14,handle;observed
-305,player,Pixel,95,pl-5817280a2398,Pixel,2012-11-29,2012-11-30,registry;handle;observed
-306,player,Pixel3,95,pl-5817280a2398,Pixel,,,redirect;handle
-307,player,Darien,96,pl-58f8b23cffde,Darien,2012-11-29,2012-12-02,handle;observed
-308,player,Canyon,97,pl-5ab895c8cc30,Canyon,2023-10-19,2023-10-29,handle;observed
-309,player,Bin,98,pl-5baa07e91ebc,Bin (Chen Ze-Bin),2023-05-03,2023-11-11,handle
-310,player,Bin (Chen Ze-Bin),98,pl-5baa07e91ebc,Bin (Chen Ze-Bin),2023-05-03,2023-11-11,observed
-311,player,WildTurtle,99,pl-5d6d3596abd6,WildTurtle,2015-03-13,2015-03-15,handle;observed
-312,player,Wolf,100,pl-5d8fc7828b3e,Wolf,,,handle
-313,player,Wolf (Wolf Schröder),100,pl-5d8fc7828b3e,Wolf,,,registry
-314,player,369,101,pl-5f193b350c8a,369,2023-05-12,2023-11-12,handle;observed
-315,player,TkSing,102,pl-5f50848cc087,TkSing,2012-11-29,2012-11-30,handle;observed
-316,player,Contractz,103,pl-5f77185975f7,Contractz,2023-10-19,2023-11-02,handle;observed
-317,player,EquivocaL,104,pl-5f9052293c69,EquivocaL,2012-11-29,2012-12-01,handle;observed
-318,player,Trailblazer,105,pl-5fa14b286733,Trailblazer,2026-10-13,2026-10-13,handle
-319,player,Trailblazer (Oskar Moreno),105,pl-5fa14b286733,Trailblazer,2026-10-13,2026-10-13,registry;observed
-320,player,Mireu,106,pl-6174850a63e3,Mireu,2023-05-03,2023-10-13,handle;observed
-321,player,Chovy,107,pl-65b2bb5d8420,Chovy,2023-05-09,2023-11-03,handle;observed
-322,player,2lift,108,pl-66010cfcb7f8,Doublelift,,,redirect;handle
-323,player,Doublelift,108,pl-66010cfcb7f8,Doublelift,2011-06-18,2012-12-02,registry;handle;observed
-324,player,Liftlift,108,pl-66010cfcb7f8,Doublelift,,,redirect;handle
-325,player,Owpi,109,pl-66d81043c4bf,Owpi,2026-10-13,2026-10-13,registry;handle;observed
-326,player,Adam,110,pl-6729a8a79e7d,Adam (Adam Maanane),2023-10-11,2023-10-23,handle
-327,player,Adam (Adam Maanane),110,pl-6729a8a79e7d,Adam (Adam Maanane),2023-10-11,2023-10-23,observed
-328,player,P1noy,111,pl-6771975ba298,P1noy,2015-03-13,2015-03-13,handle;observed
-329,player,Yike,112,pl-67de34d413df,Yike,2023-05-02,2023-10-29,handle;observed
-330,player,Aki no Ki,113,pl-6ca85288811d,Yeon,,,redirect;handle
-331,player,Yeon,113,pl-6ca85288811d,Yeon,2023-10-19,2023-10-23,handle
-332,player,Yeon (Sean Sung),113,pl-6ca85288811d,Yeon,2023-10-19,2023-10-23,registry;observed
-333,player,SwordArt,114,pl-6d448481baff,SwordArt,2015-03-13,2015-03-14,handle;observed
-334,player,Tarzan,115,pl-6f1b618950f1,Tarzan (Lee Seung-yong),2023-10-19,2023-11-05,handle
-335,player,Tarzan (Lee Seung-yong),115,pl-6f1b618950f1,Tarzan (Lee Seung-yong),2023-10-19,2023-11-05,observed
-336,player,Cyanide,116,pl-6f9b60f11683,Cyanide,2012-11-29,2012-12-03,handle;observed
-337,player,apaMEN,117,pl-725b9746d1c4,apaMEN,2023-10-11,2023-10-13,handle;observed
-338,player,BrokenBlade,118,pl-729945178258,BrokenBlade,2023-05-02,2023-10-29,handle;observed
-339,player,Wolf,119,pl-72cf922d8106,Wolf,,,handle
-340,player,Wolf (Harrison Ramsey),119,pl-72cf922d8106,Wolf,,,registry
-341,player,Lehends,120,pl-72db4b55f1e8,Lehends,2023-10-19,2023-11-04,handle;observed
-342,player,HotshotGG,121,pl-7312234a47d4,HotshotGG,2012-11-29,2012-12-02,handle;observed
-343,player,Mystic,122,pl-734da8ec3147,Mystic,2015-03-13,2015-03-15,handle;observed
-344,player,Doran,123,pl-73b6bb25f732,Doran (Choi Hyeon-jun),2023-05-09,2023-11-03,handle
-345,player,Doran (Choi Hyeon-jun),123,pl-73b6bb25f732,Doran (Choi Hyeon-jun),2023-05-09,2023-11-03,observed
-346,player,Fudge,124,pl-73e7938dd46a,Fudge,2023-05-11,2023-10-26,handle;observed
-347,player,Toyz,125,pl-7404beae16f8,Toyz,2012-11-29,2012-12-02,handle;observed
-348,player,Fox,126,pl-766cd1e20555,Fox (Hampus Myhre),2015-03-13,2015-03-14,handle
-349,player,Fox (Hampus Myhre),126,pl-766cd1e20555,Fox (Hampus Myhre),2015-03-13,2015-03-14,observed
-350,player,Aiming,127,pl-7686b834266d,Aiming,2023-10-19,2023-11-04,handle;observed
-351,player,Sneaky,128,pl-771139a20b81,Sneaky,2015-03-13,2015-03-13,handle;observed
-352,player,Zin,129,pl-775553aedc9a,Zin,2023-05-03,2023-05-05,handle;observed
-353,player,Yagao,130,pl-77c409bcc4a7,Yagao,2023-05-03,2023-11-11,handle;observed
-354,player,H0NEST,131,pl-784959c309d1,Honest,,,redirect;handle
-355,player,Honest,131,pl-784959c309d1,Honest,2026-10-13,2026-10-13,registry;handle;observed
-356,player,Betsy,132,pl-788540c6f017,Betsy,2015-03-13,2015-03-13,handle;observed
-357,player,huhi,133,pl-797fa488b0eb,huhi,2023-05-03,2023-05-14,handle;observed
-358,player,xHazzard,134,pl-7a6a548cb1b8,xHazzard,2012-11-29,2012-12-01,handle;observed
-359,player,Nio,135,pl-7d7d12e2285a,Nio,2026-10-13,2026-10-13,registry;handle;observed
-360,player,Nio3,135,pl-7d7d12e2285a,Nio,,,redirect;handle
-361,player,Meteos,136,pl-7d8018cdc0ae,Meteos,2015-03-13,2015-03-13,handle;observed
-362,player,Weiwei,137,pl-7f09c61fd473,Weiwei,2023-10-19,2023-11-19,handle;observed
-363,player,Nisqy,138,pl-7fef4c558fbe,Nisqy,2023-05-10,2023-10-26,handle;observed
-364,player,MaRin,139,pl-815ce7e3242d,MaRin,2015-10-01,2015-10-01,registry;handle;observed
-365,player,Hai,140,pl-81a8afcae90a,Hai,2015-03-13,2015-03-13,handle;observed
-366,player,Santorin,141,pl-81c77d101baf,Santorin,2015-03-13,2015-03-15,handle;observed
-367,player,Sty1e,142,pl-820dff74d122,Sty1e,2023-05-03,2023-05-05,handle;observed
-368,player,Palette,143,pl-85794effd6e8,Palette,2023-10-10,2023-10-27,handle;observed
-369,player,Chauster,144,pl-8608a0596d8e,Chauster,2012-11-29,2012-12-02,handle;observed
-370,player,Steal,145,pl-861ff0d995de,Steal (Mun Geon-yeong),2023-05-02,2023-10-13,handle
-371,player,Steal (Mun Geon-yeong),145,pl-861ff0d995de,Steal (Mun Geon-yeong),2023-05-02,2023-10-13,observed
-372,player,Kujaa,146,pl-874d343e2a21,Kujaa,,,registry
-373,player,kujaa,146,pl-874d343e2a21,Kujaa,2011-06-18,2011-06-18,handle;observed
-374,player,XUN,147,pl-88ea9837b0ef,XUN,2023-05-03,2023-11-11,handle;observed
-375,player,Scout,148,pl-8a1db462be75,Scout,2023-10-19,2023-11-05,handle;observed
-376,player,MISSING,149,pl-8af1d328d75e,MISSING,2023-05-14,2023-11-12,handle;observed
-377,player,Missing,149,pl-8af1d328d75e,MISSING,2023-05-12,2023-05-12,handle;observed
-378,player,Levi,150,pl-8b49a459569b,Levi,2023-05-03,2023-10-27,handle;observed
-379,player,Licorice,151,pl-8bbe219b3dba,Licorice,2023-05-03,2023-05-14,handle;observed
-380,player,Core,152,pl-8d6fa0c30bff,CoreJJ,,,redirect;handle
-381,player,Core JJ,152,pl-8d6fa0c30bff,CoreJJ,,,redirect;handle
-382,player,CoreJJ,152,pl-8d6fa0c30bff,CoreJJ,2023-10-19,2023-10-23,registry;handle;observed
-383,player,코어,152,pl-8d6fa0c30bff,CoreJJ,,,redirect;handle
-384,player,Porschkub,153,pl-9009de8a4c2f,Porschkub,2012-11-29,2012-11-30,handle;observed
-385,player,Bang,154,pl-91f48f1e8d72,Bang,2015-10-01,2015-10-01,registry;handle;observed
-386,player,BangBang,154,pl-91f48f1e8d72,Bang,,,redirect;handle
-387,player,Wolf,155,pl-91f79d68ed37,Wolf,,,handle
-388,player,Wolf (Creţu-Leorinţ Cătălin-Raul),155,pl-91f79d68ed37,Wolf,,,registry
-389,player,yellowpete,156,pl-922e51bf2e53,yellowpete,2012-11-29,2012-12-02,handle;observed
-390,player,Eliade,157,pl-9283eed2fd14,Eliade,2012-11-29,2012-11-30,handle;observed
-391,player,nRated,158,pl-94e2aee2caf6,nRated,2012-11-29,2015-03-14,handle;observed
-392,player,nuc,159,pl-9535deb12f7d,nuc,2023-10-11,2023-10-23,handle;observed
-393,player,Kiaya,160,pl-9692f5d3e143,Kiaya,2023-05-03,2023-10-27,handle;observed
-394,player,Peyz,161,pl-9820bfd30f22,Peyz,2023-05-09,2023-11-03,handle;observed
-395,player,Mikyx,162,pl-98c99431d6fa,Mikyx,2023-05-02,2023-10-29,handle;observed
-396,player,Svenskeren,163,pl-98d90ef4f896,Svenskeren,2015-03-13,2015-03-14,handle;observed
-397,player,Karsa,164,pl-9952c46db200,Karsa,2015-03-13,2015-03-14,handle;observed
-398,player,Gloryy,165,pl-99ebf15c6908,Gloryy,2023-10-11,2023-10-15,handle;observed
-399,player,Elk,166,pl-9b55fa90a42c,Elk,2023-05-03,2023-11-11,handle;observed
-400,player,A Wolf,167,pl-9bfdb75e8ab9,Wolf,,,redirect;handle
-401,player,Wolf,167,pl-9bfdb75e8ab9,Wolf,2015-10-01,2015-10-01,handle
-402,player,Wolf (Korean),167,pl-9bfdb75e8ab9,Wolf,,,redirect
-403,player,Wolf (Lee Jae-wan),167,pl-9bfdb75e8ab9,Wolf,2015-10-01,2015-10-01,registry;observed
-404,player,228,168,pl-9d693eeee1d1,228,2012-11-29,2012-11-30,handle;observed
-405,player,Kellin,169,pl-9da632e02ae1,Kellin,2023-10-19,2023-10-29,handle;observed
-406,player,Wickd,170,pl-9ffa3ea1a599,Wickd,2012-11-29,2012-12-02,handle;observed
-407,player,NLgnz,171,pl-a2379d4ac571,NLgnz,2012-11-29,2012-11-30,handle;observed
-408,player,Hang,172,pl-a25e0d0cec87,Hang,2023-10-19,2023-11-05,handle;observed
-409,player,Kiin,173,pl-a4828757cdd1,Kiin,2023-10-19,2023-11-04,handle;observed
-410,player,CoCo,174,pl-a5ab491a9511,CoCo,2015-03-13,2015-03-14,handle;observed
-411,player,Darshan,175,pl-a5c4062e7b79,Darshan,,,registry
-412,player,ZionSpartan,175,pl-a5c4062e7b79,Darshan,2012-11-29,2012-11-30,handle;observed
-413,player,Zionspartan,175,pl-a5c4062e7b79,Darshan,,,redirect;handle
-414,player,Denizz,176,pl-a8f20d31f75a,Denizzz,,,redirect;handle
-415,player,Denizzz,176,pl-a8f20d31f75a,Denizzz,,,registry
-416,player,denizzz,176,pl-a8f20d31f75a,Denizzz,2026-10-13,2026-10-13,handle;observed
-417,player,Faker,177,pl-a9073fde3cbe,Faker,2015-10-01,2023-11-19,registry;handle;observed
-418,player,LEElS,177,pl-a9073fde3cbe,Faker,,,redirect;handle
-419,player,S LEE,177,pl-a9073fde3cbe,Faker,,,redirect;handle
-420,player,xiye,178,pl-aada38f2f3a3,xiye,2015-03-13,2015-03-15,handle;observed
-421,player,Shunn,179,pl-ab120dedda64,Shunn,2023-10-11,2023-10-14,handle;observed
-422,player,Ceos,180,pl-ac8b1bd24aea,Ceos,2023-05-02,2023-10-14,handle;observed
-423,player,Bdd,181,pl-acdca2630bc3,Bdd,2023-10-19,2023-11-04,handle;observed
-424,player,Nk Inc,182,pl-ad14fe03cdcb,Nk Inc,2012-11-29,2012-12-01,handle;observed
-425,player,Route,183,pl-adc74704d65d,Route,2023-05-02,2023-10-14,handle;observed
-426,player,Cabochard,184,pl-ae1590027ee5,Cabochard,2015-03-13,2015-03-13,handle;observed
-427,player,TheOddOne,185,pl-ae3c5e3d14f5,TheOddOne,2012-11-29,2012-12-01,handle;observed
-428,player,Hjarnaan,186,pl-ae555504cfda,Hjarnan,,,redirect;handle
-429,player,Hjarnan,186,pl-ae555504cfda,Hjarnan,2015-10-01,2015-10-01,registry;handle;observed
-430,player,Hjärnanbakomallt,186,pl-ae555504cfda,Hjarnan,,,redirect;handle
-431,player,Infinity,186,pl-ae555504cfda,Hjarnan,,,handle
-432,player,Infinity (Petter Freyschuss),186,pl-ae555504cfda,Hjarnan,,,redirect
-433,player,Lilballz,187,pl-af531e758f09,Lilballz,2012-11-29,2012-12-02,handle;observed
-434,player,Razork,188,pl-b11a946eb07e,Razork,2023-10-19,2023-10-29,handle;observed
-435,player,Chaox,189,pl-b2ae814e289e,Chaox,2012-11-29,2012-12-01,handle;observed
-436,player,Ruler,190,pl-b2eb0fa2b016,Ruler,2023-05-12,2023-11-12,handle;observed
-437,player,TheShy,191,pl-b487de76c47d,TheShy,2023-10-19,2023-11-19,handle;observed
-438,player,Ryu,192,pl-b50988561c5b,Ryu,2015-10-01,2015-10-01,registry;handle;observed
-439,player,Caomei,193,pl-b52811f1cf6d,Caomei,2012-11-29,2012-12-03,handle;observed
-440,player,Shy,194,pl-b71b1c6ff5f9,Shy,2015-03-13,2015-03-14,handle;observed
-441,player,Captain Jack,195,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
-442,player,CaptainJack,195,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
-443,player,Cpt Jack,195,pl-b7314e5c0937,Cpt Jack,2012-11-29,2012-12-02,registry;handle;observed
-444,player,Cpt Jacky,195,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
-445,player,Jack Sparrowoo,195,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
-446,player,ShiauC,196,pl-b78567af9da0,ShiauC,2023-10-11,2023-10-14,handle;observed
-447,player,Snoopeh,197,pl-b9e346599dab,Snoopeh,2012-11-29,2012-12-02,handle;observed
-448,player,Licken,198,pl-ba0d6b649165,Licken,2012-11-29,2012-11-30,handle;observed
-449,player,SuperCat,199,pl-babb4fa57cc8,SuperCat,2012-11-29,2012-11-30,handle;observed
-450,player,DontMashMe,200,pl-bae224b7be9c,Mash,2012-11-29,2012-11-30,handle;observed
-451,player,Dontmashme,200,pl-bae224b7be9c,Mash,,,redirect;handle
-452,player,Mash,200,pl-bae224b7be9c,Mash,,,registry
-453,player,Blaber,201,pl-bb0a1078d808,Blaber,2023-05-11,2023-10-26,handle;observed
-454,player,Reginald,202,pl-bc11bb97614b,Reginald,2012-11-29,2012-12-01,handle;observed
-455,player,Caps,203,pl-bd9b6abb3981,Caps,2023-05-02,2023-10-29,handle;observed
-456,player,Kasing,204,pl-beca5a0b62d9,Kasing,,,registry
-457,player,Yerrow,204,pl-beca5a0b62d9,Kasing,,,redirect;handle
-458,player,YerrowStarr,204,pl-beca5a0b62d9,Kasing,,,redirect;handle
-459,player,kaSing,204,pl-beca5a0b62d9,Kasing,2015-10-01,2015-10-01,handle;observed
-460,player,Oscarinin,205,pl-c0d4303098dc,Oscarinin,2023-10-19,2023-10-29,handle;observed
-461,player,Ceo,206,pl-c131cf2ffc9d,Ceo,2023-05-03,2023-10-13,handle;observed
-462,player,ReD,207,pl-c1efceb33747,ReD (Lee Siu Hin),2012-11-29,2012-11-30,handle
-463,player,ReD (Lee Siu Hin),207,pl-c1efceb33747,ReD (Lee Siu Hin),2012-11-29,2012-11-30,observed
-464,player,Light,208,pl-c1fbca4d55a8,Light (Wang Guang-Yu),2023-10-19,2023-11-19,handle
-465,player,Light (Wang Guang-Yu),208,pl-c1fbca4d55a8,Light (Wang Guang-Yu),2023-10-19,2023-11-19,observed
-466,player,Keria,209,pl-c375f5f7e214,Keria,2023-05-10,2023-11-19,registry;handle;observed
-467,player,M RYU,209,pl-c375f5f7e214,Keria,,,redirect;handle
-468,player,RYU,209,pl-c375f5f7e214,Keria,,,handle
-469,player,RYU (Ryu Min-seok),209,pl-c375f5f7e214,Keria,,,redirect
-470,player,FBI,210,pl-c6cd4cf936fd,FBI,2023-10-19,2023-11-02,handle;observed
-471,player,HaRleLuYaR,211,pl-c8ff2fe4ed1f,HaRleLuYaR,2012-11-29,2012-12-01,handle;observed
-472,player,Aphromoo,212,pl-c9db4af88d94,Aphromoo,2012-11-29,2012-11-30,handle;observed
-473,player,JunJia,213,pl-ca4dd0ca2cde,JunJia,2023-05-02,2023-10-15,handle;observed
-474,player,GoSu Pepper,214,pl-cca33893a80c,GoSu Pepper,2012-11-29,2012-12-02,handle;observed
-475,player,tinowns,215,pl-cdf549ee3f38,tinowns,2023-05-02,2023-10-14,handle;observed
-476,player,IgNar,216,pl-ce120fd6a35e,IgNar,2023-10-19,2023-11-02,handle;observed
-477,player,Palafox,217,pl-cf05b58284a8,Palafox,2023-10-19,2023-11-02,handle;observed
-478,player,Carzzy,218,pl-cf3a57628428,Carzzy,2023-05-10,2023-10-26,handle;observed
-479,player,Dan Dinh,219,pl-cf9686dcccb9,Dan Dinh,2011-06-18,2011-06-18,registry;handle;observed
-480,player,Daniel Dinh,219,pl-cf9686dcccb9,Dan Dinh,,,redirect;handle
-481,player,PraY,220,pl-cfac2dfc6b09,PraY,2015-03-13,2015-03-14,handle;observed
-482,player,ClearLove,221,pl-d1c97b3df8d5,ClearLove,2012-11-29,2012-12-03,handle;observed
-483,player,Humanoid,222,pl-d2253641722e,Humanoid,2023-10-19,2023-10-29,handle;observed
-484,player,Deft,223,pl-d4036e87f095,Deft,2023-10-19,2023-10-29,handle;observed
-485,player,fredy122,224,pl-d6e377fca42e,fredy122,2015-03-13,2015-03-14,handle;observed
-486,player,Elyoya,225,pl-d7faf3da4ae5,Elyoya,2023-05-10,2023-10-26,handle;observed
-487,player,Weixiao,226,pl-d86f8d4bc706,Weixiao,2012-11-29,2012-12-03,handle;observed
-488,player,LightSludge,227,pl-dbf762de41c2,LightSludge,2012-11-29,2012-12-01,handle;observed
-489,player,tol2,228,pl-de212bda9856,tol2,2023-05-02,2023-05-05,handle;observed
-490,player,Lemongod,229,pl-df2dffe1a94e,Lemongod,2012-11-29,2012-12-01,handle;observed
-491,player,Flame,230,pl-dfb0f521ab24,Flame,2012-11-29,2012-12-02,registry;handle;observed
-492,player,Goldtec,230,pl-dfb0f521ab24,Flame,,,redirect;handle
-493,player,Saintvicious,231,pl-dfdbfbbca188,Saintvicious,2012-11-29,2012-12-02,handle;observed
-494,player,Slayder,232,pl-e008695bfdbf,Slayder,2023-10-10,2023-10-27,handle;observed
-495,player,Locodoco,233,pl-e0430684decb,Locodoco,2012-11-29,2012-12-02,handle;observed
-496,player,Alex Ich,234,pl-e13c198e8ad1,Alex Ich,2012-11-29,2012-12-02,handle;observed
-497,player,Hylissang,235,pl-e2b03393c436,Hylissang,2023-05-10,2023-10-26,handle;observed
-498,player,CaviaVampier,236,pl-e48cd72e6441,CaviaVampier,,,registry
-499,player,NOTTILTEDAD,236,pl-e48cd72e6441,CaviaVampier,2026-10-13,2026-10-13,redirect;handle;observed
-500,player,xPeke,237,pl-e5c5bba009e9,xPeke,2012-11-29,2012-12-03,handle;observed
-501,player,bigfatlp,238,pl-e6866653e1ff,bigfatlp,2012-11-29,2012-12-02,handle;observed
-502,player,Dhokla,239,pl-e6ad910e1dd9,Dhokla,2023-10-19,2023-11-02,handle;observed
-503,player,Malunoo,240,pl-e6ea94509514,Malunoo,2012-11-29,2012-12-01,handle;observed
-504,player,Xllyra,241,pl-e740caa83eef,Xllyra,2012-11-29,2012-11-30,handle;observed
-505,player,Lee,242,pl-e7da824a74f6,Lee,2015-03-13,2015-03-14,handle;observed
-506,player,ON,243,pl-e8a01133b135,ON,2023-05-03,2023-11-11,handle;observed
-507,player,Zven,244,pl-ec44ccc0ab19,Zven,2023-05-11,2023-10-26,handle;observed
-508,player,Sparda,245,pl-ecb29e5be82a,Sparda,2023-10-11,2023-10-15,handle;observed
-509,player,d4rkness,246,pl-ef8f76f1c064,d4rkness,2012-11-29,2012-12-01,handle;observed
-510,player,Rhux,247,pl-f13f53485693,Rhux,2012-11-29,2012-12-02,handle;observed
-511,player,Kanavi,248,pl-f14a87d7f36e,Kanavi,2023-05-12,2023-11-12,handle;observed
-512,player,Misaya,249,pl-f4248fd0e7b0,Misaya,2012-11-29,2012-12-03,handle;observed
-513,player,Stanley,250,pl-f4537f49d815,Stanley,2012-11-29,2012-12-02,handle;observed
-514,player,Chasy,251,pl-f45540cfe7c6,Chasy,2023-05-10,2023-10-26,handle;observed
-515,player,Lustboy,252,pl-f62b7e33f680,Lustboy,2012-11-29,2015-03-15,registry;handle;observed
-516,player,Salce,253,pl-f65a0114681c,Salce,2011-06-18,2011-06-18,registry;handle;observed
-517,player,Gemini,254,pl-f6ece80b88d6,Gemini,2023-10-11,2023-10-14,handle;observed
-518,player,Voyboy,255,pl-f6fc15ed916b,Voyboy,2012-11-29,2012-12-02,handle;observed
-519,player,Aria,256,pl-f7e4772830f8,Aria (Lee Ga-eul),2023-05-02,2023-10-13,handle
-520,player,Aria (Lee Ga-eul),256,pl-f7e4772830f8,Aria (Lee Ga-eul),2023-05-02,2023-10-13,observed
-521,player,TakashiX,257,pl-f9ab7e6bbab9,TakashiX,2012-11-29,2012-11-30,registry;handle;observed
-522,player,Cop,258,pl-fb8f3c31ab70,Cop,2012-11-29,2012-12-02,handle;observed
-523,player,Insta,259,pl-fc8b4388595e,Insta,2012-11-29,2012-11-30,handle;observed
-524,player,Berserker,260,pl-fcce0232eec8,Berserker (Kim Min-cheol),2023-05-11,2023-10-26,handle
-525,player,Berserker (Kim Min-cheol),260,pl-fcce0232eec8,Berserker (Kim Min-cheol),2023-05-11,2023-10-26,observed
-526,player,ShowMaker,261,pl-fe04ca019dbc,ShowMaker,2023-10-19,2023-10-29,handle;observed
-527,player,Rekkles,262,pl-fe55ff0b9934,Rekkles,2012-11-29,2012-12-03,handle;observed
-528,player,Fenry,263,pl-fe61053241f2,Fenry,,,registry
-529,player,Wolf,263,pl-fe61053241f2,Fenry,,,handle
-530,player,Wolf (Trần Hữu Vinh),263,pl-fe61053241f2,Fenry,,,redirect
-531,player,Extinkt,264,pl-fe75e9b28961,Extinkt,2012-11-29,2012-12-01,handle;observed
-532,player,BB Muffin,265,pl-fec5b667d0a0,Bbmuffin,,,redirect;handle
-533,player,Bbmuffin,265,pl-fec5b667d0a0,Bbmuffin,,,registry
-534,player,I Love BB Muffin,265,pl-fec5b667d0a0,Bbmuffin,,,redirect;handle
-535,player,Love BB Muffin,265,pl-fec5b667d0a0,Bbmuffin,,,redirect;handle
-536,player,bbmuffin,265,pl-fec5b667d0a0,Bbmuffin,2026-10-13,2026-10-13,handle;observed
-537,player,Bong,266,pl-ff2354b0c7a0,Bong (Cho Bo-woong),2023-05-03,2023-10-13,handle
-538,player,Bong (Cho Bo-woong),266,pl-ff2354b0c7a0,Bong (Cho Bo-woong),2023-05-03,2023-10-13,observed
-539,player,MiSTakE,267,pl-fff507a8ff48,MiSTakE,2012-11-29,2012-12-02,handle;observed
-540,team,Gen.G,1,tm-00ac0e66d991,Gen.G,2023-05-09,2023-11-03,observed
-541,team,CJ Entus,2,tm-0ee1d7d7c31a,CJ Entus,2015-03-13,2015-03-14,observed
-542,team,Dignitas,3,tm-16eb5486accd,Dignitas,2012-11-16,2012-11-17,observed
-543,team,Team Liquid,4,tm-1c1de8fe17aa,Team Liquid,2023-10-19,2023-10-23,registry;redirect;observed
-544,team,Team Curse,5,tm-1c6a25914979,Team Curse,2012-11-29,2012-12-02,observed
-545,team,KT Rolster,6,tm-25b9b1c91296,KT Rolster,2023-10-19,2023-11-04,observed
-546,team,DKB XPERION NXT,7,tm-38fe94c67f67,DKB XPERION NXT,2026-10-13,2026-10-13,registry;redirect;observed
-547,team,LOUD,8,tm-3a76b34e3c82,LOUD,2023-05-02,2023-10-14,observed
-548,team,Team Dynamic,9,tm-3bb658d12868,Team Dynamic,2012-11-29,2012-11-30,registry;redirect;observed
-549,team,SK Gaming,10,tm-3bcb9efd5846,SK Gaming,2015-03-13,2015-03-14,observed
-550,team,Bilibili Gaming,11,tm-3c8aa94cea87,Bilibili Gaming,2023-05-03,2023-11-11,observed
-551,team,yoe Flash Wolves,12,tm-3c91264e4622,yoe Flash Wolves,2015-03-13,2015-03-14,observed
-552,team,Team Curse Europe,13,tm-478a97e49e4b,Team Curse Europe,2012-11-29,2012-12-01,observed
-553,team,Counter Logic Gaming Europe,14,tm-4fc0614f3ef7,Counter Logic Gaming Europe,2012-11-29,2012-12-02,observed
-554,team,Weibo Gaming,15,tm-50038f5deaa0,Weibo Gaming,2023-10-19,2023-11-19,observed
-555,team,Absolute Legends NA,16,tm-503f8cb57765,Absolute Legends NA,2012-11-14,2012-11-17,observed
-556,team,MAD Lions,17,tm-58e97303f1c9,MAD Lions,2023-05-10,2023-10-26,observed
-557,team,Team FeaR,18,tm-60eac80615ba,Team FeaR,2012-11-29,2012-11-30,observed
-558,team,Team BDS,19,tm-64248513e110,Team BDS,2023-10-11,2023-10-23,observed
-559,team,Quantic Gaming,20,tm-70d121e8f3b3,Quantic Gaming,2012-11-14,2012-11-16,observed
-560,team,Meat Playground,21,tm-71d9f0e83524,Meat Playground,2012-11-29,2012-12-01,observed
-561,team,H2k-Gaming,22,tm-7e5eb06d8646,H2k-Gaming,2015-10-01,2015-10-01,registry;redirect;observed
-562,team,NRG,23,tm-816e45e1dd85,NRG,2023-10-19,2023-11-02,observed
-563,team,Singapore Sentinels,24,tm-8785e1bcf241,Singapore Sentinels,2012-11-29,2012-12-01,observed
-564,team,LNG Esports,25,tm-8a3085fd91e5,LNG Esports,2023-10-19,2023-11-05,observed
-565,team,DetonatioN FocusMe,26,tm-94fa0eac3812,DetonatioN FocusMe,2023-05-02,2023-10-13,observed
-566,team,SK Telecom,27,tm-9a4fde0c4aad,T1,,,redirect
-567,team,SK Telecom T1,27,tm-9a4fde0c4aad,T1,2015-10-01,2015-10-01,rename;redirect;observed
-568,team,SKT T1,27,tm-9a4fde0c4aad,T1,,,redirect
-569,team,T1,27,tm-9a4fde0c4aad,T1,2023-05-10,2023-11-19,registry;redirect;observed
-570,team,G2 Esports,28,tm-a491a98abe90,G2 Esports,2023-05-02,2023-10-29,observed
-571,team,CTBC Flying Oyster,29,tm-aecf2932501d,CTBC Flying Oyster,2023-10-11,2023-10-14,observed
-572,team,GE Tigers,30,tm-afd7b9c84ca6,GE Tigers,2015-03-13,2015-03-14,observed
-573,team,Fnatic,31,tm-b54099fc2014,Fnatic,2012-11-29,2023-10-29,observed
-574,team,Dplus Kia,32,tm-b5f2d1b32dc6,Dplus Kia,2023-10-19,2023-10-29,observed
-575,team,PSG Talon,33,tm-b894b9da44f7,PSG Talon,2023-05-02,2023-10-15,observed
-576,team,Azubu Blaze,34,tm-bc44d3ff4d27,Azubu Blaze,2012-11-29,2012-12-02,registry;redirect;observed
-577,team,CLG Prime,35,tm-be1c5136689c,Counter Logic Gaming,2012-11-29,2012-12-02,observed;declared
-578,team,Counter Logic Gaming,35,tm-be1c5136689c,Counter Logic Gaming,2012-11-16,2012-12-02,observed;declared
-579,team,Cloud9,36,tm-c6640c0ccfe4,Cloud9,2015-03-13,2023-10-26,observed
-580,team,Taipei Assassins,37,tm-c94b01026f88,Taipei Assassins,2012-11-29,2012-12-02,observed
-581,team,TSM,38,tm-cb15b056a5ad,TSM,2012-11-29,2015-03-15,observed
-582,team,Golden Guardians,39,tm-d3b6d66f7710,Golden Guardians,2023-05-03,2023-05-14,observed
-583,team,Team Whales,40,tm-d8c2d4d2eca5,Team Whales,2023-10-11,2023-10-15,observed
-584,team,GAM Esports,41,tm-dcd83f572277,GAM Esports,2023-05-03,2023-10-27,observed
-585,team,JD Gaming,42,tm-e0ac3973ed3e,JD Gaming,2023-05-12,2023-11-12,observed
-586,team,Movistar R7,43,tm-e250744641c3,Movistar R7,2023-05-03,2023-10-13,observed
-587,team,Moscow Five,44,tm-e603064f4a0f,Moscow Five,2012-11-29,2012-12-02,observed
-588,team,EPIK Gamer,45,tm-eb2eec43fa28,EPIK Gamer,,,registry
-589,team,Epik Gamer,45,tm-eb2eec43fa28,EPIK Gamer,2011-06-18,2011-06-18,registry;redirect;observed
-590,team,Team WE,46,tm-f5665c13ca53,Team WE,2012-11-29,2015-03-15,observed
-591,team,IceLanD,47,tm-f8a350bee7a9,IceLanD,2012-11-29,2012-11-30,observed
-592,team,Against All authority,48,tm-fa32a4bab6cd,against All authority,,,registry;redirect
-593,team,against All authority,48,tm-fa32a4bab6cd,against All authority,2011-06-18,2011-06-18,registry;observed
-594,team,The Bandits Prime,49,tm-fb205a4a7874,The Bandits Prime,2026-10-13,2026-10-13,observed
-595,team,Gambit Gaming,50,tm-fea9d39f1fb4,Gambit Gaming,2015-03-13,2015-03-13,observed
-596,team,Blackbean,51,tm-ffeb9af2caae,Blackbean,2012-11-29,2012-11-30,observed
+171,champion,Gnar,170,ch-fc45acd92dda,Gnar,2015-03-13,2025-03-16,registry;observed
+172,champion,Nautilus,171,ch-fd31ef9235c6,Nautilus,2020-05-28,2026-10-13,registry;observed
+173,champion,Viego,172,ch-fe193330f121,Viego,2023-05-02,2025-03-12,registry;observed
+174,champion,Tahm Kench,173,ch-ffe0b3686ab9,Tahm Kench,2017-07-05,2024-07-04,registry;observed
+175,player,River,1,pl-01ef75ee8852,River,2023-05-03,2023-05-14,handle
+176,player,River (Kim Dong-woo),1,pl-01ef75ee8852,River,2023-05-03,2023-05-14,registry;observed
+177,player,Creaton,2,pl-03f75bf209ea,Creaton,2012-11-29,2012-12-01,registry;handle;observed
+178,player,Angush,3,pl-046a36995f64,Angush,2012-11-29,2012-12-01,registry;handle;observed
+179,player,Arrow,4,pl-05800e70aa10,Arrow,2017-07-05,2017-07-07,registry;handle;observed
+180,player,Rest,5,pl-05863ec2c378,Rest,2023-10-11,2025-03-15,registry;handle;observed
+181,player,Smeb,6,pl-06caf9f960e3,Smeb,2015-03-13,2015-03-14,registry;handle;observed
+182,player,Targamas,7,pl-082284d4da49,Targamas,2025-03-10,2025-03-16,registry;handle;observed
+183,player,Noah,8,pl-0891d3b7aebd,Noah,2023-10-19,2024-07-04,handle
+184,player,Noah (Oh Hyeon-taek),8,pl-0891d3b7aebd,Noah,2023-10-19,2024-07-04,registry;observed
+185,player,Lyonz,9,pl-08a0278714aa,Lyonz,2023-05-03,2023-10-13,registry;handle;observed
+186,player,Woody,10,pl-08bb39b964dc,Woody,2023-05-02,2023-10-15,registry;handle;observed
+187,player,MoMa,11,pl-097d84eb5f9c,MoMa,2011-06-18,2011-06-18,registry;handle;observed
+188,player,Trymbi,12,pl-0a5641ab7fe2,Trymbi,2023-10-19,2023-10-29,registry;handle;observed
+189,player,Cuzz,13,pl-0c0f58a08ada,Cuzz,2020-05-28,2023-11-04,registry;handle;observed
+190,player,Chawy,14,pl-0c5739d70c93,Chawy,2012-11-29,2012-12-01,registry;handle;observed
+191,player,LvMao,15,pl-0c9b8aad3595,LvMao,2020-05-29,2020-05-30,registry;handle;observed
+192,player,Balls,16,pl-0cd48bab889c,Balls,2015-03-13,2015-03-13,registry;handle;observed
+193,player,Maple,17,pl-0ce3ac5ab599,Maple,2015-03-13,2023-10-15,handle
+194,player,Maple (Huang Yi-Tang),17,pl-0ce3ac5ab599,Maple,2015-03-13,2023-10-15,registry;observed
+195,player,Yutapon,18,pl-0d544b2a250f,Yutapon,2023-05-02,2023-10-13,registry;handle;observed
+196,player,Bie,19,pl-0e7d8b8f16d4,Bie,2023-10-11,2023-10-15,registry;handle;observed
+197,player,Harp,20,pl-0f4b5ea26038,Harp,2023-05-02,2023-10-13,registry;handle;observed
+198,player,Robo,21,pl-0f7d46d154f5,Robo,2023-05-02,2023-10-14,registry;handle;observed
+199,player,Sheo,22,pl-0f7ec5b4cd52,Sheo,2023-10-11,2023-10-23,registry;handle;observed
+200,player,CHOI,23,pl-0ff0ef099ecb,Zeus,,,handle
+201,player,CHOI (Choi Woo-je),23,pl-0ff0ef099ecb,Zeus,,,redirect
+202,player,W CHOI,23,pl-0ff0ef099ecb,Zeus,,,redirect;handle
+203,player,Wooje,23,pl-0ff0ef099ecb,Zeus,,,redirect;handle
+204,player,Zeus,23,pl-0ff0ef099ecb,Zeus,2023-05-10,2025-03-16,registry;handle;observed
+205,player,Genja,24,pl-100790398d79,Genja,2012-11-29,2012-12-02,registry;handle;observed
+206,player,GorillA,25,pl-148d5881d19f,GorillA,2015-03-13,2015-03-14,registry;handle;observed
+207,player,Artemis,26,pl-14fab91aa21e,Artemis,2023-10-11,2023-10-15,handle
+208,player,Artemis (Trần Quốc Hưng),26,pl-14fab91aa21e,Artemis,2023-10-11,2023-10-15,registry;observed
+209,player,Ubao,27,pl-1500589cbe50,Uniboy,,,redirect;handle
+210,player,Uniboy,27,pl-1500589cbe50,Uniboy,,,registry
+211,player,ubao,27,pl-1500589cbe50,Uniboy,2023-05-02,2023-05-07,handle;observed
+212,player,Delight,28,pl-1643635c12ca,Delight,2023-05-09,2025-03-16,registry;handle;observed
+213,player,BeanJ,29,pl-164e299203d2,BeanJ,2023-10-11,2023-10-15,registry;handle;observed
+214,player,Caliste,30,pl-17073c06862b,Caliste,2025-03-10,2025-03-16,registry;handle;observed
+215,player,Westrice,31,pl-19642f162d1f,Westrice,2011-06-18,2011-06-18,registry;handle;observed
+216,player,Croc,32,pl-1acb5d8e4238,Croc,2023-05-02,2023-10-14,registry;handle;observed
+217,player,ClearLove,33,pl-1ad96d5e2ff5,Clearlove,2012-11-29,2012-12-03,handle;observed
+218,player,Clearlove,33,pl-1ad96d5e2ff5,Clearlove,,,registry
+219,player,Doggo,34,pl-1aef3dd8a10d,Doggo,2025-03-11,2025-03-15,registry;handle;observed
+220,player,Oner,35,pl-1bba52c3bd63,Oner,2023-05-10,2024-07-07,registry;handle;observed
+221,player,Odoamne,36,pl-1c27d71dfb68,Odoamne,2015-10-01,2015-10-01,registry;handle;observed
+222,player,Kati,37,pl-1cb93156743c,Kati,2023-05-03,2023-10-27,registry;handle;observed
+223,player,Vladi,38,pl-1cb9dd4dab39,Vladi,2025-03-10,2025-03-16,registry;handle;observed
+224,player,Steak,39,pl-1df249fb3a6c,Steak,2015-03-13,2015-03-14,registry;handle;observed
+225,player,GALA,40,pl-1df6af42bc6e,GALA,2023-10-19,2023-11-05,registry;handle;observed
+226,player,NL,41,pl-1e921f71c3df,NL,2015-03-13,2015-03-14,handle
+227,player,NL (Hsiung Wen-An),41,pl-1e921f71c3df,NL,2015-03-13,2015-03-14,registry;observed
+228,player,Patoy,42,pl-1f23a5071faa,Patoy,2012-11-29,2012-12-01,registry;handle;observed
+229,player,Pyosik,43,pl-206ae5da084f,Pyosik,2020-05-29,2023-10-23,registry;handle;observed
+230,player,Trick,44,pl-209e3aa0b53c,Trick,2017-07-05,2017-07-07,registry;handle;observed
+231,player,Exile (Fabian Schubert),45,pl-20fed37eae97,Exile (Fabian Schubert),,,registry
+232,player,Exileh,45,pl-20fed37eae97,Exile (Fabian Schubert),2017-07-05,2017-07-08,redirect;handle;observed
+233,player,Loulex,46,pl-2261f3b72b2d,Loulex,,,registry
+234,player,loulex,46,pl-2261f3b72b2d,Loulex,2015-10-01,2015-10-01,handle;observed
+235,player,Ning,47,pl-2288a0ad25a8,Ning,2020-05-29,2020-05-29,registry;handle;observed
+236,player,Krepo,48,pl-22ade83ec679,Krepo,2012-11-29,2012-12-02,registry;handle;observed
+237,player,KimChi,49,pl-231a8c82e108,Summit,,,redirect;handle
+238,player,Summit,49,pl-231a8c82e108,Summit,2023-10-19,2023-10-23,registry;handle;observed
+239,player,WooTae,49,pl-231a8c82e108,Summit,,,redirect;handle
+240,player,Lwx,50,pl-23637631ecd7,Lwx,2020-05-28,2020-05-31,registry;handle;observed
+241,player,Oddie,51,pl-238880bb94a6,Oddie,2023-05-03,2023-10-13,registry;handle;observed
+242,player,Biofrost,52,pl-23b67dc249eb,Biofrost,2017-07-05,2017-07-08,registry;handle;observed
+243,player,CaoMei,53,pl-24519255db39,CaoMei,,,registry
+244,player,Caomei,53,pl-24519255db39,CaoMei,2012-11-29,2012-12-03,handle;observed
+245,player,Xpecial,54,pl-249333b189a5,Xpecial,2012-11-29,2017-07-07,registry;handle;observed
+246,player,Froggen,55,pl-25478da9e18c,Froggen,2012-11-29,2012-12-02,registry;handle;observed
+247,player,LemonNation,56,pl-2674a570564d,LemonNation,2015-03-13,2015-03-13,registry;handle;observed
+248,player,Dreilix,57,pl-273916e38c1f,Dreilix,2026-10-13,2026-10-13,registry;handle;observed
+249,player,Knight,58,pl-27da4f1ac070,Knight,,,handle
+250,player,Knight (Zhuo Ding),58,pl-27da4f1ac070,Knight,,,registry
+251,player,knight,58,pl-27da4f1ac070,Knight,2020-05-28,2024-07-04,handle
+252,player,knight (Zhuo Ding),58,pl-27da4f1ac070,Knight,2020-05-28,2024-07-04,observed
+253,player,Linak,59,pl-2892dc360f6c,Linak,2011-06-18,2011-06-18,registry;handle;observed
+254,player,APA,60,pl-29a4b2e61911,APA,2023-10-19,2025-03-14,handle
+255,player,APA (Eain Stearns),60,pl-29a4b2e61911,APA,2023-10-19,2025-03-14,registry;observed
+256,player,Always plan ahea,60,pl-29a4b2e61911,APA,,,redirect;handle
+257,player,Always think ahe,60,pl-29a4b2e61911,APA,,,redirect;handle
+258,player,CoCo,61,pl-2a6aef767af7,Coco,2015-03-13,2015-03-14,handle;observed
+259,player,Coco,61,pl-2a6aef767af7,Coco,,,registry
+260,player,Nyjacky,62,pl-2b4e63011142,Nyjacky,2012-11-29,2012-12-02,registry;handle;observed
+261,player,Zuna,63,pl-2d05d2cf5155,Zuna,2012-11-29,2012-11-30,registry;handle;observed
+262,player,Muffinqt,64,pl-2de6a50f48a3,Muffinqt,2012-11-29,2012-11-30,registry;handle;observed
+263,player,Diamondprox,65,pl-2f2697c08a6e,Diamondprox,2012-11-29,2015-03-13,registry;handle;observed
+264,player,Aluka,66,pl-30d6a49cfa0c,Aluka,2015-03-13,2015-03-15,registry;handle;observed
+265,player,Edward,67,pl-34405d46cb25,Edward,2015-03-13,2015-03-13,registry;handle;observed
+266,player,GoSu Pepper,67,pl-34405d46cb25,Edward,2012-11-29,2012-12-02,redirect;handle;observed
+267,player,Crownie,68,pl-34aae5fa20fa,Crownie,2023-10-11,2023-10-23,registry;handle;observed
+268,player,Canna,69,pl-34af2eba65bf,Canna,2020-05-28,2025-03-16,registry;handle;observed
+269,player,Ambition,70,pl-352086c0b39c,Ambition,2012-11-29,2015-03-14,registry;handle;observed
+270,player,Crisp,71,pl-36cda857e1b1,Crisp,2020-05-28,2025-03-15,registry;handle;observed
+271,player,Hans Sama,72,pl-36e7db6a24db,Hans Sama,2023-05-02,2024-07-06,registry;handle;observed
+272,player,Quad,73,pl-3773b85c684d,Quad,2024-07-05,2024-07-05,registry;handle;observed
+273,player,UmTi,74,pl-3777173d2f9b,UmTi,2024-07-04,2025-03-14,registry;handle;observed
+274,player,HongQ,75,pl-3b1c2b699ae6,HongQ,2025-03-11,2025-03-15,registry;handle;observed
+275,player,Xiaohu,76,pl-3b47125e9a17,Xiaohu,2023-10-19,2023-11-19,registry;handle;observed
+276,player,Wolf,77,pl-3c725e8d5b01,Wolf,,,handle
+277,player,Wolf (Yang Jiang),77,pl-3c725e8d5b01,Wolf,,,registry
+278,player,NDudeX,78,pl-3d5309045116,NintendudeX,,,redirect;handle
+279,player,Nintendude,78,pl-3d5309045116,NintendudeX,,,redirect;handle
+280,player,NintendudeX,78,pl-3d5309045116,NintendudeX,2012-11-29,2012-11-30,registry;handle;observed
+281,player,JimieN,79,pl-40a375d8d94b,JimieN,2023-10-11,2023-10-14,registry;handle;observed
+282,player,YuZhe,80,pl-41ea8213a2a8,YuZhe,2015-03-13,2015-03-15,registry;handle;observed
+283,player,YellOwStaR,81,pl-428ba3eadb03,YellOwStaR,,,registry
+284,player,YellowS,81,pl-428ba3eadb03,YellOwStaR,,,redirect;handle
+285,player,Yellowstar,81,pl-428ba3eadb03,YellOwStaR,2011-06-18,2011-06-18,handle;observed
+286,player,Catan,82,pl-436bedb688e4,Gumayusi,,,handle
+287,player,Catan (Lee Min-hyeong),82,pl-436bedb688e4,Gumayusi,,,redirect
+288,player,Finale,82,pl-436bedb688e4,Gumayusi,,,redirect;handle
+289,player,Gumayushi,82,pl-436bedb688e4,Gumayusi,,,redirect;handle
+290,player,Gumayusi,82,pl-436bedb688e4,Gumayusi,2023-05-10,2024-07-07,registry;handle;observed
+291,player,M LEE,82,pl-436bedb688e4,Gumayusi,,,redirect;handle
+292,player,이민형,82,pl-436bedb688e4,Gumayusi,,,redirect;handle
+293,player,Effort,83,pl-4387e5d3966f,Effort,2020-05-28,2020-05-28,registry;handle;observed
+294,player,D4rkness,84,pl-44638f934963,Zappy,,,redirect;handle
+295,player,Zappy,84,pl-44638f934963,Zappy,,,registry
+296,player,d4rkness,84,pl-44638f934963,Zappy,2012-11-29,2012-12-01,handle;observed
+297,player,Viper,85,pl-4512c84a2af3,Viper,2025-03-10,2025-03-16,handle
+298,player,Viper (Park Do-hyeon),85,pl-4512c84a2af3,Viper,2025-03-10,2025-03-16,registry;observed
+299,player,Hojin,86,pl-4518a0f64ce4,Hojin,,,registry
+300,player,LEE,86,pl-4518a0f64ce4,Hojin,,,redirect;handle
+301,player,Lee,86,pl-4518a0f64ce4,Hojin,2015-03-13,2015-03-14,handle;observed
+302,player,Zika,87,pl-46005cad7fa5,Zika,2023-10-19,2023-11-05,registry;handle;observed
+303,player,EMENES,88,pl-46d2b0e8bc76,EMENES,2023-05-11,2023-10-26,registry;handle;observed
+304,player,SOAZ,89,pl-4717e665617d,SOAZ,,,registry
+305,player,sOAZ,89,pl-4717e665617d,SOAZ,2011-06-18,2017-07-07,handle;observed
+306,player,MadLife,90,pl-47e7ce4474c3,MadLife,,,registry
+307,player,Madlife,90,pl-47e7ce4474c3,MadLife,2015-03-13,2015-03-14,handle;observed
+308,player,Xiye,91,pl-4858571e8c88,Xiye,,,registry
+309,player,xiye,91,pl-4858571e8c88,Xiye,2015-03-13,2015-03-15,handle;observed
+310,player,Wako,92,pl-48c0044b8eb3,Wako,2023-05-02,2023-10-15,registry;handle;observed
+311,player,Fzzf,93,pl-48f116f1fdb8,Fzzf,2012-11-29,2012-12-03,registry;handle;observed
+312,player,Xmithie,94,pl-48f9d1a48eb1,Xmithie,2012-11-29,2012-11-30,registry;handle;observed
+313,player,Dyrus,95,pl-49101179ee26,Dyrus,2011-06-18,2015-03-15,registry;handle;observed
+314,player,Rascal,96,pl-4a7c8d1219bc,Rascal,2020-05-29,2020-05-30,registry;handle;observed
+315,player,Bengi,97,pl-4ab0fbb7fb06,Bengi,2015-10-01,2015-10-01,registry;handle;observed
+316,player,JangTa,97,pl-4ab0fbb7fb06,Bengi,,,redirect;handle
+317,player,Azhi,98,pl-4b494dc78064,Azhi,2023-05-02,2023-10-15,registry;handle;observed
+318,player,Broxah,99,pl-4d9fbbd4fc87,Broxah,2017-07-05,2017-07-07,registry;handle;observed
+319,player,Space,100,pl-4dd5ba8d4c3f,Space,2015-03-13,2015-03-14,handle
+320,player,Space (Seon Ho-san),100,pl-4dd5ba8d4c3f,Space,2015-03-13,2015-03-14,registry;observed
+321,player,Pobelter,101,pl-4e5fc04987a2,Pobelter,2012-11-29,2012-12-01,registry;handle;observed
+322,player,Helios,102,pl-4eba474eb02c,Helios,2012-11-29,2012-12-02,handle
+323,player,Helios (Shin Dong-jin),102,pl-4eba474eb02c,Helios,2012-11-29,2012-12-02,registry;observed
+324,player,Samux,103,pl-4fbd4da8de2a,Samux,2017-07-05,2017-07-08,registry;handle;observed
+325,player,Zoom,104,pl-509c517ede79,Zoom,2020-05-29,2020-05-30,registry;handle;observed
+326,player,FL4MER,105,pl-51788e5dee25,Flamer,,,redirect;handle
+327,player,Flamer,105,pl-51788e5dee25,Flamer,2026-10-13,2026-10-13,registry;handle;observed
+328,player,Huhi,106,pl-5215ccb9a2f9,Huhi,,,registry
+329,player,huhi,106,pl-5215ccb9a2f9,Huhi,2023-05-03,2023-05-14,handle;observed
+330,player,Labrov,107,pl-521952344656,Labrov,2023-10-11,2023-10-23,registry;handle;observed
+331,player,Gori,108,pl-5259efb749c2,Gori,2023-05-03,2023-05-14,registry;handle;observed
+332,player,Life,109,pl-52d46ffedcf8,Life,2020-05-29,2020-05-30,registry;handle;observed
+333,player,Bjergsen,110,pl-52d54c389563,Bjergsen,2015-03-13,2017-07-08,registry;handle;observed
+334,player,Peanut,111,pl-532e896395d0,Peanut,2023-05-09,2025-03-16,registry;handle;observed
+335,player,Wolf,112,pl-54f48e941f53,Wolf,,,handle
+336,player,Wolf (Nicole Sølvmose),112,pl-54f48e941f53,Wolf,,,registry
+337,player,Azog,113,pl-5561a5e75191,Azog,,,registry
+338,player,Wolf,113,pl-5561a5e75191,Azog,,,handle
+339,player,Wolf (Gabriel Eckenroth),113,pl-5561a5e75191,Azog,,,redirect
+340,player,Creme,114,pl-55d2f270fd48,Creme,2024-07-05,2025-03-15,registry;handle;observed
+341,player,Luncafoer,115,pl-564c201ceb75,Luncafoer,2026-10-13,2026-10-13,registry;handle;observed
+342,player,Spirit,116,pl-57e39463d863,Spirit,2015-03-13,2015-03-15,registry;handle;observed
+343,player,Stixxay,117,pl-57eb7d5f745b,Stixxay,2023-05-03,2023-05-14,registry;handle;observed
+344,player,Pixel,118,pl-5817280a2398,Pixel,2012-11-29,2012-11-30,registry;handle;observed
+345,player,Pixel3,118,pl-5817280a2398,Pixel,,,redirect;handle
+346,player,Darien,119,pl-58f8b23cffde,Darien,2012-11-29,2012-12-02,registry;handle;observed
+347,player,Puff,120,pl-59312b30a9c4,Puff,2020-05-29,2020-05-29,handle
+348,player,Puff (Ding Wang),120,pl-59312b30a9c4,Puff,2020-05-29,2020-05-29,registry;observed
+349,player,Canyon,121,pl-5ab895c8cc30,Canyon,2020-05-28,2024-07-05,registry;handle;observed
+350,player,Bin,122,pl-5baa07e91ebc,Bin,2023-05-03,2024-07-04,handle
+351,player,Bin (Chen Ze-Bin),122,pl-5baa07e91ebc,Bin,2023-05-03,2024-07-04,registry;observed
+352,player,Ghost,123,pl-5cfad1596010,Ghost,2020-05-28,2020-05-28,handle
+353,player,Ghost (Jang Yong-jun),123,pl-5cfad1596010,Ghost,2020-05-28,2020-05-28,registry;observed
+354,player,WildTurtle,124,pl-5d6d3596abd6,WildTurtle,2015-03-13,2015-03-15,registry;handle;observed
+355,player,Wolf,125,pl-5d8fc7828b3e,Wolf,,,handle
+356,player,Wolf (Wolf Schröder),125,pl-5d8fc7828b3e,Wolf,,,registry
+357,player,369,126,pl-5f193b350c8a,369,2020-05-28,2025-03-15,registry;handle;observed
+358,player,TkSing,127,pl-5f50848cc087,TkSing,2012-11-29,2012-11-30,registry;handle;observed
+359,player,Contractz,128,pl-5f77185975f7,Contractz,2017-07-05,2023-11-02,registry;handle;observed
+360,player,Trailblazer,129,pl-5fa14b286733,Trailblazer,2026-10-13,2026-10-13,handle
+361,player,Trailblazer (Oskar Moreno),129,pl-5fa14b286733,Trailblazer,2026-10-13,2026-10-13,registry;observed
+362,player,Mireu,130,pl-6174850a63e3,Mireu,2023-05-03,2023-10-13,registry;handle;observed
+363,player,Chovy,131,pl-65b2bb5d8420,Chovy,2020-05-29,2024-07-05,registry;handle;observed
+364,player,2lift,132,pl-66010cfcb7f8,Doublelift,,,redirect;handle
+365,player,Doublelift,132,pl-66010cfcb7f8,Doublelift,2011-06-18,2017-07-08,registry;handle;observed
+366,player,Liftlift,132,pl-66010cfcb7f8,Doublelift,,,redirect;handle
+367,player,Owpi,133,pl-66d81043c4bf,Owpi,2026-10-13,2026-10-13,registry;handle;observed
+368,player,Adam,134,pl-6729a8a79e7d,Adam,2023-10-11,2023-10-23,handle
+369,player,Adam (Adam Maanane),134,pl-6729a8a79e7d,Adam,2023-10-11,2023-10-23,registry;observed
+370,player,P1noy,135,pl-6771975ba298,P1noy,2015-03-13,2015-03-13,registry;handle;observed
+371,player,Yike,136,pl-67de34d413df,Yike,2023-05-02,2025-03-16,registry;handle;observed
+372,player,Jesiz,137,pl-6bec34aa7da2,Jesiz,2017-07-05,2017-07-07,registry;handle;observed
+373,player,Kaiwing,138,pl-6c77d97a07f0,Kaiwing,2025-03-11,2025-03-15,registry;handle;observed
+374,player,Aki no Ki,139,pl-6ca85288811d,Yeon,,,redirect;handle
+375,player,Yeon,139,pl-6ca85288811d,Yeon,2023-10-19,2025-03-14,handle
+376,player,Yeon (Sean Sung),139,pl-6ca85288811d,Yeon,2023-10-19,2025-03-14,registry;observed
+377,player,SwordArt,140,pl-6d448481baff,SwordArt,2015-03-13,2015-03-14,registry;handle;observed
+378,player,Tarzan,141,pl-6f1b618950f1,Tarzan,2023-10-19,2023-11-05,handle
+379,player,Tarzan (Lee Seung-yong),141,pl-6f1b618950f1,Tarzan,2023-10-19,2023-11-05,registry;observed
+380,player,Cyanide,142,pl-6f9b60f11683,Cyanide,2012-11-29,2012-12-03,registry;handle;observed
+381,player,Clid,143,pl-72219ca209d1,Clid,2020-05-29,2020-05-30,registry;handle;observed
+382,player,BrokenBlade,144,pl-729945178258,BrokenBlade,2023-05-02,2024-07-06,registry;handle;observed
+383,player,Wolf,145,pl-72cf922d8106,Wolf,,,handle
+384,player,Wolf (Harrison Ramsey),145,pl-72cf922d8106,Wolf,,,registry
+385,player,Lehends,146,pl-72db4b55f1e8,Lehends,2023-10-19,2024-07-05,registry;handle;observed
+386,player,L,147,pl-72dfcfb0c470,L,,,registry
+387,player,Licken,147,pl-72dfcfb0c470,L,2012-11-29,2012-11-30,redirect;handle;observed
+388,player,HotshotGG,148,pl-7312234a47d4,HotshotGG,2012-11-29,2012-12-02,registry;handle;observed
+389,player,Mystic,149,pl-734da8ec3147,Mystic,2015-03-13,2015-03-15,registry;handle;observed
+390,player,Doran,150,pl-73b6bb25f732,Doran,2020-05-29,2023-11-03,handle
+391,player,Doran (Choi Hyeon-jun),150,pl-73b6bb25f732,Doran,2020-05-29,2023-11-03,registry;observed
+392,player,Fudge,151,pl-73e7938dd46a,Fudge,2023-05-11,2023-10-26,registry;handle;observed
+393,player,Toyz,152,pl-7404beae16f8,Toyz,2012-11-29,2012-12-02,registry;handle;observed
+394,player,Yellowpete,153,pl-74e7bd9c535f,Yellowpete,,,registry
+395,player,yellowpete,153,pl-74e7bd9c535f,Yellowpete,2012-11-29,2012-12-02,handle;observed
+396,player,Fox,154,pl-766cd1e20555,Fox,2015-03-13,2015-03-14,handle
+397,player,Fox (Hampus Myhre),154,pl-766cd1e20555,Fox,2015-03-13,2015-03-14,registry;observed
+398,player,Aiming,155,pl-7686b834266d,Aiming,2023-10-19,2023-11-04,registry;handle;observed
+399,player,Sneaky,156,pl-771139a20b81,Sneaky,2015-03-13,2017-07-07,registry;handle;observed
+400,player,Khan,157,pl-772a3c28fa48,Khan,2020-05-28,2020-05-31,registry;handle;observed
+401,player,Zin,158,pl-775553aedc9a,Zin,2023-05-03,2023-05-05,registry;handle;observed
+402,player,Yagao,159,pl-77c409bcc4a7,Yagao,2020-05-29,2023-11-11,registry;handle;observed
+403,player,H0NEST,160,pl-784959c309d1,Honest,,,redirect;handle
+404,player,Honest,160,pl-784959c309d1,Honest,2026-10-13,2026-10-13,registry;handle;observed
+405,player,Betsy,161,pl-788540c6f017,Betsy,2015-03-13,2015-03-13,registry;handle;observed
+406,player,JackeyLove,162,pl-790b85af159e,JackeyLove,2020-05-28,2025-03-15,registry;handle;observed
+407,player,BeryL,163,pl-790d6f18b4cc,BeryL,2020-05-28,2020-05-28,registry;handle;observed
+408,player,Ly4ly4ly4,164,pl-7a1ff8bc58ac,Ly4ly4ly4,,,registry
+409,player,ly4ly4ly4,164,pl-7a1ff8bc58ac,Ly4ly4ly4,2012-11-29,2012-12-01,handle;observed
+410,player,EquivocaL,165,pl-7b6bcc93588c,Equivocal,2012-11-29,2012-12-01,handle;observed
+411,player,Equivocal,165,pl-7b6bcc93588c,Equivocal,,,registry
+412,player,Nio,166,pl-7d7d12e2285a,Nio,2026-10-13,2026-10-13,registry;handle;observed
+413,player,Nio3,166,pl-7d7d12e2285a,Nio,,,redirect;handle
+414,player,Meteos,167,pl-7d8018cdc0ae,Meteos,2015-03-13,2015-03-13,registry;handle;observed
+415,player,Weiwei,168,pl-7f09c61fd473,Weiwei,2023-10-19,2023-11-19,registry;handle;observed
+416,player,Nisqy,169,pl-7fef4c558fbe,Nisqy,2023-05-10,2023-10-26,registry;handle;observed
+417,player,MaRin,170,pl-815ce7e3242d,MaRin,2015-10-01,2015-10-01,registry;handle;observed
+418,player,Hai,171,pl-81a8afcae90a,Hai,2015-03-13,2015-03-13,registry;handle;observed
+419,player,Santorin,172,pl-81c77d101baf,Santorin,2015-03-13,2015-03-15,registry;handle;observed
+420,player,Sty1e,173,pl-820dff74d122,Sty1e,2023-05-03,2023-05-05,registry;handle;observed
+421,player,Vizicsacsi,174,pl-82fc074cf24e,Vizicsacsi,2017-07-05,2017-07-08,registry;handle;observed
+422,player,Southwind,175,pl-83eb4191ca74,Southwind,2020-05-29,2020-05-29,registry;handle;observed
+423,player,Palette,176,pl-85794effd6e8,Palette,2023-10-10,2023-10-27,registry;handle;observed
+424,player,Mancloud,177,pl-8593256a2112,Mancloud,,,registry
+425,player,mancloud,177,pl-8593256a2112,Mancloud,2012-11-29,2012-11-30,handle;observed
+426,player,Chauster,178,pl-8608a0596d8e,Chauster,2012-11-29,2012-12-02,registry;handle;observed
+427,player,Dshao,179,pl-860f0f054f3a,Dshao,,,registry
+428,player,Zig,179,pl-860f0f054f3a,Dshao,,,redirect;handle
+429,player,zig,179,pl-860f0f054f3a,Dshao,2017-07-05,2017-07-07,handle;observed
+430,player,Steal,180,pl-861ff0d995de,Steal,2023-05-02,2023-10-13,handle
+431,player,Steal (Mun Geon-yeong),180,pl-861ff0d995de,Steal,2023-05-02,2023-10-13,registry;observed
+432,player,Kujaa,181,pl-874d343e2a21,Kujaa,,,registry
+433,player,kujaa,181,pl-874d343e2a21,Kujaa,2011-06-18,2011-06-18,handle;observed
+434,player,Scout,182,pl-8a1db462be75,Scout,2023-10-19,2023-11-05,registry;handle;observed
+435,player,MISSING,183,pl-8af1d328d75e,MISSING,2023-05-14,2023-11-12,registry;handle;observed
+436,player,Missing,183,pl-8af1d328d75e,MISSING,2023-05-12,2023-05-12,handle;observed
+437,player,Levi,184,pl-8b49a459569b,Levi,2023-05-03,2023-10-27,registry;handle;observed
+438,player,Licorice,185,pl-8bbe219b3dba,Licorice,2023-05-03,2023-05-14,registry;handle;observed
+439,player,Hauntzer,186,pl-8bcda0b620c3,Hauntzer,2017-07-05,2017-07-08,registry;handle;observed
+440,player,Core,187,pl-8d6fa0c30bff,CoreJJ,,,redirect;handle
+441,player,Core JJ,187,pl-8d6fa0c30bff,CoreJJ,,,redirect;handle
+442,player,CoreJJ,187,pl-8d6fa0c30bff,CoreJJ,2023-10-19,2025-03-14,registry;handle;observed
+443,player,코어,187,pl-8d6fa0c30bff,CoreJJ,,,redirect;handle
+444,player,Jun,188,pl-8ed7c3d5c1ce,Jun,2024-07-04,2024-07-04,handle
+445,player,Jun (Yoon Se-jun),188,pl-8ed7c3d5c1ce,Jun,2024-07-04,2024-07-04,registry;observed
+446,player,Porschkub,189,pl-9009de8a4c2f,Porschkub,2012-11-29,2012-11-30,registry;handle;observed
+447,player,Bang,190,pl-91f48f1e8d72,Bang,2015-10-01,2015-10-01,registry;handle;observed
+448,player,BangBang,190,pl-91f48f1e8d72,Bang,,,redirect;handle
+449,player,Wolf,191,pl-91f79d68ed37,Wolf,,,handle
+450,player,Wolf (Creţu-Leorinţ Cătălin-Raul),191,pl-91f79d68ed37,Wolf,,,registry
+451,player,Eliade,192,pl-9283eed2fd14,Eliade,2012-11-29,2012-11-30,handle;observed
+452,player,Mithy,193,pl-931c00c75373,Mithy,,,registry
+453,player,mithy,193,pl-931c00c75373,Mithy,2017-07-05,2017-07-07,handle;observed
+454,player,Kiaya,194,pl-9692f5d3e143,Kiaya,2023-05-03,2023-10-27,registry;handle;observed
+455,player,XHazzard,195,pl-97aebb35d9ae,XHazzard,,,registry
+456,player,xHazzard,195,pl-97aebb35d9ae,XHazzard,2012-11-29,2012-12-01,handle;observed
+457,player,IgNar,196,pl-980eed2ac33d,Ignar,2023-10-19,2023-11-02,handle;observed
+458,player,Ignar,196,pl-980eed2ac33d,Ignar,,,registry
+459,player,Peyz,197,pl-9820bfd30f22,Peyz,2023-05-09,2024-07-05,registry;handle;observed
+460,player,Mikyx,198,pl-98c99431d6fa,Mikyx,2023-05-02,2024-07-06,registry;handle;observed
+461,player,Svenskeren,199,pl-98d90ef4f896,Svenskeren,2015-03-13,2017-07-08,registry;handle;observed
+462,player,Perkz,200,pl-98ef0353aebe,Perkz,2017-07-05,2017-07-07,registry;handle;observed
+463,player,BeBe,201,pl-99347ddec41d,BeBe,,,handle
+464,player,BeBe (Chang Bo-Wei),201,pl-99347ddec41d,BeBe,,,registry
+465,player,bebe,201,pl-99347ddec41d,BeBe,2012-11-29,2012-12-02,handle
+466,player,bebe (Chang Bo-Wei),201,pl-99347ddec41d,BeBe,2012-11-29,2012-12-02,observed
+467,player,Karsa,202,pl-9952c46db200,Karsa,2015-03-13,2020-05-31,registry;handle;observed
+468,player,Gloryy,203,pl-99ebf15c6908,Gloryy,2023-10-11,2023-10-15,registry;handle;observed
+469,player,Elk,204,pl-9b55fa90a42c,Elk,2023-05-03,2024-07-04,registry;handle;observed
+470,player,A Wolf,205,pl-9bfdb75e8ab9,Wolf,,,redirect;handle
+471,player,Wolf,205,pl-9bfdb75e8ab9,Wolf,2015-10-01,2015-10-01,handle
+472,player,Wolf (Korean),205,pl-9bfdb75e8ab9,Wolf,,,redirect
+473,player,Wolf (Lee Jae-wan),205,pl-9bfdb75e8ab9,Wolf,2015-10-01,2015-10-01,registry;observed
+474,player,228,206,pl-9d693eeee1d1,228,2012-11-29,2012-11-30,registry;handle;observed
+475,player,Kellin,207,pl-9da632e02ae1,Kellin,2020-05-30,2023-10-29,registry;handle;observed
+476,player,Doinb,208,pl-9e6009574258,Doinb,2020-05-28,2020-05-31,registry;handle;observed
+477,player,Tol2,209,pl-9ef488f85fd7,Tol2,,,registry
+478,player,tol2,209,pl-9ef488f85fd7,Tol2,2023-05-02,2023-05-05,handle;observed
+479,player,Smoothie,210,pl-9f13bbfe97be,Smoothie,2017-07-05,2017-07-07,registry;handle;observed
+480,player,Driver,211,pl-9fe4c68ec20d,Driver,2025-03-11,2025-03-15,registry;handle;observed
+481,player,Wickd,212,pl-9ffa3ea1a599,Wickd,2012-11-29,2012-12-02,registry;handle;observed
+482,player,NLgnz,213,pl-a2379d4ac571,NLgnz,2012-11-29,2012-11-30,registry;handle;observed
+483,player,Hang,214,pl-a25e0d0cec87,Hang,2023-10-19,2023-11-05,registry;handle;observed
+484,player,Kiin,215,pl-a4828757cdd1,Kiin,2023-10-19,2024-07-05,registry;handle;observed
+485,player,Darshan,216,pl-a5c4062e7b79,Darshan,,,registry
+486,player,ZionSpartan,216,pl-a5c4062e7b79,Darshan,2012-11-29,2012-11-30,handle;observed
+487,player,Zionspartan,216,pl-a5c4062e7b79,Darshan,,,redirect;handle
+488,player,MikeYeung,217,pl-a5f8580de6d5,MikeYeung,2017-07-05,2017-07-07,registry;handle;observed
+489,player,Denizz,218,pl-a8f20d31f75a,Denizzz,,,redirect;handle
+490,player,Denizzz,218,pl-a8f20d31f75a,Denizzz,,,registry
+491,player,denizzz,218,pl-a8f20d31f75a,Denizzz,2026-10-13,2026-10-13,handle;observed
+492,player,Faker,219,pl-a9073fde3cbe,Faker,2015-10-01,2024-07-07,registry;handle;observed
+493,player,LEElS,219,pl-a9073fde3cbe,Faker,,,redirect;handle
+494,player,S LEE,219,pl-a9073fde3cbe,Faker,,,redirect;handle
+495,player,Shunn,220,pl-ab120dedda64,Shunn,2023-10-11,2023-10-14,registry;handle;observed
+496,player,Ceos,221,pl-ac8b1bd24aea,Ceos,2023-05-02,2023-10-14,registry;handle;observed
+497,player,Bdd,222,pl-acdca2630bc3,Bdd,2020-05-29,2023-11-04,registry;handle;observed
+498,player,Nk Inc,223,pl-ad14fe03cdcb,Nk Inc,2012-11-29,2012-12-01,registry;handle;observed
+499,player,Route,224,pl-adc74704d65d,Route,2023-05-02,2023-10-14,registry;handle;observed
+500,player,Cabochard,225,pl-ae1590027ee5,Cabochard,2015-03-13,2015-03-13,registry;handle;observed
+501,player,TheOddOne,226,pl-ae3c5e3d14f5,TheOddOne,2012-11-29,2012-12-01,registry;handle;observed
+502,player,Hjarnaan,227,pl-ae555504cfda,Hjarnan,,,redirect;handle
+503,player,Hjarnan,227,pl-ae555504cfda,Hjarnan,2015-10-01,2015-10-01,registry;handle;observed
+504,player,Hjärnanbakomallt,227,pl-ae555504cfda,Hjarnan,,,redirect;handle
+505,player,Infinity,227,pl-ae555504cfda,Hjarnan,,,handle
+506,player,Infinity (Petter Freyschuss),227,pl-ae555504cfda,Hjarnan,,,redirect
+507,player,Yuyanjia,228,pl-aeb79d63faf7,Yuyanjia,,,registry
+508,player,yuyanjia,228,pl-aeb79d63faf7,Yuyanjia,2020-05-28,2020-05-31,handle;observed
+509,player,Lilballz,229,pl-af531e758f09,Lilballz,2012-11-29,2012-12-02,registry;handle;observed
+510,player,Razork,230,pl-b11a946eb07e,Razork,2023-10-19,2024-07-04,registry;handle;observed
+511,player,Chaox,231,pl-b2ae814e289e,Chaox,2012-11-29,2012-12-01,registry;handle;observed
+512,player,Ruler,232,pl-b2eb0fa2b016,Ruler,2020-05-29,2023-11-12,registry;handle;observed
+513,player,Expect,233,pl-b39673b7d333,Expect,2017-07-05,2017-07-07,registry;handle;observed
+514,player,TheShy,234,pl-b487de76c47d,TheShy,2020-05-29,2023-11-19,registry;handle;observed
+515,player,Ryu,235,pl-b50988561c5b,Ryu,2015-10-01,2017-07-07,registry;handle;observed
+516,player,Shy,236,pl-b71b1c6ff5f9,Shy,2015-03-13,2015-03-14,registry;handle;observed
+517,player,Captain Jack,237,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
+518,player,CaptainJack,237,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
+519,player,Cpt Jack,237,pl-b7314e5c0937,Cpt Jack,2012-11-29,2012-12-02,registry;handle;observed
+520,player,Cpt Jacky,237,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
+521,player,Jack Sparrowoo,237,pl-b7314e5c0937,Cpt Jack,,,redirect;handle
+522,player,ShiauC,238,pl-b78567af9da0,ShiauC,2023-10-11,2023-10-14,registry;handle;observed
+523,player,Snoopeh,239,pl-b9e346599dab,Snoopeh,2012-11-29,2012-12-02,registry;handle;observed
+524,player,SuperCat,240,pl-babb4fa57cc8,SuperCat,2012-11-29,2012-11-30,registry;handle;observed
+525,player,DontMashMe,241,pl-bae224b7be9c,Mash,2012-11-29,2012-11-30,handle;observed
+526,player,Dontmashme,241,pl-bae224b7be9c,Mash,,,redirect;handle
+527,player,Mash,241,pl-bae224b7be9c,Mash,,,registry
+528,player,Tian,242,pl-baf520dbc395,Tian,2020-05-28,2024-07-07,registry;handle;observed
+529,player,Blaber,243,pl-bb0a1078d808,Blaber,2023-05-11,2023-10-26,registry;handle;observed
+530,player,Zeka,244,pl-bb630851820a,Zeka,2025-03-10,2025-03-16,handle
+531,player,Zeka (Kim Geon-woo),244,pl-bb630851820a,Zeka,2025-03-10,2025-03-16,registry;observed
+532,player,Nuc,245,pl-bb94788ff471,Nuc,,,registry
+533,player,nuc,245,pl-bb94788ff471,Nuc,2023-10-11,2023-10-23,handle;observed
+534,player,Reginald,246,pl-bc11bb97614b,Reginald,2012-11-29,2012-12-01,registry;handle;observed
+535,player,Caps,247,pl-bd9b6abb3981,Caps,2017-07-05,2024-07-06,registry;handle;observed
+536,player,Bwipo,248,pl-bdd9c5b3297e,Bwipo,2024-07-05,2024-07-05,registry;handle;observed
+537,player,Kasing,249,pl-beca5a0b62d9,Kasing,,,registry
+538,player,Yerrow,249,pl-beca5a0b62d9,Kasing,,,redirect;handle
+539,player,YerrowStarr,249,pl-beca5a0b62d9,Kasing,,,redirect;handle
+540,player,kaSing,249,pl-beca5a0b62d9,Kasing,2015-10-01,2015-10-01,handle;observed
+541,player,Oscarinin,250,pl-c0d4303098dc,Oscarinin,2023-10-19,2024-07-04,registry;handle;observed
+542,player,Ceo,251,pl-c131cf2ffc9d,Ceo,2023-05-03,2023-10-13,registry;handle;observed
+543,player,ReD,252,pl-c1efceb33747,ReD,2012-11-29,2012-11-30,handle
+544,player,ReD (Lee Siu Hin),252,pl-c1efceb33747,ReD,2012-11-29,2012-11-30,registry;observed
+545,player,Light,253,pl-c1fbca4d55a8,Light,2023-10-19,2023-11-19,handle
+546,player,Light (Wang Guang-Yu),253,pl-c1fbca4d55a8,Light,2023-10-19,2023-11-19,registry;observed
+547,player,Keria,254,pl-c375f5f7e214,Keria,2020-05-29,2024-07-07,registry;handle;observed
+548,player,M RYU,254,pl-c375f5f7e214,Keria,,,redirect;handle
+549,player,RYU,254,pl-c375f5f7e214,Keria,,,handle
+550,player,RYU (Ryu Min-seok),254,pl-c375f5f7e214,Keria,,,redirect
+551,player,Teddy,255,pl-c4336ca98d45,Teddy,2020-05-28,2020-05-28,registry;handle;observed
+552,player,FBI,256,pl-c6cd4cf936fd,FBI,2023-10-19,2023-11-02,registry;handle;observed
+553,player,HaRleLuYaR,257,pl-c8ff2fe4ed1f,HaRleLuYaR,2012-11-29,2012-12-01,registry;handle;observed
+554,player,Aphromoo,258,pl-c9db4af88d94,Aphromoo,2012-11-29,2012-11-30,registry;handle;observed
+555,player,JunJia,259,pl-ca4dd0ca2cde,JunJia,2023-05-02,2025-03-15,registry;handle;observed
+556,player,Nuguri,260,pl-cad507df5bff,Nuguri,2020-05-28,2020-05-28,registry;handle;observed
+557,player,Ray,261,pl-cc172a7c8269,Ray,2017-07-05,2017-07-07,registry;handle;observed
+558,player,Xerxe,262,pl-cd9f1c601066,Xerxe,2017-07-05,2017-07-08,registry;handle;observed
+559,player,Fredy122,263,pl-cdfb24ed3024,Fredy122,,,registry
+560,player,fredy122,263,pl-cdfb24ed3024,Fredy122,2015-03-13,2015-03-14,handle;observed
+561,player,Tinowns,264,pl-ceeb0dcc8ff9,Tinowns,,,registry
+562,player,tinowns,264,pl-ceeb0dcc8ff9,Tinowns,2023-05-02,2023-10-14,handle;observed
+563,player,Palafox,265,pl-cf05b58284a8,Palafox,2023-10-19,2023-11-02,registry;handle;observed
+564,player,Carzzy,266,pl-cf3a57628428,Carzzy,2023-05-10,2023-10-26,registry;handle;observed
+565,player,Dan Dinh,267,pl-cf9686dcccb9,Dan Dinh,2011-06-18,2011-06-18,registry;handle;observed
+566,player,Daniel Dinh,267,pl-cf9686dcccb9,Dan Dinh,,,redirect;handle
+567,player,XUN,268,pl-cf9e8d504099,Xun,2023-05-03,2024-07-04,handle;observed
+568,player,Xun,268,pl-cf9e8d504099,Xun,,,registry
+569,player,PraY,269,pl-cfac2dfc6b09,PraY,2015-03-13,2015-03-14,registry;handle;observed
+570,player,XPeke,270,pl-d0b7e7a9a5c7,XPeke,,,registry
+571,player,xPeke,270,pl-d0b7e7a9a5c7,XPeke,2012-11-29,2012-12-03,handle;observed
+572,player,Impact,271,pl-d1f23f0d1361,Impact,2017-07-05,2025-03-14,registry;handle;observed
+573,player,Humanoid,272,pl-d2253641722e,Humanoid,2023-10-19,2024-07-04,registry;handle;observed
+574,player,Deft,273,pl-d4036e87f095,Deft,2020-05-29,2023-10-29,registry;handle;observed
+575,player,LokeN,274,pl-d43f4f4ad8bf,LokeN,2020-05-29,2020-05-30,registry;handle;observed
+576,player,Meiko,275,pl-d457ca47f291,Meiko,2024-07-05,2024-07-07,registry;handle;observed
+577,player,Busio,276,pl-d558ef953f27,Busio,2024-07-05,2024-07-05,registry;handle;observed
+578,player,Elyoya,277,pl-d7faf3da4ae5,Elyoya,2023-05-10,2023-10-26,registry;handle;observed
+579,player,Kuro,278,pl-da9101ad7c75,Kuro,,,registry
+580,player,kurO,278,pl-da9101ad7c75,Kuro,2015-03-13,2015-03-14,handle;observed
+581,player,LightSludge,279,pl-dbf762de41c2,LightSludge,2012-11-29,2012-12-01,registry;handle;observed
+582,player,Lemongod,280,pl-df2dffe1a94e,Lemongod,2012-11-29,2012-12-01,registry;handle;observed
+583,player,Flame,281,pl-dfb0f521ab24,Flame,2012-11-29,2012-12-02,registry;handle;observed
+584,player,Goldtec,281,pl-dfb0f521ab24,Flame,,,redirect;handle
+585,player,Saintvicious,282,pl-dfdbfbbca188,Saintvicious,2012-11-29,2012-12-02,registry;handle;observed
+586,player,Slayder,283,pl-e008695bfdbf,Slayder,2023-10-10,2023-10-27,registry;handle;observed
+587,player,Locodoco,284,pl-e0430684decb,Locodoco,2012-11-29,2012-12-02,registry;handle;observed
+588,player,Alex Ich,285,pl-e13c198e8ad1,Alex Ich,2012-11-29,2012-12-02,registry;handle;observed
+589,player,Hylissang,286,pl-e2b03393c436,Hylissang,2017-07-05,2023-10-26,registry;handle;observed
+590,player,Massu,287,pl-e3526a467b8d,Massu,2024-07-05,2024-07-05,registry;handle;observed
+591,player,CaviaVampier,288,pl-e48cd72e6441,CaviaVampier,,,registry
+592,player,NOTTILTEDAD,288,pl-e48cd72e6441,CaviaVampier,2026-10-13,2026-10-13,redirect;handle;observed
+593,player,Dhokla,289,pl-e6ad910e1dd9,Dhokla,2023-10-19,2023-11-02,registry;handle;observed
+594,player,Malunoo,290,pl-e6ea94509514,Malunoo,2012-11-29,2012-12-01,registry;handle;observed
+595,player,Xllyra,291,pl-e740caa83eef,Xllyra,2012-11-29,2012-11-30,registry;handle;observed
+596,player,Weixiao,292,pl-e756bfbb1fbf,Wx,2012-11-29,2012-12-03,redirect;handle;observed
+597,player,Wx,292,pl-e756bfbb1fbf,Wx,,,registry
+598,player,0N,293,pl-e8a01133b135,ON,2023-10-19,2023-10-19,redirect;handle;observed
+599,player,ON,293,pl-e8a01133b135,ON,2023-05-03,2024-07-04,registry;handle;observed
+600,player,Rookie,294,pl-ea0bedb7c8b0,Rookie,2020-05-29,2020-05-29,registry;handle;observed
+601,player,Zven,295,pl-ec44ccc0ab19,Zven,2017-07-05,2023-10-26,registry;handle;observed
+602,player,Sparda,296,pl-ecb29e5be82a,Sparda,2023-10-11,2023-10-15,registry;handle;observed
+603,player,Rhux,297,pl-f13f53485693,Rhux,2012-11-29,2012-12-02,registry;handle;observed
+604,player,Kanavi,298,pl-f14a87d7f36e,Kanavi,2020-05-29,2025-03-15,registry;handle;observed
+605,player,Jensen,299,pl-f273c1b56f63,Jensen,2017-07-05,2017-07-07,registry;handle;observed
+606,player,Misaya,300,pl-f4248fd0e7b0,Misaya,2012-11-29,2012-12-03,registry;handle;observed
+607,player,Stanley,301,pl-f4537f49d815,Stanley,2012-11-29,2012-12-02,registry;handle;observed
+608,player,Chasy,302,pl-f45540cfe7c6,Chasy,2023-05-10,2023-10-26,registry;handle;observed
+609,player,Lustboy,303,pl-f62b7e33f680,Lustboy,2012-11-29,2015-03-15,registry;handle;observed
+610,player,Salce,304,pl-f65a0114681c,Salce,2011-06-18,2011-06-18,registry;handle;observed
+611,player,Bigfatlp,305,pl-f68a2e6a9131,Bigfatlp,,,registry
+612,player,bigfatlp,305,pl-f68a2e6a9131,Bigfatlp,2012-11-29,2012-12-02,handle;observed
+613,player,Gemini,306,pl-f6ece80b88d6,Gemini,2023-10-11,2023-10-14,registry;handle;observed
+614,player,Voyboy,307,pl-f6fc15ed916b,Voyboy,2012-11-29,2012-12-02,registry;handle;observed
+615,player,Aria,308,pl-f7e4772830f8,Aria,2023-05-02,2023-10-13,handle
+616,player,Aria (Lee Ga-eul),308,pl-f7e4772830f8,Aria,2023-05-02,2023-10-13,registry;observed
+617,player,NRated,309,pl-f840821f40b3,NRated,,,registry
+618,player,nRated,309,pl-f840821f40b3,NRated,2012-11-29,2015-03-14,handle;observed
+619,player,TakashiX,310,pl-f9ab7e6bbab9,TakashiX,2012-11-29,2012-11-30,registry;handle;observed
+620,player,FORG1VEN,311,pl-f9c91110cf06,FORG1VEN,,,registry
+621,player,FORG1VENGRE,311,pl-f9c91110cf06,FORG1VEN,2015-03-13,2015-03-14,redirect;handle;observed
+622,player,Cop,312,pl-fb8f3c31ab70,Cop,2012-11-29,2012-12-02,registry;handle;observed
+623,player,Insta,313,pl-fc8b4388595e,Insta,2012-11-29,2012-11-30,handle;observed
+624,player,Berserker,314,pl-fcce0232eec8,Berserker,2023-05-11,2023-10-26,handle
+625,player,Berserker (Kim Min-cheol),314,pl-fcce0232eec8,Berserker,2023-05-11,2023-10-26,registry;observed
+626,player,Inspired,315,pl-fcf93b5c9910,Inspired,2024-07-05,2024-07-05,registry;handle;observed
+627,player,ApaMEN,316,pl-fd70df2ca547,ApaMEN,,,registry
+628,player,apaMEN,316,pl-fd70df2ca547,ApaMEN,2023-10-11,2023-10-13,handle;observed
+629,player,ShowMaker,317,pl-fe04ca019dbc,ShowMaker,2020-05-28,2023-10-29,registry;handle;observed
+630,player,Rekkles,318,pl-fe55ff0b9934,Rekkles,2012-11-29,2017-07-07,registry;handle;observed
+631,player,Fenry,319,pl-fe61053241f2,Fenry,,,registry
+632,player,Wolf,319,pl-fe61053241f2,Fenry,,,handle
+633,player,Wolf (Trần Hữu Vinh),319,pl-fe61053241f2,Fenry,,,redirect
+634,player,Extinkt,320,pl-fe75e9b28961,Extinkt,2012-11-29,2012-12-01,registry;handle;observed
+635,player,BB Muffin,321,pl-fec5b667d0a0,Bbmuffin,,,redirect;handle
+636,player,Bbmuffin,321,pl-fec5b667d0a0,Bbmuffin,,,registry
+637,player,I Love BB Muffin,321,pl-fec5b667d0a0,Bbmuffin,,,redirect;handle
+638,player,Love BB Muffin,321,pl-fec5b667d0a0,Bbmuffin,,,redirect;handle
+639,player,bbmuffin,321,pl-fec5b667d0a0,Bbmuffin,2026-10-13,2026-10-13,handle;observed
+640,player,Bong,322,pl-ff2354b0c7a0,Bong,2023-05-03,2023-10-13,handle
+641,player,Bong (Cho Bo-woong),322,pl-ff2354b0c7a0,Bong,2023-05-03,2023-10-13,registry;observed
+642,player,MiSTakE,323,pl-fff507a8ff48,MiSTakE,2012-11-29,2012-12-02,registry;handle;observed
+643,team,Gen.G,1,tm-00ac0e66d991,Gen.G,2020-05-29,2024-07-05,registry;redirect;observed
+644,team,NaJin Black Sword,2,tm-01149467eceb,NaJin Black Sword,2013-10-15,2013-10-15,registry;redirect;observed
+645,team,Flash Wolves,3,tm-0904a6aad568,Flash Wolves,,,registry
+646,team,Yoe Flash Wolves,3,tm-0904a6aad568,Flash Wolves,,,redirect
+647,team,yoe Flash Wolves,3,tm-0904a6aad568,Flash Wolves,2013-10-23,2015-03-14,observed
+648,team,CJ Entus,4,tm-0ee1d7d7c31a,CJ Entus,2015-03-13,2015-03-14,registry;redirect;observed
+649,team,Samsung Blue,5,tm-0fbcd42c658a,Samsung Blue,2013-10-08,2013-10-18,registry;redirect;observed
+650,team,Sirius Vega,6,tm-15c93e781db8,Sirius Vega,2013-10-09,2013-10-09,observed
+651,team,Dignitas,7,tm-16eb5486accd,Dignitas,2012-11-16,2012-11-17,registry;redirect;observed
+652,team,Team Curse,8,tm-1c6a25914979,Team Liquid,2012-11-29,2012-12-02,rename;redirect;observed
+653,team,Team Liquid,8,tm-1c6a25914979,Team Liquid,2023-10-19,2025-03-14,registry;redirect;observed
+654,team,KaBuM! Esports,9,tm-1d1f59fbb46b,KaBuM! Ilha das Lendas,2013-11-29,2013-11-29,rename;redirect;observed
+655,team,KaBuM! Ilha das Lendas,9,tm-1d1f59fbb46b,KaBuM! Ilha das Lendas,,,registry
+656,team,w2w,10,tm-21c450ee62b5,w2w,2013-10-11,2013-10-11,observed
+657,team,KT Rolster,11,tm-25b9b1c91296,KT Rolster,2023-10-19,2023-11-04,registry;redirect;observed
+658,team,STAR (Chinese Team),12,tm-263dfb964df4,STAR (Chinese Team),2013-10-11,2013-10-11,observed
+659,team,Taipei Snipers,13,tm-2e06dfb46008,Taipei Snipers,2013-10-24,2013-10-24,registry;redirect;observed
+660,team,Kx.Happy,14,tm-31c66ffca0fd,Revenger,2013-10-11,2013-10-12,rename;redirect;observed
+661,team,Revenger,14,tm-31c66ffca0fd,Revenger,,,registry
+662,team,Revenger (Chinese Team),14,tm-31c66ffca0fd,Revenger,,,registry
+663,team,Dark Passage,15,tm-38d08bea0716,Dark Passage,2013-11-29,2013-11-30,registry;redirect;observed
+664,team,DKB XPERION NXT,16,tm-38fe94c67f67,DKB XPERION NXT,2026-10-13,2026-10-13,registry;redirect;observed
+665,team,LOUD,17,tm-3a76b34e3c82,LOUD,2023-05-02,2023-10-14,registry;redirect;observed
+666,team,Team Dynamic,18,tm-3bb658d12868,Team Dynamic,2012-11-29,2012-11-30,registry;redirect;observed
+667,team,SK Gaming,19,tm-3bcb9efd5846,SK Gaming,2015-03-13,2015-03-14,registry;redirect;observed
+668,team,Power Grip,20,tm-3c0f9aa41aa9,Power Grip,2013-10-11,2013-10-11,observed
+669,team,Bilibili Gaming,21,tm-3c8aa94cea87,Bilibili Gaming,2023-05-03,2024-07-04,registry;redirect;observed
+670,team,Chunnam Techno University,22,tm-3cc0e146a806,Chunnam Techno University,2013-10-08,2013-10-08,registry;redirect;observed
+671,team,Jin Air Green Wings Falcons,23,tm-40a04d27191c,Jin Air Green Wings Falcons,2013-10-09,2013-10-09,registry;redirect;observed
+672,team,CJ Entus Frost,24,tm-43ac03320fb2,CJ Entus Frost,2013-10-07,2013-10-14,registry;redirect;observed
+673,team,CJ Entus Blaze,25,tm-46d49b3c0bfb,CJ Entus Blaze,2013-10-07,2013-12-01,registry;redirect;observed
+674,team,Team Curse Europe,26,tm-478a97e49e4b,Team LoLPro,2012-11-29,2012-12-01,rename;redirect;observed
+675,team,Team LoLPro,26,tm-478a97e49e4b,Team LoLPro,,,registry
+676,team,FlyQuest,27,tm-49b0ea9ef3a5,FlyQuest,2024-07-05,2024-07-05,registry;redirect;observed
+677,team,Royal Paladin Eclipse,28,tm-4e30564007de,Royal Paladin Eclipse,,,registry
+678,team,Royal Paladin eSports Eclipse,28,tm-4e30564007de,Royal Paladin Eclipse,2013-10-25,2013-11-28,registry;redirect;observed
+679,team,VTG Raon,29,tm-4f714d2a1e35,VTG Raon,2013-10-07,2013-10-07,observed
+680,team,Counter Logic Gaming Europe,30,tm-4fc0614f3ef7,Counter Logic Gaming Europe,2012-11-29,2012-12-02,registry;redirect;observed
+681,team,Weibo Gaming,31,tm-50038f5deaa0,Weibo Gaming,2023-10-19,2023-11-19,registry;redirect;observed
+682,team,Absolute Legends NA,32,tm-503f8cb57765,Absolute Legends NA,2012-11-14,2012-11-17,registry;redirect;observed
+683,team,Bs As Fried Chick,33,tm-5175b5157712,Bs As Fried Chick,2013-11-03,2013-11-03,observed
+684,team,Wings of Aurora,34,tm-521ce3e3bb63,Wings of Aurora,2013-10-11,2013-10-11,registry;redirect;observed
+685,team,Royal Paladin eSports,35,tm-53dd4b59dfc2,Royal Paladin eSports,2013-11-03,2013-11-04,registry;redirect;observed
+686,team,MiTH Flashdive,36,tm-54bc80be4246,MiTH Flashdive,2013-11-28,2013-11-28,registry;redirect;observed
+687,team,The RED,37,tm-5c4704a8d2d5,The RED,2013-11-28,2013-11-30,registry;redirect;observed
+688,team,DragonX,38,tm-5e9e02c1c425,Kiwoom DRX,2020-05-29,2020-05-29,redirect;observed
+689,team,Kiwoom DRX,38,tm-5e9e02c1c425,Kiwoom DRX,,,registry
+690,team,RisingStars Gaming,39,tm-5f8b817d64fb,RisingStars Gaming,2013-10-11,2013-10-12,registry;redirect;observed
+691,team,Team FeaR,40,tm-60eac80615ba,Team FeaR,2012-11-29,2012-11-30,registry;redirect;observed
+692,team,Team Livemore,41,tm-62a416cd5c8a,Team Livemore,2013-10-11,2013-10-13,registry;redirect;observed
+693,team,Shifters,42,tm-64248513e110,Shifters,,,registry
+694,team,Team BDS,42,tm-64248513e110,Shifters,2023-10-11,2023-10-23,rename;redirect;observed
+695,team,Mook,43,tm-64cb77f147a8,Mook,2013-10-09,2013-10-11,observed
+696,team,Dash9 Gaming,44,tm-65e25e287fe3,Dash9 Gaming,2013-11-28,2013-11-28,registry;redirect;observed
+697,team,Millenium,45,tm-6ffab94dda6a,Millenium,2013-11-29,2013-11-29,registry;redirect;observed
+698,team,Quantic Gaming,46,tm-70d121e8f3b3,Quantic Gaming,2012-11-14,2012-11-16,registry;redirect;observed
+699,team,Meat Playground,47,tm-71d9f0e83524,Meat Playground,2012-11-29,2012-12-01,registry;redirect;observed
+700,team,Top Esports,48,tm-71fb2632f448,Top Esports,2020-05-28,2025-03-15,registry;redirect;observed
+701,team,Renegades of Hell,49,tm-72afe2933fcf,Renegades of Hell,2013-10-23,2013-11-03,registry;redirect;observed
+702,team,Jin Air Green Wings Stealths,50,tm-7487f9830c97,Jin Air Green Wings Stealths,2013-10-10,2013-10-15,registry;redirect;observed
+703,team,Invictus Gaming,51,tm-7bf6e5998b18,Invictus Gaming,2013-10-11,2020-05-29,registry;redirect;observed
+704,team,H2k-Gaming,52,tm-7e5eb06d8646,H2k-Gaming,2015-10-01,2015-10-01,registry;redirect;observed
+705,team,CompLexity Gaming,53,tm-80aa4e025750,compLexity Gaming,,,registry;redirect
+706,team,compLexity Gaming,53,tm-80aa4e025750,compLexity Gaming,2013-11-28,2013-11-28,registry;observed
+707,team,NRG,54,tm-816e45e1dd85,NRG,2023-10-19,2023-11-02,registry;redirect;observed
+708,team,Singapore Sentinels,55,tm-8785e1bcf241,Singapore Sentinels,2012-11-29,2012-12-01,registry;redirect;observed
+709,team,Unicorns of Love,56,tm-87d2c66de97e,Unicorns of Love.CIS,2017-07-05,2017-07-08,rename;redirect;observed
+710,team,Unicorns of Love.CIS,56,tm-87d2c66de97e,Unicorns of Love.CIS,,,registry
+711,team,LNG Esports,57,tm-8a3085fd91e5,LNG Esports,2023-10-19,2023-11-05,registry;redirect;observed
+712,team,Ahq eSports Club,58,tm-93bb7e588f1d,ahq eSports Club,,,registry;redirect
+713,team,ahq eSports Club,58,tm-93bb7e588f1d,ahq eSports Club,2013-10-24,2013-10-25,registry;observed
+714,team,DetonatioN FocusMe,59,tm-94fa0eac3812,DetonatioN FocusMe,2023-05-02,2023-10-13,registry;redirect;observed
+715,team,Lemondogs Argentina,60,tm-9511549e87d7,Lemondogs Argentina,2013-11-03,2013-11-03,registry;redirect;observed
+716,team,SK Telecom,61,tm-9a4fde0c4aad,T1,,,redirect
+717,team,SK Telecom T1,61,tm-9a4fde0c4aad,T1,2013-10-14,2015-10-01,rename;redirect;observed
+718,team,SKT T1,61,tm-9a4fde0c4aad,T1,,,redirect
+719,team,T1,61,tm-9a4fde0c4aad,T1,2020-05-28,2024-07-07,registry;redirect;observed
+720,team,PENTAGRAM,62,tm-9c6aa95845a7,PENTAGRAM,,,registry
+721,team,Rampage,62,tm-9c6aa95845a7,PENTAGRAM,2013-11-29,2013-11-29,rename;redirect;observed
+722,team,ESC Gaming,63,tm-9eb09b7f9ca5,ESC Gaming,2013-11-28,2013-11-28,registry;redirect;observed
+723,team,Xenics Storm,64,tm-a0ec4f1001f4,Xenics Storm,2013-10-10,2013-10-11,registry;redirect;observed
+724,team,ChiLeanFivE The Legacy,65,tm-a24a3e0f24c0,ChiLeanFivE The Legacy,2013-10-23,2013-11-03,registry;redirect;observed
+725,team,G2 Esports,66,tm-a491a98abe90,G2 Esports,2017-07-05,2024-07-06,registry;redirect;observed
+726,team,Royal Club,67,tm-a86e5d5c6076,Royal Club,2013-10-11,2013-10-13,registry;redirect;observed
+727,team,Karmine Corp,68,tm-aaa6ae2cc044,Karmine Corp,2025-03-10,2025-03-16,registry;redirect;observed
+728,team,NaJin White Shield,69,tm-ad25099785e8,NaJin White Shield,2013-10-09,2013-10-17,registry;redirect;observed
+729,team,CTBC Flying Oyster,70,tm-aecf2932501d,CTBC Flying Oyster,2023-10-11,2025-03-15,registry;redirect;observed
+730,team,LGD Gaming,71,tm-afbbbc1a704d,LGD Gaming,2013-10-11,2013-10-11,registry;redirect;observed
+731,team,High Hopes,72,tm-b4df91431199,High Hopes,2013-10-25,2013-11-03,observed
+732,team,Fnatic,73,tm-b54099fc2014,Fnatic,2012-11-29,2024-07-04,registry;redirect;observed
+733,team,Energy Pacemaker,74,tm-b5ef6905579e,Energy Pacemaker,,,registry
+734,team,Energy Pacemaker.HK,74,tm-b5ef6905579e,Energy Pacemaker,2013-11-29,2013-11-30,redirect;observed
+735,team,DAMWON Gaming,75,tm-b5f2d1b32dc6,Dplus Kia,2020-05-28,2020-05-28,observed
+736,team,Damwon Gaming,75,tm-b5f2d1b32dc6,Dplus Kia,,,redirect
+737,team,Dplus Kia,75,tm-b5f2d1b32dc6,Dplus Kia,2023-10-19,2023-10-29,registry;redirect;observed
+738,team,PSG Talon,76,tm-b894b9da44f7,PSG Talon,2023-05-02,2023-10-15,registry;redirect;observed
+739,team,LYON,77,tm-b8bca1021cd5,LYON,,,registry
+740,team,LYON (2024 American Team),77,tm-b8bca1021cd5,LYON,,,registry
+741,team,Lyon Gaming,77,tm-b8bca1021cd5,LYON,,,registry
+742,team,Lyon Gaming (2013 Latin American Team),77,tm-b8bca1021cd5,LYON,2013-11-28,2013-12-01,rename;redirect;observed
+743,team,Movistar R7,77,tm-b8bca1021cd5,LYON,2023-05-03,2023-10-13,rename;redirect;observed
+744,team,Rainbow7,77,tm-b8bca1021cd5,LYON,,,redirect
+745,team,MeetYourMakers,78,tm-baeebc746cc5,MeetYourMakers,2013-11-28,2013-11-28,registry;redirect;observed
+746,team,Azubu Blaze,79,tm-bc44d3ff4d27,Azubu Blaze,2012-11-29,2012-12-02,registry;redirect;observed
+747,team,CLG Prime,80,tm-be1c5136689c,Counter Logic Gaming,2012-11-29,2012-12-02,observed;declared
+748,team,Counter Logic Gaming,80,tm-be1c5136689c,Counter Logic Gaming,2012-11-16,2012-12-02,observed;declared
+749,team,Team ANG,81,tm-c1c29bcba8cf,Team ANG,2013-11-29,2013-11-29,registry;redirect;observed
+750,team,Phoenix1,82,tm-c450827d3eea,Sentinels,2017-07-05,2017-07-07,rename;redirect;observed
+751,team,Sentinels,82,tm-c450827d3eea,Sentinels,,,registry
+752,team,KT Rolster Bullets,83,tm-c5e835c550a5,KT Rolster Bullets,2013-10-08,2013-10-11,registry;redirect;observed
+753,team,Cloud9,84,tm-c6640c0ccfe4,Cloud9,2015-03-13,2023-10-26,registry;redirect;observed
+754,team,Team Immunity,85,tm-c8a4660dc55a,Team Immunity,2013-11-29,2013-11-29,registry;redirect;observed
+755,team,MAD Lions,86,tm-c92a50e0c8f7,Movistar KOI,2023-05-10,2023-10-26,observed
+756,team,MAD Lions KOI,86,tm-c92a50e0c8f7,Movistar KOI,,,rename
+757,team,Mad Lions,86,tm-c92a50e0c8f7,Movistar KOI,,,redirect
+758,team,Movistar KOI,86,tm-c92a50e0c8f7,Movistar KOI,,,registry
+759,team,Positive Energy,87,tm-c9351ba2561f,Positive Energy,2013-10-11,2013-10-12,registry;redirect;observed
+760,team,Taipei Assassins,88,tm-c94b01026f88,Taipei Assassins,2012-11-29,2013-10-23,registry;redirect;observed
+761,team,Rare Atom,89,tm-cacc3b6212da,Rare Atom,,,registry
+762,team,Vici Gaming,89,tm-cacc3b6212da,Rare Atom,2013-10-11,2013-10-11,rename;redirect;observed
+763,team,TSM,90,tm-cb15b056a5ad,TSM,2012-11-29,2017-07-08,registry;redirect;observed
+764,team,GE Tigers,91,tm-cd8d0e943ce5,ROX Tigers,2015-03-13,2015-03-14,redirect;observed
+765,team,ROX Tigers,91,tm-cd8d0e943ce5,ROX Tigers,,,registry
+766,team,Golden Guardians,92,tm-d3b6d66f7710,Golden Guardians,2023-05-03,2023-05-14,registry;redirect;observed
+767,team,Team Secret Whales,93,tm-d8c2d4d2eca5,Team Secret Whales,,,registry
+768,team,Team Whales,93,tm-d8c2d4d2eca5,Team Secret Whales,2023-10-11,2023-10-15,rename;redirect;observed
+769,team,LMQ,94,tm-db47240fee06,Team Impulse,2013-10-11,2013-10-11,rename;redirect;observed
+770,team,Team Impulse,94,tm-db47240fee06,Team Impulse,,,registry
+771,team,GAM Esports,95,tm-dcd83f572277,GAM Esports,2023-05-03,2023-10-27,registry;redirect;observed
+772,team,JD Gaming,96,tm-e0ac3973ed3e,JD Gaming,2020-05-29,2023-11-12,registry;redirect;observed
+773,team,FunPlus Phoenix,97,tm-e0e36dac6ddd,FunPlus Phoenix,2020-05-28,2020-05-31,registry;redirect;observed
+774,team,Cash,98,tm-e2da108f6300,Cash,2013-10-11,2013-10-11,observed
+775,team,Moscow 5,99,tm-e603064f4a0f,Moscow 5,,,registry
+776,team,Moscow Five,99,tm-e603064f4a0f,Moscow 5,2012-11-29,2012-12-02,registry;redirect;observed
+777,team,KT Rolster Arrows,100,tm-eb02401f849a,KT Rolster Arrows,2013-10-08,2013-10-08,registry;redirect;observed
+778,team,EPIK Gamer,101,tm-eb2eec43fa28,EPIK Gamer,,,registry
+779,team,Epik Gamer,101,tm-eb2eec43fa28,EPIK Gamer,2011-06-18,2011-06-18,registry;redirect;observed
+780,team,Isurus,102,tm-edc35c2d5808,Isurus,2013-11-03,2013-11-29,registry;redirect;observed
+781,team,Team WE,103,tm-f5665c13ca53,Team WE,2012-11-29,2015-03-15,registry;redirect;observed
+782,team,Hanwha Life Esports,104,tm-f5ff3f4474af,Hanwha Life Esports,2025-03-10,2025-03-16,registry;redirect;observed
+783,team,IceLanD,105,tm-f8a350bee7a9,IceLanD,2012-11-29,2012-11-30,registry;redirect;observed
+784,team,Against All authority,106,tm-fa32a4bab6cd,against All authority,,,registry;redirect
+785,team,against All authority,106,tm-fa32a4bab6cd,against All authority,2011-06-18,2011-06-18,registry;observed
+786,team,Oh My God,107,tm-fa988589be4e,Oh My God,2013-10-11,2013-12-01,registry;redirect;observed
+787,team,The Bandits Prime,108,tm-fb205a4a7874,The Bandits Prime,2026-10-13,2026-10-13,registry;redirect;observed
+788,team,Samsung Ozone,109,tm-fb40b0e96e89,Samsung White,2013-10-14,2013-10-14,redirect;observed
+789,team,Samsung White,109,tm-fb40b0e96e89,Samsung White,,,registry
+790,team,Gambit Gaming,110,tm-fea9d39f1fb4,Gambit Gaming,2015-03-13,2015-03-13,registry;redirect;observed
+791,team,Blackbean,111,tm-ffeb9af2caae,Blackbean,2012-11-29,2012-11-30,registry;redirect;observed

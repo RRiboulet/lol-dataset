@@ -1,10 +1,6 @@
 {
   "format": "lol-dataset-provenance/1",
-<<<<<<< HEAD
-  "entityDigest": "fa9b5714a23a115f5cd18007569bae2d74ec1c18a8d70db313268b5a6577e15b",
-=======
-  "entityDigest": "361b7b1632b803aa50962edf51da11a6b65fc9d32d12845fe0912d14e92d8d39",
->>>>>>> 805d5db (feat(dataset): crawl every admitted event and report coverage per era (#10))
+  "entityDigest": "131f3b259607b6167ea18bf964865f80aaff4cf88e8b9c0d5856dc7bc5eb5adc",
   "entities": [
     {
       "file": "events.jsonl",
@@ -44,7 +40,7 @@
     {
       "file": "series-conflicts.jsonl",
       "records": 14,
-      "sha256": "1667590bb5c76bb14d00a3911cf1fdba6fde54f21f785cadd5191e1d44aa7554"
+      "sha256": "79b937f59de3ab6c81dd60eb3d5438e8f4d926f97e2d7696fc3b8682d814fff4"
     },
     {
       "file": "player-games.jsonl",

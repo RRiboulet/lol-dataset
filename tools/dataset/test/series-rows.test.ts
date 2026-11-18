@@ -273,8 +273,16 @@ test("the corrected evidence prose matches the bytes: 6 CLG Prime series rows an
 	const series = result.scoreboards.matches.filter((match) => underIpl(match.overviewPage));
 	const seriesStrings = (name: string): number =>
 		series.flatMap((match) => match.sides).filter((side) => side.sourceTeam === name).length;
-	assert.equal(seriesStrings("CLG Prime"), 6, "six series rows use the 2012 name");
-	assert.equal(seriesStrings("Counter Logic Gaming"), 3, "the wildcard qualifiers already use the org name");
+	assert.equal(seriesStrings("CLG Prime"), 6, "six emitted series rows use the 2012 name");
+	// The org name on the series table belongs to the wildcard qualifiers, which are not the
+	// event (ticket 10): they are still in the recorded payloads, so the evidence is read
+	// there rather than from the emitted matches.
+	assert.equal(seriesStrings("Counter Logic Gaming"), 0, "no emitted IPL 5 series uses the org name");
+	const source = await iplSource();
+	const qualifierSeries = [...source.series.values()].filter(
+		(match) => match.page.startsWith(`${IPL}/Qualifiers/`) && match.sides.includes("Counter Logic Gaming"),
+	);
+	assert.equal(qualifierSeries.length, 3, "the wildcard qualifiers already use the org name");
 	const games = result.scoreboards.games.filter((game) => underIpl(game.overviewPage));
 	assert.equal(
 		games.flatMap((game) => game.sides).filter((side) => side.sourceTeam === "Counter Logic Gaming").length,
