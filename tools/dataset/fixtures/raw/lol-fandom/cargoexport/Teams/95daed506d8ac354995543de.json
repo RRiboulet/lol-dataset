@@ -1,0 +1,149 @@
+[
+    {
+        "_pageName": "Samsung Blue",
+        "Name": "Samsung Blue",
+        "OverviewPage": "Samsung Blue",
+        "Region": "Korea",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Singapore Sentinels",
+        "Name": "Singapore Sentinels",
+        "OverviewPage": "Singapore Sentinels",
+        "Region": "SEA",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Taipei Assassins",
+        "Name": "Taipei Assassins",
+        "OverviewPage": "Taipei Assassins",
+        "Region": "LMS",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Taipei Snipers",
+        "Name": "Taipei Snipers",
+        "OverviewPage": "Taipei Snipers",
+        "Region": "LMS",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team ANG",
+        "Name": "Team ANG",
+        "OverviewPage": "Team ANG",
+        "Region": "LAN",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team BDS",
+        "Name": "Team BDS",
+        "OverviewPage": "Team BDS",
+        "Region": "EMEA",
+        "RenamedTo": "Shifters"
+    },
+    {
+        "_pageName": "Team Curse",
+        "Name": "Team Curse",
+        "OverviewPage": "Team Curse",
+        "Region": "North America",
+        "RenamedTo": "Team Liquid"
+    },
+    {
+        "_pageName": "Team Curse Europe",
+        "Name": "Team Curse Europe",
+        "OverviewPage": "Team Curse Europe",
+        "Region": "Europe",
+        "RenamedTo": "Team LoLPro"
+    },
+    {
+        "_pageName": "Team FeaR",
+        "Name": "Team FeaR",
+        "OverviewPage": "Team FeaR",
+        "Region": "North America",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team Immunity",
+        "Name": "Team Immunity",
+        "OverviewPage": "Team Immunity",
+        "Region": "Oceania",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team Livemore",
+        "Name": "Team Livemore",
+        "OverviewPage": "Team Livemore",
+        "Region": "China",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team WE",
+        "Name": "Team WE",
+        "OverviewPage": "Team WE",
+        "Region": "China",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Team Whales",
+        "Name": "Team Whales",
+        "OverviewPage": "Team Whales",
+        "Region": "Asia Pacific",
+        "RenamedTo": "Team Secret Whales"
+    },
+    {
+        "_pageName": "The Bandits Prime",
+        "Name": "The Bandits Prime",
+        "OverviewPage": "The Bandits Prime",
+        "Region": "EMEA",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "The RED",
+        "Name": "The RED",
+        "OverviewPage": "The RED",
+        "Region": "CIS",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Top Esports",
+        "Name": "Top Esports",
+        "OverviewPage": "Top Esports",
+        "Region": "China",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "TSM",
+        "Name": "TSM",
+        "OverviewPage": "TSM",
+        "Region": "North America",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Unicorns of Love",
+        "Name": "Unicorns of Love",
+        "OverviewPage": "Unicorns of Love",
+        "Region": "Europe",
+        "RenamedTo": "Unicorns of Love.CIS"
+    },
+    {
+        "_pageName": "Vici Gaming",
+        "Name": "Vici Gaming",
+        "OverviewPage": "Vici Gaming",
+        "Region": "China",
+        "RenamedTo": "Rare Atom"
+    },
+    {
+        "_pageName": "Weibo Gaming",
+        "Name": "Weibo Gaming",
+        "OverviewPage": "Weibo Gaming",
+        "Region": "China",
+        "RenamedTo": null
+    },
+    {
+        "_pageName": "Wings of Aurora",
+        "Name": "Wings of Aurora",
+        "OverviewPage": "Wings of Aurora",
+        "Region": "China",
+        "RenamedTo": null
+    }
+]

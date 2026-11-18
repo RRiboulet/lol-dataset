@@ -451,7 +451,12 @@ export function assembleIdentity(
 	// ---- team entities: one per rename chain, anchored on the chain's root ---------
 	const teams: TeamRecord[] = [];
 	const teamIdByPage = new Map<string, string>();
-	for (const { root, chain } of teamChains(sources.teams)) {
+	// A redirect name can be what a rename points at (measured: Lyon Gaming (2013 Latin
+	// American Team) → `Rainbow7` → page Movistar R7), so the chain follows the source's
+	// own redirect table rather than failing on a link the registry does carry.
+	const redirectPage = new Map<string, string>();
+	for (const name of sources.teamNames) redirectPage.set(name.allName, name.page);
+	for (const { root, chain } of teamChains(sources.teams, redirectPage)) {
 		const current = chain[chain.length - 1];
 		const id = surrogateId(KIND_PREFIX.team, root.page);
 		teams.push({ id, name: displayName(current.name), overviewPage: current.page, region: current.region });
@@ -857,11 +862,19 @@ function compare(a: string[], b: string[]): number {
  * a cycle, an edge to a page no payload carries — is a source inconsistency that
  * would otherwise be resolved by whichever payload happened to be read first, so it
  * stops the build instead.
+ *
+ * A `RenamedTo` value is usually the successor **page**, and sometimes a name that page
+ * used to have (`Lyon Gaming (2013 Latin American Team)` → `Rainbow7`, which is now a
+ * `TeamRedirects` name for page `Movistar R7`). Following the source's own redirect row
+ * is not a guess; failing to would split one team into two because a page was renamed
+ * twice. A target that is neither a page nor a redirect name is still a hard stop.
  */
-function teamChains(teams: SourceTeam[]): { root: SourceTeam; chain: SourceTeam[] }[] {
+function teamChains(teams: SourceTeam[], redirectPage: Map<string, string>): { root: SourceTeam; chain: SourceTeam[] }[] {
 	const byPage = new Map(teams.map((team) => [team.page, team]));
+	/** The page a `RenamedTo` target denotes, or `undefined` when the registries cannot say. */
+	const successor = (target: string): SourceTeam | undefined => byPage.get(target) ?? byPage.get(redirectPage.get(target) ?? "");
 	for (const team of teams) {
-		if (team.renamedTo !== "" && !byPage.has(team.renamedTo)) {
+		if (team.renamedTo !== "" && successor(team.renamedTo) === undefined) {
 			throw new Error(
 				`${team.sourceFile}: team ${JSON.stringify(team.page)} says it was renamed to ${JSON.stringify(team.renamedTo)}, ` +
 					"but no Teams payload carries that page — the registry is incomplete, and guessing the successor would split one identity in two",
@@ -871,14 +884,15 @@ function teamChains(teams: SourceTeam[]): { root: SourceTeam; chain: SourceTeam[
 	const predecessor = new Map<string, string>();
 	for (const team of teams) {
 		if (team.renamedTo === "") continue;
-		const seen = predecessor.get(team.renamedTo);
+		const target = successor(team.renamedTo) as SourceTeam;
+		const seen = predecessor.get(target.page);
 		if (seen !== undefined) {
 			throw new Error(
-				`two team pages claim to have been renamed into ${JSON.stringify(team.renamedTo)}: ` +
+				`two team pages claim to have been renamed into ${JSON.stringify(target.page)}: ` +
 					`${JSON.stringify(seen)} and ${JSON.stringify(team.page)} — one identity cannot have two histories`,
 			);
 		}
-		predecessor.set(team.renamedTo, team.page);
+		predecessor.set(target.page, team.page);
 	}
 	const chains: { root: SourceTeam; chain: SourceTeam[] }[] = [];
 	const visited = new Set<string>();
@@ -893,7 +907,7 @@ function teamChains(teams: SourceTeam[]): { root: SourceTeam; chain: SourceTeam[
 			visited.add(current.page);
 			chain.push(current);
 			if (current.renamedTo === "") break;
-			current = byPage.get(current.renamedTo) as SourceTeam;
+			current = successor(current.renamedTo) as SourceTeam;
 		}
 		chains.push({ root: team, chain });
 	}

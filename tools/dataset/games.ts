@@ -34,6 +34,8 @@
 
 import type { EventRecord } from "./assemble.ts";
 import type { CachedPayload } from "./cache.ts";
+import type { GameFormats } from "./formats.ts";
+import { blindPickFor } from "./formats.ts";
 import type { Coverage, EraTable } from "./eras.ts";
 import { coverageOf, eraOn } from "./eras.ts";
 import type { IdentityIndex, Resolution } from "./identity.ts";
@@ -70,6 +72,12 @@ export type DraftRecord = {
 	fidelity: "ordered" | "unordered";
 	/** The source's side-switch flag, only where an ordered row states one. */
 	switchedSides?: boolean;
+	/**
+	 * Present and true only for a game `rules/game-formats.json` declares played without a
+	 * pick-ban phase. It explains an otherwise impossible draft: no bans, and the same
+	 * champion possibly on both sides (measured on 2020 Mid-Season Cup game 1s).
+	 */
+	blindPick?: boolean;
 	sides: [DraftSideRecord, DraftSideRecord];
 };
 
@@ -205,6 +213,8 @@ export type ScoreboardInput = {
 	eras: EraTable;
 	/** The payloads, for the sidecars: the event report needs to know what was asked for. */
 	payloads: CachedPayload[];
+	/** Declared game formats: games with no pick-ban phase (ticket 10). */
+	formats: GameFormats;
 };
 
 const byId = <T extends { id: string }>(a: T, b: T): number => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
@@ -246,20 +256,29 @@ function resolveTeam(identity: IdentityIndex, source: string, date: string, wher
 }
 
 /**
- * The selected event a source page belongs to, by page prefix at a `/` boundary.
+ * Is `page` the event's own page, or a stage page under it? The rule selects the event page.
  *
- * The source splits an event across stage pages (`…/Play-In`, `…/Main Event`) while the
- * rule selects the tournament page, so a game has to be attached rather than joined.
- * The longest matching page wins, so overlapping event names cannot steal each other's
- * games. A page under no selected event belongs to an event the rule excluded, and it
- * is returned to the caller rather than emitted.
+ * One kind of subpage is **not** the event: the qualifiers. The spec's event set
+ * (Open assumption 2) excludes "qualifiers for an already-included event", and the
+ * wiki puts them beneath the event's page (`2013 World Cyber Games/Qualifiers/China`),
+ * so a prefix-only test absorbed 62 qualifier series from five countries into World
+ * Cyber Games 2013 — a competition the rule never selected. The boundary is the first
+ * path segment, so `…/Qualifiers/China` and `…/Qualifier/…` are excluded while a stage
+ * page such as `…/Main Event` is not. The rows are still crawled; the build counts
+ * them as ignored rather than emitting them as the event's games, which is the same
+ * treatment any other page outside the selected window gets.
  */
-/** Is `page` the event's own page, or a stage page under it? The rule selects the event page. */
 export function pageUnderEvent(page: string, overviewPage: string): boolean {
-	return page === overviewPage || page.startsWith(`${overviewPage}/`);
+	if (page === overviewPage) return true;
+	if (!page.startsWith(`${overviewPage}/`)) return false;
+	const section = page.slice(overviewPage.length + 1).split("/")[0].trim().toLowerCase();
+	return section !== "qualifiers" && section !== "qualifier";
 }
 
 function eventForPage(page: string, events: EventRecord[]): EventRecord | undefined {
+	// The longest matching page wins, so overlapping event names cannot steal each other's
+	// games; a page under no selected event (an excluded event, or a qualifier under one —
+	// see `pageUnderEvent`) is returned to the caller rather than emitted.
 	let found: EventRecord | undefined;
 	for (const event of events) {
 		if (!pageUnderEvent(page, event.overviewPage)) continue;
@@ -292,23 +311,53 @@ type MatchSeries = { eventId: string; teamIds: [string, string]; record: MatchRe
  * A `PicksAndBansS7` row carries numbered slots and is emitted as `ordered`; only the
  * list fields of `ScoreboardGames` are `unordered`, and those are sorted by canonical id
  * so their list position never becomes an invented draft order (R5, R8).
+ *
+ * A game the formats file declares blind pick is the exception that proves the rule: it
+ * has no pick-ban phase at all, so it states five picks a side and no bans, and the same
+ * champion may stand on both sides (legal in blind pick, impossible in a draft). The
+ * declaration is checked against the rows rather than trusted: a declared blind pick
+ * that carries an ordered row or a ban stops the build.
  */
-function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string): { draft?: DraftRecord; coverage: Coverage } {
+function assembleDraft(
+	game: SourceGame,
+	input: ScoreboardInput,
+	where: string,
+	blindPick: boolean,
+): { draft?: DraftRecord; coverage: Coverage } {
 	const resolveChampion = (source: string): DraftEntry => {
 		const found = input.identity.resolve("champion", source, game.date);
 		if (found === null) throw new Error(`${where}: draft champion ${JSON.stringify(source)} resolves to no entity`);
 		return { championId: found.id, championName: found.name, sourceChampion: source };
 	};
-	// A champion occurs at most once across both sides' picks and bans: one entity
-	// cannot be drafted twice in the same game, whichever column it arrived in.
-	const checkDuplicates = (entries: DraftEntry[]): void => {
-		const ids = new Set(entries.map((entry) => entry.championId));
-		if (ids.size !== entries.length) throw new Error(`${where}: the same champion appears twice in this game's draft — picks and bans on both sides must be distinct`);
+	/**
+	 * A champion occurs at most once per side: a team cannot pick the same champion twice.
+	 * Across the two sides it is a blind-pick fact, and is refused outside a declared
+	 * blind pick — measured on 2020 Mid-Season Cup `Semifinals_1_1` and `Finals_1_1`,
+	 * where Varus stands on both teams in a game the source also says had no bans.
+	 */
+	const checkDuplicates = (sides: readonly DraftSideRecord[]): void => {
+		for (const side of sides) {
+			const ids = new Set([...side.picks, ...side.bans].map((entry) => entry.championId));
+			if (ids.size !== side.picks.length + side.bans.length) {
+				throw new Error(`${where}: the same champion appears twice on the ${side.side} side — a team cannot draft one champion twice`);
+			}
+		}
+		if (blindPick) return;
+		const ids = sides.flatMap((side) => [...side.picks, ...side.bans]).map((entry) => entry.championId);
+		if (new Set(ids).size !== ids.length) {
+			throw new Error(
+				`${where}: the same champion appears on both sides — that is legal only in blind pick, ` +
+					"so declare the game in rules/game-formats.json (or fix the row)",
+			);
+		}
 	};
 	const cover = (sides: [DraftSideRecord, DraftSideRecord], ordered: boolean): Coverage => {
+		// Blind pick has no ban phase: a complete draft there is five picks a side and no
+		// bans, and blaming it for the absent bans would mark it `partial` forever.
+		const groups = blindPick ? (["picks"] as const) : (["picks", "bans"] as const);
 		const complete = sides.every((side) =>
-			["picks", "bans"].every((group) => {
-				const entries = side[group as "picks" | "bans"];
+			groups.every((group) => {
+				const entries = side[group];
 				return entries.length === 5 && (!ordered || entries.every((entry, index) => entry.slot === index + 1));
 			}),
 		);
@@ -317,6 +366,12 @@ function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string):
 	};
 
 	const ordered = input.drafts.find((draft) => draft.gameId === game.gameId);
+	if (ordered !== undefined && blindPick) {
+		throw new Error(
+			`${where}: the formats file declares this game blind pick, but a PicksAndBansS7 row exists for it — ` +
+				"a blind pick has no pick-ban phase, so either the declaration or the row is wrong",
+		);
+	}
 	if (ordered !== undefined) {
 		if (game.date < "2017-01-01") {
 			throw new Error(`${where}: an ordered draft is joined to a ${game.date} game, before the ordered-draft era`);
@@ -329,7 +384,7 @@ function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string):
 			return { side: index === 0 ? "blue" : "red", picks, bans };
 		}) as [DraftSideRecord, DraftSideRecord];
 		const coverage = cover(sides, true);
-		checkDuplicates(sides.flatMap((side) => [...side.picks, ...side.bans]));
+		checkDuplicates(sides);
 		// An ordered row that states nothing is not evidence that the game had no draft:
 		// the list fields may still carry it. Fall through to them rather than emitting a
 		// false `unavailable` (R6).
@@ -351,8 +406,23 @@ function assembleDraft(game: SourceGame, input: ScoreboardInput, where: string):
 		return { side: index === 0 ? "blue" : "red", picks, bans };
 	}) as [DraftSideRecord, DraftSideRecord];
 	const coverage = cover(sides, false);
-	checkDuplicates(sides.flatMap((side) => [...side.picks, ...side.bans]));
-	return coverage === "unavailable" ? { coverage } : { draft: { fidelity: "unordered", sides }, coverage };
+	checkDuplicates(sides);
+	if (blindPick) {
+		// Checked, not trusted: the declaration says there was no ban phase, so a stated ban
+		// contradicts it and the build says so rather than dropping the row silently.
+		const stated = sides.flatMap((side) => side.bans.map((entry) => entry.sourceChampion));
+		if (stated.length > 0) {
+			throw new Error(
+				`${where}: the formats file declares this game blind pick, but the source states ${stated.length} ban(s) ` +
+					`(${stated.slice(0, 5).join(", ")}) — a blind pick has no ban phase`,
+			);
+		}
+	}
+	if (coverage === "unavailable") return { coverage };
+	return {
+		draft: { fidelity: "unordered", ...(blindPick ? { blindPick: true } : {}), sides },
+		coverage,
+	};
 }
 
 type GameAssembly = {
@@ -416,7 +486,8 @@ function assembleGame(
 		}
 	}
 
-	const draft = assembleDraft(game, input, where);
+	const blindPick = blindPickFor(input.formats, event.overviewPage, game.gameId) !== undefined;
+	const draft = assembleDraft(game, input, where, blindPick);
 
 	const matchId = surrogateId("mt", game.matchId);
 	const series = seriesById.get(game.matchId);
@@ -704,6 +775,22 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 			[b.kind, b.eventId, b.matchId, b.gameId ?? "", b.sourceGameId ?? ""],
 		),
 	);
+
+	// A declaration that matches no game of an event the corpus carries is a typo, and a typo
+	// here is silent in the worst way: the games it meant to cover would fail as a duplicate
+	// champion instead of pointing at the file to fix. An event the corpus does not carry is
+	// skipped, so a narrow fixture set can still use the same rules file.
+	for (const rule of input.formats.blindPick) {
+		const under = input.games.filter((game) => eventForPage(game.page, input.events)?.overviewPage === rule.overviewPage);
+		if (under.length === 0) continue;
+		const pattern = new RegExp(rule.gameIdPattern, "u");
+		if (!under.some((game) => pattern.test(game.gameId))) {
+			throw new Error(
+				`rules/game-formats.json: the blind-pick declaration for ${JSON.stringify(rule.overviewPage)} ` +
+					`(pattern ${JSON.stringify(rule.gameIdPattern)}) matches none of its ${under.length} game(s) — the corpus has games for that event, so this is a typo`,
+			);
+		}
+	}
 
 	const eventGames: EventGamesRecord[] = input.events.map((event) => {
 		const seen = perEvent.get(event.id) ?? { games: 0, matches: 0 };

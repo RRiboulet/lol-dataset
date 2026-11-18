@@ -136,7 +136,7 @@ function findRow(
 const ISO = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}Z)?$/;
 
 /** Field names allowed to hold an ISO string. Nothing else may be a date-like value. */
-const DATE_FIELDS = new Set(["dateStart", "dateTimeUtc", "firstSeen", "lastSeen"]);
+const DATE_FIELDS = new Set(["dateStart", "dateTimeUtc", "firstSeen", "lastSeen", "from"]);
 
 /** Assert every ISO-shaped string sits in a field that is defined to hold data dates. */
 function assertDatesAreData(file: string, value: unknown, field: string, where: string): void {
@@ -479,7 +479,7 @@ test("`--check` rejects a manifest whose entities list is out of order, duplicat
 		(manifest.entities as unknown[]).splice(0, 1);
 	});
 	assert.equal(missing.code, 1);
-	assert.match(missing.output, /lists 11 entity file\(s\), the build emits 12/, missing.output);
+	assert.match(missing.output, /lists 13 entity file\(s\), the build emits 14/, missing.output);
 	assert.match(missing.output, /does not list events\.jsonl/, missing.output);
 });
 

@@ -295,6 +295,8 @@ test("IPL 5 builds, validates and passes the gate, with the event report saying 
 			matches: result.scoreboards.matches,
 			eventGames: result.scoreboards.eventGames,
 			seriesConflicts: result.scoreboards.seriesConflicts,
+			eventCoverage: result.coverage.events,
+			eraCoverage: result.coverage.eras,
 			playerGames: result.playerGames.rows,
 			eras: result.eras,
 		}),
@@ -305,7 +307,7 @@ test("IPL 5 builds, validates and passes the gate, with the event report saying 
 	assert.ok(report, "every selected event is reported on");
 	assert.equal(report.state, "recorded");
 	assert.equal(report.games, 72, "the four recorded payloads carry 72 games");
-	assert.equal(report.matches, 42, "48 series rows, 6 of them contradicted and not emitted");
+	assert.equal(report.matches, 36, "48 series rows: 6 contradicted and not emitted, 6 wildcard-qualifier series that are not the event");
 	// The four payloads that were pending are in the cache the build reads, and the
 	// manifest pins them: a reader can walk from a game's source ids to its bytes.
 	const pinned = new Set(result.manifest.payloads.map((payload) => payload.file));
@@ -336,7 +338,7 @@ test("the build's summary names both counts, so a crawl cannot absorb them silen
 	assert.match(stdout, /6 series row\(s\) every game naming them contradicts — not emitted/);
 	assert.match(stdout, /14 series conflict row\(s\) committed: 8 detached game\(s\), 6 contradicted series/);
 	assert.match(stdout, /committed data matches a rebuild/);
-	assert.match(stdout, /277 game\(s\), 132 match\(es\)/);
+	assert.match(stdout, /377 game\(s\), 230 match\(es\)/);
 });
 
 test("no disagreement is left unclassified: the class decides the handling", async () => {

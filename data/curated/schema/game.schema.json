@@ -78,7 +78,7 @@
 				"draft": {
 					"type": "string",
 					"enum": ["complete", "partial", "unavailable"],
-					"description": "`complete` needs five picks and five bans on both sides, in numbered slots when fidelity is ordered. `partial` means some draft data was stated; `unavailable` means the corpus stated no draft, and no `draft` object is emitted. Absence is never written as five empty lists."
+					"description": "`complete` needs five picks on both sides and, unless the game is a declared blind pick (`draft.blindPick`), five bans a side too; ordered drafts must also carry their slots. `partial` means some draft data was stated; `unavailable` means the corpus stated no draft, and no `draft` object is emitted. Absence is never written as five empty lists."
 				},
 				"playerStats": {
 					"type": "string",
@@ -91,7 +91,7 @@
 			"type": "object",
 			"additionalProperties": false,
 			"required": ["fidelity", "sides"],
-			"description": "The champion draft of this game (spec R5). Picks and bans are canonical champion references beside the source string. `fidelity` is a fact about the source, never inferred from list position or role order. A champion occurs at most once across both sides' picks and bans.",
+			"description": "The champion draft of this game (spec R5). Picks and bans are canonical champion references beside the source string. `fidelity` is a fact about the source, never inferred from list position or role order. A champion occurs at most once per side, and once across both sides unless `blindPick` is true — the declared case of a game with no pick-ban phase, where both teams may lock the same champion (measured on the 2020 Mid-Season Cup's game 1s).",
 			"properties": {
 				"fidelity": {
 					"type": "string",
@@ -101,6 +101,10 @@
 				"switchedSides": {
 					"type": "boolean",
 					"description": "The source's SwitchedSides flag, present only on ordered drafts where the source recorded one."
+				},
+				"blindPick": {
+					"type": "boolean",
+					"description": "Present and true only for a game declared in tools/dataset/rules/game-formats.json as played without a pick-ban phase. Such a game states five picks a side and no bans, and the same champion may stand on both sides. Declared, never inferred: a game with no bans and no ordered draft row is indistinguishable from an early-era game whose bans the wiki did not record."
 				},
 				"sides": {
 					"type": "array",

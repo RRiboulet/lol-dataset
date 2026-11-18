@@ -1,0 +1,146 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "urn:lol-dataset:schema:era-coverage:1",
+	"title": "Per-era coverage report",
+	"description": "One row of data/curated/era-coverage.jsonl for every era the era table (tools/dataset/rules/game-eras.json) declares for team statistics, in the table's own order: the same aggregation of per-game coverage markers as event-coverage.jsonl, but keyed by the era the game was played in (spec D4, R6). Every declared era is present, including the ones no game has reached yet — an absent row would be indistinguishable from 'nobody looked', the distinction event-games.jsonl makes for events. Because a game carries exactly one era, the `games` column sums to the number of rows in games.jsonl, and each group's counts sum to `games`; the invariant gate re-counts both. The window boundaries are the table's, never inferred from the corpus; `from` repeats the boundary so a reader can sort and read this file alone.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"era",
+		"from",
+		"games",
+		"events",
+		"coverage"
+	],
+	"properties": {
+		"era": {
+			"type": "string",
+			"minLength": 1,
+			"description": "The era id, as games.jsonl states it in `era`."
+		},
+		"from": {
+			"type": "string",
+			"pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+			"description": "First UTC date this era governs, copied from the era table."
+		},
+		"games": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "How many emitted games carry this era. Sums across rows to the number of games in games.jsonl."
+		},
+		"events": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "How many distinct events contribute at least one game to this era."
+		},
+		"coverage": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"teamStats",
+				"draft",
+				"playerStats"
+			],
+			"description": "The three field groups a game's coverage marker names, aggregated over the games in this era.",
+			"properties": {
+				"teamStats": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"complete",
+						"partial",
+						"unavailable",
+						"state"
+					],
+					"properties": {
+						"complete": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"partial": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"unavailable": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"state": {
+							"type": "string",
+							"enum": [
+								"complete",
+								"partial",
+								"unavailable"
+							],
+							"description": "`complete` only when every game in the era is, `unavailable` when the era has no games, `partial` otherwise."
+						}
+					}
+				},
+				"draft": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"complete",
+						"partial",
+						"unavailable",
+						"state"
+					],
+					"properties": {
+						"complete": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"partial": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"unavailable": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"state": {
+							"type": "string",
+							"enum": [
+								"complete",
+								"partial",
+								"unavailable"
+							]
+						}
+					}
+				},
+				"playerStats": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": [
+						"complete",
+						"partial",
+						"unavailable",
+						"state"
+					],
+					"properties": {
+						"complete": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"partial": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"unavailable": {
+							"type": "integer",
+							"minimum": 0
+						},
+						"state": {
+							"type": "string",
+							"enum": [
+								"complete",
+								"partial",
+								"unavailable"
+							]
+						}
+					}
+				}
+			}
+		}
+	}
+}

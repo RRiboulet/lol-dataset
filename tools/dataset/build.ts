@@ -29,9 +29,13 @@ import * as path from "node:path";
 import type { AssembledDataset } from "./assemble.ts";
 import { assembleDataset } from "./assemble.ts";
 import { readPayloads } from "./cache.ts";
+import type { CoverageReport } from "./coverage.ts";
+import { assembleCoverage } from "./coverage.ts";
 import { toJsonl } from "./emit.ts";
 import type { EraTable } from "./eras.ts";
 import { DEFAULT_ERA_FILE, loadEraTable } from "./eras.ts";
+import type { GameFormats } from "./formats.ts";
+import { DEFAULT_FORMAT_FILE, loadGameFormats } from "./formats.ts";
 import type { ScoreboardAssembly } from "./games.ts";
 import { assembleScoreboards, selectedGameIds } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
@@ -54,6 +58,8 @@ export const OUTPUTS = {
 	"events.jsonl": { schema: "event.schema.json" },
 	"event-selection.jsonl": { schema: "event-selection.schema.json" },
 	"event-games.jsonl": { schema: "event-games.schema.json" },
+	"event-coverage.jsonl": { schema: "event-coverage.schema.json" },
+	"era-coverage.jsonl": { schema: "era-coverage.schema.json" },
 	"games.jsonl": { schema: "game.schema.json" },
 	"matches.jsonl": { schema: "match.schema.json" },
 	"series-conflicts.jsonl": { schema: "series-conflicts.schema.json" },
@@ -76,6 +82,8 @@ export type BuildOptions = {
 	aliasFile?: string;
 	/** The era table that judges coverage. Defaults to `rules/game-eras.json`. */
 	eraFile?: string;
+	/** The declared game formats (blind pick). Defaults to `rules/game-formats.json`. */
+	formatFile?: string;
 	/** Directory holding the checked-in schemas. Defaults to `data/curated/schema/`. */
 	schemaDir?: string;
 };
@@ -91,12 +99,16 @@ export type BuildResult = AssembledDataset & {
 	identity: AssembledIdentity;
 	/** Games, matches and the per-event game report (ticket 03). */
 	scoreboards: ScoreboardAssembly;
+	/** The per-event and per-era aggregation of the games' coverage markers (ticket 10). */
+	coverage: CoverageReport;
 	/** One row per player per game (ticket 04). */
 	playerGames: PlayerGamesAssembly;
 	/** The rule that produced the events, so a caller can explain a decision. */
 	rule: EventSelectionRule;
 	/** The era table coverage was judged against, for callers that explain a marker. */
 	eras: EraTable;
+	/** The declared game formats (blind pick), for callers that explain a draft. */
+	formats: GameFormats;
 };
 
 const TOOL_DIR = import.meta.dirname;
@@ -132,6 +144,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 
 	const rule = await loadRule(ruleFile);
 	const eras = await loadEraTable(options.eraFile ?? DEFAULT_ERA_FILE);
+	const formats = await loadGameFormats(options.formatFile ?? DEFAULT_FORMAT_FILE);
 	const payloads = await readPayloads(options.rawDir);
 	if (payloads.length === 0) {
 		// An empty cache is a failed build, not an empty dataset: emitting zero rows
@@ -167,6 +180,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		identity: identity.index,
 		eras,
 		payloads,
+		formats,
 	});
 
 	const playerGames = assemblePlayerGames({
@@ -176,10 +190,16 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	});
 	for (const game of scoreboards.games) game.coverage.playerStats = playerGames.coverageByGame.get(game.id) ?? "unavailable";
 
+	// After the player rows, because `playerStats` is the marker they set: aggregating
+	// before it would report every game's player coverage as unavailable.
+	const coverage = assembleCoverage({ events: assembled.events, games: scoreboards.games, eras });
+
 	const files: Record<OutputFile, string> = {
 		"events.jsonl": toJsonl(assembled.events),
 		"event-selection.jsonl": toJsonl(assembled.selection),
 		"event-games.jsonl": toJsonl(scoreboards.eventGames),
+		"event-coverage.jsonl": toJsonl(coverage.events),
+		"era-coverage.jsonl": toJsonl(coverage.eras),
 		"games.jsonl": toJsonl(scoreboards.games),
 		"matches.jsonl": toJsonl(scoreboards.matches),
 		"series-conflicts.jsonl": toJsonl(scoreboards.seriesConflicts),
@@ -214,11 +234,13 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		matches: scoreboards.matches,
 		eventGames: scoreboards.eventGames,
 		seriesConflicts: scoreboards.seriesConflicts,
+		eventCoverage: coverage.events,
+		eraCoverage: coverage.eras,
 		playerGames: playerGames.rows,
 		eras,
 	});
 
-	return { ...assembled, files, manifest, manifestText, identity, scoreboards, playerGames, rule, eras };
+	return { ...assembled, files, manifest, manifestText, identity, scoreboards, coverage, playerGames, rule, eras, formats };
 }
 
 /**

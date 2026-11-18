@@ -87,11 +87,13 @@ series rows keep `sourceTeam: "CLG Prime"` beside the one canonical `teamId`.
 
 ### Why the contradicted series are dropped rather than emitted with zero games
 
-`matches.jsonl` carries series rows whose games the corpus does not contain — IPL 5's
-six wildcard-qualifier series have none, because the source has series rows for the
-qualifiers and no scoreboard games. So "a match with no games" is an existing state,
-and emitting a contradicted row would be *indistinguishable* from it: an analyst would
-read "games missing" instead of "this row is contradicted". Dropping it, counting it and
+`matches.jsonl` carries series rows whose games the corpus does not contain — at the
+time, IPL 5's six wildcard-qualifier series; after ticket 10 those six are excluded
+because a qualifier page is not the event, and World Cyber Games 2013's 48 series are
+the example instead (the source carries its `MatchSchedule` rows and no scoreboard games
+at all). So "a match with no games" is an existing state, and emitting a contradicted
+row would be *indistinguishable* from it: an analyst would read "games missing" instead
+of "this row is contradicted". Dropping it, counting it and
 naming it in the classification below says the true thing, and a source correction (or
 a future crawl that proves the row's teams) can restore it deliberately. What is lost
 is a series score the source attached to a key its own game rows refuse, and because

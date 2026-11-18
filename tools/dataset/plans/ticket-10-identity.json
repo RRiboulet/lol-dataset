@@ -1,0 +1,156 @@
+{
+  "queries": [
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "OverviewPage IN ('Absolute Legends NA','Bilibili Gaming','Blackbean','Bs As Fried Chick','CJ Entus','CJ Entus Blaze','CJ Entus Frost','CTBC Flying Oyster','Cash','ChiLeanFivE The Legacy','Chunnam Techno University','Cloud9','Counter Logic Gaming Europe','DAMWON Gaming','Dark Passage','Dash9 Gaming','DetonatioN FocusMe','Dignitas','Dplus Kia','DragonX','ESC Gaming','Energy Pacemaker.HK','FlyQuest','Fnatic','FunPlus Phoenix')",
+      "order_by": "OverviewPage ASC",
+      "limit": 100
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "TeamRedirects",
+      "fields": "_pageName,AllName,OtherName",
+      "where": "AllName IN ('Absolute Legends NA','Bilibili Gaming','Blackbean','Bs As Fried Chick','CJ Entus','CJ Entus Blaze','CJ Entus Frost','CTBC Flying Oyster','Cash','ChiLeanFivE The Legacy','Chunnam Techno University','Cloud9','Counter Logic Gaming Europe','DAMWON Gaming','Dark Passage','Dash9 Gaming','DetonatioN FocusMe','Dignitas','Dplus Kia','DragonX','ESC Gaming','Energy Pacemaker.HK','FlyQuest','Fnatic','FunPlus Phoenix')",
+      "order_by": "AllName ASC",
+      "limit": 300
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "OverviewPage IN ('G2 Esports','GAM Esports','GE Tigers','Gambit Gaming','Gen.G','Golden Guardians','Hanwha Life Esports','High Hopes','IceLanD','Invictus Gaming','Isurus','JD Gaming','Jin Air Green Wings Falcons','Jin Air Green Wings Stealths','KT Rolster','KT Rolster Arrows','KT Rolster Bullets','KaBuM! Esports','Karmine Corp','Kx.Happy','LGD Gaming','LMQ','LNG Esports','LOUD','Lemondogs Argentina')",
+      "order_by": "OverviewPage ASC",
+      "limit": 100
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "TeamRedirects",
+      "fields": "_pageName,AllName,OtherName",
+      "where": "AllName IN ('G2 Esports','GAM Esports','GE Tigers','Gambit Gaming','Gen.G','Golden Guardians','Hanwha Life Esports','High Hopes','IceLanD','Invictus Gaming','Isurus','JD Gaming','Jin Air Green Wings Falcons','Jin Air Green Wings Stealths','KT Rolster','KT Rolster Arrows','KT Rolster Bullets','KaBuM! Esports','Karmine Corp','Kx.Happy','LGD Gaming','LMQ','LNG Esports','LOUD','Lemondogs Argentina')",
+      "order_by": "AllName ASC",
+      "limit": 300
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "OverviewPage IN ('Lyon Gaming (2013 Latin American Team)','MAD Lions','Meat Playground','MeetYourMakers','MiTH Flashdive','Millenium','Mook','Moscow Five','Movistar R7','NRG','NaJin Black Sword','NaJin White Shield','Oh My God','PSG Talon','Phoenix1','Positive Energy','Power Grip','Quantic Gaming','Rampage','Renegades of Hell','RisingStars Gaming','Royal Club','Royal Paladin eSports','Royal Paladin eSports Eclipse','SK Gaming')",
+      "order_by": "OverviewPage ASC",
+      "limit": 100
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "TeamRedirects",
+      "fields": "_pageName,AllName,OtherName",
+      "where": "AllName IN ('Lyon Gaming (2013 Latin American Team)','MAD Lions','Meat Playground','MeetYourMakers','MiTH Flashdive','Millenium','Mook','Moscow Five','Movistar R7','NRG','NaJin Black Sword','NaJin White Shield','Oh My God','PSG Talon','Phoenix1','Positive Energy','Power Grip','Quantic Gaming','Rampage','Renegades of Hell','RisingStars Gaming','Royal Club','Royal Paladin eSports','Royal Paladin eSports Eclipse','SK Gaming')",
+      "order_by": "AllName ASC",
+      "limit": 300
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "OverviewPage IN ('STAR (Chinese Team)','Samsung Blue','Samsung Ozone','Singapore Sentinels','Sirius Vega','TSM','Taipei Assassins','Taipei Snipers','Team ANG','Team BDS','Team Curse','Team Curse Europe','Team FeaR','Team Immunity','Team Livemore','Team WE','Team Whales','The Bandits Prime','The RED','Top Esports','Unicorns of Love','VTG Raon','Vici Gaming','Weibo Gaming','Wings of Aurora')",
+      "order_by": "OverviewPage ASC",
+      "limit": 100
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "TeamRedirects",
+      "fields": "_pageName,AllName,OtherName",
+      "where": "AllName IN ('STAR (Chinese Team)','Samsung Blue','Samsung Ozone','Singapore Sentinels','Sirius Vega','TSM','Taipei Assassins','Taipei Snipers','Team ANG','Team BDS','Team Curse','Team Curse Europe','Team FeaR','Team Immunity','Team Livemore','Team WE','Team Whales','The Bandits Prime','The RED','Top Esports','Unicorns of Love','VTG Raon','Vici Gaming','Weibo Gaming','Wings of Aurora')",
+      "order_by": "AllName ASC",
+      "limit": 300
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "Teams",
+      "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+      "where": "OverviewPage IN ('Xenics Storm','ahq eSports Club','compLexity Gaming','w2w','yoe Flash Wolves')",
+      "order_by": "OverviewPage ASC",
+      "limit": 100
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "TeamRedirects",
+      "fields": "_pageName,AllName,OtherName",
+      "where": "AllName IN ('Xenics Storm','ahq eSports Club','compLexity Gaming','w2w','yoe Flash Wolves')",
+      "order_by": "AllName ASC",
+      "limit": 300
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('0N','228','369','Adam (Adam Maanane)','Aiming','Alex Ich','Aluka','Angush','Aphromoo','Aria (Lee Ga-eul)','Arrow','Artemis (Trần Quốc Hưng)','Azhi','Balls','Bdd','BeanJ','Berserker (Kim Min-cheol)','BeryL','Betsy','Bie','Bin (Chen Ze-Bin)','Biofrost','Bjergsen','Blaber','Bong (Cho Bo-woong)','BrokenBlade','Broxah','Busio','Bwipo','Cabochard')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('Caliste','Canna','Canyon','Caomei','Caps','Carzzy','Ceo','Ceos','Chaox','Chasy','Chauster','Chawy','Chovy','ClearLove','Clid','CoCo','Contractz','Cop','Creaton','Creme','Crisp','Croc','Crownie','Cuzz','Cyanide','Darien','Deft','Delight','Dhokla','Diamondprox')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('Doggo','Doinb','Doran (Choi Hyeon-jun)','Driver','EMENES','Edward','Effort','Eliade','Elk','Elyoya','EquivocaL','Exileh','Expect','Extinkt','FBI','FORG1VENGRE','Fox (Hampus Myhre)','Froggen','Fudge','Fzzf','GALA','Gemini','Genja','Ghost (Jang Yong-jun)','Gloryy','GoSu Pepper','Gori','GorillA','HaRleLuYaR','Hai')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('Hang','Hans Sama','Harp','Hauntzer','HongQ','HotshotGG','Humanoid','Hylissang','IgNar','Impact','Inspired','Insta','JackeyLove','Jensen','Jesiz','JimieN','Jun (Yoon Se-jun)','JunJia','Kaiwing','Kanavi','Karsa','Kati','Kellin','Khan','Kiaya','Kiin','Krepo','Labrov','Lee','Lehends')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('LemonNation','Lemongod','Levi','Licken','Licorice','Life','Light (Wang Guang-Yu)','LightSludge','Lilballz','Locodoco','LokeN','LvMao','Lwx','Lyonz','MISSING','Madlife','Malunoo','Maple (Huang Yi-Tang)','Massu','Meiko','Meteos','MiSTakE','MikeYeung','Mikyx','Mireu','Misaya','Muffinqt','Mystic','NL (Hsiung Wen-An)','NLgnz')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('Ning','Nisqy','Nk Inc','Noah (Oh Hyeon-taek)','Nuguri','Nyjacky','ON','Oddie','Oscarinin','P1noy','Palafox','Palette','Patoy','Peanut','Perkz','Peyz','Pobelter','Porschkub','PraY','Puff (Ding Wang)','Quad','Rascal','Ray','Razork','ReD (Lee Siu Hin)','Reginald','Rekkles','Rest','Rhux','River (Kim Dong-woo)')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('Robo','Rookie','Route','Ruler','Saintvicious','Samux','Santorin','Scout','Sheo','ShiauC','ShowMaker','Shunn','Shy','Slayder','Smeb','Smoothie','Sneaky','Snoopeh','Southwind','Space (Seon Ho-san)','Sparda','Spirit','Stanley','Steak','Steal (Mun Geon-yeong)','Stixxay','Sty1e','SuperCat','Svenskeren','SwordArt')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('Targamas','Tarzan (Lee Seung-yong)','Teddy','TheOddOne','TheShy','Tian','TkSing','Toyz','Trick','Trymbi','UmTi','Viper (Park Do-hyeon)','Vizicsacsi','Vladi','Voyboy','Wako','Weiwei','Weixiao','Wickd','WildTurtle','Woody','XUN','Xerxe','Xiaohu','Xllyra','Xmithie','Xpecial','Yagao','Yike','YuZhe')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    },
+    {
+      "endpoint": "cargoexport",
+      "tables": "PlayerRedirects",
+      "fields": "_pageName,AllName,OverviewPage,ID",
+      "where": "AllName IN ('Yutapon','Zeka (Kim Geon-woo)','Zika','Zin','Zoom','Zuna','Zven','apaMEN','bebe (Chang Bo-Wei)','bigfatlp','d4rkness','fredy122','huhi','knight (Zhuo Ding)','kurO','ly4ly4ly4','mancloud','mithy','nRated','nuc','tinowns','tol2','ubao','xHazzard','xPeke','xiye','yellowpete','yuyanjia','zig')",
+      "order_by": "AllName ASC",
+      "limit": 400
+    }
+  ]
+}

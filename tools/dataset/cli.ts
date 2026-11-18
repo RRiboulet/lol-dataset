@@ -54,7 +54,7 @@ const REPO_ROOT = path.resolve(import.meta.dirname, "..", "..");
 
 function describe(result: BuildResult): string {
 	const lines: string[] = [];
-	const { events, selection, decisions, identity, scoreboards } = result;
+	const { events, selection, decisions, identity, scoreboards, coverage } = result;
 	const rejected = selection.length - events.length;
 	lines.push(`${events.length} event(s) selected, ${rejected} rejected, from ${selection.length} considered`);
 	lines.push(
@@ -77,6 +77,21 @@ function describe(result: BuildResult): string {
 		.map(([state, count]) => `${count} ${state}`)
 		.join(", ");
 	lines.push(`${scoreboards.games.length} game(s), ${scoreboards.matches.length} match(es) — events: ${stateText}`);
+	// The per-era aggregate is a file of its own, so the summary says what it will show
+	// rather than leaving the reader to open it for a one-line answer.
+	const erasWithGames = coverage.eras.filter((record) => record.games > 0);
+	if (erasWithGames.length > 0) {
+		lines.push(
+			`coverage: ${erasWithGames.length} era(s) with games — ` +
+				erasWithGames
+					.map((record) => `${record.era} ${record.games} (team ${record.coverage.teamStats.state}, draft ${record.coverage.draft.state}, players ${record.coverage.playerStats.state})`)
+					.join("; "),
+		);
+	}
+	const thinEvents = coverage.events.filter((record) => record.games > 0 && Object.values(record.coverage).some((group) => group.state !== "complete"));
+	if (thinEvents.length > 0) {
+		lines.push(`  ${thinEvents.length} event(s) whose games are not complete in every field group: ${thinEvents.map((record) => `${record.eventName} (${record.games})`).join(", ")}`);
+	}
 	if (scoreboards.gamesWithoutMatch.length > 0) {
 		lines.push(`  ${scoreboards.gamesWithoutMatch.length} game(s) whose series the corpus does not carry — no canonical matchId`);
 	}

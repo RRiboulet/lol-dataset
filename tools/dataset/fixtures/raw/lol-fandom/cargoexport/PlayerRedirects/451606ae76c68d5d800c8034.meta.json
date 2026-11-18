@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PlayerRedirects",
+    "fields": "_pageName,AllName,OverviewPage,ID",
+    "where": "AllName IN ('0N','228','369','Adam (Adam Maanane)','Aiming','Alex Ich','Aluka','Angush','Aphromoo','Aria (Lee Ga-eul)','Arrow','Artemis (Trần Quốc Hưng)','Azhi','Balls','Bdd','BeanJ','Berserker (Kim Min-cheol)','BeryL','Betsy','Bie','Bin (Chen Ze-Bin)','Biofrost','Bjergsen','Blaber','Bong (Cho Bo-woong)','BrokenBlade','Broxah','Busio','Bwipo','Cabochard')",
+    "order_by": "AllName ASC",
+    "limit": 400
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%270N%27%2C%27228%27%2C%27369%27%2C%27Adam+%28Adam+Maanane%29%27%2C%27Aiming%27%2C%27Alex+Ich%27%2C%27Aluka%27%2C%27Angush%27%2C%27Aphromoo%27%2C%27Aria+%28Lee+Ga-eul%29%27%2C%27Arrow%27%2C%27Artemis+%28Tr%E1%BA%A7n+Qu%E1%BB%91c+H%C6%B0ng%29%27%2C%27Azhi%27%2C%27Balls%27%2C%27Bdd%27%2C%27BeanJ%27%2C%27Berserker+%28Kim+Min-cheol%29%27%2C%27BeryL%27%2C%27Betsy%27%2C%27Bie%27%2C%27Bin+%28Chen+Ze-Bin%29%27%2C%27Biofrost%27%2C%27Bjergsen%27%2C%27Blaber%27%2C%27Bong+%28Cho+Bo-woong%29%27%2C%27BrokenBlade%27%2C%27Broxah%27%2C%27Busio%27%2C%27Bwipo%27%2C%27Cabochard%27%29&order_by=AllName+ASC&limit=400",
+  "fetchedAt": "2026-11-18T09:37:30.540Z",
+  "status": 200,
+  "bodySha256": "813d83e56527f5571d58ca0ad89699b916639f576f9b208a53bf889a0d856e42"
+}

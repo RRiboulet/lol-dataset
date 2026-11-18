@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PlayerRedirects",
+    "fields": "_pageName,AllName,OverviewPage,ID",
+    "where": "AllName IN ('Caliste','Canna','Canyon','Caomei','Caps','Carzzy','Ceo','Ceos','Chaox','Chasy','Chauster','Chawy','Chovy','ClearLove','Clid','CoCo','Contractz','Cop','Creaton','Creme','Crisp','Croc','Crownie','Cuzz','Cyanide','Darien','Deft','Delight','Dhokla','Diamondprox')",
+    "order_by": "AllName ASC",
+    "limit": 400
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27Caliste%27%2C%27Canna%27%2C%27Canyon%27%2C%27Caomei%27%2C%27Caps%27%2C%27Carzzy%27%2C%27Ceo%27%2C%27Ceos%27%2C%27Chaox%27%2C%27Chasy%27%2C%27Chauster%27%2C%27Chawy%27%2C%27Chovy%27%2C%27ClearLove%27%2C%27Clid%27%2C%27CoCo%27%2C%27Contractz%27%2C%27Cop%27%2C%27Creaton%27%2C%27Creme%27%2C%27Crisp%27%2C%27Croc%27%2C%27Crownie%27%2C%27Cuzz%27%2C%27Cyanide%27%2C%27Darien%27%2C%27Deft%27%2C%27Delight%27%2C%27Dhokla%27%2C%27Diamondprox%27%29&order_by=AllName+ASC&limit=400",
+  "fetchedAt": "2026-11-18T09:38:49.409Z",
+  "status": 200,
+  "bodySha256": "a9c01318b3d49df2f815ca181e4fc8a9f458fd47edb09c5811a2e6f0b58f557e"
+}

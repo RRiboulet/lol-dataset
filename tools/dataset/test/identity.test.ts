@@ -8,7 +8,7 @@
 // Three cases live in the fixtures as recorded payloads:
 //   - a team rebrand (`SK Telecom T1` -> `T1`, a `Teams.RenamedTo` edge),
 //   - a duplicate display string (`Wolf`, the handle of eight player pages),
-//   - a string the source registers nothing for (`The Bandits Prime`, a 2026 team).
+//   - a string the source registers nothing for (`w2w`, a 2013 qualifier team).
 // The champion rename is measured too, but not as a rename pair: the source rewrites
 // retired champion names retroactively, so the retired string is declared in
 // `rules/identity-aliases.json` and the test below feeds a payload the source can no
@@ -30,9 +30,10 @@ import { validateAgainst } from "../validate.ts";
 import { CURATED_DIR, FIXTURE_RAW, savePayloadBody, SCHEMA_DIR } from "./helpers.ts";
 
 // The windows are the observed use in the whole recorded corpus, and ticket 03 makes
-// games observations too: `T1` is dated by the 2023 scoreboard row and by the Worlds
-// final on 2023-11-19, so its era is the span the corpus saw it in.
-const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2015-10-01", currentSeen: "2023-11-19", currentFirstSeen: "2023-05-10" } as const;
+// games observations too: `SK Telecom T1` is dated from the 2013 World Cyber Games rows
+// to the 2015 IEM rows, and `T1` from the 2020 Mid-Season Cup to the 2024 Esports World
+// Cup, so each alias carries the span the corpus saw it in.
+const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2013-10-14", fromLastSeen: "2015-10-01", currentSeen: "2024-07-07", currentFirstSeen: "2020-05-28" } as const;
 
 async function fixtureBuild(): Promise<BuildResult> {
 	return buildDataset({ rawDir: FIXTURE_RAW });
@@ -53,11 +54,23 @@ async function payloadFiles(root: string, table: string): Promise<string[]> {
 	return names.sort().map((name) => path.join(dir, name));
 }
 
-/** The one recorded payload for a table that only needs one. */
+/**
+ * The first recorded payload for a table, for cases that only append a row.
+ *
+ * A crawl leaves several payloads per table (one per query batch), so a test that needs a
+ * *particular* row edits every payload and lets the matching one change — see `editRows`.
+ */
 async function payloadFile(root: string, table: string): Promise<string> {
 	const files = await payloadFiles(root, table);
-	assert.equal(files.length, 1, `expected one recorded ${table} payload, found ${files.length}`);
 	return files[0];
+}
+
+/** Apply `edit` to every payload of a table, saving the ones it changed. */
+async function editRows(root: string, table: string, edit: (rows: Record<string, unknown>[]) => boolean): Promise<void> {
+	for (const file of await payloadFiles(root, table)) {
+		const rows = await readRows(file);
+		if (edit(rows)) await savePayloadBody(file, JSON.stringify(rows));
+	}
 }
 
 async function readRows(file: string): Promise<Record<string, unknown>[]> {
@@ -77,7 +90,7 @@ test("a team rebrand in the fixtures is one entity carrying both strings and the
 	const current = rows.find((alias) => alias.string === TEAM_RENAME.entity);
 	assert.ok(old, `the entity must carry its old display string ${TEAM_RENAME.from}`);
 	assert.ok(current, "the entity must carry its current display string");
-	assert.deepEqual([old.firstSeen, old.lastSeen], [TEAM_RENAME.fromSeen, TEAM_RENAME.fromSeen]);
+	assert.deepEqual([old.firstSeen, old.lastSeen], [TEAM_RENAME.fromSeen, TEAM_RENAME.fromLastSeen]);
 	// A span, not a point: the name is dated by the 2023 scoreboard row and again by the
 	// Worlds final the games payload carries (ticket 03).
 	assert.deepEqual([current.firstSeen, current.lastSeen], [TEAM_RENAME.currentFirstSeen, TEAM_RENAME.currentSeen]);
@@ -104,13 +117,20 @@ test("the entity's ID does not change when its display name changes", async () =
 		// A rebrand is a new page in the source, so the *name* is the part a payload
 		// can change without touching identity: rename the page's display name and the
 		// champion's display name, and assert the IDs stand still.
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		for (const row of teams) {
-			if (row.OverviewPage === "T1") row.Name = "T1 Esports";
-			if (row.OverviewPage === "Team Liquid") row.Name = "Team Liquid Rebranded";
-		}
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		await editRows(dir, "Teams", (teams) => {
+			let changed = false;
+			for (const row of teams) {
+				if (row.OverviewPage === "T1") {
+					row.Name = "T1 Esports";
+					changed = true;
+				}
+				if (row.OverviewPage === "Team Liquid") {
+					row.Name = "Team Liquid Rebranded";
+					changed = true;
+				}
+			}
+			return changed;
+		});
 
 		// The source rewrites the *current* champion name retroactively (measured: 2011
 		// and 2012 rows already say `Nunu &amp; Willump`), so a display rename arrives as
@@ -135,6 +155,18 @@ test("the entity's ID does not change when its display name changes", async () =
 					const champions = row[field];
 					if (!Array.isArray(champions)) continue;
 					row[field] = champions.map((champion: unknown) => (champion === "Nunu &amp; Willump" ? "Nunu" : champion));
+				}
+			}
+			await savePayloadBody(file, JSON.stringify(rows));
+		}
+		// The ordered draft path states champions too, in one column per slot. Ticket 10's
+		// crawl added ordered rows for five more events, so leaving this path out would mint
+		// a second Nunu from a single column rather than measure the rename.
+		for (const file of await payloadFiles(dir, "PicksAndBansS7")) {
+			const rows = await readRows(file);
+			for (const row of rows) {
+				for (const [field, value] of Object.entries(row)) {
+					if (/^Team[12](Pick|Ban)[1-5]$/.test(field) && value === "Nunu &amp; Willump") row[field] = "Nunu";
 				}
 			}
 			await savePayloadBody(file, JSON.stringify(rows));
@@ -220,7 +252,7 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 		assert.equal(mintedTeam.overviewPage, null, "nothing registers that team, so it has no source page");
 		assert.ok(grown.identity.players.some((player) => player.name === "Fabricated Player"));
 		const reported = new Set(grown.identity.unresolved.map((row) => row.string));
-		for (const string of ["Fabricated Five", "Fabricated Player", "The Bandits Prime"]) {
+		for (const string of ["Fabricated Five", "Fabricated Player", "w2w"]) {
 			assert.ok(reported.has(string), `${string} must stay in the unresolved report`);
 		}
 		assert.ok(grown.identity.unresolved.length >= baseline.identity.unresolved.length, "adding material never empties the report");
@@ -256,41 +288,43 @@ test("two players with the same display string stay two entities, and a bare han
 
 test("an unresolved source string mints an entity and is reported, rather than failing or vanishing", async () => {
 	const { identity } = await fixtureBuild();
-	const report = identity.unresolved.find((row) => row.string === "The Bandits Prime");
+	const report = identity.unresolved.find((row) => row.string === "w2w");
 	assert.ok(report, `the report must name the minted string, got ${identity.unresolved.map((row) => row.string).join(", ")}`);
 	assert.equal(report.kind, "team");
-	assert.equal(report.string, "The Bandits Prime");
+	assert.equal(report.string, "w2w");
 	assert.equal(report.reason, "no-source-identity");
-	assert.deepEqual([report.firstSeen, report.lastSeen], ["2026-10-13", "2026-10-13"]);
+	assert.deepEqual([report.firstSeen, report.lastSeen], ["2013-10-11", "2013-10-11"]);
 	assert.ok(report.id);
 	const entity = identity.teams.find((team) => team.id === report.id);
 	assert.ok(entity, "the report must point at a real entity");
-	assert.equal(entity.name, "The Bandits Prime", "the minted entity carries the source string as its display name");
+	assert.equal(entity.name, "w2w", "the minted entity carries the source string as its display name");
 	assert.equal(entity.overviewPage, null, "no registry page exists, and inventing one would hide that");
-	// Games reference teams as display strings too (ticket 03), and the recorded corpus
-	// carries a Teams page for almost none of them, so they are minted and reported the
-	// same way. That is a corpus gap the full crawl closes, not an identity failure.
-	const fromGames = identity.unresolved.filter((row) => row.kind === "team" && row.string !== "The Bandits Prime");
+	// Games reference teams as display strings too (ticket 03), and the corpus still
+	// carries Teams rows for none of World Cyber Games 2013's qualifier-stage teams, so
+	// they are minted and reported the same way. Ticket 10's crawl fetched the registry
+	// for every observed string and the report fell from 374 rows to 11; what is left is a
+	// source gap, not an identity failure.
+	const fromGames = identity.unresolved.filter((row) => row.kind === "team" && row.string !== "w2w");
 	assert.ok(fromGames.length > 0, "the game payloads contribute minted teams");
 	assert.ok(fromGames.some((row) => row.string === "T1") === false, "a team with a registry page is not reported");
 	// The string resolves from then on, so a later payload citing it joins the same entity.
-	assert.equal(identity.index.resolve("team", "The Bandits Prime")?.id, report.id);
+	assert.equal(identity.index.resolve("team", "w2w")?.id, report.id);
 	// And a registry page that later appears under that exact name keeps the ID.
 	const baseline = await fixtureBuild();
 	const dir = await fixtureCopy();
 	try {
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
-		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
+		teams.push({ _pageName: "w2w", Name: "w2w", OverviewPage: "w2w", Region: "China", RenamedTo: null });
 		await savePayloadBody(teamsFile, JSON.stringify(teams));
 		const resolved = await buildDataset({ rawDir: dir });
-		const now = resolved.identity.teams.find((team) => team.name === "The Bandits Prime");
+		const now = resolved.identity.teams.find((team) => team.name === "w2w");
 		assert.equal(now?.id, entity.id, "registering the page later must not renumber the entity");
-		assert.equal(now?.overviewPage, "The Bandits Prime");
+		assert.equal(now?.overviewPage, "w2w");
 		// Only the registered string leaves the report; the game-minted teams have no page
 		// in this corpus and must stay, which is what keeps the report from emptying itself.
 		assert.equal(
-			resolved.identity.unresolved.some((row) => row.string === "The Bandits Prime"),
+			resolved.identity.unresolved.some((row) => row.string === "w2w"),
 			false,
 			"a resolved string leaves the report",
 		);
@@ -575,7 +609,7 @@ test("every identity file satisfies its checked-in schema, and an empty file is 
 		await rm(path.join(dir, "lol-fandom", "cargoexport", "PicksAndBansS7"), { recursive: true, force: true });
 		const teamsFile = await payloadFile(dir, "Teams");
 		const teams = await readRows(teamsFile);
-		teams.push({ _pageName: "The Bandits Prime", Name: "The Bandits Prime", OverviewPage: "The Bandits Prime", Region: "EMEA", RenamedTo: null });
+		teams.push({ _pageName: "w2w", Name: "w2w", OverviewPage: "w2w", Region: "China", RenamedTo: null });
 		await savePayloadBody(teamsFile, JSON.stringify(teams));
 		const built = await buildDataset({ rawDir: dir });
 		assert.equal(built.files["identity-unresolved.jsonl"], "");
@@ -659,10 +693,16 @@ test("a string that names two entities is reported with its candidates and mints
 test("a team rename edge the payloads cannot complete stops the build", async () => {
 	const dir = await fixtureCopy();
 	try {
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		for (const row of teams) if (row.OverviewPage === "H2k-Gaming") row.RenamedTo = "H2k-Gaming Esports";
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		await editRows(dir, "Teams", (teams) => {
+			let changed = false;
+			for (const row of teams) {
+				if (row.OverviewPage === "H2k-Gaming") {
+					row.RenamedTo = "H2k-Gaming Esports";
+					changed = true;
+				}
+			}
+			return changed;
+		});
 		await assert.rejects(
 			buildDataset({ rawDir: dir }),
 			/team "H2k-Gaming" says it was renamed to "H2k-Gaming Esports", but no Teams payload carries that page/,
@@ -675,13 +715,16 @@ test("a team rename edge the payloads cannot complete stops the build", async ()
 test("two pages renamed into one successor stop the build", async () => {
 	const dir = await fixtureCopy();
 	try {
-		const teamsFile = await payloadFile(dir, "Teams");
-		const teams = await readRows(teamsFile);
-		for (const row of teams) {
-			if (row.OverviewPage === "H2k-Gaming") row.RenamedTo = "T1";
-			if (row.OverviewPage === "Team Dynamic") row.RenamedTo = "T1";
-		}
-		await savePayloadBody(teamsFile, JSON.stringify(teams));
+		await editRows(dir, "Teams", (teams) => {
+			let changed = false;
+			for (const row of teams) {
+				if (row.OverviewPage === "H2k-Gaming" || row.OverviewPage === "Team Dynamic") {
+					row.RenamedTo = "T1";
+					changed = true;
+				}
+			}
+			return changed;
+		});
 		await assert.rejects(buildDataset({ rawDir: dir }), /two team pages claim to have been renamed into "T1"/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });

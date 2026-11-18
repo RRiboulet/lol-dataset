@@ -17,6 +17,8 @@
 //     that calls the assembler again would agree with the assembler by construction.
 
 import type { EventRecord, SelectionRecord } from "./assemble.ts";
+import type { CoverageGroups, EventCoverageRecord, EraCoverageRecord } from "./coverage.ts";
+import { COVERAGE_GROUPS, countGroups } from "./coverage.ts";
 import type { Coverage, EraTable } from "./eras.ts";
 import type { EventGamesRecord, GameRecord, MatchRecord, SeriesConflictRecord } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
@@ -32,6 +34,10 @@ export type InvariantInput = {
 	matches: MatchRecord[];
 	eventGames: EventGamesRecord[];
 	seriesConflicts: SeriesConflictRecord[];
+	/** The per-event aggregation of the games' coverage markers (ticket 10). */
+	eventCoverage: EventCoverageRecord[];
+	/** The per-era aggregation of the same markers (ticket 10). */
+	eraCoverage: EraCoverageRecord[];
 	playerGames: PlayerGameRecord[];
 	eras: EraTable;
 };
@@ -101,7 +107,7 @@ function eligibleByEra(eras: EraTable): Map<string, Set<string>> {
  */
 export function findInvariantViolations(input: InvariantInput): string[] {
 	const collector = new Collector();
-	const { events, selection, identity, games, matches, eventGames, seriesConflicts, playerGames, eras } = input;
+	const { events, selection, identity, games, matches, eventGames, seriesConflicts, eventCoverage, eraCoverage, playerGames, eras } = input;
 
 	// ---- identity: the tables every other record references ----------------------
 	const teamIds = new Set(identity.teams.map((team) => team.id));
@@ -226,18 +232,41 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 		}
 		// Draft claims.
 		if (game.draft !== undefined) {
-			const seen = new Set<string>();
+			// A champion plays once per **side**. Across the two sides it is legal only in a
+			// declared blind pick, where there is no ban phase and both teams may lock the same
+			// champion (measured on 2020 Mid-Season Cup game 1s); anywhere else it is a
+			// contradiction, and a declaration is the only thing that can say which it is.
+			const blindPick = game.draft.blindPick === true;
+			const across = new Map<string, number>();
 			for (const side of game.draft.sides) {
+				const onThisSide = new Set<string>();
 				for (const entry of [...side.picks, ...side.bans]) {
 					if (!championIds.has(entry.championId)) collector.add(where, `draft references champion ${entry.championId}, which is not emitted`);
-					if (seen.has(entry.championId)) collector.add(where, `draft drafts ${entry.championId} twice — one champion plays once per game`);
-					seen.add(entry.championId);
+					if (onThisSide.has(entry.championId)) {
+						collector.add(where, `draft drafts ${entry.championId} twice on the ${side.side} side — a team cannot draft one champion twice`);
+					}
+					onThisSide.add(entry.championId);
+					across.set(entry.championId, (across.get(entry.championId) ?? 0) + 1);
+				}
+			}
+			if (!blindPick) {
+				for (const [championId, count] of across) {
+					if (count > 1) collector.add(where, `draft drafts ${championId} ${count} times across both sides — one champion plays once per game unless the game is a declared blind pick`);
+				}
+			}
+			if (blindPick) {
+				// The complement of the exception: a declared blind pick states no bans, and a
+				// record that claims the declaration while carrying bans is not credible either.
+				for (const side of game.draft.sides) {
+					if (side.bans.length > 0) collector.add(where, `is a declared blind pick but ${side.side} carries ${side.bans.length} ban(s) — a blind pick has no ban phase`);
 				}
 			}
 			if (game.coverage.draft === "complete") {
 				for (const side of game.draft.sides) {
 					if (side.picks.length !== 5) collector.add(where, `claims complete draft but ${side.side} has ${side.picks.length} picks`);
-					if (side.bans.length !== 5) collector.add(where, `claims complete draft but ${side.side} has ${side.bans.length} bans`);
+					// A blind pick is complete with no bans: the phase does not exist there.
+					const expectedBans = blindPick ? 0 : 5;
+					if (side.bans.length !== expectedBans) collector.add(where, `claims complete draft but ${side.side} has ${side.bans.length} bans`);
 					// `ordered` means the source kept the slots, so a complete ordered draft must
 					// carry each slot exactly once. Length alone would accept a swapped or
 					// missing slot, which is the fidelity R5 exists to preserve.
@@ -434,6 +463,89 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 		if ((record.state === "empty" || record.state === "missing") && (record.games > 0 || record.matches > 0)) {
 			collector.add(where, `says ${record.state} but carries ${record.games} games and ${record.matches} matches`);
 		}
+	}
+
+	// ---- the coverage report must be the games' own markers, re-counted -----------
+	// Ticket 10's criterion: an event is never reported more complete than its games.
+	// The report is generated, so this is not a second opinion — it is the check that the
+	// generator ran over the rows that were emitted, rather than over a stale list or a
+	// hand edit. Both grains are re-counted, and the two totals must agree with each other
+	// and with `games.jsonl`, so no game can hide from either report.
+	collector.uniqueBy("event-coverage", eventCoverage as unknown as Record<string, unknown>[], "eventId");
+	collector.uniqueBy("era-coverage", eraCoverage as unknown as Record<string, unknown>[], "era");
+	const gamesByEventId = new Map<string, GameRecord[]>();
+	for (const game of games) {
+		const list = gamesByEventId.get(game.eventId) ?? [];
+		list.push(game);
+		gamesByEventId.set(game.eventId, list);
+	}
+	const compareGroups = (where: string, gamesForRow: GameRecord[], stated: CoverageGroups): void => {
+		const actual = countGroups(gamesForRow);
+		for (const group of COVERAGE_GROUPS) {
+			const said = stated[group];
+			if (said === undefined) {
+				collector.add(where, `has no coverage for ${group}`);
+				continue;
+			}
+			const sum = said.complete + said.partial + said.unavailable;
+			if (sum !== gamesForRow.length) {
+				collector.add(where, `${group} counts sum to ${sum} but ${gamesForRow.length} game(s) are here`);
+			}
+			for (const state of COVERAGE) {
+				if (said[state] !== actual[group][state]) {
+					collector.add(where, `${group} says ${said[state]} ${state} but the games are ${actual[group][state]}`);
+				}
+			}
+			if (said.state !== actual[group].state) {
+				collector.add(where, `${group} state is ${JSON.stringify(said.state)} but the games make it ${JSON.stringify(actual[group].state)}`);
+			}
+		}
+	};
+	const coverageByEvent = new Map(eventCoverage.map((record) => [record.eventId, record]));
+	for (const record of eventCoverage) {
+		const where = `event-coverage ${record.eventId}`;
+		if (!eventIds.has(record.eventId)) collector.add(where, "reports on an event that is not emitted");
+		const eventGamesForRow = gamesByEventId.get(record.eventId) ?? [];
+		if (record.games !== eventGamesForRow.length) {
+			collector.add(where, `says ${record.games} games but ${eventGamesForRow.length} are emitted for it`);
+		}
+		const rowEras = [...new Set(eventGamesForRow.map((game) => game.era))].sort();
+		if (JSON.stringify(record.eras) !== JSON.stringify(rowEras)) {
+			collector.add(where, `names eras ${JSON.stringify(record.eras)} but its games are in ${JSON.stringify(rowEras)}`);
+		}
+		compareGroups(where, eventGamesForRow, record.coverage);
+	}
+	for (const event of events) {
+		if (!coverageByEvent.has(event.id)) collector.add(`event-coverage ${event.id}`, "has no coverage row — every selected event is reported on");
+	}
+	const declaredEras = eras.groups["team-stats"];
+	const coverageByEra = new Map(eraCoverage.map((record) => [record.era, record]));
+	for (const era of declaredEras) {
+		const record = coverageByEra.get(era.id);
+		const where = `era-coverage ${era.id}`;
+		if (record === undefined) {
+			collector.add(where, "is declared in the era table but has no coverage row");
+			continue;
+		}
+		const eraGames = games.filter((game) => game.era === era.id);
+		if (record.from !== era.from) collector.add(where, `says the era starts ${record.from} but the era table says ${era.from}`);
+		if (record.games !== eraGames.length) collector.add(where, `says ${record.games} games but ${eraGames.length} carry that era`);
+		const contributors = new Set(eraGames.map((game) => game.eventId)).size;
+		if (record.events !== contributors) collector.add(where, `says ${record.events} event(s) but ${contributors} contribute games`);
+		compareGroups(where, eraGames, record.coverage);
+	}
+	for (const record of eraCoverage) {
+		if (!declaredEras.some((era) => era.id === record.era)) {
+			collector.add(`era-coverage ${record.era}`, "reports on an era the era table does not declare");
+		}
+	}
+	const coverageTotal = eraCoverage.reduce((sum, record) => sum + record.games, 0);
+	if (coverageTotal !== games.length) {
+		collector.add("era-coverage", `accounts for ${coverageTotal} games but ${games.length} are emitted — every game belongs to exactly one era`);
+	}
+	const perEventTotal = eventCoverage.reduce((sum, record) => sum + record.games, 0);
+	if (perEventTotal !== games.length) {
+		collector.add("event-coverage", `accounts for ${perEventTotal} games but ${games.length} are emitted`);
 	}
 
 	// ---- the same source row cannot become two games -----------------------------
