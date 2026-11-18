@@ -54,9 +54,13 @@ emitted without a `matchId` (ticket 14, which also removed `fixtures/pending/`).
 Ticket 15 made that alias's declared window bound every lookup and required an
 `aliasOf` target to be evidenced by a game and its series row, and committed the
 conflict report to `data/curated/series-conflicts.jsonl` so the contradiction is
-visible in the data rather than only in the build's stdout. Ticket 13 is the model over
-this full dataset; the model in the tree today was built by ticket 12 over the four
-events that existed then and is regenerated here. There is no
+visible in the data rather than only in the build's stdout. Ticket 13 proved the model
+over this full dataset: 377 games, 230 series, 3 770 player rows and 7 144 draft entries,
+with every grain unique, every foreign key resolving, and the per-game, per-event and
+per-era counts reconciling against the curated layer — including a coverage rollup
+(`rollupCoverage`) that re-derives `event-coverage.jsonl` and `era-coverage.jsonl` from
+`data/model/` alone and must equal the committed reports, and a load path proved through
+both SQLite and an independent RFC 4180 reader. There is no
 `README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
 a schema, a scraper or a README as a side effect of an unrelated task; those are
 their own changes.

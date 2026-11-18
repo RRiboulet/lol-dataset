@@ -14,6 +14,7 @@
 
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
@@ -21,6 +22,7 @@ import { promisify } from "node:util";
 import { DatabaseSync } from "node:sqlite";
 import { test } from "node:test";
 
+import type { EraCoverageRecord, EventCoverageRecord } from "../coverage.ts";
 import type { ModelBuild, ModelInput, ModelTable } from "../model.ts";
 import {
 	assembleModel,
@@ -30,6 +32,7 @@ import {
 	loadModelInput,
 	parseCsv,
 	REQUIRED_FACT_KEYS,
+	rollupCoverage,
 	writeModel,
 } from "../model.ts";
 import { CURATED_DIR, DATASET_DIR, REPO_ROOT } from "./helpers.ts";
@@ -61,6 +64,27 @@ function csvRows(text: string): Record<string, string>[] {
 
 function committed(name: string): Promise<string> {
 	return readFile(path.join(MODEL_DIR, name), "utf8");
+}
+
+/**
+ * The committed model as name-plus-rows, the way a reader who has only
+ * `data/model/` has it: the CSV bytes, no in-memory build, no curated input.
+ */
+async function committedTables(): Promise<{ name: string; rows: Record<string, string>[] }[]> {
+	const tables: { name: string; rows: Record<string, string>[] }[] = [];
+	for (const file of (await readdir(MODEL_DIR)).sort()) {
+		if (file.endsWith(".csv")) tables.push({ name: file.slice(0, -4), rows: csvRows(await committed(file)) });
+	}
+	return tables;
+}
+
+/** A committed curated JSONL file, parsed. */
+async function curatedJsonl<T>(file: string): Promise<T[]> {
+	const text = await readFile(path.join(CURATED_DIR, file), "utf8");
+	return text
+		.split("\n")
+		.filter((line) => line.length > 0)
+		.map((line) => JSON.parse(line) as T);
 }
 
 function keys(name: string): Set<string> {
@@ -400,6 +424,26 @@ test("coverage declarations survive into the model rather than being averaged aw
 		].sort(),
 		`the thin era keeps each event's own coverage shape: ${JSON.stringify([...byShape])}`,
 	);
+
+	// A game whose measures are absent is as visible as a rich one: it keeps its
+	// dimension row and both side rows, and the absent measures are empty fields rather
+	// than zeros that a later SUM would read as recorded data (ticket 13).
+	const ipl = input.games.filter((game) => game.eventName === "IPL 5");
+	assert.ok(ipl.length > 0, "the corpus must still carry the thin event this asserts about");
+	const iplGameKeys = new Set(
+		rows("dim_game")
+			.filter((row) => ipl.some((game) => game.id === row.game_id))
+			.map((row) => String(row.game_key)),
+	);
+	assert.equal(iplGameKeys.size, ipl.length, "every IPL 5 game has a dim_game row");
+	for (const gameKey of iplGameKeys) {
+		const sideRows = rows("fact_game_side").filter((row) => String(row.game_key) === gameKey);
+		assert.equal(sideRows.length, 2, `game ${gameKey}: an absent measure must not cost the game its side rows`);
+		for (const row of sideRows) {
+			assert.equal(row.kills, "", `game ${gameKey}: a measure the source never recorded is absent, not 0`);
+			assert.equal(row.gold, "", `game ${gameKey}: a measure the source never recorded is absent, not 0`);
+		}
+	}
 });
 
 test("facts contain measures only: a derived-measure column name fails the test", () => {
@@ -485,6 +529,34 @@ test("the DDL loads the CSVs into SQLite, and no inner join between a fact and a
 		assert.equal(count("SELECT COUNT(*) AS n FROM fact_player_game"), input.playerGames.length);
 		assert.deepEqual(db.prepare("PRAGMA foreign_key_check").all(), [], "the DDL's foreign keys hold after loading the CSVs");
 
+		// The load reproduces the curated dataset's counts per event too, not only per
+		// table: a row that reached the right table carrying the wrong event would pass a
+		// whole-table count and fail here (ticket 13).
+		const perEvent = (sql: string): Map<string, number> =>
+			new Map((db.prepare(sql).all() as { event_id: string; n: number }[]).map((row) => [row.event_id, Number(row.n)]));
+		const expectedGames = new Map<string, number>();
+		for (const game of input.games) expectedGames.set(game.eventId, (expectedGames.get(game.eventId) ?? 0) + 1);
+		const expectedPlayerRows = new Map<string, number>();
+		for (const row of input.playerGames) expectedPlayerRows.set(row.eventId, (expectedPlayerRows.get(row.eventId) ?? 0) + 1);
+		const expectedDraftRows = new Map<string, number>();
+		let draftEntries = 0;
+		for (const game of input.games) {
+			const entries = game.draft?.sides.reduce((sum, side) => sum + side.picks.length + side.bans.length, 0) ?? 0;
+			draftEntries += entries;
+			expectedDraftRows.set(game.eventId, (expectedDraftRows.get(game.eventId) ?? 0) + entries);
+		}
+		assert.equal(count("SELECT COUNT(*) AS n FROM fact_draft_slot"), draftEntries, "every curated draft entry loaded");
+		const sqlPerEvent = (fact: string): Map<string, number> =>
+			perEvent(`SELECT e.event_id AS event_id, COUNT(*) AS n FROM ${fact} AS f INNER JOIN dim_event AS e ON f.event_key = e.event_key GROUP BY e.event_id`);
+		const sidesPerEvent = sqlPerEvent("fact_game_side");
+		const playersPerEvent = sqlPerEvent("fact_player_game");
+		const draftsPerEvent = sqlPerEvent("fact_draft_slot");
+		for (const [eventId, games] of expectedGames) {
+			assert.equal(sidesPerEvent.get(eventId), games * 2, `${eventId}: SQL counts two side rows per curated game`);
+			assert.equal(playersPerEvent.get(eventId) ?? 0, expectedPlayerRows.get(eventId) ?? 0, `${eventId}: SQL counts the curated player rows`);
+			assert.equal(draftsPerEvent.get(eventId) ?? 0, expectedDraftRows.get(eventId) ?? 0, `${eventId}: SQL counts the curated draft entries`);
+		}
+
 		for (const name of FACTS) {
 			const fact = table(name);
 			for (const column of fact.columns.filter((candidate) => candidate.references !== undefined)) {
@@ -569,5 +641,166 @@ test("`writeModel` is the only writer and leaves the curated layer alone", async
 		assert.deepEqual(written, Object.keys(built.files).sort());
 	} finally {
 		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("the model alone reproduces the curated coverage reports, at both grains", async () => {
+	// `event-coverage.jsonl` and `era-coverage.jsonl` aggregate the per-game markers. The
+	// markers live on `dim_game`, so the same rollup is computable from the modelled layer
+	// — and it has to say the same thing, or a fact consumer and a curated consumer answer
+	// "what does this era hold?" differently (ticket 13, spec R6 and R13).
+	const reportEvents = await curatedJsonl<EventCoverageRecord>("event-coverage.jsonl");
+	const reportEras = await curatedJsonl<EraCoverageRecord>("era-coverage.jsonl");
+	const modelTables = await committedTables();
+	const rollup = rollupCoverage(modelTables);
+
+	assert.deepEqual(
+		rollup.events,
+		reportEvents,
+		"a reader with only data/model/*.csv must derive the curated per-event rollup — games, eras touched and every group count and state",
+	);
+	assert.deepEqual(
+		rollupCoverage(built.tables).events,
+		rollup.events,
+		"the committed CSVs and the in-memory build must roll up identically",
+	);
+	assert.equal(
+		rollup.events.reduce((sum, record) => sum + record.games, 0),
+		input.games.length,
+		"every modelled game appears in exactly one event's rollup",
+	);
+
+	const derivedEras = new Map(rollup.eras.map((record) => [record.era, record]));
+	for (const record of reportEras) {
+		const derived = derivedEras.get(record.era);
+		if (record.games === 0) {
+			// A declared era with no games is the era table's declaration, not a game fact:
+			// the model has no row to roll up and must not invent one. What must not happen
+			// is an era going missing while it still has games — asserted just below.
+			assert.equal(derived, undefined, `${record.era} has no games; the model must not carry an era row for it`);
+			continue;
+		}
+		assert.ok(derived, `${record.era} carries ${record.games} game(s) in the report, so the model must roll them up`);
+		// `from` is the era table's boundary date, not something a game states; everything
+		// else in the row is a property of the games and must match.
+		const expected: Partial<EraCoverageRecord> = { ...record };
+		delete expected.from;
+		assert.deepEqual(derived, expected, `${record.era}: the model's era rollup must match era-coverage.jsonl on everything a game states`);
+	}
+	assert.deepEqual(
+		[...derivedEras.keys()].sort(),
+		reportEras.filter((record) => record.games > 0).map((record) => record.era).sort(),
+		"the model rolls up exactly the eras its games belong to — no era invented, none dropped",
+	);
+	assert.equal(
+		rollup.eras.reduce((sum, record) => sum + record.games, 0),
+		input.games.length,
+		"every modelled game appears in exactly one era's rollup",
+	);
+
+	// The rollup reads the tables it is handed, not the curated files, so a model whose
+	// markers drifted cannot agree with the report by accident.
+	const tampered = modelTables.map((table) => ({
+		name: table.name,
+		rows: table.rows.map((row) => ({ ...row })),
+	}));
+	const dimGame = tampered.find((table) => table.name === "dim_game")!.rows;
+	const thin = dimGame.find((row) => row.game_id !== "" && row.team_stats_coverage === "unavailable");
+	assert.ok(thin, "the corpus must still carry a game with no team statistics");
+	thin.team_stats_coverage = "complete";
+	assert.notDeepEqual(rollupCoverage(tampered).events, reportEvents, "a marker flipped in the model must move the rollup away from the report");
+	thin.team_stats_coverage = "banana";
+	assert.throws(() => rollupCoverage(tampered), /expected complete, partial or unavailable/, "a marker outside the three states is refused, not counted");
+});
+
+test("the committed CSVs load through an independent RFC 4180 reader with no preprocessing", async (t) => {
+	// pandas, polars and pyarrow are not installed here, and adding one would be the
+	// repository's first data dependency for a test — so the dataframe half of the load
+	// criterion is proved through a reader that this repository did not write: Python's
+	// stdlib `csv` module. It does its own field splitting, quoting and header handling.
+	// If it recovers every field exactly and reads every integer as-is, then no export-side
+	// quoting repair or type-fixing step is needed, which is the whole claim.
+	const python = await run("python3", ["--version"]).catch(() => undefined);
+	if (python === undefined) {
+		t.skip("python3 is not installed, so the independent-reader load cannot be executed here");
+		return;
+	}
+
+	const probe = path.join(await mkdtemp(path.join(tmpdir(), "csv-load-")), "load.py");
+	const integerColumns: Record<string, string[]> = {};
+	for (const model of built.tables) {
+		integerColumns[model.name] = model.columns.filter((column) => column.type === "INTEGER").map((column) => column.name);
+	}
+	try {
+		await writeFile(
+			probe,
+			`import csv, hashlib, json, os, sys
+
+root, spec = sys.argv[1], json.loads(sys.argv[2])
+report = {}
+for name in sorted(os.listdir(root)):
+    if not name.endswith(".csv"):
+        continue
+    table = name[:-4]
+    with open(os.path.join(root, name), newline="", encoding="utf-8") as handle:
+        rows = list(csv.reader(handle))
+    header, body = rows[0], rows[1:]
+    for index, row in enumerate(body):
+        if len(row) != len(header):
+            raise SystemExit("%s: row %d has %d fields, the header has %d" % (name, index + 1, len(row), len(header)))
+    integers = 0
+    for column in spec.get(table, []):
+        position = header.index(column)
+        for row in body:
+            value = row[position]
+            if value == "":
+                continue
+            if str(int(value)) != value:
+                raise SystemExit("%s.%s: %r is not an integer this reader can take as-is" % (name, column, value))
+            integers += 1
+    flat = "\\u0000".join(cell for row in rows for cell in row)
+    report[table] = {
+        "header": header,
+        "rows": len(body),
+        "empty": sum(1 for row in body for value in row if value == ""),
+        "integers": integers,
+        "sha256": hashlib.sha256(flat.encode("utf-8")).hexdigest(),
+    }
+print(json.dumps(report))
+`,
+			"utf8",
+		);
+		const { stdout } = await run("python3", [probe, MODEL_DIR, JSON.stringify(integerColumns)]);
+		const loaded = JSON.parse(stdout) as Record<
+			string,
+			{ header: string[]; rows: number; empty: number; integers: number; sha256: string }
+		>;
+
+		// The same facts, read back through this repository's own parser.
+		const expected: typeof loaded = {};
+		for (const model of built.tables) {
+			const parsed = parseCsv(built.files[model.file]);
+			const [header, ...body] = parsed;
+			expected[model.name] = {
+				header,
+				rows: body.length,
+				empty: body.reduce((sum, row) => sum + row.filter((value) => value === "").length, 0),
+				integers: model.columns.reduce(
+					(sum, column, index) => (column.type === "INTEGER" ? sum + body.filter((row) => row[index] !== "").length : sum),
+					0,
+				),
+				sha256: createHash("sha256").update(parsed.flat().join("\u0000"), "utf8").digest("hex"),
+			};
+		}
+		assert.deepEqual(
+			loaded,
+			expected,
+			"the independent reader must recover the same header, row count, absent cells, integer cells and fields as the build wrote",
+		);
+		assert.ok(loaded.dim_game, "the reader found dim_game");
+		assert.ok(Object.values(loaded).some((table) => table.empty > 0), "the thin era's absent values are empty fields this reader saw as empty");
+		assert.ok(Object.values(loaded).every((table) => table.integers > 0), "every table's integer columns read back unchanged");
+	} finally {
+		await rm(path.dirname(probe), { recursive: true, force: true });
 	}
 });

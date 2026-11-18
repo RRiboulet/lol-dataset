@@ -4,6 +4,33 @@
 
 Changed:
 
+- **The model is proven over the whole committed dataset, and its coverage rolls up to the
+  curated reports.** `rollupCoverage` re-derives both grains of `event-coverage.jsonl` and
+  `era-coverage.jsonl` from `data/model/` alone — the markers live on `dim_game` and a game's
+  event comes from its side rows, since `dim_game` deliberately carries no event key — and the
+  suite requires the result to equal the committed reports field for field. Two boundaries are
+  stated rather than smoothed over: an era's `from` is the era table's declaration, not a game
+  fact, so a model-only reader cannot know it; and a declared era with no games (three of the
+  eight: `herald`, `hextech-chemtech`, `chemtech-withdrawn`) has no row to roll up, so the suite
+  asserts those are exactly the rows the rollup lacks and that the other five (91 + 46 + 186 +
+  19 + 35 = 377 games) are present and identical. The state rule is one implementation
+  (`summariseGroup`), shared with the curated report, so the two layers cannot drift in how they
+  read a set of markers. The former review finding — nothing reconciled an event/era rollup
+  computed from the model against the curated coverage declarations — is closed by checking the
+  claim where it matters: from the committed CSV bytes, not the in-memory build (ticket 13).
+- **The load path is proved per event, not only per table, and through a reader this repository
+  did not write.** The SQLite load now also reconciles per-event `GROUP BY` counts for games,
+  player rows and draft entries against the curated layer, so a row that reached the right table
+  carrying the wrong event can no longer pass on a whole-table count. The dataframe half of the
+  load criterion — still unexecutable as `pandas`, because installing one would be this
+  repository's first data dependency for a test — is proved through Python's stdlib `csv`
+  reader: it must recover the same header, row count, absent-cell count, integer-cell count and
+  SHA-256 over every field as the build's own parser, with every non-empty integer round-tripping
+  unchanged. That establishes what the criterion claims (no quoting repair, header fix or
+  type-fixing step is needed); it does not claim `pandas.read_csv` itself was run, and the probe
+  skips loudly on a machine without `python3`. Thin-era visibility is asserted at full scale
+  too: every IPL 5 game keeps its dimension row and both side rows with its absent measures
+  empty rather than zero, so a `SUM` never reads "not recorded" as data (ticket 13).
 - **The entity files carry only the entities an emitted record names.** The registry
   crawl registered every page the source names, so 43 of 111 teams and 32 of 323
   players sat in `teams.jsonl`/`players.jsonl` named by no game side, match side or
