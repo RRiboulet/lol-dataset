@@ -1,0 +1,13 @@
+{
+	"$comment": "Ticket 16: the candidate universe, so the event set is computed rather than hand-listed (spec R1). One Cargo query over every international tournament the source records; the committed rule decides which are admitted, and `event-selection.jsonl` then holds a decision for each. The 2011 era floor is not applied here — the rule rejects an earlier event with `before-declared-era`, which is a reportable decision rather than a silently missing row.",
+	"queries": [
+		{
+			"endpoint": "cargoexport",
+			"tables": "Tournaments",
+			"fields": "Name,OverviewPage,DateStart,League,Region",
+			"where": "Region='International'",
+			"order_by": "OverviewPage ASC",
+			"limit": 500
+		}
+	]
+}
