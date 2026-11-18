@@ -22,7 +22,16 @@ import { DatabaseSync } from "node:sqlite";
 import { test } from "node:test";
 
 import type { ModelBuild, ModelInput, ModelTable } from "../model.ts";
-import { buildModel, loadModelInput, parseCsv, writeModel } from "../model.ts";
+import {
+	assembleModel,
+	buildModel,
+	DERIVED_MEASURE_PATTERN,
+	findModelViolations,
+	loadModelInput,
+	parseCsv,
+	REQUIRED_FACT_KEYS,
+	writeModel,
+} from "../model.ts";
 import { CURATED_DIR, DATASET_DIR, REPO_ROOT } from "./helpers.ts";
 
 const run = promisify(execFile);
@@ -217,6 +226,125 @@ test("the unknown member exists in every dimension and is what a missing value j
 	}
 });
 
+test("the model refuses curated input the invariant gate never saw, and the facts agree with each other", () => {
+	// A hand-edited curated file can hold a player row whose eventId disagrees with its
+	// game's. Every fact stays self-consistent, so only the seam and the cross-fact
+	// gate catch it — and both must name the game and the two events.
+	const bad = JSON.parse(JSON.stringify(input));
+	const row = bad.playerGames[0];
+	const ownEvent = row.eventId;
+	const otherEvent = bad.events.find((event) => event.id !== row.eventId).id;
+	row.eventId = otherEvent;
+	assert.throws(
+		() => buildModel(bad),
+		(error: Error) => {
+			assert.match(error.message, new RegExp(row.gameId), "the seam names the game");
+			assert.match(error.message, new RegExp(otherEvent), "the seam names the row's claimed event");
+			assert.match(error.message, new RegExp(ownEvent), "the seam names the game's own event");
+			return true;
+		},
+		"a player row whose eventId disagrees with its game is refused",
+	);
+	// The conformance gate catches the same contradiction if the facts are built anyway.
+	const assembled = assembleModel(bad);
+	const violations = findModelViolations(bad, assembled);
+	assert.ok(
+		violations.some((violation) => violation.includes(row.gameId) && violation.includes(otherEvent) && violation.includes("disagree on the event")),
+		`the cross-fact gate must flag the disagreement, got: ${JSON.stringify(violations)}`,
+	);
+
+	// The same for a player row whose team is not one of the game's two sides.
+	const stranger = JSON.parse(JSON.stringify(input));
+	const playerRow = stranger.playerGames[0];
+	const game = stranger.games.find((candidate) => candidate.id === playerRow.gameId);
+	const outsideTeam = stranger.teams.find((team) => !game.sides.some((side) => side.teamId === team.id)).id;
+	playerRow.teamId = outsideTeam;
+	const strangerAssembled = assembleModel(stranger);
+	assert.ok(
+		findModelViolations(stranger, strangerAssembled).some(
+			(violation) => violation.includes(playerRow.gameId) && /not one of the game's two sides/.test(violation),
+		),
+		"a player fact row whose team is neither side is flagged",
+	);
+	assert.throws(() => buildModel(stranger), /not one of the game's two sides|claims event/, "the seam refuses the inconsistent team");
+});
+
+test("a winner that is neither side is refused, and an unrecorded winner is an empty field, not a zero", () => {
+	// Absent: both sides carry an empty is_winner, distinguishable from a recorded loss.
+	const absent = JSON.parse(JSON.stringify(input));
+	const game = absent.games[0];
+	game.winnerTeamId = undefined;
+	const builtAbsent = buildModel(absent);
+	const dimGame = builtAbsent.tables.find((candidate) => candidate.name === "dim_game");
+	const gameKey = dimGame.rows.find((row) => row.game_id === game.id).game_key;
+	const sideRows = builtAbsent.tables.find((candidate) => candidate.name === "fact_game_side").rows.filter((row) => String(row.game_key) === String(gameKey));
+	assert.deepEqual(
+		sideRows.map((row) => row.is_winner),
+		["", ""],
+		"no recorded winner is an empty field on both side rows, not a 0",
+	);
+	const column = builtAbsent.tables.find((candidate) => candidate.name === "fact_game_side").columns.find((candidate) => candidate.name === "is_winner");
+	assert.match(column.absent ?? "", /no winner/, "the column's absence rule must state the winner convention");
+
+	// A winner id that is neither side contradicts the fact's own rows: refused.
+	const badWinner = JSON.parse(JSON.stringify(input));
+	const otherGame = badWinner.games[0];
+	const outsideTeam = badWinner.teams.find((team) => !otherGame.sides.some((side) => side.teamId === team.id)).id;
+	otherGame.winnerTeamId = outsideTeam;
+	assert.throws(
+		() => buildModel(badWinner),
+		(error: Error) => {
+			assert.match(error.message, new RegExp(otherGame.id));
+			assert.match(error.message, /neither side/);
+			return true;
+		},
+		"an out-of-sides winner is refused, naming the game",
+	);
+});
+
+test("the unknown member is joinable from exactly the fact keys the curated record can miss", () => {
+	const joinable = new Set<string>();
+	for (const name of FACTS) {
+		for (const column of table(name).columns.filter((candidate) => candidate.references !== undefined)) {
+			if (REQUIRED_FACT_KEYS.has(column.name)) {
+				for (const row of rows(name)) {
+					assert.notEqual(String(row[column.name]), "0", `${name}.${column.name} must never reach the unknown member`);
+				}
+			} else {
+				joinable.add(column.name);
+			}
+		}
+	}
+	assert.deepEqual(
+		[...joinable].sort(),
+		["match_key", "patch_key"],
+		"exactly the optional keys — series and patch — may join to key 0; every other dimension's unknown member is unreachable by design",
+	);
+	const documented = built.files["data-dictionary.md"];
+	assert.match(documented, /Every dimension keeps its unknown member, including the ones no fact can currently reach at `0`/);
+	assert.match(documented, /refuses `0` in a fact key the curated record always states/);
+});
+
+test("dim_match is sliceable by event: it carries event_key, and its unknown member joins to the unknown event", () => {
+	const match = table("dim_match");
+	const column = match.columns.find((candidate) => candidate.name === "event_key");
+	assert.ok(column, "dim_match must carry event_key");
+	assert.equal(column.references, "dim_event.event_key", "event_key is a declared foreign key into dim_event");
+	const unknown = match.rows.find((row) => row.match_key === 0);
+	assert.equal(unknown.event_key, 0, "the unknown member's event_key joins to the unknown event, never an empty field");
+	const eventKeys = new Set(rows("dim_event").map((row) => String(row.event_key)));
+	for (const row of match.rows) {
+		assert.ok(eventKeys.has(String(row.event_key)), `dim_match event_key ${row.event_key} must resolve`);
+	}
+	// And it agrees with the facts: a series' event is its games' event.
+	const matchEventByKey = new Map(match.rows.map((row) => [String(row.match_key), String(row.event_key)]));
+	for (const factRow of rows("fact_game_side")) {
+		const matchKey = String(factRow.match_key);
+		if (matchKey === "0") continue;
+		assert.equal(matchEventByKey.get(matchKey), String(factRow.event_key), "a fact's series event must be the fact's event");
+	}
+});
+
 test("a rename is one dimension row plus two dated alias rows, and both strings resolve to it", () => {
 	const team = rows("dim_team").find((row) => row.team_id === "tm-9a4fde0c4aad");
 	assert.ok(team, "the fixture's renamed team must be in the model");
@@ -275,13 +403,22 @@ test("coverage declarations survive into the model rather than being averaged aw
 });
 
 test("facts contain measures only: a derived-measure column name fails the test", () => {
-	const derived = /(^|_)(rate|ratio|average|avg|mean|percentage|percent|pct|share|win_rate|win_pct)(_|$)|_(per_game|per_minute)$/i;
-	assert.ok(derived.test("win_rate") && derived.test("avg_gold") && derived.test("kills_per_game"), "the guard must catch the shapes it names");
+	const derived = DERIVED_MEASURE_PATTERN;
+	assert.ok(
+		derived.test("win_rate") && derived.test("avg_gold") && derived.test("kills_per_game") && derived.test("kda") && derived.test("gpm") && derived.test("damage_per_min_10"),
+		"the guard must catch the shapes it names, including the kda, gpm and per-min ones",
+	);
 	for (const name of FACTS) {
 		for (const column of table(name).columns) {
 			assert.doesNotMatch(column.name, derived, `${name}.${column.name} is a derived measure; the analyst does the aggregating (R13)`);
 		}
 	}
+	// The guard is a naming heuristic and says so: the dictionary must not overclaim it.
+	assert.match(
+		built.files["data-dictionary.md"],
+		/naming heuristic, not a semantic one/,
+		"the dictionary must state that the no-derived-measure guard is a name heuristic",
+	);
 });
 
 test("the CSVs are canonical: header, stable order, RFC 4180 quoting, LF, no BOM, ISO dates, plain integers", () => {
@@ -380,6 +517,32 @@ test("the `model` command writes the committed bytes and `--check` reports drift
 			(error: Error & { code?: number; stderr?: string }) => {
 				assert.equal(error.code, 1, "a drifted model exits non-zero");
 				assert.match(error.stderr ?? "", /dim_team\.csv/, "the failing file is named");
+				return true;
+			},
+		);
+		await writeFile(path.join(dir, "dim_team.csv"), built.files["dim_team.csv"], "utf8");
+
+		// So does a file the build no longer emits: a former build's leftover must not
+		// let a dropped table look committed and current.
+		await writeFile(path.join(dir, "stray-leftover-from-an-old-build.csv"), "stale\n", "utf8");
+		await assert.rejects(
+			run(process.execPath, [path.join(DATASET_DIR, "cli.ts"), "model", "--out", dir, "--check"], { cwd: DATASET_DIR }),
+			(error: Error & { code?: number; stderr?: string }) => {
+				assert.equal(error.code, 1, "a stray file exits non-zero");
+				assert.match(error.stderr ?? "", /stray-leftover-from-an-old-build\.csv/, "the stray file is named");
+				assert.match(error.stderr ?? "", /does not emit this file/, "the reason is the build's own file set");
+				return true;
+			},
+		);
+		await rm(path.join(dir, "stray-leftover-from-an-old-build.csv"));
+
+		// And a missing emitted file: the check must notice a table is gone.
+		await rm(path.join(dir, "dim_match.csv"));
+		await assert.rejects(
+			run(process.execPath, [path.join(DATASET_DIR, "cli.ts"), "model", "--out", dir, "--check"], { cwd: DATASET_DIR }),
+			(error: Error & { code?: number; stderr?: string }) => {
+				assert.equal(error.code, 1, "a missing table exits non-zero");
+				assert.match(error.stderr ?? "", /dim_match\.csv/, "the missing file is named");
 				return true;
 			},
 		);

@@ -29,7 +29,11 @@ one row per game per side, per game per player and per draft slot; an alias brid
 with validity dates; an unknown member at key 0 in every dimension; and the
 generated DDL and per-column data dictionary. `node tools/dataset/cli.ts model`
 rebuilds it from `data/curated/` and `model --check` proves the committed bytes are
-current. Those four events — Worlds 2023, MSI 2023, IEM IX 2015 and IPL 5 2012 — are
+current — and fails on a file in the directory the build no longer emits. The model
+validates the curated rows it reads at its own seam (ids, references, a winner that
+is one of the two sides, a player row's event matching its game) and checks that the
+facts agree with each other, so a row the invariant gate never saw cannot survive
+into `data/model/`. Those four events — Worlds 2023, MSI 2023, IEM IX 2015 and IPL 5 2012 — are
 the only ones with games; ticket 10 is the crawl that fills the rest, and ticket 13
 builds the model over the full dataset. IPL 5 is the one that took a decision rather
 than a crawl: its `MatchSchedule` spells one team's name two ways and swaps three

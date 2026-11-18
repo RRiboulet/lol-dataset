@@ -4,6 +4,15 @@
 
 Changed:
 
+- **The dimensional model states its winner convention, and `dim_match` is sliceable by event.**
+  `fact_game_side.is_winner` is now an **empty field** when the source records no winner, instead of
+  a `0` that read exactly like a recorded loss, and a winner id that is neither side is refused by
+  the build rather than silently encoded as "no winner". `dim_match` carries `event_key`, so a
+  series can be sliced by event without joining through its games, with the unknown member joining
+  to the unknown event. The no-derived-measure guard also catches the `kda`, `gpm` and `per_min`
+  name shapes, and the data dictionary states both its remaining limit (a naming heuristic, not a
+  semantic guarantee) and which dimensions' unknown members can actually be joined to — only
+  `match_key` and `patch_key`; the rest are kept for uniformity (ticket 12, review pass).
 - A game whose `MatchSchedule` row names two other teams is now emitted **without** a
   canonical `matchId` and counted in the build's summary, instead of stopping the build;
   a series row that **every** game naming it contradicts is not emitted at all and is
@@ -310,6 +319,23 @@ Added:
   fixtures moved accordingly and the committed event files are unchanged.
 
 Fixed:
+
+- **`model --check` fails on a model file the build does not emit.** It compared only the files the
+  rebuild produces, so a stray file left in `data/model/` by an older build still printed
+  "committed model matches a rebuild". It now enumerates the directory and names anything the build
+  does not emit, as well as any emitted file that is missing. Found by the independent review of the
+  dimensional model, and reproduced before the fix.
+- **The model no longer trusts curated rows the invariant gate never saw.** `model` read the curated
+  JSONL directly, so a hand-edited player row whose `eventId` disagreed with its game's was accepted
+  and the facts then contradicted each other while every per-fact check passed self-consistently.
+  The build now validates at the seam the curated fields the model relies on — non-empty ids,
+  resolvable references, a winner that is one of the two sides, a player row's event matching its
+  game — and the conformance gate asserts cross-fact consistency: one `game_key` presents one
+  `event_key` across all three facts, and a player row's team and side must be one of the game's two
+  sides, naming the game and the disagreeing events when they are not. Found by the independent
+  review of the dimensional model, and reproduced before the fix.
+
+Maintenance:
 
 - **The single-query form of the manual fetch command is accepted again, and stays
   as strict as a plan file.** `tools/dataset/cli.ts` has always documented

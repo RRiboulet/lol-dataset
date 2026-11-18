@@ -1,6 +1,6 @@
 // model: the star schema on top of the curated records (spec R13, D10, D2).
 //
-//   loadModelInput(curated/) -> dimensions -> facts -> CSV + DDL + data dictionary
+//   loadModelInput(curated/) -> validateModelInput -> dimensions -> facts -> conformance -> CSV + DDL + dictionary
 //
 // The curated layer is the evidence; this layer is the analysis surface. It never
 // writes back: the CSVs under `data/model/` are derived from `data/curated/` and are
@@ -149,11 +149,17 @@ function textMeasure(name: string, description: string, absent = "empty when the
 	return { name, type: "TEXT", key: "measure", description, absent };
 }
 
-function unknownRow(columns: ModelColumn[], surrogateKey: string, displayKey: string): ModelRow {
+function unknownRow(
+	columns: ModelColumn[],
+	surrogateKey: string,
+	displayKey: string,
+	overrides: Record<string, string | number> = {},
+): ModelRow {
 	const row: ModelRow = {};
 	for (const column of columns) {
 		if (column.name === surrogateKey) row[column.name] = 0;
 		else if (column.name === displayKey) row[column.name] = "Unknown";
+		else if (column.name in overrides) row[column.name] = overrides[column.name];
 		else row[column.name] = "";
 	}
 	return row;
@@ -208,6 +214,8 @@ function buildDimension<T>(spec: {
 	displayKey: string;
 	surrogateKey: string;
 	columns: ModelColumn[];
+	/** Overrides for the unknown member's cells; a foreign key must resolve, never be empty. */
+	unknown?: Record<string, string | number>;
 	items: T[];
 	natural: (item: T) => string;
 	row: (item: T, key: number) => ModelRow;
@@ -223,7 +231,7 @@ function buildDimension<T>(spec: {
 	const keys = new Map<string, number>();
 	ordered.forEach((item, index) => keys.set(spec.natural(item), index + 1));
 	const rows = [
-		unknownRow(spec.columns, spec.surrogateKey, spec.displayKey),
+		unknownRow(spec.columns, spec.surrogateKey, spec.displayKey, spec.unknown),
 		...ordered.map((item, index) => normaliseRow(spec.columns, spec.row(item, index + 1))),
 	];
 	return {
@@ -313,6 +321,68 @@ export async function loadModelInput(curatedDir: string = DEFAULT_CURATED_DIR): 
 	};
 }
 
+/**
+ * The curated fields the model relies on, checked at the seam rather than assumed.
+ *
+ * The invariant gate polices the build's own output, but the model reads the files
+ * from disk, where a hand edit or a bad merge can put a row the gate never saw. This
+ * fails early, naming the record, instead of letting the contradiction survive into
+ * the facts.
+ */
+export function validateModelInput(input: ModelInput): void {
+	const requireIds = (records: { id: string }[], file: string) => {
+		for (const record of records) {
+			if (record.id === "") throw new Error(`curated ${file}: a record has an empty id`);
+		}
+	};
+	requireIds(input.events, "events.jsonl");
+	requireIds(input.matches, "matches.jsonl");
+	requireIds(input.teams, "teams.jsonl");
+	requireIds(input.players, "players.jsonl");
+	requireIds(input.champions, "champions.jsonl");
+
+	for (const match of input.matches) {
+		if (match.eventId === "") throw new Error(`curated matches.jsonl: match ${match.id} has an empty eventId`);
+	}
+	for (const alias of input.aliases) {
+		if (alias.entityId === "") throw new Error(`curated aliases.jsonl: alias ${JSON.stringify(alias.string)} has an empty entityId`);
+	}
+
+	const gamesById = new Map<string, GameRecord>();
+	for (const game of input.games) {
+		if (game.id === "") throw new Error("curated games.jsonl: a game has an empty id");
+		if (game.eventId === "") throw new Error(`curated games.jsonl: game ${game.id} has an empty eventId`);
+		if (game.sides.length !== 2) throw new Error(`curated games.jsonl: game ${game.id} has ${game.sides.length} sides, expected 2`);
+		for (const side of game.sides) {
+			if (side.teamId === "") throw new Error(`curated games.jsonl: game ${game.id} has a side with an empty teamId`);
+		}
+		if (game.winnerTeamId !== undefined && !game.sides.some((side) => side.teamId === game.winnerTeamId)) {
+			throw new Error(
+				`curated games.jsonl: game ${game.id} records winner ${JSON.stringify(game.winnerTeamId)}, which is neither side ` +
+					`(${game.sides.map((side) => side.teamId).join(", ")})`,
+			);
+		}
+		gamesById.set(game.id, game);
+	}
+
+	for (const row of input.playerGames) {
+		if (row.gameId === "") throw new Error("curated player-games.jsonl: a row has an empty gameId");
+		if (row.eventId === "") throw new Error(`curated player-games.jsonl: the row for game ${row.gameId} has an empty eventId`);
+		const game = gamesById.get(row.gameId);
+		if (game === undefined) {
+			throw new Error(`curated player-games.jsonl: the row for player ${row.playerId} references game ${row.gameId}, which the corpus does not carry`);
+		}
+		if (row.eventId !== game.eventId) {
+			throw new Error(
+				`curated player-games.jsonl: the row for game ${row.gameId} claims event ${row.eventId}, but the game belongs to ${game.eventId}`,
+			);
+		}
+		if (row.playerId === "" || row.teamId === "" || row.championId === "") {
+			throw new Error(`curated player-games.jsonl: the row for game ${row.gameId} has an empty player, team or champion reference`);
+		}
+	}
+}
+
 // ---- dimensions -------------------------------------------------------------
 
 function buildDimensions(input: ModelInput) {
@@ -354,9 +424,11 @@ function buildDimensions(input: ModelInput) {
 		naturalKey: "match_id",
 		displayKey: "match_name",
 		surrogateKey: "match_key",
+		unknown: { event_key: 0 },
 		columns: [
 			surrogate("match_key"),
 			natural("match_id", "The curated match's canonical ID (`mt-…`)."),
+			foreign("event_key", "dim_event.event_key", "The event the series belongs to, so a series is sliceable by event without joining through its games."),
 			attribute("match_name", "TEXT", "A readable series label: event, round label and date."),
 			attribute("date_time_utc", "TEXT", "The series' start instant, ISO-8601 UTC."),
 			attribute("best_of", "INTEGER", "The series length the source declares.", "empty when the source states none"),
@@ -369,6 +441,7 @@ function buildDimensions(input: ModelInput) {
 		row: (record, key) => ({
 			match_key: key,
 			match_id: record.id,
+			event_key: requiredKey(event.keys, record.eventId, "dim_match"),
 			match_name: [record.eventName, record.tab, record.dateTimeUtc.slice(0, 10)].filter((part) => part).join(" — "),
 			date_time_utc: record.dateTimeUtc,
 			best_of: record.bestOf,
@@ -637,7 +710,7 @@ function factGameSide(input: ModelInput, dimensions: ReturnType<typeof buildDime
 		...commonFactColumns(),
 		foreign("team_key", "dim_team.team_key", "The team on this side of the game."),
 		attribute("side", "TEXT", "The source's side for this game: `blue` is Team1 and `red` is Team2."),
-		attribute("is_winner", "INTEGER", "1 when this side won the game, else 0."),
+		attribute("is_winner", "INTEGER", "1 when this side won the game, 0 when it lost; empty when the source records no winner.", "empty when the source records no winner"),
 		measure("duration_seconds", "Game length in whole seconds, a game-level measure repeated on both side rows.", "empty when the source states no duration"),
 		...TEAM_MEASURES.map(([name, field]) => measure(name, `The source's ${field} figure for this side.`)),
 	];
@@ -653,7 +726,7 @@ function factGameSide(input: ModelInput, dimensions: ReturnType<typeof buildDime
 				patch_key: optionalKey(dimensions.patch.keys, game.patch, "fact_game_side"),
 				team_key: requiredKey(dimensions.team.keys, side.teamId, "fact_game_side"),
 				side: side.side,
-				is_winner: side.teamId === game.winnerTeamId ? 1 : 0,
+				is_winner: game.winnerTeamId === undefined ? "" : side.teamId === game.winnerTeamId ? 1 : 0,
 				duration_seconds: measureValue(game.durationSeconds),
 			};
 			for (const [column, field] of TEAM_MEASURES) row[column] = measureValue(side[field] as number | undefined);
@@ -911,17 +984,40 @@ export function renderDictionary(tables: ModelTable[]): string {
 		"",
 		"Every dimension has exactly one row with surrogate key `0`, an empty natural key and the display",
 		"name `Unknown`. A fact joins to it when the curated record has no value — today, a game with no",
-		"series or no patch. An inner join therefore never drops a thin-era row, and `0` is never mistaken",
-		"for a real entity. The unknown row's attributes are empty, not zero.",
+		"series or no patch (`match_key`, `patch_key`). An inner join therefore never drops a thin-era row,",
+		"and `0` is never mistaken for a real entity. The unknown row's attributes are empty, not zero,",
+		"except a foreign key it carries itself, which joins to the target's own unknown member",
+		"(`dim_match`'s `event_key` is `0`).",
+		"",
+		"Every dimension keeps its unknown member, including the ones no fact can currently reach at `0`",
+		"(`dim_event`, `dim_game`, `dim_date`, `dim_team`, `dim_player`, `dim_champion`): the rule — a",
+		"foreign key is never empty, and absence is key `0` — then stays uniform, a reader never learns a",
+		"per-dimension special case, and a future fact that can miss one of these values needs no new",
+		"convention. The conformance gate refuses `0` in a fact key the curated record always states",
+		"(`game_key`, `event_key`, `date_key`, `team_key`, `player_key`, `champion_key`), so the",
+		"unreachable members stay unreachable rather than silently absorbable.",
 		"",
 		"## Surrogate keys and ordering",
 		"",
 		"Surrogate keys are `0` for the unknown member and `1..N` for the real rows, assigned in ascending",
 		"natural-key order within each build. They are build-local: the natural key (the canonical ID,",
 		"ISO date or patch string) is the durable identifier, and every fact is rebuilt in the same run, so",
-		"a key can never dangle. Rows are sorted by that same order; facts are sorted by their declared",
-		"grain columns, and the bridge by `kind`, `entity_key`, `alias_string`. No file contains a build",
-		"timestamp.",
+		"a key can never dangle. The keys can shift between builds — a new event sorting earlier",
+		"renumbers everything after it — which is not a defect: an analyst joining across a rebuild, or",
+		"storing a key outside the model, uses the natural key, which is the durable handle. Rows are",
+		"sorted by that same order; facts are sorted by their declared grain columns, and the bridge by",
+		"`kind`, `entity_key`, `alias_string`. No file contains a build timestamp.",
+		"",
+		"## Measures, and the limit of the no-derived-measure guard",
+		"",
+		"Facts carry only measures the source stated — counts and durations. The analyst does the summing,",
+		"dividing and averaging. The build refuses a fact column whose **name** looks like a derived",
+		"measure: `rate`, `ratio`, `average`, `avg`, `mean`, `percentage`, `percent`, `pct`, `share`,",
+		"`kda`, `gpm`, `win_rate`, `win_pct`, and `per_game`, `per_minute`, `per_min` shapes. That guard is",
+		"a naming heuristic, not a semantic one: it catches the obvious shapes (`kda`, `gpm`,",
+		"`damage_per_min_10`) but cannot tell what a column computes, so a new measure still needs a",
+		"reviewer's judgement that it is source-stated and additive. Do not rely on the guard for",
+		"correctness.",
 		"",
 		"## Alias bridge",
 		"",
@@ -964,8 +1060,9 @@ function buildFiles(tables: ModelTable[]): Record<string, string> {
 
 // ---- conformance ------------------------------------------------------------
 
-const DERIVED_MEASURE = /(^|_)(rate|ratio|average|avg|mean|percentage|percent|pct|share|win_rate|win_pct)(_|$)|_(per_game|per_minute)$/i;
-const REQUIRED_FACT_KEY = new Set(["game_key", "event_key", "date_key", "team_key", "player_key", "champion_key"]);
+export const DERIVED_MEASURE_PATTERN = /(^|_)(rate|ratio|average|avg|mean|percentage|percent|pct|share|kda|gpm|win_rate|win_pct)(_|$)|_(per_game|per_minute|per_min)(_|$)/i;
+/** The fact keys the curated record always states; the conformance gate refuses the unknown member for them. */
+export const REQUIRED_FACT_KEYS = new Set(["game_key", "event_key", "date_key", "team_key", "player_key", "champion_key"]);
 
 function countBy<T>(items: T[], key: (item: T) => string): Map<string, number> {
 	const counts = new Map<string, number>();
@@ -1053,7 +1150,7 @@ export function findModelViolations(input: ModelInput, result: ModelBuild): stri
 		const table = get(name);
 		for (const column of table.columns) {
 			if (column.key === "measure" || column.key === "attribute") {
-				if (DERIVED_MEASURE.test(column.name)) violations.push(`${name}.${column.name}: derived measures are not allowed in facts`);
+				if (DERIVED_MEASURE_PATTERN.test(column.name)) violations.push(`${name}.${column.name}: derived measures are not allowed in facts`);
 			}
 			if (column.references === undefined) continue;
 			const [targetTable, targetColumn] = column.references.split(".");
@@ -1061,9 +1158,22 @@ export function findModelViolations(input: ModelInput, result: ModelBuild): stri
 			for (const row of table.rows) {
 				const value = String(row[column.name]);
 				if (!targetValues.has(value)) violations.push(`${name}.${column.name}=${JSON.stringify(value)} does not resolve to ${targetTable}`);
-				if (REQUIRED_FACT_KEY.has(column.name) && value === "0") {
+				if (REQUIRED_FACT_KEYS.has(column.name) && value === "0") {
 					violations.push(`${name}.${column.name} uses the unknown member where the curated record always states a value`);
 				}
+			}
+		}
+	}
+
+	// Dimensions can carry a foreign key too (dim_match's event); it must resolve, unknown member included.
+	for (const name of dimensions) {
+		const table = get(name);
+		for (const column of table.columns.filter((candidate) => candidate.references !== undefined)) {
+			const [targetTable, targetColumn] = column.references.split(".");
+			const targetValues = new Set(get(targetTable as ModelTableName).rows.map((row) => String(row[targetColumn])));
+			for (const row of table.rows) {
+				const value = String(row[column.name]);
+				if (!targetValues.has(value)) violations.push(`${name}.${column.name}=${JSON.stringify(value)} does not resolve to ${targetTable}`);
 			}
 		}
 	}
@@ -1134,6 +1244,45 @@ export function findModelViolations(input: ModelInput, result: ModelBuild): stri
 		if ((factEvents("fact_draft_slot").get(eventId) ?? 0) !== draftRows) violations.push(`event ${eventId}: draft fact rows do not reconcile`);
 	}
 
+	// One game must present one event across every fact, and a player row's team and side
+	// must be one of the game's two sides. Each fact is self-consistent on its own, so a
+	// hand-edited curated row (a player row carrying another event's id) passes every
+	// per-fact check and only contradicts across them.
+	const eventKeysByGame = new Map<string, Set<number>>();
+	for (const name of facts) {
+		for (const row of get(name).rows) {
+			const gameId = String(gameIdByKey.get(String(row.game_key)));
+			const set = eventKeysByGame.get(gameId) ?? new Set<number>();
+			set.add(row.event_key as number);
+			eventKeysByGame.set(gameId, set);
+		}
+	}
+	for (const [gameId, keys] of eventKeysByGame) {
+		if (keys.size > 1) {
+			violations.push(
+				`game ${gameId}: its facts disagree on the event — ${[...keys].map((key) => `event ${eventIdByKey.get(String(key))}`).join(" vs ")}`,
+			);
+		}
+	}
+	const sideTeamsByGame = new Map<string, { teamKey: number; side: string }[]>();
+	for (const row of get("fact_game_side").rows) {
+		const gameId = String(gameIdByKey.get(String(row.game_key)));
+		const list = sideTeamsByGame.get(gameId) ?? [];
+		list.push({ teamKey: row.team_key as number, side: String(row.side) });
+		sideTeamsByGame.set(gameId, list);
+	}
+	for (const row of get("fact_player_game").rows) {
+		const gameId = String(gameIdByKey.get(String(row.game_key)));
+		const played = sideTeamsByGame.get(gameId)?.find((side) => String(side.teamKey) === String(row.team_key));
+		if (played === undefined) {
+			violations.push(`game ${gameId}: a player fact row's team ${row.team_key} is not one of the game's two sides`);
+		} else if (played.side !== row.side) {
+			violations.push(
+				`game ${gameId}: a player fact row says side ${JSON.stringify(row.side)}, but that team played ${JSON.stringify(played.side)}`,
+			);
+		}
+	}
+
 	// Coverage is a claim about the game, so it lives on dim_game and must survive.
 	const dimGameById = new Map(get("dim_game").rows.map((row) => [String(row.game_id), row]));
 	for (const game of input.games) {
@@ -1164,10 +1313,13 @@ export function assertModelConforms(input: ModelInput, result: ModelBuild): void
 // ---- entry points -----------------------------------------------------------
 
 /**
- * Derive the model from curated records. Throws rather than return a model that fails
- * a grain, a foreign key or a row-count reconciliation.
+ * Assemble the tables without validating them.
+ *
+ * Exported so the conformance rules can be tested against a deliberately inconsistent
+ * input — the kind a hand-edited curated file produces — without being refused at the
+ * door; `buildModel` is the seam that runs validation and conformance over this.
  */
-export function buildModel(input: ModelInput): ModelBuild {
+export function assembleModel(input: ModelInput): ModelBuild {
 	const dimensions = buildDimensions(input);
 	const tablesByName = new Map<ModelTableName, ModelTable>([
 		["dim_event", dimensions.event.table],
@@ -1189,6 +1341,17 @@ export function buildModel(input: ModelInput): ModelBuild {
 		return table;
 	});
 	const result: ModelBuild = { tables, files: buildFiles(tables) };
+	return result;
+}
+
+/**
+ * Derive the model from curated records. Validates the curated fields the model relies
+ * on, then throws rather than return a model that fails a grain, a foreign key or a
+ * row-count reconciliation.
+ */
+export function buildModel(input: ModelInput): ModelBuild {
+	validateModelInput(input);
+	const result = assembleModel(input);
 	assertModelConforms(input, result);
 	return result;
 }

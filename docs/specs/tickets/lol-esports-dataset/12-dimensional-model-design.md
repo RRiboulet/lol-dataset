@@ -193,6 +193,56 @@ read them without a custom reader; the suite's own `parseCsv` proves the quoting
 round-trip. Ticket 13, which builds over the full dataset, is the natural place to run
 the dataframe half in an environment that has a library.
 
+### Review pass on PR #26: what the findings changed
+
+An independent review of this ticket found seven issues; each is settled here.
+
+- **A1 — `model --check` ignored files the build no longer emits (reproduced).** It iterated the
+  rebuild's file set, so a stray file in `data/model/` still printed "committed model matches a
+  rebuild". `checkModel` now enumerates the directory and names anything the build does not emit,
+  beside the pre-existing "an emitted file is missing" case. Test: the CLI check fails on a
+  stray file and on a removed table.
+- **A2 — the model trusted curated files the invariant gate never saw.** `loadModelInput` reads
+  JSONL directly, so a hand-edited or badly merged row passed every per-fact check
+  self-consistently. Two guards landed at the model's seam: `validateModelInput` (ids non-empty,
+  references resolvable, exactly two sides, a winner that is one of the sides, a player row's event
+  matching its game) runs before anything is built, and the conformance gate asserts cross-fact
+  consistency — one `game_key` presents one `event_key` across all three facts, and a player row's
+  team and side must be one of the game's two sides — naming the game and the disagreeing events.
+  The build path was split into `assembleModel` (no validation) and `buildModel` (validate,
+  assemble, conform) so the gate is testable against deliberately inconsistent input.
+- **A3 — an out-of-sides winner was silently encoded as "no winner".** `is_winner` is now an
+  **empty field** when the source records no winner (the column's absent note states it), and a
+  winner id that is neither side is refused by `validateModelInput`, naming the game. The empty
+  field is distinguishable from a recorded loss, which is the point.
+- **A4 — the derived-measure guard was a name heuristic.** Tightened with the obvious escapes
+  (`kda`, `gpm`, `per_min` shapes, so `damage_per_min_10` is caught) **and** stated as a limit: the
+  dictionary's new "Measures" section says it is a naming heuristic, not a semantic guarantee, and
+  that a new measure still needs a reviewer's judgement. The pattern is exported
+  (`DERIVED_MEASURE_PATTERN`) so the test and the build cannot drift.
+- **A5 — unreachable unknown members.** Kept, and documented: every dimension keeps its key-0 row
+  so the rule "a foreign key is never empty, and absence is key 0" stays uniform and a future fact
+  that can miss one of these values needs no new convention. The dictionary says which keys can
+  actually reach it (only `match_key` and `patch_key`) and that the conformance gate refuses `0` in
+  a required key. A test asserts exactly the joinable set `{match_key, patch_key}` and that the
+  required keys (`REQUIRED_FACT_KEYS`, now exported) never hold `0` in the emitted data.
+- **A6 — build-local surrogate keys shift when an event sorts earlier.** No code change; already
+  half-documented. The dictionary's key section and the decision above now say it outright: keys
+  are build-local and can move, the natural key is the durable handle, and every fact is derived in
+  the same run so renumbering cannot dangle.
+- **A7 — `dim_match`/`dim_game` carried no event key.** `dim_match` gained `event_key` (its ids are
+  unique across the corpus, so the join is one-to-one; the unknown member joins to the unknown
+  event, never an empty field), which makes a series sliceable by event and lets the conformance
+  gate check that a fact's series event is its event. `dim_game` deliberately did **not** gain one:
+  its event context is already duplicated onto every fact row by design (see "Facts carry the
+  conformed dimension keys directly" above), and the fact's `event_key` is the slice an analyst
+  uses; a third copy on the game dimension would be a fourth place the two can disagree.
+
+Red-before evidence: `buildModel` accepted a player row whose `eventId` named another event; an
+out-of-sides winner produced `is_winner` `[0,0]` on both side rows; `model --check` exited 0 with a
+stray file in the output directory; the derived-measure pattern did not match `kda`, `gpm` or
+`damage_per_min_10`.
+
 ### Left for later tickets
 
 Ticket 13 builds this model over the full committed dataset and makes the rebuild part

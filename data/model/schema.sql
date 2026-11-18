@@ -24,6 +24,7 @@ CREATE TABLE dim_event (
 CREATE TABLE dim_match (
   match_key INTEGER,
   match_id TEXT,
+  event_key INTEGER REFERENCES dim_event(event_key),
   match_name TEXT,
   date_time_utc TEXT,
   best_of INTEGER,

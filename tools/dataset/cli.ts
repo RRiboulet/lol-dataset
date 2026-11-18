@@ -40,7 +40,7 @@
 // committed in `event-selection.jsonl`, so a reviewer who was not watching the
 // terminal can still see what the rule threw away and why.
 
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import * as path from "node:path";
 import { parseArgs } from "node:util";
 
@@ -126,6 +126,16 @@ function describeModel(result: ModelBuild): string {
 /** Compare the model's bytes with what is committed; the model has no manifest. */
 async function checkModel(result: ModelBuild, outDir: string): Promise<string[]> {
 	const drift: string[] = [];
+	// The directory is part of the contract, not just the emitted files: a stray file a
+	// former build left behind must fail the check, or a schema change that drops a
+	// table would leave a stale CSV that still looks committed and current.
+	const emitted = new Set(Object.keys(result.files));
+	const present = new Set(await readdir(outDir).catch(() => []));
+	for (const entry of [...present].sort()) {
+		if (!emitted.has(entry)) {
+			drift.push(`${entry}: the model build does not emit this file — remove it`);
+		}
+	}
 	for (const [file, body] of Object.entries(result.files)) {
 		const committed = await readFile(path.join(outDir, file), "utf8").catch(() => undefined);
 		if (committed === body) continue;

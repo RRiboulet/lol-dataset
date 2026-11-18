@@ -37,17 +37,40 @@ the build wrote. SQLite, DuckDB, Python's `csv` module and spreadsheets all read
 
 Every dimension has exactly one row with surrogate key `0`, an empty natural key and the display
 name `Unknown`. A fact joins to it when the curated record has no value — today, a game with no
-series or no patch. An inner join therefore never drops a thin-era row, and `0` is never mistaken
-for a real entity. The unknown row's attributes are empty, not zero.
+series or no patch (`match_key`, `patch_key`). An inner join therefore never drops a thin-era row,
+and `0` is never mistaken for a real entity. The unknown row's attributes are empty, not zero,
+except a foreign key it carries itself, which joins to the target's own unknown member
+(`dim_match`'s `event_key` is `0`).
+
+Every dimension keeps its unknown member, including the ones no fact can currently reach at `0`
+(`dim_event`, `dim_game`, `dim_date`, `dim_team`, `dim_player`, `dim_champion`): the rule — a
+foreign key is never empty, and absence is key `0` — then stays uniform, a reader never learns a
+per-dimension special case, and a future fact that can miss one of these values needs no new
+convention. The conformance gate refuses `0` in a fact key the curated record always states
+(`game_key`, `event_key`, `date_key`, `team_key`, `player_key`, `champion_key`), so the
+unreachable members stay unreachable rather than silently absorbable.
 
 ## Surrogate keys and ordering
 
 Surrogate keys are `0` for the unknown member and `1..N` for the real rows, assigned in ascending
 natural-key order within each build. They are build-local: the natural key (the canonical ID,
 ISO date or patch string) is the durable identifier, and every fact is rebuilt in the same run, so
-a key can never dangle. Rows are sorted by that same order; facts are sorted by their declared
-grain columns, and the bridge by `kind`, `entity_key`, `alias_string`. No file contains a build
-timestamp.
+a key can never dangle. The keys can shift between builds — a new event sorting earlier
+renumbers everything after it — which is not a defect: an analyst joining across a rebuild, or
+storing a key outside the model, uses the natural key, which is the durable handle. Rows are
+sorted by that same order; facts are sorted by their declared grain columns, and the bridge by
+`kind`, `entity_key`, `alias_string`. No file contains a build timestamp.
+
+## Measures, and the limit of the no-derived-measure guard
+
+Facts carry only measures the source stated — counts and durations. The analyst does the summing,
+dividing and averaging. The build refuses a fact column whose **name** looks like a derived
+measure: `rate`, `ratio`, `average`, `avg`, `mean`, `percentage`, `percent`, `pct`, `share`,
+`kda`, `gpm`, `win_rate`, `win_pct`, and `per_game`, `per_minute`, `per_min` shapes. That guard is
+a naming heuristic, not a semantic one: it catches the obvious shapes (`kda`, `gpm`,
+`damage_per_min_10`) but cannot tell what a column computes, so a new measure still needs a
+reviewer's judgement that it is source-stated and additive. Do not rely on the guard for
+correctness.
 
 ## Alias bridge
 
@@ -91,6 +114,7 @@ One row per series the corpus carries.
 |---|---|---|---|---|
 | `match_key` | INTEGER | surrogate key | — | Build-local surrogate key. 0 is the unknown member; values are assigned 1..N in natural-key order. |
 | `match_id` | TEXT | natural key | — | The curated match's canonical ID (`mt-…`). |
+| `event_key` | INTEGER | foreign key | `dim_event.event_key` | The event the series belongs to, so a series is sliceable by event without joining through its games. |
 | `match_name` | TEXT | attribute | — | A readable series label: event, round label and date. |
 | `date_time_utc` | TEXT | attribute | — | The series' start instant, ISO-8601 UTC. |
 | `best_of` | INTEGER | attribute | — | The series length the source declares. Absent: empty when the source states none. |
@@ -231,7 +255,7 @@ Team statistics at one row per game per side.
 | `patch_key` | INTEGER | foreign key | `dim_patch.patch_key` | The patch the source states for the game; 0 when it states none. Absent: 0 (the unknown member) when the source states no patch. |
 | `team_key` | INTEGER | foreign key | `dim_team.team_key` | The team on this side of the game. |
 | `side` | TEXT | attribute | — | The source's side for this game: `blue` is Team1 and `red` is Team2. |
-| `is_winner` | INTEGER | attribute | — | 1 when this side won the game, else 0. |
+| `is_winner` | INTEGER | attribute | — | 1 when this side won the game, 0 when it lost; empty when the source records no winner. Absent: empty when the source records no winner. |
 | `duration_seconds` | INTEGER | measure | — | Game length in whole seconds, a game-level measure repeated on both side rows. Absent: empty when the source states no duration. |
 | `kills` | INTEGER | measure | — | The source's kills figure for this side. Absent: empty when the source did not record it; 0 is a real zero. |
 | `gold` | INTEGER | measure | — | The source's gold figure for this side. Absent: empty when the source did not record it; 0 is a real zero. |
