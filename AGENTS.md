@@ -60,10 +60,14 @@ with every grain unique, every foreign key resolving, and the per-game, per-even
 per-era counts reconciling against the curated layer — including a coverage rollup
 (`rollupCoverage`) that re-derives `event-coverage.jsonl` and `era-coverage.jsonl` from
 `data/model/` alone and must equal the committed reports, and a load path proved through
-both SQLite and an independent RFC 4180 reader. There is no
-`README.md` on purpose: ticket 11 writes the dataset's documentation. Do not invent
-a schema, a scraper or a README as a side effect of an unrelated task; those are
-their own changes.
+both SQLite and an independent RFC 4180 reader. The dataset's documentation is
+`docs/dataset/using-the-dataset.md`, with the curated layer's field-level dictionary
+generated from its JSON schemas by `node tools/dataset/cli.ts dictionary` (and the
+model's by `model`), and `data/ATTRIBUTION.md` carrying the licence obligations beside
+the data. There is no
+`README.md` on purpose: a README is its own decision, not something a ticket adds.
+Do not invent a schema, a scraper or a README as a side effect of an unrelated task;
+those are their own changes.
 
 The scaffold — `.devcontainer/`, `.pi/extensions/`, `.pi/skills/`, `bin/devc`,
 `package.json`, this file, `REVIEW_GUIDELINES.md` — is copied from

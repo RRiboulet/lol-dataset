@@ -5,8 +5,12 @@
 //   node tools/dataset/cli.ts build --raw fixtures/raw --check   # ... against the recorded fixtures
 //   node tools/dataset/cli.ts model                     # data/curated/ -> data/model/
 //   node tools/dataset/cli.ts model --check             # fail if the committed model drifted
+//   node tools/dataset/cli.ts dictionary                # schema/ + curated/ -> the curated data dictionary
+//   node tools/dataset/cli.ts dictionary --check        # fail if the committed dictionary drifted
 // `model` reads `data/curated/` and writes `data/model/` by default; `--curated` and
-// `--out` point it at another tree.
+// `--out` point it at another tree. `dictionary` renders
+// `docs/dataset/curated-data-dictionary.md` from the schemas and the record counts;
+// `--dictionary` writes it elsewhere.
 //
 // `--check` compares entity files byte for byte and the manifest on everything that
 // describes the data. It deliberately tolerates one difference: a payload's
@@ -40,7 +44,7 @@
 // committed in `event-selection.jsonl`, so a reviewer who was not watching the
 // terminal can still see what the rule threw away and why.
 
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, mkdir, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 import { parseArgs } from "node:util";
 
@@ -226,6 +230,7 @@ async function main(): Promise<void> {
 			raw: { type: "string" },
 			out: { type: "string" },
 			curated: { type: "string" },
+			dictionary: { type: "string" },
 			rule: { type: "string" },
 			aliases: { type: "string" },
 			eras: { type: "string" },
@@ -279,6 +284,47 @@ async function main(): Promise<void> {
 		return;
 	}
 
+	if (command === "dictionary") {
+		// The curated layer's field-level documentation is rendered from the schemas that guard
+		// it, so a field cannot be added to a schema and go undocumented (ticket 11). The file
+		// list comes from the build's own `OUTPUTS` registry plus the manifest, so a file the
+		// build stops emitting leaves the dictionary in the same change.
+		const { DEFAULT_DICTIONARY_FILE, renderCuratedDictionary } = await import("./dictionary.ts");
+		const inputs = [
+			...Object.entries(OUTPUTS).map(([file, output]) => ({ file, schema: output.schema })),
+			{ file: MANIFEST_FILE, schema: "manifest.schema.json" },
+		];
+		const text = await renderCuratedDictionary(inputs, {
+			schemaDir: values.schema ?? DEFAULT_SCHEMA_DIR,
+			curatedDir: values.curated ?? path.join(REPO_ROOT, "data", "curated"),
+		});
+		const outFile = values.dictionary ?? DEFAULT_DICTIONARY_FILE;
+		// One row per field, plus one row per file in the "At a glance" table.
+		const fields = text.split("\n").filter((line) => line.startsWith("| `")).length - inputs.length;
+		console.log(`${inputs.length} curated file(s), ${fields} field(s)`);
+		if (values.check) {
+			const committed = await readFile(outFile, "utf8").catch(() => undefined);
+			if (committed === text) {
+				console.log("committed dictionary matches a rebuild");
+				return;
+			}
+			const built = text.split("\n");
+			const there = (committed ?? "").split("\n");
+			const index = built.findIndex((line, position) => line !== there[position]);
+			const first = index === -1 ? Math.min(built.length, there.length) : index;
+			console.error(
+				`\nthe committed dictionary does not match a rebuild (${outFile}):\n` +
+					`  line ${first + 1}\n    committed: ${there[first] ?? "<end of file>"}\n    built:     ${built[first] ?? "<end of file>"}`,
+			);
+			process.exitCode = 1;
+			return;
+		}
+		await mkdir(path.dirname(outFile), { recursive: true });
+		await writeFile(outFile, text, "utf8");
+		console.log(`wrote ${outFile}`);
+		return;
+	}
+
 	if (command === "model") {
 		// Imported here so `build` keeps exactly the modules it had (spec D5). The model
 		// stage is below the cache and reads only the committed curated files.
@@ -304,7 +350,7 @@ async function main(): Promise<void> {
 	}
 
 	if (command !== "build") {
-		throw new Error(`unknown command ${JSON.stringify(command)}; expected \`build\`, \`fetch\` or \`model\``);
+		throw new Error(`unknown command ${JSON.stringify(command)}; expected \`build\`, \`fetch\`, \`model\` or \`dictionary\``);
 	}
 
 	const outDir = values.out ?? path.join(REPO_ROOT, "data", "curated");
