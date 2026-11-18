@@ -479,7 +479,7 @@ test("`--check` rejects a manifest whose entities list is out of order, duplicat
 		(manifest.entities as unknown[]).splice(0, 1);
 	});
 	assert.equal(missing.code, 1);
-	assert.match(missing.output, /lists 10 entity file\(s\), the build emits 11/, missing.output);
+	assert.match(missing.output, /lists 11 entity file\(s\), the build emits 12/, missing.output);
 	assert.match(missing.output, /does not list events\.jsonl/, missing.output);
 });
 

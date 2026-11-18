@@ -94,9 +94,10 @@ and emitting a contradicted row would be *indistinguishable* from it: an analyst
 read "games missing" instead of "this row is contradicted". Dropping it, counting it and
 naming it in the classification below says the true thing, and a source correction (or
 a future crawl that proves the row's teams) can restore it deliberately. What is lost
-is a series score the source attached to a key its own game rows refuse; the swaps mean
-the same teams' series exist under the neighbouring key, so the score is not simply
-gone from the corpus, it is attached to a row the games do not support.
+is a series score the source attached to a key its own game rows refuse, and because
+both halves of every swap are dropped, that score is no longer in the corpus at all:
+the games remain, the series row and its score do not. The score is not silently moved
+to the neighbouring key, which would be a guess dressed as a join.
 
 ### The invariant is tightened, not loosened
 

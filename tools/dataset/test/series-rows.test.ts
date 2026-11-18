@@ -30,7 +30,8 @@ import { readPayloads } from "../cache.ts";
 import { findInvariantViolations } from "../invariants.ts";
 import type { SourceGame, SourceMatch } from "../normalize.ts";
 import { normalizeSources } from "../normalize.ts";
-import { FIXTURE_RAW, REPO_ROOT } from "./helpers.ts";
+import { validateAgainst } from "../validate.ts";
+import { CURATED_DIR, FIXTURE_RAW, REPO_ROOT, SCHEMA_DIR } from "./helpers.ts";
 
 const run = promisify(execFile);
 
@@ -205,6 +206,84 @@ test("a game whose series row names two other teams is emitted without a matchId
 	}
 });
 
+test("the conflict report is committed, schema-valid, sorted, and reconciles with the emitted rows", async () => {
+	const result = await build();
+	const rows = result.scoreboards.seriesConflicts;
+	const detached = rows.filter((row) => row.kind === "detached-game");
+	const contradicted = rows.filter((row) => row.kind === "contradicted-series");
+	assert.equal(rows.length, 14, "one row per detached game and per contradicted series");
+	assert.equal(detached.length, 8);
+	assert.equal(contradicted.length, 6);
+
+	const schema = JSON.parse(await readFile(path.join(SCHEMA_DIR, "series-conflicts.schema.json"), "utf8")) as Record<string, unknown>;
+	for (const [index, row] of rows.entries()) {
+		assert.deepEqual(validateAgainst(schema, row, `series-conflicts:${index + 1}`), []);
+	}
+	const body = result.files["series-conflicts.jsonl"];
+	assert.equal(body, `${rows.map((row) => JSON.stringify(row)).join("\n")}\n`);
+	assert.equal(await readFile(path.join(CURATED_DIR, "series-conflicts.jsonl"), "utf8"), body, "the committed report is current");
+
+	// Sorted and byte-stable, like the other reports. A rebuild must not reorder rows.
+	const keys = rows.map((row) => [row.kind, row.eventId, row.matchId, row.gameId ?? "", row.sourceGameId ?? ""]);
+	const sorted = [...keys].sort((left, right) => {
+		for (let index = 0; index < Math.max(left.length, right.length); index += 1) {
+			const l = left[index] ?? "";
+			const r = right[index] ?? "";
+			if (l < r) return -1;
+			if (l > r) return 1;
+		}
+		return 0;
+	});
+	assert.deepEqual(keys, sorted);
+
+	const gamesBySource = new Map(result.scoreboards.games.map((game) => [game.source.gameId, game]));
+	for (const row of detached) {
+		assert.ok(row.gameId !== null && row.sourceGameId !== null);
+		const game = gamesBySource.get(row.sourceGameId);
+		assert.ok(game, `${row.sourceGameId}: the detached game is still emitted`);
+		assert.equal(game.id, row.gameId);
+		assert.equal(game.matchId, undefined, `${row.sourceGameId}: the detached game carries no canonical matchId`);
+		assert.equal(game.source.matchId, row.sourceMatchId, "the source's own id is preserved (R7)");
+		assert.deepEqual(row.gameTeams?.map((team) => team.teamId), game.sides.map((side) => side.teamId).sort(), "the game's own team pair");
+		assert.ok(row.matchTeams, "the series' team pair is in the row");
+		assert.notDeepEqual(row.gameTeams?.map((team) => team.teamId), row.matchTeams.map((team) => team.teamId), "the two pairs are the disagreement");
+	}
+	for (const row of contradicted) {
+		assert.equal(row.gameId, null);
+		assert.equal(row.sourceGameId, null);
+		assert.equal(result.scoreboards.matches.some((match) => match.id === row.matchId), false, `${row.sourceMatchId}: the series is not emitted`);
+		assert.equal(result.scoreboards.games.some((game) => game.matchId === row.matchId), false, "no game claims a contradicted series");
+		assert.ok(row.matchTeams.length === 2);
+	}
+	assert.deepEqual(
+		[...new Set(detached.map((row) => row.sourceGameId))].sort(),
+		[...result.scoreboards.detachedGames.map((game) => game.gameId)].sort(),
+		"every detached game is reported, and only detached games",
+	);
+	assert.deepEqual(
+		[...new Set(contradicted.map((row) => row.sourceMatchId))].sort(),
+		[...result.scoreboards.contradictedMatches].sort(),
+		"every contradicted series is reported, and only contradicted series",
+	);
+});
+
+test("the corrected evidence prose matches the bytes: 6 CLG Prime series rows and 3 Counter Logic Gaming ones", async () => {
+	const result = await build();
+	const underIpl = (page: string): boolean => page === IPL || page.startsWith(`${IPL}/`);
+	const series = result.scoreboards.matches.filter((match) => underIpl(match.overviewPage));
+	const seriesStrings = (name: string): number =>
+		series.flatMap((match) => match.sides).filter((side) => side.sourceTeam === name).length;
+	assert.equal(seriesStrings("CLG Prime"), 6, "six series rows use the 2012 name");
+	assert.equal(seriesStrings("Counter Logic Gaming"), 3, "the wildcard qualifiers already use the org name");
+	const games = result.scoreboards.games.filter((game) => underIpl(game.overviewPage));
+	assert.equal(
+		games.flatMap((game) => game.sides).filter((side) => side.sourceTeam === "Counter Logic Gaming").length,
+		12,
+		"twelve game sides use the org name, none use CLG Prime",
+	);
+	assert.equal(games.flatMap((game) => game.sides).filter((side) => side.sourceTeam === "CLG Prime").length, 0);
+});
+
 test("IPL 5 builds, validates and passes the gate, with the event report saying so", async () => {
 	const result = await build();
 	assert.deepEqual(
@@ -215,6 +294,7 @@ test("IPL 5 builds, validates and passes the gate, with the event report saying 
 			games: result.scoreboards.games,
 			matches: result.scoreboards.matches,
 			eventGames: result.scoreboards.eventGames,
+			seriesConflicts: result.scoreboards.seriesConflicts,
 			playerGames: result.playerGames.rows,
 			eras: result.eras,
 		}),
@@ -254,6 +334,7 @@ test("the build's summary names both counts, so a crawl cannot absorb them silen
 	], { cwd: REPO_ROOT });
 	assert.match(stdout, /8 game\(s\) whose series row names other teams — emitted without a canonical matchId/);
 	assert.match(stdout, /6 series row\(s\) every game naming them contradicts — not emitted/);
+	assert.match(stdout, /14 series conflict row\(s\) committed: 8 detached game\(s\), 6 contradicted series/);
 	assert.match(stdout, /committed data matches a rebuild/);
 	assert.match(stdout, /277 game\(s\), 132 match\(es\)/);
 });

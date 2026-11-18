@@ -39,6 +39,7 @@ async function clean(): Promise<InvariantInput> {
 		games: result.scoreboards.games,
 		matches: result.scoreboards.matches,
 		eventGames: result.scoreboards.eventGames,
+		seriesConflicts: result.scoreboards.seriesConflicts,
 		playerGames: result.playerGames.rows,
 		eras: result.eras,
 	}) as InvariantInput;
@@ -140,8 +141,9 @@ test("a game with two winning sides is refused, naming the game", async () => {
 	assert.ok(violations.some((violation) => /both sides are .*cannot be a team against itself/.test(violation)));
 	assert.ok(violations.some((violation) => /winning sides/.test(violation)));
 	// The downstream contradictions the same corruption produces are reported in the
-	// same run, which is the point of collecting rather than throwing.
-	assert.ok(violations.every((violation) => /^(game|player-game) /.test(violation)), violations.join("\n"));
+	// same run, which is the point of collecting rather than throwing. The conflict report
+	// is one of them: its detached-game row names the team pair the corrupted game no longer has.
+	assert.ok(violations.every((violation) => /^(game|player-game|series-conflict) /.test(violation)), violations.join("\n"));
 });
 
 test("a negative statistic is refused, naming the record", async () => {
@@ -177,6 +179,25 @@ test("a complete player-statistics claim with too few rows is refused", async ()
 		},
 		/claims complete player statistics but carries \d+ player rows/,
 		"game",
+	);
+});
+
+test("a conflict report row that points at the wrong game or series is refused", async () => {
+	const violations = await violationsAfter((data) => {
+		const detached = data.seriesConflicts.find((row) => row.kind === "detached-game");
+		assert.ok(detached);
+		detached.gameId = "gm-000000000000";
+		const contradicted = data.seriesConflicts.find((row) => row.kind === "contradicted-series");
+		assert.ok(contradicted);
+		contradicted.gameId = data.games[0].id;
+	});
+	assert.ok(
+		violations.some((violation) => /names game gm-000000000000, which is not emitted/.test(violation)),
+		violations.join("\n"),
+	);
+	assert.ok(
+		violations.some((violation) => /is a contradicted series that still names an emitted game/.test(violation)),
+		violations.join("\n"),
 	);
 });
 

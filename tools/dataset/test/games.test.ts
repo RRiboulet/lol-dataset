@@ -536,12 +536,13 @@ test("the games are byte-identical across two builds", async () => {
 	const second = await buildDataset({ rawDir: FIXTURE_RAW });
 	assert.equal(first.files["games.jsonl"], second.files["games.jsonl"]);
 	assert.equal(first.files["matches.jsonl"], second.files["matches.jsonl"]);
+	assert.equal(first.files["series-conflicts.jsonl"], second.files["series-conflicts.jsonl"]);
 	assert.equal(first.files["event-games.jsonl"], second.files["event-games.jsonl"]);
 });
 
 test("the committed games match a rebuild over the recorded fixtures", async () => {
 	const result = await build();
-	for (const file of ["games.jsonl", "matches.jsonl", "event-games.jsonl"] as const) {
+	for (const file of ["games.jsonl", "matches.jsonl", "series-conflicts.jsonl", "event-games.jsonl"] as const) {
 		const committed = await readFile(path.join(import.meta.dirname, "..", "..", "..", "data", "curated", file), "utf8").catch(
 			() => undefined,
 		);

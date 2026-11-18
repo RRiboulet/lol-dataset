@@ -62,6 +62,13 @@
 // undeclared observation would have minted, and the pair is never reported as two
 // unresolved strings a future crawl should chase.
 //
+// Two checks keep a declaration honest. A declared `from`/`until` is an era, so it bounds
+// the string on every lookup, not only when two candidates need a tie-break: outside the
+// window the declaration says nothing, and an observation mints and reports instead of
+// silently joining the declared entity. And an `aliasOf` target has no registry row to
+// check it against, so the corpus must show that the two strings stood on the same side
+// of one series — otherwise a typo would merge two teams that never met.
+//
 // Every emitted record carries the entity's display name beside its ID (spec R12):
 // the entity files do, and so does every alias row, so a reader joins on an ID
 // without having to decode it.
@@ -263,6 +270,14 @@ export async function loadDeclaredAliases(file: string = DEFAULT_ALIAS_FILE): Pr
 			if (value === undefined || value === null) continue;
 			if (typeof value !== "string" || !DATE.test(value)) throw new Error(`${where}: ${bound} must be a YYYY-MM-DD date or null`);
 		}
+		const from = (alias.from as string | null | undefined) ?? null;
+		const until = (alias.until as string | null | undefined) ?? null;
+		if (from !== null && until !== null && until < from) {
+			throw new Error(
+				`${where}: from ${from} is after until ${until} — a declared era cannot end before it starts ` +
+					`(${kind} ${JSON.stringify(string)})`,
+			);
+		}
 		const declared: DeclaredAlias = { kind, string, reason };
 		const aliasOf = typeof alias.aliasOf === "string" ? alias.aliasOf.trim() : "";
 		if (aliasOf !== "") {
@@ -282,8 +297,8 @@ export async function loadDeclaredAliases(file: string = DEFAULT_ALIAS_FILE): Pr
 			}
 			declared.page = alias.page.trim();
 		}
-		declared.from = (alias.from as string | null | undefined) ?? null;
-		declared.until = (alias.until as string | null | undefined) ?? null;
+		declared.from = from;
+		declared.until = until;
 		aliases.push(declared);
 	}
 	// A declaration that targets another declaration would resolve by file order, which
@@ -342,6 +357,8 @@ export function assembleIdentity(
 	const evidence = new Map<string, Set<AliasEvidence>>();
 	const observed = new Map<string, Era>();
 	const declaredEras = new Map<string, Era>();
+	/** The same windows under the case fold, so a case variant cannot escape its declaration. */
+	const declaredErasFolded = new Map<string, Era>();
 	const names = new Map<string, string>();
 
 	const register = (kind: EntityKind, source: string, id: string, tier: Tier, why: AliasEvidence): void => {
@@ -353,7 +370,35 @@ export function assembleIdentity(
 	};
 
 	const eraOf = (kind: EntityKind, string: string, id: string): Era | null => {
-		return observed.get(key3(kind, string, id)) ?? declaredEras.get(key3(kind, string, id)) ?? null;
+		return (
+			observed.get(key3(kind, string, id)) ??
+			declaredEras.get(key3(kind, string, id)) ??
+			declaredErasFolded.get(key3(kind, fold(string), id)) ??
+			null
+		);
+	};
+
+	/**
+	 * Drop candidates whose *declared* era does not contain `date`.
+	 *
+	 * A declaration is the only statement that can be older than the corpus (a retired
+	 * champion name) or narrower than it (a legacy team name used for five days), so its
+	 * window has to be consulted before `pick` decides, not only when `pick` is already
+	 * choosing between two candidates. A registry identity is never dropped: the
+	 * declaration is inert behind the registry's own statement.
+	 */
+	const boundDeclaredEra = (kind: EntityKind, string: string, ids: Set<string>, date: string | undefined): Set<string> => {
+		if (date === undefined || !DATE.test(date)) return ids;
+		const kept = new Set<string>();
+		for (const id of ids) {
+			const era = declaredEras.get(key3(kind, string, id)) ?? declaredErasFolded.get(key3(kind, fold(string), id));
+			if (era === undefined) {
+				kept.add(id);
+				continue;
+			}
+			if ((era.first === null || era.first <= date) && (era.last === null || date <= era.last)) kept.add(id);
+		}
+		return kept;
 	};
 
 	const resolution = (kind: EntityKind, id: string): Resolution => ({
@@ -388,12 +433,16 @@ export function assembleIdentity(
 		if (exactIdentity !== undefined && exactIdentity.size > 0) return pick(kind, string, exactIdentity, date);
 		const exactAlias = aliasStrings.get(key2(kind, string));
 		if (exactAlias !== undefined && exactAlias.size > 0) {
-			const found = pick(kind, string, exactAlias, date);
+			const bounded = boundDeclaredEra(kind, string, exactAlias, date);
+			if (bounded.size === 0) return null;
+			const found = pick(kind, string, bounded, date);
 			return { ...found, via: "alias" };
 		}
 		const folded = foldedStrings.get(key2(kind, fold(string)));
 		if (folded !== undefined && folded.size > 0) {
-			const found = pick(kind, string, folded, date);
+			const bounded = boundDeclaredEra(kind, string, folded, date);
+			if (bounded.size === 0) return null;
+			const found = pick(kind, string, bounded, date);
 			return { ...found, via: "alias" };
 		}
 		return null;
@@ -515,6 +564,11 @@ export function assembleIdentity(
 		return found === null ? mint(declared.kind, target, "declared") : found.id;
 	};
 
+	/** Which strings the recorded corpus actually used, for declaration-evidence checks. */
+	const observedStrings = new Set<string>();
+	/** `aliasOf` declarations whose target the corpus has to justify (not inert behind a registry). */
+	const aliasOfToCheck: DeclaredAlias[] = [];
+
 	for (const declared of declaredAliases) {
 		// A `page`/`riotKey` declaration needs its registry in the corpus to have a target at
 		// all, so it is skipped when that registry is absent (a fixture set that only carries
@@ -525,7 +579,9 @@ export function assembleIdentity(
 		// A declaration states what the registries do not, so it is registered in the alias
 		// tier: when a registry *does* answer for the string, `lookup` prefers the registry
 		// and the declaration is inert. That is the documented order, and it is the right
-		// one — the source adopting a string is not a contradiction to fail on.
+		// one — the source adopting a string is not a contradiction to fail on. An inert
+		// declaration needs no corpus evidence either: it cannot merge anything.
+		const registryAnswers = (identityStrings.get(key2(declared.kind, declared.string))?.size ?? 0) > 0;
 		const id =
 			declared.aliasOf !== undefined
 				? entityForDeclaredTarget(declared)
@@ -539,10 +595,10 @@ export function assembleIdentity(
 			);
 		}
 		register(declared.kind, declared.string, id, "alias", "declared");
-		declaredEras.set(key3(declared.kind, declared.string.trim(), id), {
-			first: declared.from ?? null,
-			last: declared.until ?? null,
-		});
+		const declaredEra = { first: declared.from ?? null, last: declared.until ?? null };
+		declaredEras.set(key3(declared.kind, declared.string.trim(), id), declaredEra);
+		declaredErasFolded.set(key3(declared.kind, fold(declared.string.trim()), id), declaredEra);
+		if (declared.aliasOf !== undefined && declared.kind === "team" && !registryAnswers) aliasOfToCheck.push(declared);
 	}
 
 	// ---- the scoreboard's own strings: observe, mint, or report --------------------
@@ -550,6 +606,7 @@ export function assembleIdentity(
 
 	const recordObservation = (kind: EntityKind, string: string, id: string, date: string): void => {
 		if (!DATE.test(date)) return;
+		observedStrings.add(key2(kind, string));
 		const era = observed.get(key3(kind, string, id));
 		if (era === undefined) observed.set(key3(kind, string, id), { first: date, last: date });
 		else {
@@ -691,6 +748,54 @@ export function assembleIdentity(
 		if (options.selectedPages !== undefined && !underAny(match.page, options.selectedPages)) continue;
 		observe("team", match.sides[0], match.date);
 		observe("team", match.sides[1], match.date);
+	}
+
+	// ---- a declared target the corpus does not carry must be evidenced --------------
+	// `aliasOf` exists because the corpus has no registry row to check the target against,
+	// so nothing would stop a typo from merging two teams that never met: the build would
+	// stay green and only the detached/contradicted counts would move. The evidence is
+	// derived from the source, not asserted in the declaration's prose — a game and the
+	// series row it names must put the declared string on one side and the target on the
+	// same side (the same opponent). IPL 5's `CLG Prime` series rows and their
+	// `Counter Logic Gaming` games are exactly that; a target that never shares a side is
+	// not.
+	//
+	// A declaration whose string no corpus row uses is inert (it cannot merge anything),
+	// which keeps an identity-only fixture set buildable; a string the registry already
+	// states is inert behind the registry and is not checked either.
+	const seriesByMatchId = new Map<string, SourceMatch>();
+	for (const match of sources.matches) {
+		if (options.selectedPages !== undefined && !underAny(match.page, options.selectedPages)) continue;
+		if (!seriesByMatchId.has(match.matchId)) seriesByMatchId.set(match.matchId, match);
+	}
+	const sharesASeriesSide = (declared: DeclaredAlias): boolean => {
+		const alias = declared.string.trim();
+		const target = (declared.aliasOf as string).trim();
+		for (const game of sources.games) {
+			if (!selected(game.gameId)) continue;
+			const match = seriesByMatchId.get(game.matchId);
+			if (match === undefined) continue;
+			const sides = [game.sides[0].team.trim(), game.sides[1].team.trim()];
+			for (const [index, team] of sides.entries()) {
+				if (team !== alias && team !== target) continue;
+				const opponent = sides[1 - index];
+				// The two strings on opposite sides of a game are two teams, which is the
+				// opposite of evidence that they are one.
+				if (opponent === alias || opponent === target) continue;
+				const other = team === alias ? target : alias;
+				if (match.sides.includes(other) && match.sides.includes(opponent)) return true;
+			}
+		}
+		return false;
+	};
+	for (const declared of aliasOfToCheck) {
+		if (!observedStrings.has(key2(declared.kind, declared.string))) continue;
+		if (sharesASeriesSide(declared)) continue;
+		throw new Error(
+			`declared alias ${JSON.stringify(declared.string)} (${declared.kind}) targets ${JSON.stringify(declared.aliasOf)}, ` +
+				"but no recorded game and its series row put the two strings on the same side — an `aliasOf` declaration " +
+				"must be evidenced by the corpus, because a typo here would merge two teams that never met",
+		);
 	}
 
 	// ---- emit --------------------------------------------------------------------
