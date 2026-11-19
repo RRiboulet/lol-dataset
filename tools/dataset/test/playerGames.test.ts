@@ -5,14 +5,15 @@
 // events the rule rejects; those rows are observations but never rows in this dataset.
 
 import assert from "node:assert/strict";
-import { cp, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import * as path from "node:path";
 import { test } from "node:test";
 
 import type { BuildResult } from "../build.ts";
 import { buildDataset } from "../build.ts";
-import { FIXTURE_RAW, savePayloadBody } from "./helpers.ts";
+import { readPayloads } from "../cache.ts";
+import { FIXTURE_RAW, isPayloadBody, readPayloadBodyFile, savePayloadBody } from "./helpers.ts";
 
 const PLAYERS_DIR = path.join("lol-fandom", "cargoexport", "ScoreboardPlayers");
 
@@ -30,16 +31,34 @@ async function scratch(): Promise<string> {
 
 async function broadFile(root: string): Promise<string> {
 	const dir = path.join(root, ...PLAYERS_DIR.split(path.sep));
+	// A payload that states damage: the corpus now has 124 player payloads, and the
+	// alphabetically first large one is an event whose rows predate the damage column.
 	for (const name of (await readdir(dir)).sort()) {
-		if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+		if (!isPayloadBody(name)) continue;
 		const file = path.join(dir, name);
-		if (JSON.parse(await readFile(file, "utf8")).length > 100) return file;
+		const body = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
+		if (body.length > 100 && body.some((row) => typeof row.DamageToChampions === "number")) return file;
 	}
 	throw new Error("the broad ScoreboardPlayers fixture is missing");
 }
 
 async function rows(file: string): Promise<Record<string, unknown>[]> {
-	return JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+	return JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
+}
+
+/** Every payload body of one table under a scratch cache, in a stable order. */
+async function bodies(root: string, table: "player" | "game" | "match" | "draft"): Promise<string[]> {
+	const name = { player: "ScoreboardPlayers", game: "ScoreboardGames", match: "MatchSchedule", draft: "PicksAndBansS7" }[table];
+	const dir = path.join(root, ...`lol-fandom/cargoexport/${name}`.split("/"));
+	return (await readdir(dir)).filter(isPayloadBody).sort().map((entry) => path.join(dir, entry));
+}
+
+/** The first payload of one table carrying a row `matches`. */
+async function payloadWith(root: string, table: "player" | "game" | "match" | "draft", matches: (row: Record<string, unknown>) => boolean): Promise<string> {
+	for (const file of await bodies(root, table)) {
+		if ((await rows(file)).some(matches)) return file;
+	}
+	throw new Error(`no ${table} payload carries a matching row`);
 }
 
 /**
@@ -59,7 +78,7 @@ async function damageRowIn(base: BuildResult, file: string) {
 test("ten rows per game, five played roles per side, and sums that reconcile", async () => {
 	const result = await build();
 	const rowsOut = result.playerGames.rows;
-	assert.equal(rowsOut.length, 3770, "the eight events with scoreboards, ten players each");
+	assert.equal(rowsOut.length, 30910, "every game the corpus carries, ten players each");
 	const games = new Map(result.scoreboards.games.map((game) => [game.id, game]));
 	const perGame = new Map<string, typeof rowsOut>();
 	for (const row of rowsOut) {
@@ -67,10 +86,12 @@ test("ten rows per game, five played roles per side, and sums that reconcile", a
 		list.push(row);
 		perGame.set(row.gameId, list);
 	}
-	assert.equal(perGame.size, 377);
+	assert.equal(perGame.size, 3091);
 	const coverage = new Map(result.scoreboards.games.map((game) => [game.id, game.coverage.playerStats]));
-	assert.equal([...coverage.values()].filter((state) => state === "complete").length, 240);
-	assert.equal([...coverage.values()].filter((state) => state === "partial").length, 137);
+	// Every game now states ten player rows, so none is `unavailable`; the split is between
+	// the games whose fields are all stated and the pre-2016 ones missing damage, vision or runes.
+	assert.equal([...coverage.values()].filter((state) => state === "complete").length, 1587);
+	assert.equal([...coverage.values()].filter((state) => state === "partial").length, 1504);
 	for (const [gameId, players] of perGame) {
 		assert.equal(players.length, 10, `${gameId}: ten player rows`);
 		const game = games.get(gameId);
@@ -185,16 +206,34 @@ test("two builds emit byte-identical player rows", async () => {
 
 test("rejected IEM games mint no teams, players or unresolved references", async () => {
 	const result = await build();
-	// The names are the ones only the rejected `IEM Season IX - Cologne` rows carry in the
-	// recorded corpus. `Dignitas` used to be on this list and is a real IPL 5 qualifier
-	// team now, which is exactly why the list has to be checked against the payloads rather
-	// than remembered.
-	for (const name of ["Team ROCCAT", "Jankos", "Overpow"]) {
+	// The names are computed from the payloads, not remembered: only a rejected event names
+	// them. `Dignitas`, `Jankos` and `Team ROCCAT` used to be on this list and are real teams
+	// and players now that the full corpus carries the events they played in, which is
+	// exactly why the list has to be read from the source each time (ticket 16).
+	const onlyRejected = new Set<string>();
+	for (const payload of await readPayloads(FIXTURE_RAW)) {
+		if (payload.table !== "ScoreboardPlayers") continue;
+		for (const row of JSON.parse(payload.body) as Record<string, unknown>[]) {
+			if (!String(row.OverviewPage).startsWith("IEM Season IX - Cologne")) continue;
+			onlyRejected.add(String(row.Name));
+		}
+	}
+	const elsewhere = new Set<string>();
+	for (const payload of await readPayloads(FIXTURE_RAW)) {
+		if (payload.table !== "ScoreboardPlayers") continue;
+		for (const row of JSON.parse(payload.body) as Record<string, unknown>[]) {
+			if (!String(row.OverviewPage).startsWith("IEM Season IX - Cologne")) elsewhere.add(String(row.Name));
+		}
+	}
+	const rejectedPages = elsewhere;
+	const names = [...onlyRejected].filter((name) => !rejectedPages.has(name)).slice(0, 3);
+	assert.ok(names.length > 0, "the rejected IEM rows name players nothing else names");
+	for (const name of names) {
 		assert.ok(!result.identity.teams.some((team) => team.name === name), `${name} is not a team in this dataset`);
 		assert.ok(!result.identity.players.some((player) => player.name === name), `${name} is not a player in this dataset`);
 		assert.ok(!result.identity.unresolved.some((row) => row.string === name), `${name} is not unresolved either`);
 	}
-	assert.equal(result.playerGames.rows.length, 3770, "filtering identity observations does not remove real player rows");
+	assert.equal(result.playerGames.rows.length, 30910, "filtering identity observations does not remove real player rows");
 });
 
 test("a game with duplicate roles is partial, not complete", async () => {
@@ -265,12 +304,19 @@ test("present-but-unparseable source values stop the build", async () => {
 test("a malformed row in a rejected event still fails loudly", async () => {
 	const dir = await scratch();
 	try {
-		const file = await broadFile(dir);
-		const source = await rows(file);
-		const row = source.find((candidate) => String(candidate.OverviewPage).startsWith("IEM Season IX - Cologne"));
-		assert.ok(row);
-		row.Kills = "abc";
-		await savePayloadBody(file, `${JSON.stringify(source)}\n`);
+		let edited = 0;
+		for (const file of await bodies(dir, "player")) {
+			const source = await rows(file);
+			let changed = false;
+			for (const row of source) {
+				if (!String(row.OverviewPage).startsWith("IEM Season IX - Cologne")) continue;
+				row.Kills = "abc";
+				changed = true;
+				edited += 1;
+			}
+			if (changed) await savePayloadBody(file, `${JSON.stringify(source)}\n`);
+		}
+		assert.ok(edited > 0, "the corpus carries IEM Season IX - Cologne rows");
 		await assert.rejects(buildDataset({ rawDir: dir }), /expected a number, got "abc"/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
@@ -311,7 +357,8 @@ test("games and matches under a rejected event mint no teams", async () => {
 	const dir = await scratch();
 	try {
 		const gamesFile = path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames", "probe-rejected.json");
-		const gameSource = await rows(path.join(dir, "lol-fandom", "cargoexport", "ScoreboardGames", "2c56284940e4601ab472b28c.json"));
+		const gameFile = await payloadWith(dir, "game", (row) => String(row.OverviewPage).startsWith("2023 Season World Championship"));
+		const gameSource = await rows(gameFile);
 		const template = gameSource[0];
 		await writeFile(
 			gamesFile,
@@ -329,7 +376,8 @@ test("games and matches under a rejected event mint no teams", async () => {
 			"utf8",
 		);
 		const matchFile = path.join(dir, "lol-fandom", "cargoexport", "MatchSchedule", "probe-rejected.json");
-		const matchSource = await rows(path.join(dir, "lol-fandom", "cargoexport", "MatchSchedule", "fe0b28d45f0561129ca42fb9.json"));
+		const matchFile2 = await payloadWith(dir, "match", (row) => String(row.OverviewPage).startsWith("2023 Season World Championship"));
+		const matchSource = await rows(matchFile2);
 		await writeFile(
 			matchFile,
 			JSON.stringify([
@@ -399,7 +447,7 @@ test("an identity-only row cannot blank a stat row's GameId through deduplicatio
 			"utf8",
 		);
 		const result = await buildDataset({ rawDir: dir });
-		assert.equal(result.playerGames.rows.length, 3770, "the stat rows survive the overlapping identity copy");
+		assert.equal(result.playerGames.rows.length, 30910, "the stat rows survive the overlapping identity copy");
 		assert.ok(
 			result.playerGames.rows.some((row) => row.id === target.id && "damage" in row),
 			"the stat row is still a stat row",

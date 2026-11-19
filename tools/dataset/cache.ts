@@ -27,8 +27,17 @@
 // ticket 08's decision.
 //
 // One payload is two files in `raw/<source>/<endpoint>/<table>/`:
-//   <key>.json       the response body exactly as received
+//   <key>.json.gz    the response body, gzip-compressed (see below)
 //   <key>.meta.json  URL, fetch time, HTTP status and body hash (spec D7)
+//
+// The body is stored **gzipped**, and the hash in the sidecar is still the hash of the
+// *uncompressed* body: provenance is about the bytes the source returned, not about the
+// compression this repository chose for them. That keeps spec R9's promise intact (a pin
+// describes the response) while making the committed cache affordable — measured on the
+// full corpus, 95 MB of pretty-printed JSON is 5.8 MB gzipped, and the dataset's own
+// events are the expensive part. Ticket 17 carries the measurement and the alternatives.
+// `readPayloads` still accepts a plain `.json` body, so a scratch directory a test builds
+// from bodies alone remains legal.
 //
 // The table is a directory, not a field, because a Cargo body does not say which
 // table it came from: `Special:CargoExport` returns bare rows, and a row's keys
@@ -68,6 +77,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
 import * as path from "node:path";
+import { gunzipSync, gzipSync } from "node:zlib";
 
 /** Which wiki endpoint a recorded payload came from. */
 export type CargoEndpoint = "cargoquery" | "cargoexport";
@@ -91,7 +101,10 @@ export type PayloadMeta = {
 	url: string;
 	fetchedAt: string;
 	status: number;
+	/** sha256 of the **uncompressed** body — the response's bytes, not this file's. */
 	bodySha256: string;
+	/** How the body is stored on disk. Absent on a sidecar written before ticket 17. */
+	encoding?: "gzip";
 };
 
 export const SOURCE = "lol-fandom";
@@ -181,10 +194,21 @@ export function payloadDir(root: string, endpoint: CargoEndpoint, table: string)
 	return path.join(root, SOURCE, endpoint, table);
 }
 
+/** The suffix a stored body carries, and the suffixes the reader accepts. */
+export const BODY_SUFFIX = ".json.gz";
+const BODY_SUFFIXES = [".json.gz", ".json"];
+
 /** Body and sidecar paths for a query under `root`. */
 export function payloadPaths(root: string, query: CargoQuery): { body: string; meta: string } {
 	const base = path.join(payloadDir(root, query.endpoint, tableOf(query)), cacheKey(query));
-	return { body: `${base}.json`, meta: `${base}.meta.json` };
+	return { body: `${base}${BODY_SUFFIX}`, meta: `${base}.meta.json` };
+}
+
+/** The sidecar path for a body path, whichever storage form the body uses. */
+export function sidecarPath(bodyFile: string): string {
+	const suffix = BODY_SUFFIXES.find((candidate) => bodyFile.endsWith(candidate));
+	if (suffix === undefined) return `${bodyFile}.meta.json`;
+	return `${bodyFile.slice(0, -suffix.length)}.meta.json`;
 }
 
 export function sha256(body: string): string {
@@ -195,10 +219,20 @@ export function sha256(body: string): string {
  * Write through a temporary name, then rename: a reader sees the old file or the
  * new one, never a half-written one. `rename` is atomic within a filesystem.
  */
-async function writeAtomic(file: string, body: string): Promise<void> {
+async function writeAtomic(file: string, body: string | Buffer): Promise<void> {
 	const temporary = `${file}.tmp-${randomUUID()}`;
-	await writeFile(temporary, body, "utf8");
+	await writeFile(temporary, body);
 	await rename(temporary, file);
+}
+
+/** The body as it is stored: gzip, at the highest level the corpus was measured with. */
+function compress(body: string): Buffer {
+	return gzipSync(Buffer.from(body, "utf8"), { level: 9 });
+}
+
+/** A stored body back to the bytes the source returned. */
+function decompress(bytes: Buffer): string {
+	return bytes.length === 0 ? "" : gunzipSync(bytes).toString("utf8");
 }
 
 /**
@@ -228,15 +262,39 @@ export async function writePayload(
 		fetchedAt: meta.fetchedAt,
 		status: meta.status,
 		bodySha256: sha256(body),
+		encoding: "gzip",
 	};
 	await mkdir(path.dirname(paths.body), { recursive: true });
-	await writeAtomic(paths.body, body);
+	// The hash describes the uncompressed body, so the sidecar is written from `body`
+	// while the file on disk is the compressed form.
+	await writeAtomic(paths.body, compress(body));
 	await writeAtomic(paths.meta, `${JSON.stringify(record, null, 2)}\n`);
 	return paths;
 }
 
 /** A cached payload that is complete enough for the fetcher to skip re-requesting it. */
 export type CachedPair = { body: string; meta: PayloadMeta };
+
+/**
+ * A stored body, decompressed. Accepts the plain form too: a fixture a test writes by hand
+ * (or a recording made before ticket 17) is a body like any other.
+ */
+async function readStoredBody(file: string): Promise<string | undefined> {
+	if (!file.endsWith(BODY_SUFFIX)) return readIfExists(file);
+	const gz = await readIfExistsBuffer(file);
+	if (gz !== undefined) return decompress(gz);
+	// A query's body may still be a plain `.json` in a cache written before ticket 17.
+	return readIfExists(file.slice(0, -BODY_SUFFIX.length) + ".json");
+}
+
+async function readIfExistsBuffer(file: string): Promise<Buffer | undefined> {
+	try {
+		return await readFile(file);
+	} catch (error) {
+		if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+		throw error;
+	}
+}
 
 async function readIfExists(file: string): Promise<string | undefined> {
 	try {
@@ -258,7 +316,7 @@ async function readIfExists(file: string): Promise<string | undefined> {
  */
 export async function readPayload(root: string, query: CargoQuery): Promise<CachedPair | undefined> {
 	const paths = payloadPaths(root, query);
-	const body = await readIfExists(paths.body);
+	const body = await readStoredBody(paths.body);
 	if (body === undefined) return undefined;
 	const text = await readIfExists(paths.meta);
 	if (text === undefined) return undefined;
@@ -325,7 +383,7 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
 		for (const entry of entries.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))) {
 			const full = path.join(dir, entry.name);
 			if (entry.isDirectory()) await walk(full);
-			else if (entry.name.endsWith(".json") && !entry.name.endsWith(".meta.json")) found.push(full);
+			else if (BODY_SUFFIXES.some((suffix) => entry.name.endsWith(suffix)) && !entry.name.endsWith(".meta.json")) found.push(full);
 		}
 	}
 	await walk(root);
@@ -333,16 +391,16 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
 	for (const file of found) {
 		const relative = path.relative(root, file);
 		const parts = relative.split(path.sep);
-		// <source>/<endpoint>/<table>/<key>.json: a payload outside that shape has no
+		// <source>/<endpoint>/<table>/<key>.json.gz: a payload outside that shape has no
 		// table, and guessing one would route it to the wrong normalizer.
 		if (parts.length !== 4 || (parts[1] !== "cargoexport" && parts[1] !== "cargoquery")) {
-			throw new Error(`${relative}: expected <source>/<endpoint>/<table>/<key>.json`);
+			throw new Error(`${relative}: expected <source>/<endpoint>/<table>/<key>.json.gz`);
 		}
 		payloads.push({
 			file: relative,
 			table: parts[2],
 			endpoint: parts[1] as CargoEndpoint,
-			body: await readFile(file, "utf8"),
+			body: await readStoredBody(file) as string,
 			...(await sidecarOf(file, relative)),
 		});
 	}
@@ -362,7 +420,7 @@ export async function readPayloads(root: string): Promise<CachedPayload[]> {
  * as "no sidecar" would hide exactly the thing the manifest exists to prove.
  */
 async function sidecarOf(bodyFile: string, relative: string): Promise<{ meta?: PayloadMeta; query?: CargoQuery }> {
-	const metaFile = bodyFile.replace(/\.json$/, ".meta.json");
+	const metaFile = sidecarPath(bodyFile);
 	const text = await readIfExists(metaFile);
 	if (text === undefined) return {};
 	let parsed: unknown;

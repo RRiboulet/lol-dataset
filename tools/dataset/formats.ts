@@ -34,15 +34,48 @@ export type BlindPickRule = {
 	cites: string;
 };
 
+/**
+ * A champion the source states twice in one draft, in a way the draft rules forbid.
+ *
+ * Measured three times in the full crawl, in two shapes:
+ *
+ *   - a side bans a champion it also picks (Season 3 World Championship `Day 6_2_1`:
+ *     Twisted Fate; IEM Season VII `Group A_5_1`: Lee Sin). The player rows state each
+ *     player's champion and match the pick list exactly, so the pick is the doubly stated
+ *     half and the ban entry is the one nothing corroborates: `drop: "bans"`.
+ *   - the same champion is picked by **both** sides in a game with no bans (IEM Season VII
+ *     `Group A_6_1`: Lee Sin). That is legal only in blind pick, and this game is not one;
+ *     the player rows corroborate each side, so neither statement can be set aside:
+ *     `drop: "both-picks"` refuses to assert an impossible fact and marks the draft partial.
+ *
+ * Either way the entry is dropped, declared here with its evidence, and the coverage marker
+ * becomes `partial` — the source's own draft is incomplete, which is what the marker is for.
+ */
+export type ContradictedDraftRule = {
+	/** The event's overview page, exactly as the event record carries it. */
+	overviewPage: string;
+	/** Regular expression the source `GameId` must match. */
+	gameIdPattern: string;
+	/** The source champion string stated twice. */
+	champion: string;
+	/** Which statement is set aside, and why the other one (or neither) is not. */
+	drop: "bans" | "both-picks";
+	/** Where the claim comes from, and what corroborates the kept half. */
+	cites: string;
+};
+
 export type GameFormats = {
 	/** Bumped when the meaning of a declaration changes, not when the data does. */
 	version: number;
 	blindPick: BlindPickRule[];
+	contradictedDrafts: ContradictedDraftRule[];
 };
 
 export const DEFAULT_FORMAT_FILE = path.join(import.meta.dirname, "rules", "game-formats.json");
 
 const KEYS = new Set(["overviewPage", "gameIdPattern", "cites"]);
+const DRAFT_KEYS = new Set(["overviewPage", "gameIdPattern", "champion", "drop", "cites"]);
+const DROP_VALUES = new Set(["bans", "both-picks"]);
 
 /**
  * Parse and validate the committed declarations.
@@ -57,7 +90,7 @@ export function parseGameFormats(parsed: unknown, where: string): GameFormats {
 	if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error(`${where}: expected an object`);
 	const body = parsed as Record<string, unknown>;
 	for (const key of Object.keys(body)) {
-		if (key !== "version" && key !== "$comment" && key !== "blindPick") {
+		if (key !== "version" && key !== "$comment" && key !== "blindPick" && key !== "contradictedDrafts") {
 			throw new Error(`${where}: unknown field ${JSON.stringify(key)}`);
 		}
 	}
@@ -93,7 +126,53 @@ export function parseGameFormats(parsed: unknown, where: string): GameFormats {
 		seen.add(key);
 		blindPick.push({ overviewPage, gameIdPattern: record.gameIdPattern, cites: record.cites.trim() });
 	}
-	return { version: body.version as number, blindPick };
+	const declared = body.contradictedDrafts ?? [];
+	if (!Array.isArray(declared)) {
+		throw new Error(`${where}: \`contradictedDrafts\` must be an array — declare it empty when no game needs one`);
+	}
+	const contradictedDrafts: ContradictedDraftRule[] = [];
+	const seenDrafts = new Set<string>();
+	for (const [index, entry] of declared.entries()) {
+		const at = `${where}: contradictedDrafts[${index}]`;
+		if (entry === null || typeof entry !== "object" || Array.isArray(entry)) throw new Error(`${at}: expected an object`);
+		const record = entry as Record<string, unknown>;
+		for (const key of Object.keys(record)) {
+			if (!DRAFT_KEYS.has(key)) throw new Error(`${at}: unknown field ${JSON.stringify(key)}`);
+		}
+		if (typeof record.overviewPage !== "string" || record.overviewPage.trim() === "") {
+			throw new Error(`${at}: \`overviewPage\` must be the event's page, as a non-empty string`);
+		}
+		if (typeof record.gameIdPattern !== "string" || record.gameIdPattern === "") {
+			throw new Error(`${at}: \`gameIdPattern\` must be a non-empty regular expression`);
+		}
+		try {
+			new RegExp(record.gameIdPattern, "u");
+		} catch (error) {
+			throw new Error(`${at}: \`gameIdPattern\` is not a regular expression (${(error as Error).message})`);
+		}
+		if (typeof record.champion !== "string" || record.champion.trim() === "") {
+			throw new Error(`${at}: \`champion\` must be the source string stated twice`);
+		}
+		if (typeof record.drop !== "string" || !DROP_VALUES.has(record.drop)) {
+			throw new Error(`${at}: \`drop\` must be "bans" or "both-picks"`);
+		}
+		if (typeof record.cites !== "string" || record.cites.trim() === "") {
+			throw new Error(`${at}: \`cites\` must say where the claim comes from`);
+		}
+		const overviewPage = record.overviewPage.trim();
+		const champion = record.champion.trim();
+		const key = `${overviewPage}\u0000${record.gameIdPattern}\u0000${champion}`;
+		if (seenDrafts.has(key)) throw new Error(`${at}: the same page, pattern and champion are declared twice`);
+		seenDrafts.add(key);
+		contradictedDrafts.push({
+			overviewPage,
+			gameIdPattern: record.gameIdPattern,
+			champion,
+			drop: record.drop as ContradictedDraftRule["drop"],
+			cites: record.cites.trim(),
+		});
+	}
+	return { version: body.version as number, blindPick, contradictedDrafts };
 }
 
 export async function loadGameFormats(file: string = DEFAULT_FORMAT_FILE): Promise<GameFormats> {
@@ -110,6 +189,13 @@ export async function loadGameFormats(file: string = DEFAULT_FORMAT_FILE): Promi
 		throw new Error(`${file}: not JSON (${(error as Error).message})`);
 	}
 	return parseGameFormats(parsed, file);
+}
+
+/** The champion drops each contradicted-draft declaration applies to this game. */
+export function contradictedDraftsFor(formats: GameFormats, overviewPage: string, gameId: string): ContradictedDraftRule[] {
+	return formats.contradictedDrafts.filter(
+		(rule) => rule.overviewPage === overviewPage && new RegExp(rule.gameIdPattern, "u").test(gameId),
+	);
 }
 
 /** The declaration covering this game, or `undefined` when it had a pick-ban phase. */

@@ -74,32 +74,75 @@ fixtures, not the first committed dataset. Reusing the derived data therefore
 requires crediting Leaguepedia and sharing derivative work alike.
 
 The committed dataset carries real crawled data for every event the selection rule
-admits, each fetched through `tools/dataset/fetch.ts` and recorded with its query, URL,
-fetch time and body hash. Counts are the committed rows (`games.jsonl` /
-`matches.jsonl`):
+admits — all 54 of them, after ticket 16's crawl of every edition the rule admits — each
+fetched through `tools/dataset/fetch.ts` and recorded with its query, URL, fetch time and
+body hash. Counts are the committed rows (`games.jsonl` / `matches.jsonl`):
 
 | Event | Games | Series |
 |---|---|---|
-| WCG 2011 (World Cyber Games 2011) | 0 | 0 (queries that returned no rows, kept as evidence) |
-| IPL 5 (2012) | 72 | 36 |
+| Worlds Season 1 | 28 | 21 |
+| WCG 2011 | 0 | 0 |
+| IEM Season 6 World Championship | 44 | 36 |
+| Worlds Season 2 | 31 | 19 |
+| IPL 5 | 72 | 36 |
+| IEM Season 7 World Championship | 41 | 35 |
+| Worlds Season 3 | 63 | 48 |
 | World Cyber Games 2013 | 0 | 48 |
-| IEM Season 9 World Championship (IX, 2015) | 19 | 13 |
+| IEM Season 8 World Championship | 18 | 13 |
+| Worlds 2014 | 78 | 57 |
+| IEM Season 9 World Championship | 19 | 13 |
+| MSI 2015 | 28 | 18 |
+| Worlds 2015 | 73 | 56 |
+| IEM Season 10 World Championship | 25 | 13 |
+| MSI 2016 | 41 | 33 |
+| Worlds 2016 | 77 | 57 |
+| IEM Season 11 World Championship | 27 | 13 |
+| MSI 2017 | 78 | 61 |
+| Rift Rivals 2017 GPL-LJL-OPL | 18 | 18 |
+| Rift Rivals 2017 LLN-CLS-CBLOL | 22 | 22 |
 | Rift Rivals 2017 NA-EU | 21 | 19 |
+| Rift Rivals 2017 LCK-LPL-LMS | 21 | 21 |
+| Rift Rivals 2017 LCL-TCL | 19 | 17 |
+| Worlds 2017 | 119 | 88 |
+| MSI 2018 | 74 | 61 |
+| Rift Rivals 2018 SEA-LJL-OPL | 19 | 19 |
+| Rift Rivals 2018 LLN-CLS-CBLOL | 21 | 21 |
+| Rift Rivals 2018 LCL-TCL-VCS | 19 | 19 |
+| Rift Rivals 2018 LCK-LPL-LMS | 20 | 20 |
+| Rift Rivals 2018 NA-EU | 13 | 13 |
+| Worlds 2018 | 119 | 88 |
+| MSI 2019 | 79 | 61 |
+| Rift Rivals 2019 NA-EU | 13 | 22 |
+| Rift Rivals 2019 LCK-LPL-LMS-VCS | 19 | 19 |
+| Worlds 2019 | 120 | 88 |
 | Mid-Season Cup 2020 | 25 | 17 |
-| MSI 2023 (2023 Mid-Season Invitational) | 76 | 25 |
-| Worlds 2023 (2023 Season World Championship) | 110 | 52 |
+| Worlds 2020 | 114 | 84 |
+| MSI 2021 | 81 | 70 |
+| Worlds 2021 | 121 | 87 |
+| MSI 2022 | 77 | 72 |
+| Worlds 2022 | 127 | 94 |
+| MSI 2023 | 76 | 25 |
+| Worlds 2023 | 110 | 52 |
+| MSI 2024 | 78 | 24 |
 | Esports World Cup 2024 | 19 | 7 |
+| Worlds 2024 | 106 | 50 |
 | First Stand 2025 | 35 | 13 |
+| MSI 2025 | 80 | 19 |
+| Esports World Cup 2025 | 33 | 18 |
+| Worlds 2025 | 84 | 41 |
+| First Stand 2026 | 45 | 13 |
+| MSI 2026 | 71 | 21 |
+| Esports World Cup 2026 | 232 | 122 |
+| Worlds 2026 | 98 | 46 |
 
-Ticket 10's crawl also fetched the identity registries (`Teams`, `TeamRedirects`,
-`PlayerRedirects`, `Champions`, `Tournaments`), so the team, player and champion tables
-are derived from Leaguepedia pages as well as from scoreboard rows.
+The crawls also fetched the identity registries wholesale (`Teams`, `TeamRedirects`,
+`PlayerRedirects`, `Champions`, `Tournaments`), so the team, player and champion tables are
+derived from Leaguepedia pages as well as from scoreboard rows.
 
 Every payload the build read is a Cargo query over one of nine wiki tables —
 `Tournaments`, `ScoreboardGames`, `ScoreboardPlayers`, `MatchSchedule`, `PicksAndBansS7`,
 `Teams`, `TeamRedirects`, `PlayerRedirects` and `Champions` — cached with its query, URL,
-fetch time and body hash, and pinned by path in `data/curated/manifest.json` (79 payloads
-at the time of writing). Those cached bodies are the wiki's response bodies, so they are
+fetch time and body hash, and pinned by path in `data/curated/manifest.json` (285 payloads at the time of writing). Those cached bodies are the wiki's response bodies, so they are
 covered by this attribution too, not only the rows derived from them. The attribution
 that travels with the data lives in [`data/ATTRIBUTION.md`](../data/ATTRIBUTION.md), which
 restates the CC BY-SA obligations for anyone publishing output built on the dataset; the

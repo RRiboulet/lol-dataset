@@ -35,7 +35,7 @@
 import type { EventRecord } from "./assemble.ts";
 import type { CachedPayload } from "./cache.ts";
 import type { GameFormats } from "./formats.ts";
-import { blindPickFor } from "./formats.ts";
+import { blindPickFor, contradictedDraftsFor } from "./formats.ts";
 import type { Coverage, EraTable } from "./eras.ts";
 import { coverageOf, eraOn } from "./eras.ts";
 import type { IdentityIndex, Resolution } from "./identity.ts";
@@ -197,6 +197,8 @@ export type ScoreboardAssembly = {
 	 * a widening or a dead pattern becomes visible.
 	 */
 	blindPickMatches: BlindPickMatch[];
+	/** Declared contradicted bans, with how many games each actually applied to. */
+	contradictedDraftMatches: { overviewPage: string; gameIdPattern: string; champion: string; drop: string; games: number }[];
 	/** Pages the rule does not select: counted by the caller, never emitted. */
 	ignoredGames: string[];
 	ignoredMatches: string[];
@@ -316,6 +318,7 @@ type MatchSeries = { eventId: string; teamIds: [string, string]; record: MatchRe
 function assembleDraft(
 	game: SourceGame,
 	input: ScoreboardInput,
+	event: EventRecord,
 	where: string,
 	blindPick: boolean,
 ): { draft?: DraftRecord; coverage: Coverage } {
@@ -330,19 +333,43 @@ function assembleDraft(
 	 * blind pick — measured on 2020 Mid-Season Cup `Semifinals_1_1` and `Finals_1_1`,
 	 * where Varus stands on both teams in a game the source also says had no bans.
 	 */
+	/**
+	 * A ban the same side also picked is a contradiction the source cannot mean. The pick
+	 * list is corroborated by the player rows (each player's recorded champion), so the ban
+	 * is the unverifiable half; it is dropped when the game declares it in
+	 * `rules/game-formats.json`, and the build stops otherwise rather than choosing a side
+	 * of the contradiction on the reader's behalf.
+	 */
+	const declared = contradictedDraftsFor(input.formats, event.overviewPage, game.gameId);
+	/**
+	 * Apply the declared drops: a declared champion is removed from the statement the
+	 * declaration sets aside. An *undeclared* contradiction is left in place, so
+	 * `checkDuplicates` still stops the build and names the file to declare it in.
+	 */
+	const resolveContradictedEntries = (sides: DraftSideRecord[]): void => {
+		for (const rule of declared) {
+			for (const side of sides) {
+				if (rule.drop === "bans") side.bans = side.bans.filter((entry) => entry.sourceChampion !== rule.champion);
+				else side.picks = side.picks.filter((entry) => entry.sourceChampion !== rule.champion);
+			}
+		}
+	};
 	const checkDuplicates = (sides: readonly DraftSideRecord[]): void => {
 		for (const side of sides) {
 			const ids = new Set([...side.picks, ...side.bans].map((entry) => entry.championId));
 			if (ids.size !== side.picks.length + side.bans.length) {
-				throw new Error(`${where}: the same champion appears twice on the ${side.side} side — a team cannot draft one champion twice`);
+				throw new Error(
+					`${where}: the same champion appears twice on the ${side.side} side — a team cannot draft one champion twice. ` +
+						"If the source states it that way, declare it in rules/game-formats.json (`contradictedDrafts`)",
+				);
 			}
 		}
 		if (blindPick) return;
 		const ids = sides.flatMap((side) => [...side.picks, ...side.bans]).map((entry) => entry.championId);
 		if (new Set(ids).size !== ids.length) {
 			throw new Error(
-				`${where}: the same champion appears on both sides — that is legal only in blind pick, ` +
-					"so declare the game in rules/game-formats.json (or fix the row)",
+				`${where}: the same champion appears on both sides — that is legal only in blind pick. ` +
+					"Declare the game as blind pick, or the entry as contradicted (`contradictedDrafts`), in rules/game-formats.json",
 			);
 		}
 	};
@@ -378,6 +405,7 @@ function assembleDraft(
 			const bans = toEntries(side.bans);
 			return { side: index === 0 ? "blue" : "red", picks, bans };
 		}) as [DraftSideRecord, DraftSideRecord];
+		resolveContradictedEntries(sides);
 		const coverage = cover(sides, true);
 		checkDuplicates(sides);
 		// An ordered row that states nothing is not evidence that the game had no draft:
@@ -400,6 +428,7 @@ function assembleDraft(
 		const bans = game.bans[index].map(resolveChampion).sort((a, b) => (a.championId < b.championId ? -1 : a.championId > b.championId ? 1 : 0));
 		return { side: index === 0 ? "blue" : "red", picks, bans };
 	}) as [DraftSideRecord, DraftSideRecord];
+	resolveContradictedEntries(sides);
 	const coverage = cover(sides, false);
 	checkDuplicates(sides);
 	if (blindPick) {
@@ -468,21 +497,31 @@ function assembleGame(
 	const stated = new Set<string>();
 	const both = new Set<TeamStatField>();
 	for (const [field] of TEAM_STAT_FIELDS) {
-		const onSides = sides.filter((side) => side[field] !== undefined).length;
-		if (onSides > 0) stated.add(field);
-		if (onSides === sides.length) both.add(field);
-	}
-	for (const field of stated) {
+		const values = sides.map((side) => side[field]).filter((value): value is number => value !== undefined);
+		if (values.length === 0) continue;
 		if (!eligible.has(field)) {
+			// A zero for a field that did not exist yet is the wiki's tool writing 0 for "not
+			// applicable", not a claim about the game — measured on 2022 MSI, where the
+			// withdrawn Chemtech Drake is stated as 0 on both sides. It is dropped rather than
+			// emitted (a 0 would claim the drake could have been taken) and does not count
+			// towards coverage. A non-zero value is a real contradiction: the game is dated
+			// wrong or the era table is.
+			if (values.every((value) => value === 0)) {
+				for (const side of sides) delete side[field];
+				continue;
+			}
 			throw new Error(
 				`${where}: the source states ${field}, which the era table declares ineligible in ${era.id} (${era.from}) — ` +
-					"either the game is dated wrong or rules/game-eras.json is, and silently dropping the value would hide which",
+					`the value is ${values.find((value) => value !== 0)}, so either the game is dated wrong or rules/game-eras.json is, ` +
+					"and silently dropping the value would hide which",
 			);
 		}
+		stated.add(field);
+		if (values.length === sides.length) both.add(field);
 	}
 
 	const blindPick = blindPickFor(input.formats, event.overviewPage, game.gameId) !== undefined;
-	const draft = assembleDraft(game, input, where, blindPick);
+	const draft = assembleDraft(game, input, event, where, blindPick);
 
 	const matchId = surrogateId("mt", game.matchId);
 	const series = seriesById.get(game.matchId);
@@ -799,6 +838,35 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 		}
 	}
 
+	// A declared contradicted ban is checked the way a blind pick is: the declaration must
+	// still describe a row the corpus carries, or it has stopped covering the thing it was
+	// written for and the next crawl will fail on that row with no pointer to the file.
+	const eventPageById = new Map(input.events.map((event) => [event.id, event.overviewPage]));
+	// `?? []`: a hand-built input in a test predates the field; a loaded formats file always
+	// carries it (the parser requires the array, empty when there is nothing to declare).
+	const contradictedDraftMatches = (input.formats.contradictedDrafts ?? []).map((rule) => {
+		const pattern = new RegExp(rule.gameIdPattern, "u");
+		const under = games.filter(
+			(game) => eventPageById.get(game.eventId) === rule.overviewPage && pattern.test(game.source.gameId),
+		);
+		// The declaration has to have done something: the dropped statement is gone, and the
+		// kept one is still there. A rule that matched nothing would otherwise be silent.
+		const applied = under.filter((game) => {
+			const sides = game.draft?.sides ?? [];
+			const inPicks = sides.some((side) => side.picks.some((entry) => entry.sourceChampion === rule.champion));
+			const inBans = sides.some((side) => side.bans.some((entry) => entry.sourceChampion === rule.champion));
+			return rule.drop === "bans" ? inPicks && !inBans : !inPicks && !inBans;
+		}).length;
+		if (under.length > 0 && applied === 0) {
+			throw new Error(
+				`rules/game-formats.json: the contradicted-draft declaration for ${JSON.stringify(rule.overviewPage)} ` +
+					`(pattern ${JSON.stringify(rule.gameIdPattern)}, champion ${JSON.stringify(rule.champion)}) matches no such row — ` +
+					"the corpus carries games for that event, so either the row changed or the declaration is a typo",
+			);
+		}
+		return { overviewPage: rule.overviewPage, gameIdPattern: rule.gameIdPattern, champion: rule.champion, drop: rule.drop, games: applied };
+	});
+
 	const eventGames: EventGamesRecord[] = input.events.map((event) => {
 		const seen = perEvent.get(event.id) ?? { games: 0, matches: 0 };
 		// `recorded` means the corpus carries rows for this event, games or series: an event
@@ -821,5 +889,5 @@ export function assembleScoreboards(input: ScoreboardInput): ScoreboardAssembly 
 	});
 	eventGames.sort((a, b) => (a.eventId < b.eventId ? -1 : a.eventId > b.eventId ? 1 : 0));
 
-	return { games, matches, eventGames, blindPickMatches, ignoredGames, ignoredMatches, gamesWithoutMatch, detachedGames, contradictedMatches, seriesConflicts };
+	return { games, matches, eventGames, blindPickMatches, contradictedDraftMatches, ignoredGames, ignoredMatches, gamesWithoutMatch, detachedGames, contradictedMatches, seriesConflicts };
 }

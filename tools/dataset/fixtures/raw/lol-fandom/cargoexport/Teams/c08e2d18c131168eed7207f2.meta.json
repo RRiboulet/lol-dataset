@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=OverviewPage+IN+%28%27Absolute+Legends+NA%27%2C%27Bilibili+Gaming%27%2C%27Blackbean%27%2C%27Bs+As+Fried+Chick%27%2C%27CJ+Entus%27%2C%27CJ+Entus+Blaze%27%2C%27CJ+Entus+Frost%27%2C%27CTBC+Flying+Oyster%27%2C%27Cash%27%2C%27ChiLeanFivE+The+Legacy%27%2C%27Chunnam+Techno+University%27%2C%27Cloud9%27%2C%27Counter+Logic+Gaming+Europe%27%2C%27DAMWON+Gaming%27%2C%27Dark+Passage%27%2C%27Dash9+Gaming%27%2C%27DetonatioN+FocusMe%27%2C%27Dignitas%27%2C%27Dplus+Kia%27%2C%27DragonX%27%2C%27ESC+Gaming%27%2C%27Energy+Pacemaker.HK%27%2C%27FlyQuest%27%2C%27Fnatic%27%2C%27FunPlus+Phoenix%27%29&order_by=OverviewPage+ASC&limit=100",
   "fetchedAt": "2026-11-18T09:24:08.458Z",
   "status": 200,
-  "bodySha256": "8b3792fdbc6153cb077386827fa6b6c1ca4b5f0ed60500a2600aa8d6b8604bee"
+  "bodySha256": "8b3792fdbc6153cb077386827fa6b6c1ca4b5f0ed60500a2600aa8d6b8604bee",
+  "encoding": "gzip"
 }

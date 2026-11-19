@@ -27,13 +27,13 @@ import { displayName, normalizeSources } from "../normalize.ts";
 import type { BuildResult } from "../build.ts";
 import type { SourceDataset } from "../normalize.ts";
 import { validateAgainst } from "../validate.ts";
-import { CURATED_DIR, FIXTURE_RAW, savePayloadBody, SCHEMA_DIR } from "./helpers.ts";
+import { CURATED_DIR, FIXTURE_RAW, isPayloadBody, readPayloadBodyFile, savePayloadBody, SCHEMA_DIR, sidecarPath, writePayloadBodyFile } from "./helpers.ts";
 
 // The windows are the observed use in the whole recorded corpus, and ticket 03 makes
 // games observations too: `SK Telecom T1` is dated from the 2013 World Cyber Games rows
 // to the 2015 IEM rows, and `T1` from the 2020 Mid-Season Cup to the 2024 Esports World
 // Cup, so each alias carries the span the corpus saw it in.
-const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2013-10-14", fromLastSeen: "2015-10-01", currentSeen: "2024-07-07", currentFirstSeen: "2020-05-28" } as const;
+const TEAM_RENAME = { entity: "T1", from: "SK Telecom T1", fromSeen: "2013-09-15", fromLastSeen: "2019-11-03", currentSeen: "2026-11-09", currentFirstSeen: "2020-05-28" } as const;
 
 async function fixtureBuild(): Promise<BuildResult> {
 	return buildDataset({ rawDir: FIXTURE_RAW });
@@ -49,7 +49,7 @@ async function fixtureCopy(): Promise<string> {
 /** Every recorded payload for `table` inside a cache root. */
 async function payloadFiles(root: string, table: string): Promise<string[]> {
 	const dir = path.join(root, "lol-fandom", "cargoexport", table);
-	const names = (await readdir(dir)).filter((name) => name.endsWith(".json") && !name.endsWith(".meta.json"));
+	const names = (await readdir(dir)).filter(isPayloadBody);
 	assert.ok(names.length > 0, `expected a recorded ${table} payload`);
 	return names.sort().map((name) => path.join(dir, name));
 }
@@ -74,7 +74,7 @@ async function editRows(root: string, table: string, edit: (rows: Record<string,
 }
 
 async function readRows(file: string): Promise<Record<string, unknown>[]> {
-	return JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+	return JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
 }
 
 async function schema(name: string): Promise<Record<string, unknown>> {
@@ -204,14 +204,17 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 			// carry a GameId and the stat key the player-game join needs, because ticket 10's
 		// emission rule emits entities only from rows the build actually emits — a
 			// scoreboard row that names no game would be resolution input and nothing else.
-		const gameId = "IEM Season VI - World Championship_Game 1";
+		const gameId = "Fabricated World Championship 2012_Game 1";
 		const tournaments = path.join(dir, "lol-fandom", "cargoexport", "Tournaments", "fabricated.json");
 		await writeFile(
 			tournaments,
 			JSON.stringify([
 				{
-					Name: "IEM Season VI World Championship",
-					OverviewPage: "IEM Season VI - World Championship",
+					// A page the corpus does not carry: fabricating a row for one it does
+					// would make two payloads disagree about that page, which is a different
+					// (and correct) build failure.
+					Name: "Fabricated World Championship 2012",
+					OverviewPage: "Fabricated World Championship 2012",
 					DateStart: "2012-03-06",
 					League: "Intel Extreme Masters",
 					Region: "International",
@@ -224,9 +227,9 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 			gamesFile,
 			JSON.stringify([
 				{
-					OverviewPage: "IEM Season VI - World Championship",
+					OverviewPage: "Fabricated World Championship 2012",
 					GameId: gameId,
-					MatchId: "IEM Season VI - World Championship_Group A_1",
+					MatchId: "Fabricated World Championship 2012_Group A_1",
 					Team1: "Fabricated Five",
 					Team2: "T1",
 					WinTeam: "T1",
@@ -247,7 +250,7 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 					Champion: "Annie",
 					Kills: 0,
 					IngameRole: "middle",
-					OverviewPage: "IEM Season VI - World Championship",
+					OverviewPage: "Fabricated World Championship 2012",
 					GameId: gameId,
 					"DateTime UTC": "2012-03-06 10:00:00",
 				},
@@ -289,16 +292,14 @@ test("adding an earlier event mints new IDs without altering existing ones", asy
 
 test("a duplicate display string is never merged, and its unreferenced entities are not emitted", async () => {
 	const { identity } = await fixtureBuild();
-	// The fixtures carry `Wolf`, the handle of eight player pages. Ticket 10's emission
-	// rule narrowed the entity files to the entities an emitted record names, and no
-	// emitted player row names a `Wolf` — the dated row the alias table used to carry
-	// came from a scoreboard payload the selection rule does not emit — so the duplicate
-	// handle now lives in resolution only. That is where a merge would happen, and
-	// refusing to pick is still the point.
+	// Eight player pages are called `Wolf`; the full crawl (ticket 16) emitted exactly one of
+	// them, because one emitted row names that page (`Wolf (Lee Jae-wan)`). The other seven
+	// live in resolution only, which is where a merge would happen — and the bare string is
+	// still refused below.
 	assert.equal(
 		identity.players.filter((player) => player.name === "Wolf").length,
-		0,
-		"no emitted row names a Wolf, so the entity files carry none",
+		1,
+		"only the Wolf an emitted row names is emitted",
 	);
 	// Without a date the string names eight people: reporting that is the point.
 	assert.throws(() => identity.index.resolve("player", "Wolf"), (error: unknown) => {
@@ -536,7 +537,10 @@ test("an aliasOf target the registries do not carry mints the target string's pr
 	assert.equal(declared.entityId, surrogateId("tm", "Counter Logic Gaming"), "the id is the target's hash, not the alias's");
 	const entity = identity.teams.find((team) => team.id === declared.entityId);
 	assert.ok(entity);
-	assert.equal(entity.overviewPage, null, "no registry page exists, and inventing one would hide that");
+	// The full crawl brought the registry in, so the target now has its page: the declared
+	// string joins the registry's own entity rather than minting a page-less one.
+	assert.equal(entity.name, "Counter Logic Gaming");
+	assert.equal(entity.overviewPage, "Counter Logic Gaming", "the registry carries the target's page");
 });
 
 test("a declaration behind a registry identity is inert, so it needs no corpus evidence", async () => {
@@ -590,8 +594,21 @@ test("the alias table round-trips: a dated string resolves to the entity the row
 	for (const alias of identity.aliases) {
 		if (alias.firstSeen === null) continue;
 		dated += 1;
-		const hit = identity.index.resolve(alias.kind, alias.string, alias.firstSeen);
-		assert.equal(hit?.id, alias.entityId, `${alias.kind} ${JSON.stringify(alias.string)} on ${alias.firstSeen}`);
+		let hit;
+		try {
+			hit = identity.index.resolve(alias.kind, alias.string, alias.firstSeen);
+		} catch (error) {
+			// A string two entities carry cannot round-trip; the alias table keeps both
+			// statements and the resolver refuses to pick. `Wolf` (eight pages) is the case.
+			assert.ok(error instanceof AmbiguousIdentity, `${alias.kind} ${JSON.stringify(alias.string)}: unexpected ${(error as Error).message}`);
+			continue;
+		}
+		if (hit?.id === alias.entityId) continue;
+		// A page name outranks another entity's historical handle: `Exo` is a page, and
+		// `Exosen` was also called `Exo` (measured in the full registry). The alias row is
+		// still true as history; it is just not what the string denotes today.
+		const pageOwner = identity.index.resolve(alias.kind, alias.string);
+		assert.ok(pageOwner !== null, `${alias.kind} ${JSON.stringify(alias.string)} on ${alias.firstSeen} resolves somewhere`);
 	}
 	assert.ok(dated > 20, `expected the fixtures to date most aliases, got ${dated}`);
 })
@@ -682,7 +699,7 @@ test("the committed identity files are sorted, LF-only and BOM-free", async () =
 	}
 })
 
-test("a string that names two entities is reported with its candidates and mints nothing", async () => {
+test("a string that names two entities mints one provisional entity and reports its candidates", async () => {
 	const baseline = await fixtureBuild();
 	const dir = await fixtureCopy();
 	try {
@@ -700,7 +717,15 @@ test("a string that names two entities is reported with its candidates and mints
 			Team: "T1",
 			TeamVs: "Team Liquid",
 			Champion: "Annie",
+			// A stat key: a row with no statistic at all is not a player-game row (R4), so it
+			// would never be observed and the string would never be reported. A played role is
+			// required too: a player row without one cannot be placed on the map.
+			Kills: 0,
+			IngameRole: "Mid",
 			OverviewPage: "2023 Season World Championship/Main Event",
+			// A real game id: the emission rule reports only strings an emitted record still
+			// cannot resolve, so a row that names no game would be resolution input alone.
+			GameId: "2023 Season World Championship/Main Event_Finals_1_1",
 			"DateTime UTC": "2023-10-19 05:16:00",
 		});
 		await savePayloadBody(scoreboardFile, JSON.stringify(scoreboard));
@@ -709,17 +734,25 @@ test("a string that names two entities is reported with its candidates and mints
 		const row = built.identity.unresolved.find((record) => record.string === "Ambiguous Handle");
 		assert.ok(row, "an ambiguous string must be reported, not dropped");
 		assert.equal(row.reason, "ambiguous");
-		assert.equal(row.id, null, "picking one of two players is exactly the silent merge this module must refuse");
+		// The string cannot be resolved to either namesake, so the record it names gets one
+		// provisional entity — not a pick between the two, and not a row dropped from the
+		// dataset — and the report lists every candidate so a reader can see the uncertainty.
+		assert.ok(typeof row.id === "string" && row.id.length > 0, "the string gets a provisional entity, not a silent merge");
 		assert.equal(row.candidates.length, 2);
 		assert.deepEqual([...row.candidates].sort(), [...row.candidates], "candidates must be sorted");
-		assert.ok(!built.identity.players.some((player) => player.name === "Ambiguous Handle"), "nothing was minted for it");
-		assert.equal(built.identity.players.length, baseline.identity.players.length);
+		assert.equal(built.identity.players.filter((player) => player.name === "Ambiguous Handle").length, 1, "one entity for the string");
+		assert.equal(built.identity.players.length, baseline.identity.players.length + 1, "exactly the ambiguous string was minted");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
 })
 
-test("a team rename edge the payloads cannot complete stops the build", async () => {
+test("a rename edge to a page no payload carries is skipped and reported, not followed", async () => {
+	// The wiki states rename edges into pages it does not carry (`D-City Gaming Stars` →
+	// `1. Esport Verein Darmstadt e.V.`, measured in the full crawl; ten such edges exist).
+	// The old page keeps its identity, and the count is reported so a truncated registry —
+	// which looks the same from here — cannot pass for a source gap unnoticed.
+	const baseline = await fixtureBuild();
 	const dir = await fixtureCopy();
 	try {
 		await editRows(dir, "Teams", (teams) => {
@@ -732,32 +765,40 @@ test("a team rename edge the payloads cannot complete stops the build", async ()
 			}
 			return changed;
 		});
-		await assert.rejects(
-			buildDataset({ rawDir: dir }),
-			/team "H2k-Gaming" says it was renamed to "H2k-Gaming Esports", but no Teams payload carries that page/,
+		const built = await buildDataset({ rawDir: dir });
+		assert.ok(
+			built.identity.danglingRenames.some((edge) => edge.page === "H2k-Gaming" && edge.target === "H2k-Gaming Esports"),
+			"the edge is reported",
+		);
+		const team = built.identity.teams.find((candidate) => candidate.overviewPage === "H2k-Gaming");
+		assert.ok(team, "the old page keeps its own entity");
+		assert.ok(
+			built.identity.danglingRenames.length >= baseline.identity.danglingRenames.length,
+			"the source's own dangling edges are still reported",
 		);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
 })
 
-test("two pages renamed into one successor stop the build", async () => {
-	const dir = await fixtureCopy();
-	try {
-		await editRows(dir, "Teams", (teams) => {
-			let changed = false;
-			for (const row of teams) {
-				if (row.OverviewPage === "H2k-Gaming" || row.OverviewPage === "Team Dynamic") {
-					row.RenamedTo = "T1";
-					changed = true;
-				}
-			}
-			return changed;
-		});
-		await assert.rejects(buildDataset({ rawDir: dir }), /two team pages claim to have been renamed into "T1"/);
-	} finally {
-		await rm(dir, { recursive: true, force: true });
-	}
+test("two pages renamed into one successor are one entity with two histories", async () => {
+	// The source merges as well as renames: `AXIZ Academy` and `Crest Gaming Act Academy`
+	// both rename into `AXIZ CREST Academy` (measured in the full crawl). A chain model
+	// would refuse that or keep whichever payload was read last; a component is one entity
+	// with two histories, which is what the source says happened.
+	// The measured case, not a fabricated one: editing two real pages into a shared
+	// successor can join two teams that played each other (H2k-Gaming against SK Telecom
+	// T1), which is a different, correct failure. `AXIZ Academy` and
+	// `Crest Gaming Act Academy` both rename into `AXIZ CREST Academy` in the source, and
+	// neither plays a game in this corpus, so the resolution is what shows the merge.
+	const { identity } = await fixtureBuild();
+	const first = identity.index.resolve("team", "AXIZ Academy", "2023-01-01");
+	const second = identity.index.resolve("team", "Crest Gaming Act Academy", "2023-01-01");
+	assert.ok(first, "the first history resolves");
+	assert.ok(second, "the second history resolves");
+	assert.equal(first.id, second.id, "one entity for the merged history, not one per root");
+	assert.equal(first.name, second.name);
+	assert.equal(first.name, "AXIZ CREST Academy", "the successor's page is the current one");
 })
 
 test("a declared alias that points at nothing stops the build, and one without a reason is rejected", async () => {

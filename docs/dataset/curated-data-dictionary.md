@@ -32,20 +32,20 @@ that forgets the dictionary fails the gate rather than leaving a stale table beh
 
 | File | Records | Schema | What it holds |
 |---|---|---|---|
-| `events.jsonl` | 10 row(s) | `event.schema.json` | Curated event |
-| `event-selection.jsonl` | 19 row(s) | `event-selection.schema.json` | Event selection report |
-| `event-games.jsonl` | 10 row(s) | `event-games.schema.json` | Per-event game coverage report |
-| `event-coverage.jsonl` | 10 row(s) | `event-coverage.schema.json` | Per-event coverage report |
+| `events.jsonl` | 54 row(s) | `event.schema.json` | Curated event |
+| `event-selection.jsonl` | 235 row(s) | `event-selection.schema.json` | Event selection report |
+| `event-games.jsonl` | 54 row(s) | `event-games.schema.json` | Per-event game coverage report |
+| `event-coverage.jsonl` | 54 row(s) | `event-coverage.schema.json` | Per-event coverage report |
 | `era-coverage.jsonl` | 8 row(s) | `era-coverage.schema.json` | Per-era coverage report |
-| `games.jsonl` | 377 row(s) | `game.schema.json` | Curated game |
-| `matches.jsonl` | 230 row(s) | `match.schema.json` | Curated match (series) |
+| `games.jsonl` | 3091 row(s) | `game.schema.json` | Curated game |
+| `matches.jsonl` | 2068 row(s) | `match.schema.json` | Curated match (series) |
 | `series-conflicts.jsonl` | 14 row(s) | `series-conflicts.schema.json` | Series conflict report |
-| `player-games.jsonl` | 3770 row(s) | `player-game.schema.json` | Curated player-game |
-| `teams.jsonl` | 68 row(s) | `team.schema.json` | Curated team |
-| `players.jsonl` | 291 row(s) | `player.schema.json` | Curated player |
-| `champions.jsonl` | 149 row(s) | `champion.schema.json` | Curated champion |
-| `aliases.jsonl` | 647 row(s) | `alias.schema.json` | Curated identity alias |
-| `identity-unresolved.jsonl` | 2 row(s) | `identity-unresolved.schema.json` | Unresolved identity report |
+| `player-games.jsonl` | 30910 row(s) | `player-game.schema.json` | Curated player-game |
+| `teams.jsonl` | 197 row(s) | `team.schema.json` | Curated team |
+| `players.jsonl` | 1140 row(s) | `player.schema.json` | Curated player |
+| `champions.jsonl` | 171 row(s) | `champion.schema.json` | Curated champion |
+| `aliases.jsonl` | 3791 row(s) | `alias.schema.json` | Curated identity alias |
+| `identity-unresolved.jsonl` | 43 row(s) | `identity-unresolved.schema.json` | Unresolved identity report |
 | `manifest.json` | 1 document | `manifest.schema.json` | Provenance manifest |
 
 ## `events.jsonl` — Curated event
@@ -399,7 +399,7 @@ Schema: `data/curated/schema/manifest.schema.json`. Fields: 21.
 | `entities[].records` | integer | always | Non-empty JSONL lines: the record count, so a reader can sanity-check a file. at least 0 |
 | `entities[].sha256` | string | always | sha256 of the emitted file's bytes. |
 | `payloads` | array of object | always | One entry per cached payload the build read, sorted by cache-relative path so a diff shows an added or removed payload in one line. |
-| `payloads[].file` | string | always | Path relative to the cache root, e.g. `lol-fandom/cargoexport/Tournaments/<key>.json`. |
+| `payloads[].file` | string | always | Path relative to the cache root, e.g. `lol-fandom/cargoexport/Tournaments/<key>.json.gz`. Bodies are gzip-compressed; `bodySha256` is the hash of the uncompressed body (the source's bytes), so the pin describes the response rather than this repository's storage choice. |
 | `payloads[].table` | string | always | The Cargo table whose directory the payload sits in; this is how the build routed it. |
 | `payloads[].endpoint` | string | always | The Cargo endpoint the payload came from. one of `cargoquery`, `cargoexport` |
 | `payloads[].bodySha256` | string | always | sha256 of the body bytes on disk, verified against the sidecar when there is one. |

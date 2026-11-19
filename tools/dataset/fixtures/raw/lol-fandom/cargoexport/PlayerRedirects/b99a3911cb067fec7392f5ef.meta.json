@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27Robo%27%2C%27Rookie%27%2C%27Route%27%2C%27Ruler%27%2C%27Saintvicious%27%2C%27Samux%27%2C%27Santorin%27%2C%27Scout%27%2C%27Sheo%27%2C%27ShiauC%27%2C%27ShowMaker%27%2C%27Shunn%27%2C%27Shy%27%2C%27Slayder%27%2C%27Smeb%27%2C%27Smoothie%27%2C%27Sneaky%27%2C%27Snoopeh%27%2C%27Southwind%27%2C%27Space+%28Seon+Ho-san%29%27%2C%27Sparda%27%2C%27Spirit%27%2C%27Stanley%27%2C%27Steak%27%2C%27Steal+%28Mun+Geon-yeong%29%27%2C%27Stixxay%27%2C%27Sty1e%27%2C%27SuperCat%27%2C%27Svenskeren%27%2C%27SwordArt%27%29&order_by=AllName+ASC&limit=400",
   "fetchedAt": "2026-11-18T09:45:31.940Z",
   "status": 200,
-  "bodySha256": "26df4a95a91a8df46fd5f18da23b2a097dd67d2c1c565d04b149921fe09f7b6f"
+  "bodySha256": "26df4a95a91a8df46fd5f18da23b2a097dd67d2c1c565d04b149921fe09f7b6f",
+  "encoding": "gzip"
 }

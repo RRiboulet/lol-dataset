@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27LemonNation%27%2C%27Lemongod%27%2C%27Levi%27%2C%27Licken%27%2C%27Licorice%27%2C%27Life%27%2C%27Light+%28Wang+Guang-Yu%29%27%2C%27LightSludge%27%2C%27Lilballz%27%2C%27Locodoco%27%2C%27LokeN%27%2C%27LvMao%27%2C%27Lwx%27%2C%27Lyonz%27%2C%27MISSING%27%2C%27Madlife%27%2C%27Malunoo%27%2C%27Maple+%28Huang+Yi-Tang%29%27%2C%27Massu%27%2C%27Meiko%27%2C%27Meteos%27%2C%27MiSTakE%27%2C%27MikeYeung%27%2C%27Mikyx%27%2C%27Mireu%27%2C%27Misaya%27%2C%27Muffinqt%27%2C%27Mystic%27%2C%27NL+%28Hsiung+Wen-An%29%27%2C%27NLgnz%27%29&order_by=AllName+ASC&limit=400",
   "fetchedAt": "2026-11-18T09:42:48.533Z",
   "status": 200,
-  "bodySha256": "16fc0a1f317320cc204de690666b587ba4da65508c23e7ebf07212184e973918"
+  "bodySha256": "16fc0a1f317320cc204de690666b587ba4da65508c23e7ebf07212184e973918",
+  "encoding": "gzip"
 }

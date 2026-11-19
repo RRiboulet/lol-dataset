@@ -5,13 +5,13 @@ from the first tournament through the one being played right now (2026). It is
 the first step of a larger project, so the shape of the data matters more than
 speed: expect schema decisions to outlive the scrapers that fill them.
 
-**Current state: the full dataset for the ten admitted events, with coverage reports, an invariant gate and a provenance manifest, on top of the scaffold.** The
+**Current state: the full dataset for all 54 admitted events, with coverage reports, an invariant gate and a provenance manifest, on top of the scaffold.** The
 devcontainer, pi extensions, skills and templates are in place, and the project's
 own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
 holds what the build emits today — the selected events with the report of every
 rejection, the team, player, champion and alias identity tables, the games and
-matches of **eight events** (377 games, 230 series, 3 770 player rows), each game carrying
+matches of **54 events** (3 091 games, 2 068 series, 30 910 player rows), each game carrying
 its champion draft with the source's fidelity and a player row per participant, with
 kills and gold reconciled against the team totals — the per-event report of which
 events the corpus carries rows for, the generated per-event and per-era coverage
@@ -40,7 +40,9 @@ facts agree with each other, so a row the invariant gate never saw cannot surviv
 into `data/model/`. Ticket 10's crawl filled the rest of the event list: **WCG 2011 has
 no games in the source at all** (`event-games.jsonl` says `empty`, and its four
 game-bearing queries are committed as the evidence), **World Cyber Games 2013 carries 48
-series and no games**, and the other eight events carry 377 games between them. The crawl
+series and no games**, and ticket 16's crawl then brought in every other edition the rule
+admits — 54 events in all, 3 091 games — so the event list is now computed from a committed
+`Tournaments` query (`node tools/dataset/cli.ts plan`) rather than a hand-written list. The crawl
 also forced three decisions now in the repo as data: a page under an event whose first
 segment is `Qualifiers` is not that event (62 WCG 2013 series and 6 IPL 5 series are
 counted as ignored, not absorbed); a game played without a pick-ban phase is declared in
@@ -55,7 +57,7 @@ Ticket 15 made that alias's declared window bound every lookup and required an
 `aliasOf` target to be evidenced by a game and its series row, and committed the
 conflict report to `data/curated/series-conflicts.jsonl` so the contradiction is
 visible in the data rather than only in the build's stdout. Ticket 13 proved the model
-over this full dataset: 377 games, 230 series, 3 770 player rows and 7 144 draft entries,
+over this full dataset: 3 091 games, 2 068 series, 30 910 player rows and 59 214 draft slots,
 with every grain unique, every foreign key resolving, and the per-game, per-event and
 per-era counts reconciling against the curated layer — including a coverage rollup
 (`rollupCoverage`) that re-derives `event-coverage.jsonl` and `era-coverage.jsonl` from

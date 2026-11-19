@@ -1,11 +1,34 @@
 {
-	"$comment": "Games the source records without a pick-ban phase, declared rather than inferred. A game with no bans and no PicksAndBansS7 row is indistinguishable from an early-era game whose bans the wiki never recorded (IEM Season IX 2015 states three bans a side and has no ordered row), so only a declaration can say which one it is. The build refuses a declaration that contradicts the rows it covers: a blind pick that states bans, or a declaration matching no game of an event the corpus carries. See tools/dataset/formats.ts.",
+	"$comment": "Games whose draft the source states in a way a draft cannot mean, declared rather than inferred. A game with no bans and no PicksAndBansS7 row is indistinguishable from an early-era game whose bans the wiki never recorded (IEM Season IX 2015 states three bans a side and has no ordered row), so only a declaration can say which one it is. A champion stated twice in one draft \u2014 banned and picked by the same side, or picked by both sides in a game that is not blind pick \u2014 is a contradiction the draft rules forbid; the declaration says which half is set aside and why. The build refuses a declaration that contradicts the rows it covers: a blind pick that states bans, a declaration that matches no game of an event the corpus carries, or a champion that is no longer stated twice. See tools/dataset/formats.ts.",
 	"version": 1,
 	"blindPick": [
 		{
 			"overviewPage": "2020 Mid-Season Cup",
 			"gameIdPattern": "^2020 Mid-Season Cup_(Semifinals|Finals)_[0-9]+_1$",
-			"cites": "The 2020 Mid-Season Cup format played the first game of every best-of-five in blind pick (Riot's announced format, reported 2020-05-23; the wiki's 2020 Mid-Season Cup page states the same). Measured on the corpus: those three games carry no PicksAndBansS7 row and no ban on either side, and Semifinals_1_1 and Finals_1_1 state the same champion on both sides — legal in blind pick, impossible in a draft. The group stage was a single game per series with a normal draft, which is why the pattern is limited to the best-of-five rounds."
+			"cites": "The 2020 Mid-Season Cup format played the first game of every best-of-five in blind pick (Riot's announced format, reported 2020-05-23; the wiki's 2020 Mid-Season Cup page states the same). Measured on the corpus: those three games carry no PicksAndBansS7 row and no ban on either side, and Semifinals_1_1 and Finals_1_1 state the same champion on both sides \u2014 legal in blind pick, impossible in a draft. The group stage was a single game per series with a normal draft, which is why the pattern is limited to the best-of-five rounds."
+		}
+	],
+	"contradictedDrafts": [
+		{
+			"overviewPage": "Season 3 World Championship",
+			"gameIdPattern": "^Season 3 World Championship_Day 6_2_1$",
+			"champion": "Twisted Fate",
+			"drop": "bans",
+			"cites": "ScoreboardGames states Team1Bans = [Caitlyn, Lee Sin, Twisted Fate] and Team1Picks = [Shen, Jarvan IV, Twisted Fate, Ashe, Zyra] for Team Vulcun, so the same champion is banned and picked. The player rows state Shen / Jarvan IV / Twisted Fate / Ashe / Zyra for that side, exactly the pick list, so the pick is the doubly stated half and the ban entry is the one nothing else corroborates. Found by scanning every fetched ScoreboardGames row for a champion stated twice in one draft (ticket 16)."
+		},
+		{
+			"overviewPage": "IEM Season VII - World Championship",
+			"gameIdPattern": "^IEM Season VII - World Championship_Group A_5_1$",
+			"champion": "Lee Sin",
+			"drop": "bans",
+			"cites": "ScoreboardGames states Team1Bans = [Nami, Lee Sin, Miss Fortune] and Team1Picks = [Singed, Lee Sin, Twisted Fate, Tristana, Lulu] for CJ Entus Blaze, so the same champion is banned and picked. The player rows state Singed / Lee Sin / Twisted Fate / Tristana / Lulu for that side, exactly the pick list, so the ban entry is the unverifiable half."
+		},
+		{
+			"overviewPage": "IEM Season VII - World Championship",
+			"gameIdPattern": "^IEM Season VII - World Championship_Group A_6_1$",
+			"champion": "Lee Sin",
+			"drop": "both-picks",
+			"cites": "ScoreboardGames states Lee Sin in Team1Picks (Gambit Gaming) and in Team2Picks (Millenium) with no bans on either side. Two teams cannot pick one champion in a draft; this game is not a declared blind pick and has no PicksAndBansS7 row. The player rows corroborate each side (Lee Sin appears among both teams' players), so neither statement can be set aside: the entry is dropped from both sides and the draft is `partial`, rather than asserting an impossible fact or choosing a side."
 		}
 	]
 }

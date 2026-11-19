@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27Hang%27%2C%27Hans+Sama%27%2C%27Harp%27%2C%27Hauntzer%27%2C%27HongQ%27%2C%27HotshotGG%27%2C%27Humanoid%27%2C%27Hylissang%27%2C%27IgNar%27%2C%27Impact%27%2C%27Inspired%27%2C%27Insta%27%2C%27JackeyLove%27%2C%27Jensen%27%2C%27Jesiz%27%2C%27JimieN%27%2C%27Jun+%28Yoon+Se-jun%29%27%2C%27JunJia%27%2C%27Kaiwing%27%2C%27Kanavi%27%2C%27Karsa%27%2C%27Kati%27%2C%27Kellin%27%2C%27Khan%27%2C%27Kiaya%27%2C%27Kiin%27%2C%27Krepo%27%2C%27Labrov%27%2C%27Lee%27%2C%27Lehends%27%29&order_by=AllName+ASC&limit=400",
   "fetchedAt": "2026-11-18T09:41:28.404Z",
   "status": 200,
-  "bodySha256": "eaf134444c7cdd1e11918f381a241af75ed087d02867893b462dc346c41b948f"
+  "bodySha256": "eaf134444c7cdd1e11918f381a241af75ed087d02867893b462dc346c41b948f",
+  "encoding": "gzip"
 }

@@ -215,6 +215,23 @@ export type AssembledIdentity = {
 	champions: ChampionRecord[];
 	aliases: AliasRecord[];
 	unresolved: UnresolvedRecord[];
+	/**
+	 * Rename edges whose successor page no registry carries. The wiki states them (measured
+	 * in the full crawl: `D-City Gaming Stars` → `1. Esport Verein Darmstadt e.V.` names no
+	 * page and no redirect), so the edge is skipped and the old page keeps its identity
+	 * rather than the build inventing a successor — and the count is reported so a truncated
+	 * registry, which looks the same from here, cannot pass for a source gap unnoticed.
+	 */
+	danglingRenames: { page: string; target: string; sourceFile: string }[];
+	/**
+	 * `TeamRedirects` rows whose page the `Teams` table does not carry: 122 of 3 703 pages in
+	 * the wholesale registries, nearly all national teams and all-star squads the club table
+	 * deliberately does not list. The row is not evidence of an entity the corpus can have —
+	 * the page is not in the club registry — so it is counted and skipped rather than turned
+	 * into an entity with no page. A string that only such a row names still reaches the
+	 * unresolved report if a record uses it.
+	 */
+	unregisteredRedirects: { allName: string; page: string; sourceFile: string }[];
 	index: IdentityIndex;
 };
 
@@ -364,6 +381,13 @@ export function assembleIdentity(
 	const aliasStrings = new Map<string, Set<string>>();
 	/** The union, keyed case-folded: the last resort before minting, and never on its own. */
 	const foldedStrings = new Map<string, Set<string>>();
+	/**
+	 * Folded keys registered at the identity tier, so a page name can outrank another
+	 * entity's historical handle when the case differs. Measured: the scoreboard writes
+	 * `imp`, page `Imp` is the player, and page `Egnom`'s old handle is also `Imp`
+	 * (`Imp (Qusai Alhazmi)`); without this the folded lookup sees two players and refuses.
+	 */
+	const foldedIdentityStrings = new Map<string, Set<string>>();
 	const evidence = new Map<string, Set<AliasEvidence>>();
 	const observed = new Map<string, Era>();
 	const declaredEras = new Map<string, Era>();
@@ -375,6 +399,7 @@ export function assembleIdentity(
 		const string = source.trim();
 		if (string === "") return;
 		add(tier === "identity" ? identityStrings : aliasStrings, key2(kind, string), id);
+		if (tier === "identity") add(foldedIdentityStrings, key2(kind, fold(string)), id);
 		add(foldedStrings, key2(kind, fold(string)), id);
 		add(evidence, key3(kind, string, id), why);
 	};
@@ -448,6 +473,10 @@ export function assembleIdentity(
 			const found = pick(kind, string, bounded, date);
 			return { ...found, via: "alias" };
 		}
+		// A folded page name outranks a folded alias: the identity tier is what the corpus's
+		// own string is, and only then is a historical handle considered.
+		const foldedIdentity = foldedIdentityStrings.get(key2(kind, fold(string)));
+		if (foldedIdentity !== undefined && foldedIdentity.size > 0) return pick(kind, string, foldedIdentity, date);
 		const folded = foldedStrings.get(key2(kind, fold(string)));
 		if (folded !== undefined && folded.size > 0) {
 			const bounded = boundDeclaredEra(kind, string, folded, date);
@@ -461,12 +490,30 @@ export function assembleIdentity(
 	// ---- team entities: one per rename chain, anchored on the chain's root ---------
 	const teams: TeamRecord[] = [];
 	const teamIdByPage = new Map<string, string>();
+	/**
+	 * A page's display name is registered only when it denotes one entity. The wholesale
+	 * registry carries distinct pages that share a display name — `ESC Gaming` and
+	 * `ESC Gaming (Italian Team)` both call themselves `ESC Gaming` (measured in the full
+	 * crawl) — and registering both makes a scoreboard's `ESC Gaming` ambiguous, which the
+	 * resolver refuses rather than merging two teams. The name is not evidence then: the
+	 * page and its redirects still resolve, and the string goes to whichever entity's page
+	 * it actually is.
+	 */
+	const teamNameUses = new Map<string, number>();
+	for (const team of sources.teams) {
+		// Both the page and the display name count, because a page name is itself a string a
+		// record can carry: `ESC Gaming` is the page and display name of one team and the
+		// display name of another, so it denotes neither in particular.
+		for (const string of new Set([team.page, team.name])) teamNameUses.set(string, (teamNameUses.get(string) ?? 0) + 1);
+	}
 	// A redirect name can be what a rename points at (measured: Lyon Gaming (2013 Latin
 	// American Team) → `Rainbow7` → page Movistar R7), so the chain follows the source's
 	// own redirect table rather than failing on a link the registry does carry.
 	const redirectPage = new Map<string, string>();
 	for (const name of sources.teamNames) redirectPage.set(name.allName, name.page);
-	for (const { root, chain } of teamChains(sources.teams, redirectPage)) {
+	const danglingRenames: { page: string; target: string; sourceFile: string }[] = [];
+	const unregisteredRedirects: { allName: string; page: string; sourceFile: string }[] = [];
+	for (const { root, chain } of teamChains(sources.teams, redirectPage, danglingRenames)) {
 		const current = chain[chain.length - 1];
 		const id = surrogateId(KIND_PREFIX.team, root.page);
 		teams.push({ id, name: displayName(current.name), overviewPage: current.page, region: current.region });
@@ -478,17 +525,18 @@ export function assembleIdentity(
 			register("team", page.page, id, tier, isCurrent ? "registry" : "rename");
 			// A page's display name can differ from the page only by case in the fixture
 			// set (Epik Gamer / EPIK Gamer), and the scoreboard uses whichever it likes.
-			if (page.name !== page.page) register("team", page.name, id, tier, "registry");
+			// Only when it denotes this one entity, though: a shared display name is not evidence.
+			if (page.name !== page.page && (teamNameUses.get(page.name) ?? 0) === 1) register("team", page.name, id, tier, "registry");
 		});
 	}
 
 	for (const name of sources.teamNames) {
 		const id = teamIdByPage.get(name.page);
 		if (id === undefined) {
-			throw new Error(
-				`${name.sourceFile}: TeamRedirects names page ${JSON.stringify(name.page)}, which no Teams payload registers — ` +
-					"fetch the page or drop the payload, rather than inventing an entity for it",
-			);
+			// A page the club registry does not carry (a national team, an all-star squad) has
+			// no entity to point at; the row is counted, never turned into an entity with no page.
+			unregisteredRedirects.push({ allName: name.allName, page: name.page, sourceFile: name.sourceFile });
+			continue;
 		}
 		register("team", name.allName, id, name.allName === name.page ? "identity" : "alias", "redirect");
 	}
@@ -510,12 +558,21 @@ export function assembleIdentity(
 	for (const row of sources.playerNames) {
 		if (row.allName === row.page && row.id !== "") currentHandle.set(row.page, row.id);
 	}
+	const handleUses = new Map<string, number>();
+	for (const [page, id] of playerIdByPage) {
+		void id;
+		for (const string of new Set([page, currentHandle.get(page) ?? page])) {
+			handleUses.set(string, (handleUses.get(string) ?? 0) + 1);
+		}
+	}
 	for (const [page, id] of playerIdByPage) {
 		const handle = currentHandle.get(page) ?? page;
 		players.push({ id, name: displayName(handle), overviewPage: page });
 		names.set(id, displayName(handle));
 		register("player", page, id, "identity", "registry");
-		if (handle !== page) register("player", handle, id, "identity", "handle");
+		// Two pages can state the same current handle; then the handle denotes neither of
+		// them in particular, and only the pages themselves are evidence.
+		if (handle !== page && (handleUses.get(handle) ?? 0) === 1) register("player", handle, id, "identity", "handle");
 	}
 	for (const row of sources.playerNames) {
 		const id = playerIdByPage.get(row.page);
@@ -666,12 +723,23 @@ export function assembleIdentity(
 			found = lookup(kind, string, date);
 		} catch (error) {
 			if (!(error instanceof AmbiguousIdentity)) throw error;
+			// The registries cannot say which of several namesakes this string denotes — measured:
+			// a 2015 scoreboard names `Lee`, and three players carry that handle historically
+			// (`Lee (Lee Dae-hyeong)`, `Lee (Lee In-cheol)`, `Lee (Lee Joo-won)`), none of them the
+			// one who played. Picking one would be a guess; failing the build would make the
+			// corpus depend on which payloads happen to be cached. So the string gets one
+			// provisional entity, the report names every candidate, and the mapping is stated as
+			// uncertain where a reader looks for it. The registration is at the identity tier so
+			// later lookups of the same string resolve to it instead of re-detecting the clash.
+			const id = mint(kind, string);
+			register(kind, string, id, "identity", "observed");
+			recordObservation(kind, string, id, date);
 			noteUnresolved(kind, string, date, {
-				id: null,
+				id,
 				reason: "ambiguous",
 				candidates: error.candidates.map((candidate) => candidate.id),
 			});
-			return null;
+			return id;
 		}
 		const id = found === null ? mint(kind, string) : found.id;
 		register(kind, string, id, "alias", "observed");
@@ -857,6 +925,8 @@ export function assembleIdentity(
 		champions,
 		aliases,
 		unresolved: [...unresolved.values()].sort((a, b) => compare([a.kind, a.string], [b.kind, b.string])),
+		danglingRenames: danglingRenames.sort((a, b) => compare([a.sourceFile, a.page], [b.sourceFile, b.page])),
+		unregisteredRedirects: unregisteredRedirects.sort((a, b) => compare([a.sourceFile, a.page, a.allName], [b.sourceFile, b.page, b.allName])),
 		index: { resolve: (kind, source, date) => lookup(kind, source, date) },
 	};
 }
@@ -898,6 +968,10 @@ export function emitReferenced(identity: AssembledIdentity, referenced: Readonly
 		champions: identity.champions.filter((champion) => referenced.has(champion.id)),
 		aliases: identity.aliases.filter((alias) => referenced.has(alias.entityId)),
 		unresolved: identity.unresolved.filter((row) => row.id === null || referenced.has(row.id)),
+		// The two registry-gap reports describe the payloads, not the emitted entities, so
+		// they travel unfiltered: the count is what tells a truncated registry from a source gap.
+		danglingRenames: identity.danglingRenames,
+		unregisteredRedirects: identity.unregisteredRedirects,
 		index: identity.index,
 	};
 }
@@ -927,51 +1001,108 @@ function compare(a: string[], b: string[]): number {
  * is not a guess; failing to would split one team into two because a page was renamed
  * twice. A target that is neither a page nor a redirect name is still a hard stop.
  */
-function teamChains(teams: SourceTeam[], redirectPage: Map<string, string>): { root: SourceTeam; chain: SourceTeam[] }[] {
+function teamChains(
+	teams: SourceTeam[],
+	redirectPage: Map<string, string>,
+	dangling: { page: string; target: string; sourceFile: string }[],
+): { root: SourceTeam; chain: SourceTeam[] }[] {
 	const byPage = new Map(teams.map((team) => [team.page, team]));
-	/** The page a `RenamedTo` target denotes, or `undefined` when the registries cannot say. */
-	const successor = (target: string): SourceTeam | undefined => byPage.get(target) ?? byPage.get(redirectPage.get(target) ?? "");
+	const foldedRedirect = new Map<string, Set<string>>();
+	for (const [name, page] of redirectPage) add(foldedRedirect, fold(name), page);
+	/**
+	 * The page a `RenamedTo` target denotes, or `undefined` when the registries cannot say.
+	 *
+	 * The redirect lookup folds case as a last resort, the same way a source string does
+	 * everywhere else in this file, because the wiki's rename edge and its own redirect
+	 * table disagree on case: `Boba Marines` says it was renamed to `GIGABYTE Marines`, and
+	 * the only redirect row for that name is `Gigabyte marines` → page `GAM Esports`
+	 * (measured in the full crawl). Refusing that would split one team into two — the
+	 * failure this check exists to prevent. Two pages sharing a folded name still stop the
+	 * build, because the successor would then depend on payload order.
+	 */
+	const successor = (target: string): SourceTeam | undefined => {
+		const exactPage = byPage.get(target);
+		if (exactPage !== undefined) return exactPage;
+		const exactRedirect = redirectPage.get(target);
+		if (exactRedirect !== undefined) return byPage.get(exactRedirect);
+		const folded = foldedRedirect.get(fold(target));
+		if (folded === undefined) return undefined;
+		if (folded.size > 1) {
+			throw new Error(
+				`a rename target ${JSON.stringify(target)} matches ${folded.size} redirect names that differ only in case ` +
+					`(${[...folded].map((page) => JSON.stringify(page)).sort().join(", ")}) — which page it denotes would depend on payload order`,
+			);
+		}
+		return byPage.get([...folded][0]);
+	};
+	// A `RenamedTo` whose successor is neither a page nor a redirect name is a gap in the
+	// *source*, not in the registry: the wiki states the edge and carries no such page. The
+	// edge is skipped so the old page keeps its identity, and the target — if any emitted
+	// record names it — appears in the unresolved report with no registry row, which is the
+	// honest record of it. The full crawl found several; a filtered registry hid them.
 	for (const team of teams) {
 		if (team.renamedTo !== "" && successor(team.renamedTo) === undefined) {
-			throw new Error(
-				`${team.sourceFile}: team ${JSON.stringify(team.page)} says it was renamed to ${JSON.stringify(team.renamedTo)}, ` +
-					"but no Teams payload carries that page — the registry is incomplete, and guessing the successor would split one identity in two",
-			);
+			dangling.push({ page: team.page, target: team.renamedTo, sourceFile: team.sourceFile });
 		}
 	}
-	const predecessor = new Map<string, string>();
+	// The rename graph is read as **components**, not as chains, because the source merges
+	// as well as renames: two pages can state the same successor (`AXIZ Academy` and
+	// `Crest Gaming Act Academy` both rename into `AXIZ CREST Academy`, measured in the full
+	// crawl). A chain model would refuse that or keep whichever payload was read last; a
+	// component is one entity with two histories, which is what the source says happened.
+	// A linear rename is the one-root case of the same rule, so its ids do not move.
+	const parent = new Map<string, string>(teams.map((team) => [team.page, team.page]));
+	const find = (page: string): string => {
+		let current = page;
+		while (parent.get(current) !== current) current = parent.get(current) as string;
+		return current;
+	};
+	const union = (a: string, b: string): void => {
+		const rootA = find(a);
+		const rootB = find(b);
+		if (rootA !== rootB) parent.set(rootA, rootB);
+	};
+	const outgoing = new Map<string, SourceTeam>();
 	for (const team of teams) {
 		if (team.renamedTo === "") continue;
-		const target = successor(team.renamedTo) as SourceTeam;
-		const seen = predecessor.get(target.page);
-		if (seen !== undefined) {
+		const target = successor(team.renamedTo);
+		if (target === undefined) continue;
+		if (outgoing.has(team.page)) throw new Error(`Teams.RenamedTo gives ${JSON.stringify(team.page)} two successors`);
+		outgoing.set(team.page, target);
+		union(team.page, target.page);
+	}
+
+	const components = new Map<string, SourceTeam[]>();
+	for (const team of teams) {
+		const root = find(team.page);
+		const list = components.get(root) ?? [];
+		list.push(team);
+		components.set(root, list);
+	}
+
+	const chains: { root: SourceTeam; chain: SourceTeam[] }[] = [];
+	for (const pages of components.values()) {
+		// A component has one page nothing renames out of (the current page) unless the edges
+		// form a cycle, and at least one page nothing renames into (a history's start).
+		const current = pages.filter((team) => !outgoing.has(team.page));
+		if (current.length === 0) {
 			throw new Error(
-				`two team pages claim to have been renamed into ${JSON.stringify(target.page)}: ` +
-					`${JSON.stringify(seen)} and ${JSON.stringify(team.page)} — one identity cannot have two histories`,
+				`Teams.RenamedTo contains a cycle among ${pages.map((team) => JSON.stringify(team.page)).sort().join(", ")} — a rename chain cannot be a cycle`,
 			);
 		}
-		predecessor.set(target.page, team.page);
-	}
-	const chains: { root: SourceTeam; chain: SourceTeam[] }[] = [];
-	const visited = new Set<string>();
-	for (const team of teams) {
-		if (predecessor.has(team.page)) continue;
-		const chain: SourceTeam[] = [];
-		let current = team;
-		while (true) {
-			if (visited.has(current.page)) {
-				throw new Error(`Teams.RenamedTo revisits ${JSON.stringify(current.page)} — a rename chain cannot be a cycle`);
-			}
-			visited.add(current.page);
-			chain.push(current);
-			if (current.renamedTo === "") break;
-			current = successor(current.renamedTo) as SourceTeam;
+		const predecessorPages = new Set([...outgoing.values()].map((team) => team.page));
+		const roots = pages.filter((team) => !predecessorPages.has(team.page));
+		if (roots.length === 0) {
+			throw new Error(
+				`Teams.RenamedTo has no start among ${pages.map((team) => JSON.stringify(team.page)).sort().join(", ")} — every page claims a predecessor`,
+			);
 		}
-		chains.push({ root: team, chain });
-	}
-	if (visited.size !== teams.length) {
-		const stranded = teams.filter((team) => !visited.has(team.page)).map((team) => team.page);
-		throw new Error(`Teams.RenamedTo contains a cycle: ${stranded.sort().join(", ")} cannot be reached from a root page`);
+		// The id is derived from the smallest root page, so a merged history still has one
+		// stable id and a linear chain (one root) keeps the id it already had.
+		const root = [...roots].sort((a, b) => compare([a.page], [b.page]))[0];
+		const sink = current[0];
+		const others = pages.filter((team) => team.page !== sink.page).sort((a, b) => compare([a.page], [b.page]));
+		chains.push({ root, chain: [...others, sink] });
 	}
 	return chains;
 }

@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+IN+%28%27Targamas%27%2C%27Tarzan+%28Lee+Seung-yong%29%27%2C%27Teddy%27%2C%27TheOddOne%27%2C%27TheShy%27%2C%27Tian%27%2C%27TkSing%27%2C%27Toyz%27%2C%27Trick%27%2C%27Trymbi%27%2C%27UmTi%27%2C%27Viper+%28Park+Do-hyeon%29%27%2C%27Vizicsacsi%27%2C%27Vladi%27%2C%27Voyboy%27%2C%27Wako%27%2C%27Weiwei%27%2C%27Weixiao%27%2C%27Wickd%27%2C%27WildTurtle%27%2C%27Woody%27%2C%27XUN%27%2C%27Xerxe%27%2C%27Xiaohu%27%2C%27Xllyra%27%2C%27Xmithie%27%2C%27Xpecial%27%2C%27Yagao%27%2C%27Yike%27%2C%27YuZhe%27%29&order_by=AllName+ASC&limit=400",
   "fetchedAt": "2026-11-18T09:47:01.643Z",
   "status": 200,
-  "bodySha256": "6b2f44c687d1ee2b4b66793ccec7efa9541b685f4a1c8ad4c6230d59778155f8"
+  "bodySha256": "6b2f44c687d1ee2b4b66793ccec7efa9541b685f4a1c8ad4c6230d59778155f8",
+  "encoding": "gzip"
 }

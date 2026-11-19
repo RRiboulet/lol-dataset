@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "ScoreboardGames",
+    "fields": "OverviewPage,Tournament,Team1,Team2,WinTeam,LossTeam,DateTime_UTC,Team1Score,Team2Score,Winner,Gamelength,Gamelength_Number,Team1Players,Team2Players,Team1Bans,Team2Bans,Team1Picks,Team2Picks,Team1Dragons,Team2Dragons,Team1Clouds,Team1Infernals,Team1Mountains,Team1Oceans,Team1Hextechs,Team1Chemtechs,Team1Elders,Team2Clouds,Team2Infernals,Team2Mountains,Team2Oceans,Team2Hextechs,Team2Chemtechs,Team2Elders,Team1Barons,Team2Barons,Team1Towers,Team2Towers,Team1Gold,Team2Gold,Team1Kills,Team2Kills,Team1RiftHeralds,Team2RiftHeralds,Team1VoidGrubs,Team2VoidGrubs,Team1Atakhans,Team2Atakhans,Team1Inhibitors,Team2Inhibitors,Patch,LegacyPatch,PatchSort,MatchHistory,GameId,MatchId,RiotPlatformGameId,RiotPlatformId,RiotGameId,RiotHash,RiotVersion",
+    "where": "OverviewPage LIKE 'IEM Season IX - World Championship%'",
+    "order_by": "GameId",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardGames&fields=OverviewPage%2CTournament%2CTeam1%2CTeam2%2CWinTeam%2CLossTeam%2CDateTime_UTC%2CTeam1Score%2CTeam2Score%2CWinner%2CGamelength%2CGamelength_Number%2CTeam1Players%2CTeam2Players%2CTeam1Bans%2CTeam2Bans%2CTeam1Picks%2CTeam2Picks%2CTeam1Dragons%2CTeam2Dragons%2CTeam1Clouds%2CTeam1Infernals%2CTeam1Mountains%2CTeam1Oceans%2CTeam1Hextechs%2CTeam1Chemtechs%2CTeam1Elders%2CTeam2Clouds%2CTeam2Infernals%2CTeam2Mountains%2CTeam2Oceans%2CTeam2Hextechs%2CTeam2Chemtechs%2CTeam2Elders%2CTeam1Barons%2CTeam2Barons%2CTeam1Towers%2CTeam2Towers%2CTeam1Gold%2CTeam2Gold%2CTeam1Kills%2CTeam2Kills%2CTeam1RiftHeralds%2CTeam2RiftHeralds%2CTeam1VoidGrubs%2CTeam2VoidGrubs%2CTeam1Atakhans%2CTeam2Atakhans%2CTeam1Inhibitors%2CTeam2Inhibitors%2CPatch%2CLegacyPatch%2CPatchSort%2CMatchHistory%2CGameId%2CMatchId%2CRiotPlatformGameId%2CRiotPlatformId%2CRiotGameId%2CRiotHash%2CRiotVersion&where=OverviewPage+LIKE+%27IEM+Season+IX+-+World+Championship%25%27&order_by=GameId&limit=500",
+  "fetchedAt": "2026-11-18T15:43:38.219Z",
+  "status": 200,
+  "bodySha256": "6fa59e0eae913f66f8a0fe23218c293735ecd83d0f238a3fa680169c99f75e15",
+  "encoding": "gzip"
+}

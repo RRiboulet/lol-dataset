@@ -16,7 +16,7 @@ import { test } from "node:test";
 
 import { buildDataset } from "../build.ts";
 import { readPayloads, sha256 } from "../cache.ts";
-import { DATASET_DIR, FIXTURE_RAW, REPO_ROOT } from "./helpers.ts";
+import { DATASET_DIR, FIXTURE_RAW, isPayloadBody, REPO_ROOT, sidecarPath } from "./helpers.ts";
 
 /** Modules below the cache. `record.ts` and `cli.ts` are above it / users of it. */
 const PIPELINE = [
@@ -99,7 +99,7 @@ async function scratchPayload(
 		if (value === undefined) delete record[key];
 		else record[key] = value;
 	}
-	await writeFile(bodyFile.replace(/\.json$/, ".meta.json"), `${JSON.stringify(record, null, 2)}\n`, "utf8");
+	await writeFile(sidecarPath(bodyFile), `${JSON.stringify(record, null, 2)}\n`, "utf8");
 	return { dir, bodyFile };
 }
 
@@ -183,7 +183,7 @@ test("every recorded payload carries provenance that matches its bytes", async (
 	}
 	for (const payload of payloads) {
 		const bodyPath = path.join(FIXTURE_RAW, payload.file);
-		const metaPath = bodyPath.replace(/\.json$/, ".meta.json");
+		const metaPath = sidecarPath(bodyPath);
 		const meta = JSON.parse(await readFile(metaPath, "utf8")) as {
 			url: string;
 			status: number;

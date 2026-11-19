@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=TeamRedirects&fields=_pageName%2CAllName%2COtherName&where=AllName+IN+%28%27Rainbow7%27%29&order_by=AllName+ASC&limit=20",
   "fetchedAt": "2026-11-18T09:55:30.730Z",
   "status": 200,
-  "bodySha256": "0f3e398879768c26637ecefee64d19bb4c3d92f6f33069f9a5b6d4b7c04dd97f"
+  "bodySha256": "0f3e398879768c26637ecefee64d19bb4c3d92f6f33069f9a5b6d4b7c04dd97f",
+  "encoding": "gzip"
 }

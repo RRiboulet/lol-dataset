@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardPlayers&fields=OverviewPage%2CName%2CLink%2CChampion%2CKills%2CDeaths%2CAssists%2CSummonerSpells%2CGold%2CCS%2CDamageToChampions%2CVisionScore%2CItems%2CRoleBoundItem%2CTrinket%2CPentakills%2CKeystoneMastery%2CKeystoneRune%2CPrimaryTree%2CSecondaryTree%2CRunes%2CTeamKills%2CTeamGold%2CTeam%2CTeamVs%2CTime%2CPlayerWin%2CDateTime_UTC%2CDST%2CTournament%2CRole%2CRole_Number%2CIngameRole%2CSide%2CUniqueLine%2CUniqueLineVs%2CUniqueRole%2CUniqueRoleVs%2CGameId%2CMatchId%2CGameTeamId%2CGameRoleId%2CGameRoleIdVs%2CStatsPage&where=OverviewPage+LIKE+%272023+Mid-Season+Invitational%25%27&order_by=GameId&limit=2000",
   "fetchedAt": "2026-11-17T10:20:02.179Z",
   "status": 200,
-  "bodySha256": "1c816d46e773185f80c493225b142b7102e85f6f07623e427b5737034205ee2d"
+  "bodySha256": "1c816d46e773185f80c493225b142b7102e85f6f07623e427b5737034205ee2d",
+  "encoding": "gzip"
 }
