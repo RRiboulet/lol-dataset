@@ -69,7 +69,7 @@ const MANIFEST_SCHEMA_DIR = path.join(import.meta.dirname, "..", "..", "data", "
 
 /** One cached payload the build read. `fetchedAt` is the only timestamp in the dataset. */
 export type ManifestPayload = {
-	/** Path relative to the cache root, e.g. `lol-fandom/cargoexport/Tournaments/<key>.json`. */
+	/** Path relative to the cache root, e.g. `lol-fandom/cargoexport/Tournaments/<key>.json.gz`. */
 	file: string;
 	/** The Cargo table whose directory the payload sits in; this is how the build routed it. */
 	table: string;

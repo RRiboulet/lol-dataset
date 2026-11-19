@@ -1,0 +1,149 @@
+{
+	"$comment": "Ticket 16: the identity registries, read whole. A single response is capped at 5000 rows (measured: a limit of 20000 returned exactly 5000), and offset paging over a non-unique order loses rows at page boundaries (measured: it dropped the Teams page GIGABYTE Marines, which the rename chain needs), so the tables are partitioned by AllName ranges instead: a range partition cannot skip a row. `limit` stays at the server's cap; a bucket that comes back at 5000 is split further.",
+	"queries": [
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName < 'C'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'C' AND AllName < 'F'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'F' AND AllName < 'I'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'I' AND AllName < 'L'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'L' AND AllName < 'O'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'O' AND AllName < 'R'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'R' AND AllName < 'U'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'U' AND AllName < 'X'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "TeamRedirects",
+			"fields": "_pageName,AllName,OtherName",
+			"where": "AllName >= 'X'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName < 'C'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'C' AND AllName < 'F'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'F' AND AllName < 'I'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'I' AND AllName < 'L'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'L' AND AllName < 'O'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'O' AND AllName < 'R'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'R' AND AllName < 'U'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'U' AND AllName < 'X'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		},
+		{
+			"endpoint": "cargoexport",
+			"tables": "PlayerRedirects",
+			"fields": "_pageName,AllName,OverviewPage,ID",
+			"where": "AllName >= 'X'",
+			"order_by": "AllName ASC",
+			"limit": 5000
+		}
+	]
+}

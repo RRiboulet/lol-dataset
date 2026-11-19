@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PicksAndBansS7&fields=GameId%2CMatchId%2CSwitchedSides%2CTeam1Role1%2CTeam1Role2%2CTeam1Role3%2CTeam1Role4%2CTeam1Role5%2CTeam2Role1%2CTeam2Role2%2CTeam2Role3%2CTeam2Role4%2CTeam2Role5%2CTeam1Ban1%2CTeam1Ban2%2CTeam1Ban3%2CTeam1Ban4%2CTeam1Ban5%2CTeam2Ban1%2CTeam2Ban2%2CTeam2Ban3%2CTeam2Ban4%2CTeam2Ban5%2CTeam1Pick1%2CTeam1Pick2%2CTeam1Pick3%2CTeam1Pick4%2CTeam1Pick5%2CTeam2Pick1%2CTeam2Pick2%2CTeam2Pick3%2CTeam2Pick4%2CTeam2Pick5%2CTeam1PicksByRoleOrder&where=GameId+LIKE+%27Esports+World+Cup+2024%25%27&order_by=GameId&limit=500",
   "fetchedAt": "2026-11-18T09:17:46.134Z",
   "status": 200,
-  "bodySha256": "1b731d639fa28d88412ea02995d29a7094ad01d67faaa2a28945f30d45524b7c"
+  "bodySha256": "1b731d639fa28d88412ea02995d29a7094ad01d67faaa2a28945f30d45524b7c",
+  "encoding": "gzip"
 }

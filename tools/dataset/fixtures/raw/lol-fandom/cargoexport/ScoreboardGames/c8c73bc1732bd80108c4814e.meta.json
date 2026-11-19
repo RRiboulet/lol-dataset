@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardGames&fields=OverviewPage%2CTournament%2CTeam1%2CTeam2%2CWinTeam%2CLossTeam%2CDateTime_UTC%2CTeam1Score%2CTeam2Score%2CWinner%2CGamelength%2CGamelength_Number%2CTeam1Players%2CTeam2Players%2CTeam1Bans%2CTeam2Bans%2CTeam1Picks%2CTeam2Picks%2CTeam1Dragons%2CTeam2Dragons%2CTeam1Clouds%2CTeam1Infernals%2CTeam1Mountains%2CTeam1Oceans%2CTeam1Hextechs%2CTeam1Chemtechs%2CTeam1Elders%2CTeam2Clouds%2CTeam2Infernals%2CTeam2Mountains%2CTeam2Oceans%2CTeam2Hextechs%2CTeam2Chemtechs%2CTeam2Elders%2CTeam1Barons%2CTeam2Barons%2CTeam1Towers%2CTeam2Towers%2CTeam1Gold%2CTeam2Gold%2CTeam1Kills%2CTeam2Kills%2CTeam1RiftHeralds%2CTeam2RiftHeralds%2CTeam1VoidGrubs%2CTeam2VoidGrubs%2CTeam1Atakhans%2CTeam2Atakhans%2CTeam1Inhibitors%2CTeam2Inhibitors%2CPatch%2CLegacyPatch%2CPatchSort%2CMatchHistory%2CGameId%2CMatchId%2CRiotPlatformGameId%2CRiotPlatformId%2CRiotGameId%2CRiotHash%2CRiotVersion&where=OverviewPage+LIKE+%272011+World+Cyber+Games%25%27&order_by=GameId&limit=500",
   "fetchedAt": "2026-11-17T10:12:57.827Z",
   "status": 200,
-  "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "encoding": "gzip"
 }

@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=OverviewPage+IN+%28%27G2+Esports%27%2C%27GAM+Esports%27%2C%27GE+Tigers%27%2C%27Gambit+Gaming%27%2C%27Gen.G%27%2C%27Golden+Guardians%27%2C%27Hanwha+Life+Esports%27%2C%27High+Hopes%27%2C%27IceLanD%27%2C%27Invictus+Gaming%27%2C%27Isurus%27%2C%27JD+Gaming%27%2C%27Jin+Air+Green+Wings+Falcons%27%2C%27Jin+Air+Green+Wings+Stealths%27%2C%27KT+Rolster%27%2C%27KT+Rolster+Arrows%27%2C%27KT+Rolster+Bullets%27%2C%27KaBuM%21+Esports%27%2C%27Karmine+Corp%27%2C%27Kx.Happy%27%2C%27LGD+Gaming%27%2C%27LMQ%27%2C%27LNG+Esports%27%2C%27LOUD%27%2C%27Lemondogs+Argentina%27%29&order_by=OverviewPage+ASC&limit=100",
   "fetchedAt": "2026-11-18T09:26:41.454Z",
   "status": 200,
-  "bodySha256": "19ab1337a54b62af084305a97aacc0edecf7d478dad1fad82a8299e89f63bb84"
+  "bodySha256": "19ab1337a54b62af084305a97aacc0edecf7d478dad1fad82a8299e89f63bb84",
+  "encoding": "gzip"
 }

@@ -19,6 +19,7 @@ import type { CargoEndpoint, CargoQuery } from "../cache.ts";
 import { cacheKey, payloadPaths, queryUrl, readPayload, writePayload } from "../cache.ts";
 import type { Transport, TransportResponse } from "../fetch.ts";
 import { FetchStoppedError, fetchQueries, parsePlan } from "../fetch.ts";
+import { isPayloadBody, writePayloadBodyFile } from "./helpers.ts";
 
 const START = Date.parse("2026-11-12T00:00:00Z");
 
@@ -102,7 +103,7 @@ async function cacheFiles(dir: string): Promise<{ bodies: string[]; metas: strin
 			if (entry.isDirectory()) await walk(full);
 			else if (entry.name.includes(".tmp-")) temps.push(full);
 			else if (entry.name.endsWith(".meta.json")) metas.push(full);
-			else if (entry.name.endsWith(".json")) bodies.push(full);
+			else if (isPayloadBody(entry.name)) bodies.push(full);
 		}
 	}
 	await walk(dir);
@@ -384,7 +385,7 @@ test("a body without its sidecar is incomplete, so the query is fetched again", 
 	const pending = query("half-written");
 	const paths = payloadPaths(dir, pending);
 	await mkdir(path.dirname(paths.body), { recursive: true });
-	await writeFile(paths.body, exportBody("old bytes"), "utf8");
+	await writePayloadBodyFile(paths.body, exportBody("old bytes"));
 
 	const h = harness(() => ({ status: 200, body: exportBody("new bytes") }));
 	const result = await fetchQueries({

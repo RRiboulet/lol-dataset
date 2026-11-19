@@ -2,7 +2,9 @@
 
 This dataset is an archive of international League of Legends esports — the League of
 Legends World Championship from 2011 onward and the international events around it
-(MSI, IEM, IPL, Rift Rivals, the Mid-Season Cup, the Esports World Cup, First Stand).
+(MSI, IEM, IPL, Rift Rivals, the Mid-Season Cup, the Esports World Cup, WCG, First Stand).
+It carries **54 events, 3 091 games, 2 068 series and 30 910 player rows** — every edition
+the committed selection rule admits.
 Regional leagues, national competitions, All-Star and showmatches are deliberately out
 of scope; the rule that decides is committed, and every rejection is recorded with its
 reason.
@@ -131,18 +133,18 @@ Voidgrubs did not exist until 2024; a 2015 game *is* marked partial because the 
 not record its inhibitors. Without the era table those two absences are indistinguishable
 and every historical row is equally "partial", which catches nothing.
 
-Eight eras are declared, five have games:
+Eight eras are declared, six have games:
 
 | Era | From | Games | Team stats | Draft | Player stats |
 |---|---|---|---|---|---|
-| `pre-herald` | 2011-01-01 | 91 | partial | partial | partial |
+| `pre-herald` | 2011-01-01 | 495 | partial | partial | partial |
 | `herald` | 2015-11-11 | 0 | — | — | — |
-| `elemental-drakes` | 2016-01-14 | 46 | partial | complete | partial |
+| `elemental-drakes` | 2016-01-14 | 1 325 | partial | partial | partial |
 | `hextech-chemtech` | 2021-11-17 | 0 | — | — | — |
-| `chemtech-withdrawn` | 2022-01-25 | 0 | — | — | — |
+| `chemtech-withdrawn` | 2022-01-25 | 204 | complete | complete | complete |
 | `chemtech-restored` | 2022-11-16 | 186 | complete | partial | complete |
-| `voidgrubs` | 2024-01-10 | 19 | complete | complete | complete |
-| `atakhan` | 2025-01-09 | 35 | complete | complete | complete |
+| `voidgrubs` | 2024-01-10 | 203 | partial | partial | complete |
+| `atakhan` | 2025-01-09 | 678 | partial | partial | complete |
 
 The declared-but-empty eras are real rows on purpose: an absent era row would be
 indistinguishable from "nobody looked", the same distinction `event-games.jsonl` makes
@@ -151,10 +153,12 @@ for events.
 What the coverage markers mean in practice, and what the data cannot answer:
 
 - **Team statistics before 2015** are kills, gold, towers, inhibitors, barons and a plain
-  dragon count — not a reduced version of the modern field set. 65 of the 377 games are
-  `partial` and 72 (all of IPL 5) are `unavailable`; a measure the source never recorded
-  is an absent CSV field/JSON key, never `0`.
-- **Draft order before 2017 does not exist** in the source. 94 games carry an `unordered`
+  dragon count — not a reduced version of the modern field set. Of 3 091 games, 1 749 are
+  `partial` and 279 are `unavailable` (Worlds 2011-2013, IEM 2012-2013 and IPL 5 state no
+  team statistics at all); a measure the source never recorded is an absent CSV field/JSON
+  key, never `0`. The modern eras are partial too: 106 of the 2024-2026 games lack a team
+  statistic the wiki did not fill in, which is what the marker is for.
+- **Draft order before 2017 does not exist** in the source. 641 games carry an `unordered`
   draft: their picks and bans are complete as *sets*, with `entry_index` preserving a
   stable order and `slot` deliberately empty, because an absent pick-ban order is not
   something to invent. Draft *coverage* is still `complete` where both sides have five
@@ -165,10 +169,13 @@ What the coverage markers mean in practice, and what the data cannot answer:
 - **Per-minute data does not exist here at all** — no timelines, no item timings, no
   skill order. Riot's ACS endpoints that hold fuller per-player payloads need a
   session cookie, which the fetch layer is forbidden to store.
-- **Some player measures are era-limited**: 720 player rows have no `gold` and 1 120 no
-  `vision`, all in the pre-2016 events where the wiki does not record them.
-- **Two identities are provisional** and flagged in `identity-unresolved.jsonl`. A count
-  of "distinct players" over IPL 5 therefore inherits that uncertainty.
+- **Some player measures are era-limited**: 1 750 player rows have no `gold` and 11 300 no
+  `vision`, nearly all in the pre-2017 events where the wiki does not record them.
+- **43 identities are provisional** and flagged in `identity-unresolved.jsonl`: 38 player
+  strings the registry cannot answer for, four team strings (league names the wiki used as
+  team names, and the 2026 MSI showmatch squads), and one genuinely ambiguous handle
+  (`Lee`, which three players have used). A count of "distinct players" over those rows
+  inherits that uncertainty; the report names every candidate.
 - **Eight IPL 5 games carry no series**, because the source's series rows contradict the
   games. Their `matchId` is absent, not empty-string, and `series-conflicts.jsonl`
   explains each one.
@@ -239,7 +246,7 @@ jq -c 'select(.id == "gm-fa39b8216e1f") | {id, eventId, matchId, dateTimeUtc, pa
 
 Ten `player-games.jsonl` rows name `gameId: "gm-fa39b8216e1f"` (five a side), and the
 game's draft is 10 picks and 10 bans with slots from the source. In the model the same
-game is `game_key` 369:
+game is one `game_key` (3 033 in this build):
 
 ```sql
 SELECT s.side, t.team_name, s.is_winner, s.kills, s.gold, s.match_key, s.patch_key
@@ -338,11 +345,13 @@ SELECT era, COUNT(*) AS games,
 FROM dim_game WHERE game_key <> 0 GROUP BY era ORDER BY MIN(date_time_utc);
 ```
 
-Returns the five eras with games: `pre-herald` 91 / 0 / 0 / 0, `elemental-drakes` 46 / 0
-/ 46 / 0, `chemtech-restored` 186 / 186 / 185 / 186, `voidgrubs` 19 / 19 / 19 / 19,
-`atakhan` 35 / 35 / 35 / 35. **This is the era caveat**: a modern-era row and a pre-2015
-row are not comparable on team statistics or player statistics, because the source never
-carried those fields for the early era. Filter on the marker — do not average across the
+Returns the six eras with games: `pre-herald` 495 / 0 / 0 / 0, `elemental-drakes`
+1 325 / 316 / 1 172 / 316, `chemtech-withdrawn` 204 / 204 / 204 / 204, `chemtech-restored`
+186 / 186 / 185 / 186, `voidgrubs` 203 / 125 / 201 / 203, `atakhan` 678 / 232 / 676 / 678.
+**This is the era caveat**: a modern-era row and a pre-2015 row are not comparable on team
+statistics or player statistics, because the source never carried those fields for the
+early era — and even the modern eras are only partly complete, so the denominators are the
+marker counts, not the game counts. Filter on the marker; do not average across the
 boundary and present it as a trend.
 
 ### 4. Which games have no series, and why?
@@ -377,19 +386,19 @@ bytes with a rebuild and name the first difference. A full clean rebuild also ne
 crawl cache, which is *not* committed:
 
 - `raw/` is the crawl cache and is gitignored. It is filled by
-  `node tools/dataset/cli.ts fetch --plan tools/dataset/plans/ticket-10-events.json --raw raw`
+  `node tools/dataset/cli.ts fetch --plan tools/dataset/plans/ticket-16-events.json --raw raw`
   — the plans the crawls used are committed under `tools/dataset/plans/`, so a reader can
   repeat one. A checkout without a cache can still rebuild everything committed here: the
-  79 recorded payloads the build read are committed under `tools/dataset/fixtures/raw/`
-  and pinned by `data/curated/manifest.json`, which is why
+  285 recorded payloads the build read are committed under `tools/dataset/fixtures/raw/`
+  (gzipped; 6 MB) and pinned by `data/curated/manifest.json`, which is why
   `build --raw tools/dataset/fixtures/raw` reproduces the dataset byte for byte.
 - A **fresh** crawl is the expensive path, and the documentation should not pretend
   otherwise. `tools/dataset/fetch.ts` spaces requests 75 s apart with ±15 s of jitter by
   default, skips anything already cached (the cache key is the query), and resumes from
   where it stopped rather than restarting; a rate-limit response backs off and doubles the
-  delay. The 79 payloads behind this dataset are therefore roughly an hour and three
-  quarters of wall-clock at the default spacing, in resumable sittings — not a quick
-  command, and deliberately not part of the test suite.
+  delay. The 285 payloads behind this dataset are therefore roughly six and a half hours of
+  wall-clock at the default spacing, in resumable sittings — not a quick command, and
+  deliberately not part of the test suite.
 - Nothing in the pipeline needs a credential: no token, cookie or session is stored, and
   the ACS endpoints that would need one are not part of the crawl.
 

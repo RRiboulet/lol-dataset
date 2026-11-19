@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "MatchSchedule",
+    "fields": "OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
+    "where": "OverviewPage LIKE '2025 Season World Championship%'",
+    "order_by": "MatchId",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=MatchSchedule&fields=OverviewPage%2CMatchId%2CTeam1%2CTeam2%2CTeam1Final%2CTeam2Final%2CWinner%2CTeam1Score%2CTeam2Score%2CTeam1Points%2CTeam2Points%2CBestOf%2CPhase%2CRound%2CTab%2CN_MatchInTab%2CFF%2CIsNullified%2CDateTime_UTC%2CHasTime%2CMatchDay%2CPatch%2CPatchPage&where=OverviewPage+LIKE+%272025+Season+World+Championship%25%27&order_by=MatchId&limit=500",
+  "fetchedAt": "2026-11-18T18:59:40.398Z",
+  "status": 200,
+  "bodySha256": "59a22aa8d8c08de47b34686377706d8dd9e4e1ad501cb04a89366312dd5ea0fa",
+  "encoding": "gzip"
+}

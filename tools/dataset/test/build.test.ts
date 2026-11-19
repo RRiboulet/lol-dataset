@@ -15,7 +15,7 @@ import { test } from "node:test";
 
 import { buildDataset, writeDataset } from "../build.ts";
 import { MANIFEST_FILE } from "../manifest.ts";
-import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
+import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW, isPayloadBody, readPayloadBodyFile, SCHEMA_DIR, writePayloadBodyFile } from "./helpers.ts";
 
 const run = promisify(execFile);
 
@@ -34,9 +34,9 @@ async function cacheDir(root: string, table: string): Promise<string> {
 async function payloadContaining(page: string): Promise<string> {
 	const source = path.join(FIXTURE_RAW, "lol-fandom", "cargoexport", "Tournaments");
 	for (const name of await readdir(source)) {
-		if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+		if (!isPayloadBody(name)) continue;
 		const file = path.join(source, name);
-		const rows = JSON.parse(await readFile(file, "utf8")) as { OverviewPage?: string }[];
+		const rows = JSON.parse(await readPayloadBodyFile(file)) as { OverviewPage?: string }[];
 		if (rows.some((row) => row.OverviewPage === page)) return file;
 	}
 	throw new Error(`no recorded payload carries ${page}`);
@@ -134,9 +134,10 @@ test("the same recorded bytes under two cache keys are one event, not two", asyn
 	const dir = await mkdtemp(path.join(tmpdir(), "dataset-dup-"));
 	try {
 		const source = await payloadContaining("2023 Season World Championship");
+		const stored = await readPayloadBodyFile(source);
 		const cache = await cacheDir(dir, "Tournaments");
-		await cp(source, path.join(cache, "copy-a.json"));
-		await cp(source, path.join(cache, "copy-b.json"));
+		await writePayloadBodyFile(path.join(cache, "copy-a.json"), stored);
+		await writePayloadBodyFile(path.join(cache, "copy-b.json"), stored);
 		const result = await buildDataset({ rawDir: dir });
 		const baseline = await fixtureBuild();
 		// Only the payload under this temp dir is seen, so this proves dedupe by page
@@ -154,13 +155,13 @@ test("two payloads that disagree about the same page fail the build, naming both
 	const dir = await mkdtemp(path.join(tmpdir(), "dataset-conflict-"));
 	try {
 		const source = await payloadContaining("2023 Season World Championship");
-		const body = JSON.parse(await readFile(source, "utf8")) as { OverviewPage: string; Name: string }[];
+		const body = JSON.parse(await readPayloadBodyFile(source)) as { OverviewPage: string; Name: string }[];
 		const worlds = body.find((row) => row.OverviewPage === "2023 Season World Championship");
 		assert.ok(worlds);
 		const cache = await cacheDir(dir, "Tournaments");
-		await cp(source, path.join(cache, "a.json"));
+		await writePayloadBodyFile(path.join(cache, "a.json"), JSON.stringify(body));
 		worlds.Name = "A Different Name For The Same Page";
-		await writeFile(path.join(cache, "b.json"), JSON.stringify(body), "utf8");
+		await writePayloadBodyFile(path.join(cache, "b.json"), JSON.stringify(body));
 		await assert.rejects(buildDataset({ rawDir: dir }), /2023 Season World Championship: .* disagree about the same page/);
 	} finally {
 		await rm(dir, { recursive: true, force: true });
@@ -223,12 +224,12 @@ test("an HTML entity in a source name is decoded on the record, not on the sourc
 	const dir = await mkdtemp(path.join(tmpdir(), "dataset-entity-"));
 	try {
 		const source = await payloadContaining("2023 Season World Championship");
-		const rows = JSON.parse(await readFile(source, "utf8")) as { OverviewPage?: string; Name?: string }[];
+		const rows = JSON.parse(await readPayloadBodyFile(source)) as { OverviewPage?: string; Name?: string }[];
 		const worlds = rows.find((row) => row.OverviewPage === "2023 Season World Championship");
 		assert.ok(worlds);
 		worlds.Name = "Worlds 2023 &amp; Friends";
 		const target = await cacheDir(dir, "Tournaments");
-		await writeFile(path.join(target, "tournaments.json"), JSON.stringify(rows), "utf8");
+		await writePayloadBodyFile(path.join(target, "tournaments.json"), JSON.stringify(rows));
 
 		const built = await buildDataset({ rawDir: dir });
 		const after = built.events.find((event) => event.overviewPage === "2023 Season World Championship");

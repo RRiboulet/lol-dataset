@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=MatchSchedule&fields=OverviewPage%2CMatchId%2CTeam1%2CTeam2%2CTeam1Final%2CTeam2Final%2CWinner%2CTeam1Score%2CTeam2Score%2CTeam1Points%2CTeam2Points%2CBestOf%2CPhase%2CRound%2CTab%2CN_MatchInTab%2CFF%2CIsNullified%2CDateTime_UTC%2CHasTime%2CMatchDay%2CPatch%2CPatchPage&where=OverviewPage+LIKE+%27Rift+Rivals+2017%2FNA-EU%25%27&order_by=MatchId&limit=500",
   "fetchedAt": "2026-11-18T09:05:38.800Z",
   "status": 200,
-  "bodySha256": "2812dc69e3a608fca135b9bf13adac4570d126a07f99f946c751f7d9ca4b98b4"
+  "bodySha256": "2812dc69e3a608fca135b9bf13adac4570d126a07f99f946c751f7d9ca4b98b4",
+  "encoding": "gzip"
 }

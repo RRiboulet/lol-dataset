@@ -90,6 +90,29 @@ function describe(result: BuildResult): string {
 			`blind-pick rule ${JSON.stringify(rule.overviewPage)} ${JSON.stringify(rule.gameIdPattern)}: ${rule.games} game(s)`,
 		);
 	}
+	if (identity.danglingRenames.length > 0) {
+		// A rename edge into a page the registry does not carry is the source's gap, not the
+		// crawl's: reported so a truncated registry (which looks the same from here) cannot
+		// pass for one.
+		lines.push(
+			`  ${identity.danglingRenames.length} rename edge(s) name a page no registry carries — the old page keeps its identity ` +
+				`(${identity.danglingRenames.slice(0, 3).map((edge) => `${edge.page} -> ${edge.target}`).join("; ")}${identity.danglingRenames.length > 3 ? "; …" : ""})`,
+		);
+	}
+	if (identity.unregisteredRedirects.length > 0) {
+		lines.push(
+			`  ${identity.unregisteredRedirects.length} TeamRedirects row(s) name a page the club registry does not carry ` +
+				"(national teams and all-star squads) — counted, never turned into an entity with no page)",
+		);
+	}
+	for (const rule of scoreboards.contradictedDraftMatches) {
+		// Each declared contradicted ban is reported even when it applied to no game: a
+		// declaration that stopped covering its row is a typo the next crawl must show, not hide.
+		lines.push(
+			`contradicted-draft rule (drop ${rule.drop}) ${JSON.stringify(rule.overviewPage)} ` +
+				`${JSON.stringify(rule.champion)}: ${rule.games} game(s)`,
+		);
+	}
 	// The per-era aggregate is a file of its own, so the summary says what it will show
 	// rather than leaving the reader to open it for a one-line answer.
 	const erasWithGames = coverage.eras.filter((record) => record.games > 0);

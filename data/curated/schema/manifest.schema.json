@@ -5,7 +5,12 @@
 	"description": "The shape of data/curated/manifest.json, the build's account of the cached bytes it read and the entity files it emitted (spec D2, D7, R8, R9). This file is the contract: `readManifest` validates a committed manifest against it before comparing anything, and the build validates the manifest it is about to write. `entities` must name every emitted file once, in the build's OUTPUTS order; `payloads` must name every cached payload the build read once, sorted by cache-relative path. `entityDigest` is recomputed from `entities` rather than trusted. `fetchedAt` is the only timestamp in the dataset, and is absent for a body-only payload with no sidecar.",
 	"type": "object",
 	"additionalProperties": false,
-	"required": ["format", "entityDigest", "entities", "payloads"],
+	"required": [
+		"format",
+		"entityDigest",
+		"entities",
+		"payloads"
+	],
 	"properties": {
 		"format": {
 			"type": "string",
@@ -23,7 +28,11 @@
 			"items": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["file", "records", "sha256"],
+				"required": [
+					"file",
+					"records",
+					"sha256"
+				],
 				"properties": {
 					"file": {
 						"type": "string",
@@ -49,12 +58,18 @@
 			"items": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["file", "table", "endpoint", "bodySha256"],
+				"required": [
+					"file",
+					"table",
+					"endpoint",
+					"bodySha256"
+				],
 				"properties": {
 					"file": {
 						"type": "string",
 						"minLength": 1,
-						"description": "Path relative to the cache root, e.g. `lol-fandom/cargoexport/Tournaments/<key>.json`."
+						"description": "Path relative to the cache root, e.g. `lol-fandom/cargoexport/Tournaments/<key>.json.gz`. Bodies are gzip-compressed; `bodySha256` is the hash of the uncompressed body (the source's bytes), so the pin describes the response rather than this repository's storage choice.",
+						"pattern": "\\.json(\\.gz)?$"
 					},
 					"table": {
 						"type": "string",
@@ -63,7 +78,10 @@
 					},
 					"endpoint": {
 						"type": "string",
-						"enum": ["cargoquery", "cargoexport"],
+						"enum": [
+							"cargoquery",
+							"cargoexport"
+						],
 						"description": "The Cargo endpoint the payload came from."
 					},
 					"bodySha256": {
@@ -85,12 +103,19 @@
 					"query": {
 						"type": "object",
 						"additionalProperties": false,
-						"required": ["endpoint", "tables", "fields"],
+						"required": [
+							"endpoint",
+							"tables",
+							"fields"
+						],
 						"description": "The query the sidecar records: what produced these bytes. Absent for a body-only payload.",
 						"properties": {
 							"endpoint": {
 								"type": "string",
-								"enum": ["cargoquery", "cargoexport"]
+								"enum": [
+									"cargoquery",
+									"cargoexport"
+								]
 							},
 							"tables": {
 								"type": "string",

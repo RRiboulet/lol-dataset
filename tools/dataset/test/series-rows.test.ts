@@ -142,7 +142,7 @@ test("the legacy name resolves through the declared alias, and both source strin
 	assert.equal(declared.entityId, gameName.id);
 	assert.ok(declared.evidence.includes("declared"), "the declaration is the reason it resolves");
 	assert.ok(declared.evidence.includes("observed"), "and the corpus used it");
-	assert.deepEqual([declared.firstSeen, declared.lastSeen], ["2012-11-29", "2012-12-02"], "the window the series rows used it");
+	assert.deepEqual([declared.firstSeen, declared.lastSeen], ["2012-10-04", "2012-12-02"], "the window the series rows used it");
 
 	// Spec R7: the source string is preserved beside the canonical id on every row, so the
 	// game still says what the game said and the series still says what the series said.
@@ -346,7 +346,7 @@ test("the build's summary names both counts, so a crawl cannot absorb them silen
 	assert.match(stdout, /6 series row\(s\) every game naming them contradicts — not emitted/);
 	assert.match(stdout, /14 series conflict row\(s\) committed: 8 detached game\(s\), 6 contradicted series/);
 	assert.match(stdout, /committed data matches a rebuild/);
-	assert.match(stdout, /377 game\(s\), 230 match\(es\)/);
+	assert.match(stdout, /3091 game\(s\), 2068 match\(es\)/);
 });
 
 test("no disagreement is left unclassified: the class decides the handling", async () => {

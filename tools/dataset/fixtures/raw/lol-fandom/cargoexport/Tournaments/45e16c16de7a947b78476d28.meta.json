@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Tournaments",
+    "fields": "Name,OverviewPage,DateStart,League,Region",
+    "where": "Region='International'",
+    "order_by": "OverviewPage ASC",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Tournaments&fields=Name%2COverviewPage%2CDateStart%2CLeague%2CRegion&where=Region%3D%27International%27&order_by=OverviewPage+ASC&limit=500",
+  "fetchedAt": "2026-11-18T15:01:27.642Z",
+  "status": 200,
+  "bodySha256": "d22b742ab3d595d57de958de5706a7d621d95cfac7cab9441a4ec307356cedf0",
+  "encoding": "gzip"
+}

@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=TeamRedirects&fields=_pageName%2CAllName%2COtherName&where=AllName+IN+%28%27STAR+%28Chinese+Team%29%27%2C%27Samsung+Blue%27%2C%27Samsung+Ozone%27%2C%27Singapore+Sentinels%27%2C%27Sirius+Vega%27%2C%27TSM%27%2C%27Taipei+Assassins%27%2C%27Taipei+Snipers%27%2C%27Team+ANG%27%2C%27Team+BDS%27%2C%27Team+Curse%27%2C%27Team+Curse+Europe%27%2C%27Team+FeaR%27%2C%27Team+Immunity%27%2C%27Team+Livemore%27%2C%27Team+WE%27%2C%27Team+Whales%27%2C%27The+Bandits+Prime%27%2C%27The+RED%27%2C%27Top+Esports%27%2C%27Unicorns+of+Love%27%2C%27VTG+Raon%27%2C%27Vici+Gaming%27%2C%27Weibo+Gaming%27%2C%27Wings+of+Aurora%27%29&order_by=AllName+ASC&limit=300",
   "fetchedAt": "2026-11-18T09:33:14.631Z",
   "status": 200,
-  "bodySha256": "3b5338fad9a285facdd1a466ffcf77dfb6cb389ef04b761a8eaae430bb36295b"
+  "bodySha256": "3b5338fad9a285facdd1a466ffcf77dfb6cb389ef04b761a8eaae430bb36295b",
+  "encoding": "gzip"
 }

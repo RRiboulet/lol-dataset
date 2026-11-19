@@ -1,7 +1,7 @@
 # 16: The event set is computed, not hand-listed
 
 **Blocked by:** 10 (done), 14, 15
-**Status:** in progress
+**Status:** done
 
 ## What to build
 
@@ -50,22 +50,22 @@ anyway — a reason to match on patterns, not names.
 
 ## Acceptance criteria
 
-- [ ] Every candidate the committed cache carries has exactly one decision row in
+- [x] Every candidate the committed cache carries has exactly one decision row in
       `event-selection.jsonl` — the report is complete over the universe, not over a
       hand-picked subset.
-- [ ] Every admitted event appears in `event-games.jsonl`, and its `games` count equals the
+- [x] Every admitted event appears in `event-games.jsonl`, and its `games` count equals the
       rows `games.jsonl` carries for it. An event the source has no scoreboard for is
       `empty`/`recorded` with zero games, named as evidence, never silently absent.
-- [ ] The crawl plan is generated (`node tools/dataset/cli.ts plan`), and the queries the
+- [x] The crawl plan is generated (`node tools/dataset/cli.ts plan`), and the queries the
       crawl ran are the queries in the committed plan.
-- [ ] The identity registries resolve every team, player and champion the new games name; a
+- [x] The identity registries resolve every team, player and champion the new games name; a
       string no registry carries is reported in `identity-unresolved.jsonl`, not dropped.
-- [ ] Both layers rebuild byte-identically, the invariant gate passes, and the coverage
+- [x] Both layers rebuild byte-identically, the invariant gate passes, and the coverage
       reports (per event and per era) reconcile with the new games.
-- [ ] The documentation states the new counts, every event is named in
+- [x] The documentation states the new counts, every event is named in
       `licenses/NOTICE.md` with its committed counts, and the era/coverage table in the
       guide is current.
-- [ ] The suite fails if the universe and the decisions disagree again (a gate, not prose).
+- [x] The suite fails if the universe and the decisions disagree again (a gate, not prose).
 
 ## Validation
 
@@ -108,3 +108,33 @@ new event needs a new identity pass. This ticket regenerates that pass from the 
 new rows name. Fetching the registries wholesale would remove the dependency entirely, at
 the cost of several pages of redirects no game uses; that is a later decision, recorded
 here rather than taken quietly.
+
+## What the crawl and the rebuild changed, beyond the data
+
+The full corpus did not just add rows; it exposed six things the ten-event sample could not,
+and each is now a declared, checked rule rather than a special case (the changelog entry
+carries the measurements):
+
+- `rules/game-formats.json` gained `contradictedDrafts`: a champion banned and picked by the
+  same side (twice) or picked by both sides in a game that is not blind pick (once). The build
+  still refuses an undeclared contradiction, and a declaration that stops matching is a
+  failure, not silence.
+- The rename graph is read as **components**, because the source merges as well as renames
+  (`AXIZ Academy` + `Crest Gaming Act Academy` → `AXIZ CREST Academy`); a chain model either
+  refused that or kept whichever payload was read last.
+- A rename edge into a page no registry carries is skipped and **counted** (10 of them), and
+  a `TeamRedirects` row naming a page the club registry lacks is counted too (166) — so a
+  truncated registry, which looks the same from here, cannot pass for a source gap unnoticed.
+- An **ambiguous** string (a handle three players used) mints one provisional entity and
+  reports its candidates, instead of failing the build on which payloads happen to be cached.
+- `TeamRedirects`/`PlayerRedirects` are read **whole**, in range partitions: a single response
+  is capped at 5 000 rows, and offset paging over a non-unique order loses rows at page
+  boundaries — measured, it dropped the `Teams` page a rename chain needed.
+- A champion stated as `0` in an era where it did not exist (2022 MSI, the withdrawn Chemtech
+  Drake) is the wiki's zero-fill: dropped, not emitted as a claim that the drake could be
+  taken. A non-zero value still stops the build.
+
+Two of the six are behaviour the tests already covered for small corpora and the full crawl
+contradicted; the rest are new cases. The payloads are stored gzipped (ticket 17) because
+3 091 games of pretty-printed JSON were 95 MB, which is what made this change affordable to
+commit at all.

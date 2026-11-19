@@ -6,9 +6,10 @@
 // here reads local files.
 
 import { readFile, writeFile } from "node:fs/promises";
+import { gunzipSync, gzipSync } from "node:zlib";
 import * as path from "node:path";
 
-import { readPayloads, sha256 } from "../cache.ts";
+import { readPayloads, sha256, sidecarPath } from "../cache.ts";
 import { normalizeSources } from "../normalize.ts";
 import type { SourceEvent } from "../normalize.ts";
 import type { EventSelectionRule, RuleDecision } from "../rule.ts";
@@ -73,8 +74,12 @@ export async function writeTempRule(dir: string, rule: unknown, name = "event-se
  * that never had a sidecar stays body-only, which is also legal.
  */
 export async function savePayloadBody(file: string, body: string): Promise<void> {
-	await writeFile(file, body, "utf8");
-	const metaFile = file.replace(/\.json$/, ".meta.json");
+	// A committed body is gzipped (ticket 17); a scratch body a test writes may be plain.
+	// The helper follows whichever form the path names, so editing a payload keeps the
+	// storage it already had.
+	if (file.endsWith(".json.gz")) await writeFile(file, gzipSync(Buffer.from(body, "utf8"), { level: 9 }));
+	else await writeFile(file, body, "utf8");
+	const metaFile = sidecarPath(file);
 	let text: string;
 	try {
 		text = await readFile(metaFile, "utf8");
@@ -90,3 +95,22 @@ export async function savePayloadBody(file: string, body: string): Promise<void>
 	meta.bodySha256 = sha256(body);
 	await writeFile(metaFile, `${JSON.stringify(meta, null, 2)}\n`, "utf8");
 }
+
+/** Is this directory-entry name a payload body (either storage form), not a sidecar? */
+export function isPayloadBody(name: string): boolean {
+	return (name.endsWith(".json.gz") || name.endsWith(".json")) && !name.endsWith(".meta.json");
+}
+
+/** A stored payload body's text, decompressed whichever form it is stored in. */
+export async function readPayloadBodyFile(file: string): Promise<string> {
+	const bytes = await readFile(file);
+	return file.endsWith(".json.gz") ? gunzipSync(bytes).toString("utf8") : bytes.toString("utf8");
+}
+
+/** Write a payload body in the storage form its path names: `.json.gz` is compressed. */
+export async function writePayloadBodyFile(file: string, body: string): Promise<void> {
+	if (file.endsWith(".json.gz")) await writeFile(file, gzipSync(Buffer.from(body, "utf8"), { level: 9 }));
+	else await writeFile(file, body, "utf8");
+}
+
+export { sidecarPath } from "../cache.ts";

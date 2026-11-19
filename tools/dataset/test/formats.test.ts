@@ -20,7 +20,7 @@ import type { BuildResult } from "../build.ts";
 import { buildDataset } from "../build.ts";
 import { parseGameFormats } from "../formats.ts";
 import { findInvariantViolations } from "../invariants.ts";
-import { FIXTURE_RAW, REPO_ROOT, savePayloadBody } from "./helpers.ts";
+import { FIXTURE_RAW, REPO_ROOT, isPayloadBody, readPayloadBodyFile, savePayloadBody } from "./helpers.ts";
 
 const MSC = "2020 Mid-Season Cup";
 const RULES = path.join(import.meta.dirname, "..", "rules", "game-formats.json");
@@ -48,7 +48,7 @@ async function payloadBodies(raw: string, table: string): Promise<string[]> {
 	const { readdir } = await import("node:fs/promises");
 	const dir = path.join(raw, "lol-fandom", "cargoexport", table);
 	return (await readdir(dir))
-		.filter((name) => name.endsWith(".json") && !name.endsWith(".meta.json"))
+		.filter(isPayloadBody)
 		.sort()
 		.map((name) => path.join(dir, name));
 }
@@ -101,7 +101,7 @@ test("a duplicate champion across sides is still refused in a draft game", async
 		const raw = path.join(dir, "raw");
 		await cp(FIXTURE_RAW, raw, { recursive: true });
 		for (const file of await payloadBodies(raw, "PicksAndBansS7")) {
-			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const rows = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
 			const row = rows.find((candidate) => candidate.GameId === `${MSC}_Finals_1_2`);
 			if (row === undefined) continue;
 			row.Team2Pick1 = row.Team1Pick1;
@@ -122,6 +122,7 @@ test("a declaration is checked against the rows it covers", async () => {
 	await assert.rejects(
 		buildWithFormats({
 			version: 1,
+			contradictedDrafts: committed.contradictedDrafts,
 			blindPick: [...committed.blindPick, { overviewPage: "2025 First Stand", gameIdPattern: "_NoSuchGame$", cites: "test: a typo" }],
 		}),
 		/matches none of its/,
@@ -130,6 +131,7 @@ test("a declaration is checked against the rows it covers", async () => {
 	await assert.rejects(
 		buildWithFormats({
 			version: 1,
+			contradictedDrafts: committed.contradictedDrafts,
 			blindPick: [...committed.blindPick, { overviewPage: MSC, gameIdPattern: "_Finals_1_2$", cites: "test: a game with a draft" }],
 		}),
 		/declares this game blind pick, but a PicksAndBansS7 row exists/,
@@ -138,16 +140,22 @@ test("a declaration is checked against the rows it covers", async () => {
 	// error: a narrow fixture set has to be able to share one rules file.
 	const inert = await buildWithFormats({
 		version: 1,
+		contradictedDrafts: committed.contradictedDrafts,
 		blindPick: [...committed.blindPick, { overviewPage: "2011 World Cyber Games", gameIdPattern: "^2011", cites: "test" }],
 	});
 	assert.equal(inert.formats.blindPick.length, 2, "the declaration is accepted and simply matches nothing here");
 });
 
 /** The committed declarations, for a build that adds one of its own. */
-async function committedFormats(): Promise<{ version: number; blindPick: { overviewPage: string; gameIdPattern: string; cites: string }[] }> {
+async function committedFormats(): Promise<{
+	version: number;
+	blindPick: { overviewPage: string; gameIdPattern: string; cites: string }[];
+	contradictedDrafts: { overviewPage: string; gameIdPattern: string; champion: string; drop: string; cites: string }[];
+}> {
 	return JSON.parse(await readFile(RULES, "utf8")) as {
 		version: number;
 		blindPick: { overviewPage: string; gameIdPattern: string; cites: string }[];
+		contradictedDrafts: { overviewPage: string; gameIdPattern: string; champion: string; drop: string; cites: string }[];
 	};
 }
 
@@ -167,6 +175,7 @@ test("the build reports how many games each blind-pick rule matched, zero includ
 	const formats = await committedFormats();
 	const inert = await buildWithFormats({
 		version: 1,
+		contradictedDrafts: formats.contradictedDrafts,
 		blindPick: [...formats.blindPick, { overviewPage: "2011 World Cyber Games", gameIdPattern: "^2011", cites: "test: inert" }],
 	});
 	assert.deepEqual(
@@ -187,6 +196,7 @@ test("the CLI summary prints every rule's match count, including zero", async ()
 			file,
 			JSON.stringify({
 				version: 1,
+				contradictedDrafts: formats.contradictedDrafts,
 				blindPick: [...formats.blindPick, { overviewPage: "2011 World Cyber Games", gameIdPattern: "^2011", cites: "test: inert" }],
 			}),
 			"utf8",
