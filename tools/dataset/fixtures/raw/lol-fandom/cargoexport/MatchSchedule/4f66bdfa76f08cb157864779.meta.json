@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=MatchSchedule&fields=OverviewPage%2CMatchId%2CTeam1%2CTeam2%2CTeam1Final%2CTeam2Final%2CWinner%2CTeam1Score%2CTeam2Score%2CTeam1Points%2CTeam2Points%2CBestOf%2CPhase%2CRound%2CTab%2CN_MatchInTab%2CFF%2CIsNullified%2CDateTime_UTC%2CHasTime%2CMatchDay%2CPatch%2CPatchPage&where=OverviewPage+IN+%28%272023+Season+World+Championship%27%2C%272023+Season+World+Championship%2FMain+Event%27%2C%272023+Season+World+Championship%2FPlay-In%27%29&order_by=DateTime_UTC&limit=500",
   "fetchedAt": "2026-11-15T20:43:21.220Z",
   "status": 200,
-  "bodySha256": "ae1f2b34449ad2f99d9a76f0e7666a7c8ce6eb1f4d9131f07070d7f24e74bbdf"
+  "bodySha256": "ae1f2b34449ad2f99d9a76f0e7666a7c8ce6eb1f4d9131f07070d7f24e74bbdf",
+  "encoding": "gzip"
 }

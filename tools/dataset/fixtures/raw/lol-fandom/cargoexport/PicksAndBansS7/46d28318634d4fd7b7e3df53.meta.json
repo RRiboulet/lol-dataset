@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PicksAndBansS7",
+    "fields": "GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+    "where": "GameId LIKE 'Rift Rivals 2017/LCK-LPL-LMS%'",
+    "order_by": "GameId",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PicksAndBansS7&fields=GameId%2CMatchId%2CSwitchedSides%2CTeam1Role1%2CTeam1Role2%2CTeam1Role3%2CTeam1Role4%2CTeam1Role5%2CTeam2Role1%2CTeam2Role2%2CTeam2Role3%2CTeam2Role4%2CTeam2Role5%2CTeam1Ban1%2CTeam1Ban2%2CTeam1Ban3%2CTeam1Ban4%2CTeam1Ban5%2CTeam2Ban1%2CTeam2Ban2%2CTeam2Ban3%2CTeam2Ban4%2CTeam2Ban5%2CTeam1Pick1%2CTeam1Pick2%2CTeam1Pick3%2CTeam1Pick4%2CTeam1Pick5%2CTeam2Pick1%2CTeam2Pick2%2CTeam2Pick3%2CTeam2Pick4%2CTeam2Pick5%2CTeam1PicksByRoleOrder&where=GameId+LIKE+%27Rift+Rivals+2017%2FLCK-LPL-LMS%25%27&order_by=GameId&limit=500",
+  "fetchedAt": "2026-11-18T16:40:35.215Z",
+  "status": 200,
+  "bodySha256": "84e566c86473583190942a285698bc355421e618f070605df86dc6642d7810b8",
+  "encoding": "gzip"
+}

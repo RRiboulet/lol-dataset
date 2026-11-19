@@ -24,6 +24,7 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { hostname, tmpdir } from "node:os";
 import * as path from "node:path";
@@ -33,11 +34,11 @@ import { test } from "node:test";
 import type { BuildResult, OutputFile } from "../build.ts";
 import { buildDataset, OUTPUTS } from "../build.ts";
 import type { CargoQuery, CachedPayload } from "../cache.ts";
-import { readPayloads, sha256, writePayload } from "../cache.ts";
+import { readPayloads, sha256, sidecarPath, writePayload } from "../cache.ts";
 import { compareManifest, entityDigestOf, MANIFEST_FILE, MANIFEST_SCHEMA_FILE, TABLE_CONSUMERS, assertTableConsumersMatchNormalizers } from "../manifest.ts";
 import { displayName, KNOWN_TABLES } from "../normalize.ts";
 import { validateAgainst } from "../validate.ts";
-import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW, SCHEMA_DIR } from "./helpers.ts";
+import { CURATED_DIR, DATASET_DIR, FIXTURE_RAW, readPayloadBodyFile, SCHEMA_DIR } from "./helpers.ts";
 
 const run = promisify(execFile);
 
@@ -333,7 +334,7 @@ test("re-fetching the same bytes with a new fetch time moves the manifest and no
 	try {
 		for (const payload of await readPayloads(dir)) {
 			if (payload.meta === undefined) continue;
-			const metaFile = path.join(dir, payload.file).replace(/\.json$/, ".meta.json");
+			const metaFile = sidecarPath(path.join(dir, payload.file));
 			const meta = JSON.parse(await readFile(metaFile, "utf8")) as Record<string, unknown>;
 			meta.fetchedAt = "2030-01-01T00:00:00.000Z";
 			await writeFile(metaFile, `${JSON.stringify(meta, null, 2)}\n`, "utf8");
@@ -367,7 +368,10 @@ test("one changed byte in one payload is detected, naming the payload, the table
 		assert.ok(row);
 		row.Name = "Tampered (ticket 07)";
 		// The sidecar is deliberately left alone: this is the tamper case, not a re-record.
-		await writeFile(path.join(dir, victim.file), JSON.stringify(body), "utf8");
+		// The body is recompressed because a stored body is gzipped (ticket 17); the stale
+		// hash in the sidecar is what the build must notice.
+		const tampered = JSON.stringify(body);
+		await writeFile(path.join(dir, victim.file), gzipSync(Buffer.from(tampered, "utf8"), { level: 9 }));
 		await assert.rejects(buildDataset({ rawDir: dir }), (error: Error) => {
 			assert.match(error.message, new RegExp(`${victim.file.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}: the bytes on disk no longer match`));
 			assert.match(error.message, /bodySha256/);
@@ -493,7 +497,7 @@ test("`--check` rejects a duplicated payload entry even when its last copy is va
 		payloads.push(valid);
 	});
 	assert.equal(duplicated.code, 1);
-	assert.match(duplicated.output, /lists .*\.json more than once among payloads/, duplicated.output);
+	assert.match(duplicated.output, /lists .*\.json(?:\.gz)? more than once among payloads/, duplicated.output);
 });
 
 test("`--check` refuses a manifest field or shape the schema does not allow", async () => {
@@ -727,7 +731,7 @@ test("a second fetch of identical rows under a different fields= order is a seco
 		assert.equal(pins.length, 2, "both payloads the build read must be listed");
 		assert.notEqual(pins[0].bodySha256, pins[1].bodySha256, "the two variants are different bytes, and the manifest must say so");
 		assert.deepEqual(
-			JSON.parse(await readFile(path.join(dir, refetchedFile), "utf8")),
+			JSON.parse(await readPayloadBodyFile(path.join(dir, refetchedFile))),
 			JSON.parse(iem.body),
 			"the re-fetch is the same rows, so only the bytes differ",
 		);

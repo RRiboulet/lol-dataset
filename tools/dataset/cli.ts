@@ -7,6 +7,7 @@
 //   node tools/dataset/cli.ts model --check             # fail if the committed model drifted
 //   node tools/dataset/cli.ts dictionary                # schema/ + curated/ -> the curated data dictionary
 //   node tools/dataset/cli.ts dictionary --check        # fail if the committed dictionary drifted
+//   node tools/dataset/cli.ts plan --raw raw --plan-out plan.json   # the crawl plan the rule implies
 // `model` reads `data/curated/` and writes `data/model/` by default; `--curated` and
 // `--out` point it at another tree. `dictionary` renders
 // `docs/dataset/curated-data-dictionary.md` from the schemas and the record counts;
@@ -87,6 +88,29 @@ function describe(result: BuildResult): string {
 		// rather than only in the `cites` prose no gate reads (ticket 10).
 		lines.push(
 			`blind-pick rule ${JSON.stringify(rule.overviewPage)} ${JSON.stringify(rule.gameIdPattern)}: ${rule.games} game(s)`,
+		);
+	}
+	if (identity.danglingRenames.length > 0) {
+		// A rename edge into a page the registry does not carry is the source's gap, not the
+		// crawl's: reported so a truncated registry (which looks the same from here) cannot
+		// pass for one.
+		lines.push(
+			`  ${identity.danglingRenames.length} rename edge(s) name a page no registry carries — the old page keeps its identity ` +
+				`(${identity.danglingRenames.slice(0, 3).map((edge) => `${edge.page} -> ${edge.target}`).join("; ")}${identity.danglingRenames.length > 3 ? "; …" : ""})`,
+		);
+	}
+	if (identity.unregisteredRedirects.length > 0) {
+		lines.push(
+			`  ${identity.unregisteredRedirects.length} TeamRedirects row(s) name a page the club registry does not carry ` +
+				"(national teams and all-star squads) — counted, never turned into an entity with no page)",
+		);
+	}
+	for (const rule of scoreboards.contradictedDraftMatches) {
+		// Each declared contradicted ban is reported even when it applied to no game: a
+		// declaration that stopped covering its row is a typo the next crawl must show, not hide.
+		lines.push(
+			`contradicted-draft rule (drop ${rule.drop}) ${JSON.stringify(rule.overviewPage)} ` +
+				`${JSON.stringify(rule.champion)}: ${rule.games} game(s)`,
 		);
 	}
 	// The per-era aggregate is a file of its own, so the summary says what it will show
@@ -231,6 +255,7 @@ async function main(): Promise<void> {
 			out: { type: "string" },
 			curated: { type: "string" },
 			dictionary: { type: "string" },
+			"plan-out": { type: "string" },
 			rule: { type: "string" },
 			aliases: { type: "string" },
 			eras: { type: "string" },
@@ -281,6 +306,32 @@ async function main(): Promise<void> {
 		});
 		console.log(`${result.fetched.length} fetched, ${result.skipped.length} already cached, ${result.requests} request(s)`);
 		console.log(`cache: ${rawDir}`);
+		return;
+	}
+
+	if (command === "plan") {
+		// The crawl plan is computed from the committed rule over every candidate the cache
+		// carries, not hand-listed (spec R1, ticket 16). A hand-written `OverviewPage IN (…)`
+		// list is how an admitted edition went missing while every gate stayed green: the rule
+		// only ever decided over the pages it was given.
+		const { admittedEvents, decideCandidates, planEventCrawl } = await import("./plan.ts");
+		const decisions = await decideCandidates({ rawDir });
+		const events = admittedEvents(decisions);
+		const queries = planEventCrawl(events);
+		const byKey = new Map<string, number>();
+		for (const entry of decisions) {
+			if (entry.decision.decision === "included") continue;
+			const key = `${entry.decision.rule}:${entry.decision.key}`;
+			byKey.set(key, (byKey.get(key) ?? 0) + 1);
+		}
+		console.log(`${decisions.length} candidate(s): ${events.length} admitted, ${decisions.length - events.length} rejected`);
+		for (const [key, count] of [...byKey].sort((a, b) => b[1] - a[1])) console.log(`  ${count} ${key}`);
+		console.log(`${queries.length} quer(ies) for ${events.length} event(s)`);
+		const outFile = values["plan-out"];
+		if (outFile !== undefined) {
+			await writeFile(outFile, `${JSON.stringify({ queries }, null, "\t")}\n`, "utf8");
+			console.log(`wrote ${outFile}`);
+		}
 		return;
 	}
 
@@ -350,7 +401,7 @@ async function main(): Promise<void> {
 	}
 
 	if (command !== "build") {
-		throw new Error(`unknown command ${JSON.stringify(command)}; expected \`build\`, \`fetch\`, \`model\` or \`dictionary\``);
+		throw new Error(`unknown command ${JSON.stringify(command)}; expected \`build\`, \`fetch\`, \`model\`, \`dictionary\` or \`plan\``);
 	}
 
 	const outDir = values.out ?? path.join(REPO_ROOT, "data", "curated");

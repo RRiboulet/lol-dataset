@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "PlayerRedirects",
+    "fields": "_pageName,AllName,OverviewPage,ID",
+    "where": "AllName >= 'F' AND AllName < 'I'",
+    "order_by": "AllName ASC",
+    "limit": 5000
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=PlayerRedirects&fields=_pageName%2CAllName%2COverviewPage%2CID&where=AllName+%3E%3D+%27F%27+AND+AllName+%3C+%27I%27&order_by=AllName+ASC&limit=5000",
+  "fetchedAt": "2026-11-18T19:57:46.740Z",
+  "status": 200,
+  "bodySha256": "877615ac4bb0b3c4b2cd0858c15674fc0a916de6ff41d089508a182202a7e7c5",
+  "encoding": "gzip"
+}

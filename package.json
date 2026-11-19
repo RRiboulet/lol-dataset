@@ -1,6 +1,6 @@
 {
   "name": "lol-dataset",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "A complete dataset of the League of Legends World Championship, together with the devcontainer, pi extensions and skills that build it.",

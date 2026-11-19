@@ -391,12 +391,18 @@ function dedupe<T extends { sourceFile: string }>(
  * different order carry the same row. Comparing `JSON.stringify` directly would turn
  * that into a "one payload is stale" failure, which is the sort of false alarm that
  * teaches people to ignore the check.
+ *
+ * A `null` and an absent key are the same statement — the source did not state the
+ * value — and Cargo returns one or the other depending on the query (measured: Worlds
+ * 2023's rows arrived once with `"Patch": null` and once with no `Patch` key, from two
+ * queries that asked for the same columns). Treating them as a disagreement would fail
+ * the build over the source's own inconsistency about how it spells "nothing".
  */
 function canonical(value: unknown): string {
 	if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
 	if (value !== null && typeof value === "object") {
 		const entries = Object.entries(value as Record<string, unknown>)
-			.filter(([, child]) => child !== undefined)
+			.filter(([, child]) => child !== undefined && child !== null)
 			.sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0));
 		return `{${entries.map(([key, child]) => `${JSON.stringify(key)}:${canonical(child)}`).join(",")}}`;
 	}

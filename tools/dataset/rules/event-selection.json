@@ -4,7 +4,7 @@
 	"description": "International 5v5 Summoner's Rift tournament in an admitted league, inside the declared era, excluding qualifiers and stage pages of events already admitted.",
 	"format": {
 		"required": "5v5-summoners-rift",
-		"reason": "The dataset is per-game 5v5 Summoner's Rift statistics, so an event that also runs 1v1 brackets or alternate-mode showmatches cannot be admitted at event level — it would need a per-game judgement."
+		"reason": "The dataset is per-game 5v5 Summoner's Rift statistics, so an event that also runs 1v1 brackets or alternate-mode showmatches cannot be admitted at event level \u2014 it would need a per-game judgement."
 	},
 	"years": {
 		"from": 2011,
@@ -18,8 +18,13 @@
 		}
 	},
 	"region": {
-		"include": ["International"],
-		"unknownValues": ["", "Unknown"],
+		"include": [
+			"International"
+		],
+		"unknownValues": [
+			"",
+			"Unknown"
+		],
 		"unknown": {
 			"key": "region-unknown",
 			"reason": "The source records no usable region, so an international scope cannot be established. Guessing would put a national league into an international dataset."
@@ -32,39 +37,54 @@
 	"admitted": [
 		{
 			"key": "worlds",
-			"leagues": ["World Championship"],
+			"leagues": [
+				"World Championship"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "Riot's annual World Championship, the dataset's core event (2011-2026)."
 		},
 		{
 			"key": "msi",
-			"leagues": ["Mid-Season Invitational"],
+			"leagues": [
+				"Mid-Season Invitational"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "Riot's annual mid-season international (2015-2026, not held in 2020)."
 		},
 		{
 			"key": "first-stand",
-			"leagues": ["First Stand"],
+			"leagues": [
+				"First Stand"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "Riot's 2025+ seasonal international."
 		},
 		{
 			"key": "mid-season-cup",
-			"leaguePatterns": ["^mid-season cup\\b"],
+			"leaguePatterns": [
+				"^mid-season cup\\b"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "The 2020 Mid-Season Cup, the international that stood in for MSI that year. The source's League value carries the year (Mid-Season Cup 2020)."
 		},
 		{
 			"key": "rift-rivals",
-			"leaguePatterns": ["^rift rivals\\b"],
+			"leaguePatterns": [
+				"^rift rivals\\b"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "The 2017-2019 inter-regional Rift Rivals events. The source's League value names the region pairing (Rift Rivals 2017 NA-EU), so the league is matched by prefix."
 		},
 		{
 			"key": "iem-world-championship",
-			"leagues": ["Intel Extreme Masters", "IEM"],
+			"leagues": [
+				"Intel Extreme Masters",
+				"IEM"
+			],
 			"format": "5v5-summoners-rift",
-			"requiresNamePatterns": ["world championship"],
+			"requiresNamePatterns": [
+				"world championship"
+			],
 			"notMatching": {
 				"key": "iem-regional-stop",
 				"reason": "IEM's regional stops share the Intel Extreme Masters league but are excluded by the decided scope; only its World Championships are admitted."
@@ -73,19 +93,26 @@
 		},
 		{
 			"key": "ipl",
-			"leagues": ["IGN Pro League", "IPL"],
+			"leagues": [
+				"IGN Pro League",
+				"IPL"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "IPL/IGN Pro League, a third-party international major admitted by the decided scope."
 		},
 		{
 			"key": "wcg",
-			"leagues": ["World Cyber Games"],
+			"leagues": [
+				"World Cyber Games"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "World Cyber Games' international League of Legends tournaments."
 		},
 		{
 			"key": "esports-world-cup",
-			"leagues": ["Esports World Cup"],
+			"leagues": [
+				"Esports World Cup"
+			],
 			"format": "5v5-summoners-rift",
 			"reason": "The Esports World Cup (2024-), admitted by the decided scope."
 		}
@@ -93,23 +120,42 @@
 	"exclusions": [
 		{
 			"key": "all-star",
-			"leaguePatterns": ["all[ -]?stars?\\b"],
+			"leaguePatterns": [
+				"all[ -]?stars?\\b"
+			],
 			"reason": "All-Star is excluded deliberately: it combines a 5v5 invitational with a 1v1 bracket and alternate-mode showmatches, so admitting it would push a per-game 'is this a real game' judgement into the event rule (spec Open assumption 2)."
 		},
 		{
 			"key": "national-team",
-			"leaguePatterns": ["asian games", "\\bIeSF\\b"],
+			"leaguePatterns": [
+				"asian games",
+				"\\bIeSF\\b"
+			],
 			"reason": "National-team events are a different competitive unit from the club dataset (spec non-goals), even where the source marks them international."
 		},
 		{
 			"key": "stage-subpage",
-			"namePatterns": ["/play-?in\\b", "/main[ -]event\\b", "/showmatches?\\b"],
+			"namePatterns": [
+				"/play-?in\\b",
+				"/main[ -]event\\b",
+				"/showmatches?\\b"
+			],
 			"reason": "A stage page (/Play-In, /Main Event, /Showmatches) is part of an event whose own page is the event. Measured on the source: 2023 Worlds has 79 games on /Main Event and 31 on /Play-In and none on the parent page, so the crawl collects a stage's games under its parent, and admitting the stage as well would count the same event twice or three times."
 		},
 		{
 			"key": "qualifier",
-			"namePatterns": ["\\bqualifiers?\\b", "\\bqualifying\\b"],
+			"namePatterns": [
+				"\\bqualifiers?\\b",
+				"\\bqualifying\\b"
+			],
 			"reason": "A qualifier feeds an event that is already admitted (for example 2023 Worlds Qualifying Series). Admitting both would count the same games twice under a different name, so the qualifier loses."
+		},
+		{
+			"key": "container-page",
+			"namePatterns": [
+				"^rift rivals 20(18|19)$"
+			],
+			"reason": "The wiki keeps an umbrella page for a multi-region event and records every game under a regional sub-page, which is its own admitted event (`Rift Rivals 2018/NA-EU`). Admitting the umbrella as well would add an event with no games of its own, and calling it `empty` would claim the source carries none for it, which is false \u2014 the rows exist, one page down. Found by the full crawl (ticket 16); the two 2018-2019 umbrella pages are the only ones in the corpus."
 		}
 	],
 	"fallback": {

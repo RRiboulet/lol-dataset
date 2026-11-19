@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=MatchSchedule&fields=OverviewPage%2CMatchId%2CTeam1%2CTeam2%2CTeam1Final%2CTeam2Final%2CWinner%2CTeam1Score%2CTeam2Score%2CTeam1Points%2CTeam2Points%2CBestOf%2CPhase%2CRound%2CTab%2CN_MatchInTab%2CFF%2CIsNullified%2CDateTime_UTC%2CHasTime%2CMatchDay%2CPatch%2CPatchPage&where=OverviewPage+LIKE+%27Esports+World+Cup+2024%25%27&order_by=MatchId&limit=500",
   "fetchedAt": "2026-11-18T09:16:25.217Z",
   "status": 200,
-  "bodySha256": "5a6acbaaae6a4363f600ffd554117555a2be792fc435bd0a953af3f88cb23ef4"
+  "bodySha256": "5a6acbaaae6a4363f600ffd554117555a2be792fc435bd0a953af3f88cb23ef4",
+  "encoding": "gzip"
 }

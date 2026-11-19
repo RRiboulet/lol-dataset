@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "ScoreboardPlayers",
+    "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+    "where": "OverviewPage LIKE '2025 Season World Championship%'",
+    "order_by": "GameId",
+    "limit": 2000
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=ScoreboardPlayers&fields=OverviewPage%2CName%2CLink%2CChampion%2CKills%2CDeaths%2CAssists%2CSummonerSpells%2CGold%2CCS%2CDamageToChampions%2CVisionScore%2CItems%2CRoleBoundItem%2CTrinket%2CPentakills%2CKeystoneMastery%2CKeystoneRune%2CPrimaryTree%2CSecondaryTree%2CRunes%2CTeamKills%2CTeamGold%2CTeam%2CTeamVs%2CTime%2CPlayerWin%2CDateTime_UTC%2CDST%2CTournament%2CRole%2CRole_Number%2CIngameRole%2CSide%2CUniqueLine%2CUniqueLineVs%2CUniqueRole%2CUniqueRoleVs%2CGameId%2CMatchId%2CGameTeamId%2CGameRoleId%2CGameRoleIdVs%2CStatsPage&where=OverviewPage+LIKE+%272025+Season+World+Championship%25%27&order_by=GameId&limit=2000",
+  "fetchedAt": "2026-11-18T18:58:14.683Z",
+  "status": 200,
+  "bodySha256": "89138fd02af298aa6cd688f0ba61420ac3a66bc5c381bdd4c3932f440a05f48b",
+  "encoding": "gzip"
+}

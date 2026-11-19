@@ -1,12 +1,56 @@
 event_key,event_id,event_name,overview_page,league,region,date_start,year
 0,,Unknown,,,,,
-1,evt-1cbe48816dfc,IPL 5,IGN ProLeague Season 5,IGN Pro League,International,2012-11-29,2012
-2,evt-54fe38dcc8fd,IEM Season 9 World Championship,IEM Season IX - World Championship,Intel Extreme Masters,International,2015-03-13,2015
-3,evt-56418090dc65,Esports World Cup 2024,Esports World Cup 2024,Esports World Cup,International,2024-07-04,2024
-4,evt-ae98c0ad8d75,Worlds 2023,2023 Season World Championship,World Championship,International,2023-10-10,2023
-5,evt-af6150c4e6f5,MSI 2023,2023 Mid-Season Invitational,Mid-Season Invitational,International,2023-05-02,2023
-6,evt-bf947e338ef3,World Cyber Games 2013,2013 World Cyber Games,World Cyber Games,International,2013-11-28,2013
-7,evt-c2ef89c0bcab,Rift Rivals 2017 NA-EU,Rift Rivals 2017/NA-EU,Rift Rivals 2017 NA-EU,International,2017-07-05,2017
-8,evt-d5e50b3ce136,First Stand 2025,2025 First Stand,First Stand,International,2025-03-10,2025
-9,evt-de5f664a9400,Mid-Season Cup 2020,2020 Mid-Season Cup,Mid-Season Cup 2020,International,2020-05-28,2020
-10,evt-e07355d020ef,WCG 2011,2011 World Cyber Games,,International,2011-12-08,2011
+1,evt-00b7f5f0c357,IEM Season 6 World Championship,IEM Season VI - World Championship,Intel Extreme Masters,International,2012-03-06,2012
+2,evt-05e9f263f464,MSI 2015,2015 Mid-Season Invitational,Mid-Season Invitational,International,2015-05-07,2015
+3,evt-125d331aaa04,Rift Rivals 2017 LCK-LPL-LMS,Rift Rivals 2017/LCK-LPL-LMS,Rift Rivals 2017 LCK-LPL-LMS,International,2017-07-06,2017
+4,evt-156176c9d61f,MSI 2017,2017 Mid-Season Invitational,Mid-Season Invitational,International,2017-04-28,2017
+5,evt-1cbe48816dfc,IPL 5,IGN ProLeague Season 5,IGN Pro League,International,2012-11-29,2012
+6,evt-1ef5158d2ca2,Worlds 2022,2022 Season World Championship,World Championship,International,2022-09-29,2022
+7,evt-268423df2997,Rift Rivals 2018 LCK-LPL-LMS,Rift Rivals 2018/LCK-LPL-LMS,Rift Rivals 2017 LCK-LPL-LMS,International,2018-07-05,2018
+8,evt-281f81f1c09b,MSI 2024,2024 Mid-Season Invitational,Mid-Season Invitational,International,2024-05-01,2024
+9,evt-2e571eec38c0,MSI 2025,2025 Mid-Season Invitational,Mid-Season Invitational,International,2025-06-27,2025
+10,evt-39993b6dfcc0,Rift Rivals 2017 LCL-TCL,Rift Rivals 2017/LCL-TCL,Rift Rivals 2017 LCL-TCL,International,2017-07-06,2017
+11,evt-3ae263dc6068,Worlds Season 3,Season 3 World Championship,World Championship,International,2013-09-15,2013
+12,evt-3d849f5c115e,Worlds 2020,2020 Season World Championship,World Championship,International,2020-09-25,2020
+13,evt-46bdd24dace0,Rift Rivals 2018 SEA-LJL-OPL,Rift Rivals 2018/SEA-LJL-OPL,Rift Rivals 2018 SEA-LJL-OPL,International,2018-07-02,2018
+14,evt-4c2ca3f39f06,Rift Rivals 2017 GPL-LJL-OPL,Rift Rivals 2017/GPL-LJL-OPL,Rift Rivals 2017 GPL-LJL-OPL,International,2017-07-03,2017
+15,evt-4d8c87c36519,MSI 2022,2022 Mid-Season Invitational,Mid-Season Invitational,International,2022-05-10,2022
+16,evt-518c06dda878,Worlds 2018,2018 Season World Championship,World Championship,International,2018-10-01,2018
+17,evt-54fe38dcc8fd,IEM Season 9 World Championship,IEM Season IX - World Championship,Intel Extreme Masters,International,2015-03-13,2015
+18,evt-55341b864250,Worlds 2015,2015 Season World Championship,World Championship,International,2015-10-01,2015
+19,evt-56418090dc65,Esports World Cup 2024,Esports World Cup 2024,Esports World Cup,International,2024-07-04,2024
+20,evt-5644b9da82f5,IEM Season 11 World Championship,IEM Season 11/World Championship,Intel Extreme Masters,International,2017-02-22,2017
+21,evt-5b9b7221e4c9,IEM Season 8 World Championship,IEM Season VIII - World Championship,Intel Extreme Masters,International,2014-03-14,2014
+22,evt-5de7fe22c7cd,Worlds Season 2,Season 2 World Championship,World Championship,International,2012-10-04,2012
+23,evt-5eb9d63d679e,Rift Rivals 2018 NA-EU,Rift Rivals 2018/NA-EU,Rift Rivals 2017 NA-EU,International,2018-07-05,2018
+24,evt-6a8ac0a4e91d,Rift Rivals 2017 LLN-CLS-CBLOL,Rift Rivals 2017/LLN-CLS-CBLOL,Rift Rivals 2017 LLN-CLS-CBLOL,International,2017-07-05,2017
+25,evt-738d00961da7,Rift Rivals 2018 LLN-CLS-CBLOL,Rift Rivals 2018/LLN-CLS-CBLOL,Rift Rivals 2018 LLN-CLS-CBLOL,International,2018-07-04,2018
+26,evt-7b801247fbfa,Rift Rivals 2018 LCL-TCL-VCS,Rift Rivals 2018/LCL-TCL-VCS,Rift Rivals 2017 LCL-TCL,International,2018-07-04,2018
+27,evt-7ed25ccab53e,MSI 2016,2016 Mid-Season Invitational,Mid-Season Invitational,International,2016-05-04,2016
+28,evt-7f2d7d6e4ffa,Worlds 2024,2024 Season World Championship,World Championship,International,2024-09-25,2024
+29,evt-7fd430cc7bbc,Worlds 2021,2021 Season World Championship,World Championship,International,2021-10-05,2021
+30,evt-83c5028842da,Worlds 2025,2025 Season World Championship,World Championship,International,2025-10-14,2025
+31,evt-94ec1c14bc88,Worlds 2017,2017 Season World Championship,World Championship,International,2017-09-23,2017
+32,evt-9e1c87fe169f,Worlds 2019,2019 Season World Championship,World Championship,International,2019-10-02,2019
+33,evt-9f30e583b6fd,MSI 2018,2018 Mid-Season Invitational,Mid-Season Invitational,International,2018-05-03,2018
+34,evt-a3ec75439d28,MSI 2019,2019 Mid-Season Invitational,Mid-Season Invitational,International,2019-05-01,2019
+35,evt-a8a119485c37,MSI 2026,2026 Mid-Season Invitational,Mid-Season Invitational,International,2026-06-28,2026
+36,evt-ae98c0ad8d75,Worlds 2023,2023 Season World Championship,World Championship,International,2023-10-10,2023
+37,evt-aee838e2fe55,MSI 2021,2021 Mid-Season Invitational,Mid-Season Invitational,International,2021-05-06,2021
+38,evt-af6150c4e6f5,MSI 2023,2023 Mid-Season Invitational,Mid-Season Invitational,International,2023-05-02,2023
+39,evt-b173f34922f5,Worlds 2026,2026 Season World Championship,World Championship,International,2026-10-15,2026
+40,evt-b18970b4f37c,Esports World Cup 2026,Esports World Cup 2026,Esports World Cup,International,2026-07-15,2026
+41,evt-b1c395b77e08,Rift Rivals 2019 LCK-LPL-LMS-VCS,Rift Rivals 2019/LCK-LPL-LMS-VCS,Rift Rivals 2017 LCK-LPL-LMS,International,2019-07-04,2019
+42,evt-b3f7517dcee7,First Stand 2026,2026 First Stand,First Stand,International,2026-03-16,2026
+43,evt-bf947e338ef3,World Cyber Games 2013,2013 World Cyber Games,World Cyber Games,International,2013-11-28,2013
+44,evt-c2ef89c0bcab,Rift Rivals 2017 NA-EU,Rift Rivals 2017/NA-EU,Rift Rivals 2017 NA-EU,International,2017-07-05,2017
+45,evt-c729e5e6f8a9,Worlds 2014,2014 Season World Championship,World Championship,International,2014-09-18,2014
+46,evt-c9d036a52787,Worlds 2016,2016 Season World Championship,World Championship,International,2016-09-29,2016
+47,evt-d5e50b3ce136,First Stand 2025,2025 First Stand,First Stand,International,2025-03-10,2025
+48,evt-d800254f1ac6,IEM Season 7 World Championship,IEM Season VII - World Championship,Intel Extreme Masters,International,2013-03-06,2013
+49,evt-de5f664a9400,Mid-Season Cup 2020,2020 Mid-Season Cup,Mid-Season Cup 2020,International,2020-05-28,2020
+50,evt-e07355d020ef,WCG 2011,2011 World Cyber Games,,International,2011-12-08,2011
+51,evt-e2a9998296be,Esports World Cup 2025,Esports World Cup 2025,Esports World Cup,International,2025-07-16,2025
+52,evt-f23d1b358ed9,IEM Season 10 World Championship,IEM Season X - World Championship,Intel Extreme Masters,International,2016-03-04,2016
+53,evt-fd4f117ad3ba,Worlds Season 1,Season 1 World Championship,World Championship,International,2011-06-18,2011
+54,evt-ff42282fef82,Rift Rivals 2019 NA-EU,Rift Rivals 2019/NA-EU,Rift Rivals 2017 NA-EU,International,2019-06-27,2019

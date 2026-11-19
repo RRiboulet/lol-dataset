@@ -12,5 +12,6 @@
   "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo&where=OverviewPage+IN+%28%27Xenics+Storm%27%2C%27ahq+eSports+Club%27%2C%27compLexity+Gaming%27%2C%27w2w%27%2C%27yoe+Flash+Wolves%27%29&order_by=OverviewPage+ASC&limit=100",
   "fetchedAt": "2026-11-18T09:34:37.793Z",
   "status": 200,
-  "bodySha256": "29f830a246e6c334ffb7af06ef4a1c6e966578606945416dfc1a338b133e0c69"
+  "bodySha256": "29f830a246e6c334ffb7af06ef4a1c6e966578606945416dfc1a338b133e0c69",
+  "encoding": "gzip"
 }

@@ -2,6 +2,80 @@
 
 ## Unreleased
 
+## v1.1.0 — 2026-11-18
+
+Changed:
+
+- **The corpus is the whole admitted event list now, not ten editions of it.** The candidate
+  universe was a hand-written `OverviewPage IN (…)` list: the rule decided over nineteen
+  pages and looked complete over them, so an edition the rule admits and nobody listed was
+  invisible to the rule, the report and every gate — `AGENTS.md` claimed the complete World
+  Championship and the corpus held one. The universe is now one committed `Tournaments`
+  query and `node tools/dataset/cli.ts plan` computes the crawl plan from the rule (ticket
+  16). 235 candidates decide to 54 admitted events, and the corpus carries **3 091 games,
+  2 068 series, 30 910 player rows, 197 teams, 1 140 players, 171 champions and 3 791 alias
+  rows** — every Worlds 2011-2026 edition (2011-2013 are `Season 1/2/3` on the wiki), every
+  MSI, all 14 Rift Rivals, all six IEM World Championships, WCG 2011/2013, IPL 5, the 2020
+  Mid-Season Cup, three Esports World Cups and two First Stands. One event is `empty` (WCG
+  2011: the source carries no games there at all) and none is `missing`; two Rift Rivals
+  *container* pages are excluded by a new rule clause, because their games live one page
+  down and admitting them would add an event with nothing in it.
+- **The identity registries are read whole, so identity no longer depends on which events
+  were crawled.** Ticket 10 fetched `Teams`/`TeamRedirects`/`PlayerRedirects` filtered to
+  the names its ten events used, which meant every new event needed another identity pass.
+  The registries are now read in range partitions — a single response is capped at 5 000
+  rows, and offset paging over a non-unique order loses rows at page boundaries (it dropped
+  the `Teams` page a rename chain needed) — so the unresolved report now means "the wiki has
+  no row", not "nobody fetched one": 43 strings remain, 38 of them player handles the
+  registry genuinely lacks.
+- **Six source facts the full corpus exposed, each measured and declared rather than
+  special-cased in code.** A side that bans a champion it also picks (Season 3 `Day 6_2_1`,
+  IEM VII `Group A_5_1`), and a champion picked by both sides in a game that is not blind
+  pick (IEM VII `Group A_6_1`), are declared in `rules/game-formats.json` as
+  `contradictedDrafts`, with the player rows as the evidence and the drop stated per game;
+  the build still refuses an *undeclared* contradiction. Ten rename edges point at pages the
+  wiki does not carry (`D-City Gaming Stars` → `1. Esport Verein Darmstadt e.V.`) and are
+  skipped and counted. Two pages can rename into one successor (`AXIZ Academy` and
+  `Crest Gaming Act Academy`), so the rename graph is read as components and a merged
+  history is one entity. 166 `TeamRedirects` rows name pages the club registry does not
+  carry (national teams, all-star squads) and are counted, not turned into page-less
+  entities. A champion stated as `0` for an era where it did not exist (2022 MSI's withdrawn
+  Chemtech Drake) is the wiki's zero-fill and is dropped rather than emitted; a non-zero
+  value still stops the build.
+- **A string three players have used is reported, not guessed.** The resolver used to fail
+  the build on an ambiguous string; with a whole registry that happens for historical
+  handles (`Lee` is three players' old `ID`, none of them the one who played). The string
+  now gets one provisional entity and an unresolved row naming every candidate — the
+  behaviour `identity-unresolved.jsonl`'s `candidates` field was designed for — instead of
+  the corpus depending on which payloads happen to be cached.
+
+Fixed:
+
+- **A rename target the registry states in another case is followed.** `Boba Marines` says it
+  was renamed to `GIGABYTE Marines`, and the only redirect row for that name is
+  `Gigabyte marines` → `GAM Esports`; the folded lookup is the same last resort a source
+  string already used, and two pages sharing a folded name still stop the build.
+- **A display name or handle that two entities carry is no longer registered as evidence.**
+  `ESC Gaming` is two teams and `imp` is two players; registering the shared string made
+  scoreboards ambiguous, which the resolver refuses (correctly) — so the string is not used
+  as evidence and the page or redirect still resolves. The same rule fixed a folded lookup
+  that preferred another player's historical handle over a page name (`imp`).
+- **Two payloads that state the same row with `null` and with an absent key now agree.** Cargo
+  returns either depending on the query, so a `Patch` of `null` and no `Patch` key are the
+  same "not stated"; without that, two overlapping queries for Worlds 2023 looked like a
+  stale payload.
+- **The declared legacy-name window for `CLG Prime` starts where the corpus uses it.** The
+  full crawl brought Worlds Season 2 in, whose group-stage series name the roster `CLG Prime`
+  on 2012-10-04; a declared window bounds every lookup, so the row moved from 2012-11-29 and
+  the string resolves again (ticket 15's rule, one more measurement).
+- **The payload cache is stored gzipped and the hash still describes the response.**
+  In the same change, because a nine-fold corpus in pretty-printed third-party JSON was 95 MB
+  with no LFS in the repository: bodies are `<key>.json.gz` (95 MB → 6 MB) while
+  `bodySha256` stays the hash of the **uncompressed** body, so a pin describes the source's
+  bytes rather than this repository's compressor. The reader accepts a plain `.json` too, the
+  manifest differs only in each path's `.gz` suffix, and all fourteen curated files are
+  byte-identical across the change (verified by rebuilding before and after; ticket 17).
+
 ## v1.0.0 — 2026-11-18
 
 Changed:
@@ -479,6 +553,17 @@ Fixed:
   review of the dimensional model, and reproduced before the fix.
 
 Maintenance:
+
+- **Recorded payloads are stored gzip-compressed, and the hash still describes the
+  response.** The cache behind the dataset went from 377 games to 3 091, and at the stored
+  format that was 95 MB of pretty-printed third-party JSON — a nine-fold jump in a
+  repository with no Git LFS. Bodies now live as `<key>.json.gz` (95.4 MB → 7.2 MB), while
+  the sidecar's `bodySha256` remains the hash of the **uncompressed** body, so a pin still
+  describes the bytes the source returned rather than this repository's compressor; the
+  manifest differs only in each path's `.gz` suffix, and all fourteen curated files are
+  byte-identical across the change (verified by rebuilding before and after). The reader
+  still accepts a plain `.json` body, `.gitattributes` marks `*.gz` binary, and the tamper
+  gate is exercised on a compressed body that was rewritten under a stale hash (ticket 17).
 
 - **The single-query form of the manual fetch command is accepted again, and stays
   as strict as a plan file.** `tools/dataset/cli.ts` has always documented

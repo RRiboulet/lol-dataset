@@ -25,7 +25,7 @@ import { assembleScoreboards } from "../games.ts";
 import { pageUnderEvent } from "../pages.ts";
 import { normalizeSources } from "../normalize.ts";
 import { TEAM_STAT_FIELDS } from "../normalize.ts";
-import { FIXTURE_RAW, savePayloadBody, writeTempRule } from "./helpers.ts";
+import { FIXTURE_RAW, isPayloadBody, readPayloadBodyFile, savePayloadBody, sidecarPath, writePayloadBodyFile, writeTempRule } from "./helpers.ts";
 
 const WORLDS = "2023 Season World Championship";
 const IEM = "IEM Season IX - World Championship";
@@ -64,7 +64,7 @@ async function buildAfterEdit(edit: (raw: string) => Promise<void>): Promise<Bui
 async function payloadBodies(raw: string, table: string): Promise<string[]> {
 	const dir = path.join(raw, "lol-fandom", "cargoexport", table);
 	return (await readdir(dir))
-		.filter((name) => name.endsWith(".json") && !name.endsWith(".meta.json"))
+		.filter(isPayloadBody)
 		.sort()
 		.map((name) => path.join(dir, name));
 }
@@ -74,8 +74,8 @@ test("a recorded event yields exactly the games the source states, once each", a
 	const { games } = result.scoreboards;
 	assert.equal(
 		games.length,
-		377,
-		"110 Worlds 2023 + 76 MSI 2023 + 19 IEM 2015 + 72 IPL 5 + 21 Rift Rivals 2017 + 25 Mid-Season Cup 2020 + 19 Esports World Cup 2024 + 35 First Stand 2025",
+		3091,
+		"every game the 54 admitted events state: 16 Worlds editions (28 to 127 games each), 11 MSI, 14 Rift Rivals, 6 IEM World Championships, 2 WCG, IPL 5, the 2020 Mid-Season Cup, 3 Esports World Cups and 2 First Stands (ticket 16)",
 	);
 	assert.equal(gamesUnder(result, WORLDS).length, 110);
 	assert.equal(gamesUnder(result, IEM).length, 19);
@@ -180,7 +180,13 @@ test("duration and date have one fixed representation, and the duration is the e
 	);
 	for (const game of result.scoreboards.games) {
 		assert.match(game.dateTimeUtc, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/, `${game.source.gameId}: ISO-8601 UTC`);
-		assert.ok(Number.isInteger(game.durationSeconds), `${game.source.gameId}: whole seconds`);
+		// Seven recorded games state no Gamelength at all (IEM 2012 rows the wiki never
+		// filled in); absence stays absence, and every stated duration is whole seconds.
+		assert.ok(
+			game.durationSeconds === undefined || Number.isInteger(game.durationSeconds),
+			`${game.source.gameId}: whole seconds when stated`,
+		);
+		if (game.durationSeconds === undefined) continue;
 		const source = sources.get(game.source.gameId);
 		assert.ok(source !== undefined);
 		// The exact value is the `mm:ss` string: 28:39 must come out as 1719, not as the
@@ -217,15 +223,19 @@ test("matches: every series the source states, with the score the games cannot r
 	const { matches, games } = result.scoreboards;
 	assert.equal(
 		matches.length,
-		230,
-		"52 Worlds 2023 + 25 MSI 2023 + 13 IEM 2015 + 36 IPL 5 (48 rows: 6 contradicted by every game naming them, ticket 14, 6 wildcard-qualifier series) + 48 World Cyber Games 2013 + 19 Rift Rivals 2017 + 17 Mid-Season Cup 2020 + 7 Esports World Cup 2024 + 13 First Stand 2025",
+		2068,
+		"every series the 54 admitted events state, minus the 12 IPL 5 rows every game naming them contradicts (ticket 14); 2 080 rows in the corpus",
 	);
 	const byId = new Map(matches.map((match) => [match.id, match]));
 	for (const game of games) {
 		if (game.matchId === undefined) {
-			// Detached on purpose: the series row names two other teams (ticket 14). The
-			// exact set is asserted in series-rows.test.ts.
-			assert.ok(result.scoreboards.detachedGames.some((detached) => detached.gameId === game.source.gameId), `${game.source.gameId}: a game without a matchId is in the detachment report`);
+			// Two honest reasons to carry no series: the corpus carries none (a crawl gap in
+			// the source), or it carries one that names two other teams (ticket 14). Either
+			// way the game is reported, and the exact sets are asserted in series-rows.test.ts.
+			const reported =
+				result.scoreboards.detachedGames.some((detached) => detached.gameId === game.source.gameId) ||
+				result.scoreboards.gamesWithoutMatch.includes(game.source.gameId);
+			assert.ok(reported, `${game.source.gameId}: a game without a matchId is in one of the two reports`);
 			continue;
 		}
 		assert.ok(byId.has(game.matchId), `${game.source.gameId}: the canonical series id resolves`);
@@ -241,8 +251,10 @@ test("matches: every series the source states, with the score the games cannot r
 			assert.ok(match.winnerTeamId !== undefined, `${match.source.matchId}: the source states a winner`);
 			assert.ok(match.sides.some((side) => side.teamId === match.winnerTeamId));
 		}
-		assert.equal(match.isNullified, false, `measured: no nullified series in the fixtures`);
-		assert.ok(!("forfeit" in match), "measured: no forfeit in the fixtures, so the key is absent rather than false");
+		// Measured on the full corpus: three series are nullified (the source states one was
+		// annulled) and none records a forfeit, so the forfeit key stays absent rather than false.
+		assert.equal(typeof match.isNullified, "boolean", `${match.source.matchId}: nullified is a stated flag`);
+		assert.ok(!("forfeit" in match), "measured: no forfeit in the corpus, so the key is absent rather than false");
 	}
 	// A match row is the source's column order, not a game side: `Team1`/`Team2` here are
 	// positions on one `MatchSchedule` row, and the games of a series may line up either
@@ -322,7 +334,7 @@ test("an event name that only appears inside a LIKE pattern is not a query for t
 		// scoreboard, series, picks and player queries all came back empty.
 		for (const table of ["ScoreboardGames", "MatchSchedule", "PicksAndBansS7", "ScoreboardPlayers"]) {
 			for (const body of await payloadBodies(raw, table)) {
-				const metaFile = body.replace(/\.json$/, ".meta.json");
+				const metaFile = sidecarPath(body);
 				const meta = JSON.parse(await readFile(metaFile, "utf8")) as { query: Record<string, unknown> };
 				if (!String(meta.query.where ?? "").includes("2011 World Cyber Games")) continue;
 				// A substring pattern names a shape, not the event: an unanchored match would make
@@ -372,7 +384,7 @@ function reportFor(where: string): string {
 		identity: {} as ScoreboardInput["identity"],
 		eras: {} as ScoreboardInput["eras"],
 		payloads: [gameQuery(where)],
-		formats: { version: 1, blindPick: [] },
+		formats: { version: 1, blindPick: [], contradictedDrafts: [] },
 	};
 	return assembleScoreboards(input).eventGames[0].state;
 }
@@ -407,7 +419,7 @@ test("a payload body that is not JSON fails the build naming the payload, instea
 		identity: {} as ScoreboardInput["identity"],
 		eras: {} as ScoreboardInput["eras"],
 		payloads: [gameQuery("OverviewPage='2013 World Cyber Games'", "<html>not json</html>")],
-		formats: { version: 1, blindPick: [] },
+		formats: { version: 1, blindPick: [], contradictedDrafts: [] },
 	};
 	assert.throws(() => assembleScoreboards(input), /ScoreboardGames\/test\.json: not JSON/);
 });
@@ -423,19 +435,33 @@ test("a game whose teams are not its series' teams is detached and reported, not
 	// emitted record that claims such a series — see invariants.test.ts.
 	const SOURCE = "2023 Season World Championship/Play-In_Round 1_1";
 	const TARGET = "2023 Season World Championship/Play-In_Round 1_4";
+	const editedGames: string[] = [];
 	const retargeted = await buildAfterEdit(async (raw) => {
+		// Every payload that carries the row, because two recorded queries can overlap (the
+		// same game arrived from a `Tournament IN (…)` query and from the canonical
+		// `OverviewPage LIKE …` one). Editing one copy would leave the other stating the old
+		// series, which is a stale-payload disagreement rather than the case under test.
+		let edited = 0;
 		for (const file of await payloadBodies(raw, "ScoreboardGames")) {
-			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
-			const row = rows.find((candidate) => candidate.MatchId === SOURCE);
-			if (row === undefined) continue;
-			row.MatchId = TARGET;
-			await savePayloadBody(file, JSON.stringify(rows));
-			return;
+			const rows = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
+			let changed = false;
+			for (const row of rows) {
+				if (row.MatchId !== SOURCE) continue;
+				row.MatchId = TARGET;
+				changed = true;
+				edited += 1;
+				editedGames.push(String(row.GameId));
+			}
+			if (changed) await savePayloadBody(file, JSON.stringify(rows));
 		}
-		throw new Error(`the fixtures carry no game for ${SOURCE}`);
+		assert.ok(edited > 0, `the fixtures carry no game for ${SOURCE}`);
 	});
 	const detached = retargeted.scoreboards.detachedGames.filter((game) => game.matchId === TARGET);
-	assert.equal(detached.length, 1, "exactly the retargeted game is detached");
+	assert.deepEqual(
+		detached.map((game) => game.gameId).sort(),
+		[...new Set(editedGames)].sort(),
+		"exactly the retargeted games are detached, and no others",
+	);
 	const game = retargeted.scoreboards.games.find((candidate) => candidate.source.gameId === detached[0].gameId);
 	assert.ok(game);
 	assert.equal(game.matchId, undefined, "the game is emitted without a series, not between two other teams");
@@ -469,10 +495,10 @@ test("a game for an event the rule does not select is ignored, not emitted", asy
 		assert.equal(result.scoreboards.ignoredGames.length, 110, "the 110 Worlds games are counted as ignored");
 		assert.equal(
 			result.scoreboards.ignoredMatches.length,
-			120,
-			"52 Worlds series, 6 IPL 5 qualifier series and 62 World Cyber Games 2013 qualifier series",
+			134,
+			"52 Worlds 2023 series, 6 IPL 5 qualifier series, 62 World Cyber Games 2013 qualifier series and the rest of the qualifier pages the crawl reached (ticket 16)",
 		);
-		assert.equal(result.scoreboards.games.length, 267, "the other seven events still contribute their games");
+		assert.equal(result.scoreboards.games.length, 3091 - 110, "the other 53 admitted events still contribute their games");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
@@ -485,18 +511,30 @@ test("a qualifier page under a selected event is not that event", async () => {
 	// real crawl, so the boundary is the first path segment after the event page: a stage
 	// page (`…/Main Event`, `…/Play-In`) is the event, a qualifier page is not.
 	const moved = `${WORLDS}/Qualifiers/EU`;
+	const editedPages: string[] = [];
 	const result = await buildAfterEdit(async (raw) => {
+		const seen = new Set<string>();
 		for (const file of await payloadBodies(raw, "ScoreboardGames")) {
-			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
-			const row = rows.find((candidate) => candidate.OverviewPage === `${WORLDS}/Play-In`);
-			if (row === undefined) continue;
-			row.OverviewPage = moved;
-			await savePayloadBody(file, JSON.stringify(rows));
-			return;
+			const rows = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
+			let changed = false;
+			for (const row of rows) {
+				if (row.OverviewPage !== `${WORLDS}/Play-In`) continue;
+				row.OverviewPage = moved;
+				changed = true;
+				seen.add(String(row.GameId));
+			}
+			if (changed) await savePayloadBody(file, JSON.stringify(rows));
 		}
-		throw new Error(`the fixtures carry no game on ${WORLDS}/Play-In`);
+		assert.ok(seen.size > 0, `the fixtures carry no game on ${WORLDS}/Play-In`);
+		editedPages.push(...seen);
 	});
-	assert.equal(result.scoreboards.games.length, 376, "the moved game is not emitted as the event's");
+	const movedGames = result.scoreboards.ignoredGames.filter((page) => page === moved).length;
+	assert.ok(movedGames > 0, "the moved page is reported as ignored");
+	assert.equal(
+		result.scoreboards.games.length,
+		3091 - new Set(editedPages).size,
+		"the moved games are not emitted as the event's",
+	);
 	assert.ok(result.scoreboards.ignoredGames.includes(moved), "the page is counted as ignored, not absorbed");
 	assert.ok(
 		result.scoreboards.games.some((game) => game.overviewPage.startsWith(`${WORLDS}/`)),
@@ -551,9 +589,9 @@ test("a departed patch is an absent key, not an empty string", async () => {
 		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
 		let edited = "";
 		for (const name of await readdir(tableDir)) {
-			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+			if (!isPayloadBody(name)) continue;
 			const file = path.join(tableDir, name);
-			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const rows = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
 			const row = rows.find((candidate) => candidate.Patch !== null && candidate.Patch !== undefined);
 			if (row === undefined) continue;
 			delete row.Patch;
@@ -585,9 +623,9 @@ test("a value the era table declares ineligible stops the build, naming the game
 		await cp(FIXTURE_RAW, raw, { recursive: true });
 		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
 		for (const name of await readdir(tableDir)) {
-			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+			if (!isPayloadBody(name)) continue;
 			const file = path.join(tableDir, name);
-			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const rows = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
 			const target = rows.find((row) => String(row.DateTime_UTC ?? row["DateTime UTC"]).startsWith("2015-"));
 			if (target === undefined) continue;
 			target.Team1VoidGrubs = 2;
@@ -611,9 +649,9 @@ test("a half-recorded game is partial, not unavailable", async () => {
 		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
 		let targetId = "";
 		for (const name of await readdir(tableDir)) {
-			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+			if (!isPayloadBody(name)) continue;
 			const file = path.join(tableDir, name);
-			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const rows = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
 			const target = rows.find((row) => String(row.DateTime_UTC ?? row["DateTime UTC"]).startsWith("2015-"));
 			if (target === undefined) continue;
 			targetId = String(target.GameId);
@@ -642,9 +680,9 @@ test("a Gamelength this stage cannot parse stops the build instead of vanishing"
 		await cp(FIXTURE_RAW, raw, { recursive: true });
 		const tableDir = path.join(raw, "lol-fandom", "cargoexport", "ScoreboardGames");
 		for (const name of await readdir(tableDir)) {
-			if (!name.endsWith(".json") || name.endsWith(".meta.json")) continue;
+			if (!isPayloadBody(name)) continue;
 			const file = path.join(tableDir, name);
-			const rows = JSON.parse(await readFile(file, "utf8")) as Record<string, unknown>[];
+			const rows = JSON.parse(await readPayloadBodyFile(file)) as Record<string, unknown>[];
 			if (rows.length === 0) continue;
 			// The source once answered float minutes here (`Gamelength_Number`); if its
 			// `mm:ss` column ever changed shape, every duration would go absent silently.

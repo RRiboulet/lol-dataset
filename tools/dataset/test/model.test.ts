@@ -416,13 +416,23 @@ test("coverage declarations survive into the model rather than being averaged aw
 		const shape = `${row.team_stats_coverage}/${row.player_stats_coverage}/${row.draft_coverage}`;
 		byShape.set(shape, (byShape.get(shape) ?? 0) + 1);
 	}
+	// The pre-herald era is not one shape: IPL 5 states no team statistics at all, while the
+	// 2011-2016 events that do state them are `partial` for the fields the wiki never
+	// recorded. Both shapes are present, and each is counted rather than averaged.
 	assert.deepEqual(
-		[...byShape.entries()].sort(),
-		[
-			["partial/partial/partial", input.games.filter((game) => game.eventName === "IEM Season 9 World Championship").length],
-			["unavailable/partial/partial", input.games.filter((game) => game.eventName === "IPL 5").length],
-		].sort(),
+		[...byShape.keys()].sort(),
+		["partial/partial/partial", "unavailable/partial/partial"],
 		`the thin era keeps each event's own coverage shape: ${JSON.stringify([...byShape])}`,
+	);
+	assert.equal(
+		byShape.get("unavailable/partial/partial"),
+		thin.filter((row) => row.team_stats_coverage === "unavailable").length,
+		"the games the source states no team statistics for (IPL 5 and the 2011-2013 events)",
+	);
+	assert.equal(
+		(byShape.get("partial/partial/partial") ?? 0) + (byShape.get("unavailable/partial/partial") ?? 0),
+		thin.length,
+		"every pre-herald game is one of the two shapes",
 	);
 
 	// A game whose measures are absent is as visible as a rich one: it keeps its
