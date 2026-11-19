@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.1.0 — 2026-11-18
+
 Changed:
 
 - **The corpus is the whole admitted event list now, not ten editions of it.** The candidate
