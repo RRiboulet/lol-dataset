@@ -425,8 +425,7 @@ test("a distinction is one fact row, with the unknown team when the source resol
 	const faker = players.get("pl-a9073fde3cbe");
 	assert.ok(faker !== undefined, "the fixture's MVP player must be in the dimension");
 	const mvp = honourRows.find((row) => row.title === "Finals MVP" && row.player_key === faker);
-	assert.ok(mvp, "the fixtures' finals MVP must be a fact row");
-	assert.equal(mvp.player_key, faker, "the fact joins the player dimension by key");
+	assert.ok(mvp, "the fixtures' finals MVP must be a fact row, joined to the player dimension by key");
 	assert.notEqual(mvp.event_key, 0, "the event is always stated");
 	assert.equal(typeof mvp.team_key, "number", "the team key is a number, 0 when unknown");
 	// The grain is (player, event, title): no derived measure rides along.

@@ -12,10 +12,10 @@ Added:
   (ticket 04 of the entity-enrichment series).
 - **The award history is crawled, not a fixture.** Fifty-four distinctions queries (one per
   admitted event, ~65 minutes of throttled requests, one game query that was missing from
-  the cache) brought the corpus to **24 distinctions** — nine Worlds editions, six MSI
+  the cache) brought the corpus to **24 distinctions** — nine Worlds editions, seven MSI
   editions, three Esports World Cups and MSI 2016's five All-Pro places. The gaps are the
-  source's: no MVP row exists for Worlds 2012/2013/2015/2016/2018–2020, and the guide says
-  so beside the answer rather than leaving a reader to guess (ticket 05).
+  source's: no MVP row exists for Worlds 2012/2013/2015/2016/2018–2020 nor MSI 2017–2021,
+  and the guide says so beside the answer rather than leaving a reader to guess (ticket 05).
 
 - **A player's tournament distinctions are a record now.** `honours.jsonl` carries the
   distinctions the source states for a player at an admitted tournament — Worlds and MSI

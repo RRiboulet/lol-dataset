@@ -10,7 +10,8 @@ devcontainer, pi extensions, skills and templates are in place, and the project'
 own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
 holds what the build emits today — the selected events with the report of every
-rejection, the team, player, champion and alias identity tables, a `honours.jsonl` of the **24
+rejection, the team, player, champion and alias identity tables (each team row
+carrying the registry's short name and each champion its release date), an `honours.jsonl` of the **24
 tournament distinctions** the source states (MVPs, All-Pro places), the games and
 matches of **54 events** (3 091 games, 2 068 series, 30 910 player rows), each game carrying
 its champion draft with the source's fidelity and a player row per participant, with
