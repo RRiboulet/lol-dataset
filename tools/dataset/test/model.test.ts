@@ -410,6 +410,14 @@ test("a team's short name rides on its dimension row, and absence is empty rathe
 	assert.equal(new Set(sharing.map((row) => row.team_id)).size, 2);
 });
 
+test("a champion's release date rides on its dimension row as a date, not as a date key", () => {
+	const ahri = rows("dim_champion").find((row) => row.champion_name === "Ahri");
+	assert.ok(ahri, "the model must carry the champion the curated layer carries");
+	assert.equal(ahri.release_date, "2011-12-14");
+	assert.equal("date_key" in ahri, false, "a release date is an attribute, not a join to dim_date");
+	assert.equal(rows("dim_champion").find((row) => row.champion_key === 0)?.release_date, "", "the unknown member states no date either");
+});
+
 test("coverage declarations survive into the model rather than being averaged away", () => {
 	const gamesById = new Map(input.games.map((game) => [game.id, game]));
 	for (const row of rows("dim_game")) {

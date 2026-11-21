@@ -342,15 +342,16 @@ Schema: `data/curated/schema/player.schema.json`. Fields: 3.
 
 ## `champions.jsonl` — Curated champion
 
-One row of data/curated/champions.jsonl: a champion the corpus references. Its canonical ID is anchored on Riot's numeric champion id, which a display rename does not change (see tools/dataset/identity.ts); the retired display name, where one is declared, is a row in aliases.jsonl. Name and title are carried verbatim from the source, HTML entities included (spec R7: source strings are preserved, not rewritten).
+One row of data/curated/champions.jsonl: a champion the corpus references. Its canonical ID is anchored on Riot's numeric champion id, which a display rename does not change (see tools/dataset/identity.ts); the retired display name, where one is declared, is a row in aliases.jsonl. The name and the release date are carried from the source, HTML entities included (spec R7: source strings are preserved, not rewritten).
 
-Schema: `data/curated/schema/champion.schema.json`. Fields: 3.
+Schema: `data/curated/schema/champion.schema.json`. Fields: 4.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | always | Opaque surrogate key derived from Riot's champion id (spec D3). Do not parse it: read the row through `name`. |
 | `name` | string | always | The champion's current display name as the source states it, so the row reads without decoding the ID (spec R12). |
 | `riotKey` | integer,null | always | Riot's numeric champion id (20 = Nunu). Null only when a scoreboard cited a champion name no registry row carries: that entity is minted and reported in identity-unresolved.jsonl rather than dropped. |
+| `releaseDate` | string | no | The day the champion entered the game, as the registry row that anchors its identity states it (`Ahri` -> `2011-12-14`). Absent only when the source states none, which for a champion minted from an unresolved name is always. Day precision only: a coarser source stamp fails the build rather than being rounded, so the dataset never claims a day the source did not. It is a dated attribute, not a date key: nothing joins on it, and the model keeps it beside `champion_name` rather than in `dim_date`. |
 
 ## `aliases.jsonl` — Curated identity alias
 

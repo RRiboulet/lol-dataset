@@ -44,7 +44,7 @@ data does not have — and the row counts are in its "At a glance" table.
 | `matches.jsonl` | one series (match) | Both sides with their series score, the declared length, the round label, the source id |
 | `series-conflicts.jsonl` | one conflicted game **or** series | Games detached from a series that names other teams, and series every game of which contradicts them |
 | `player-games.jsonl` | one player in one game | Champion, role, side, and the statistics the source states |
-| `teams.jsonl`, `players.jsonl`, `champions.jsonl` | one canonical entity | Canonical id, display name, page, and — for teams — the registry's short name (`Karmine Corp` → `KC`) |
+| `teams.jsonl`, `players.jsonl`, `champions.jsonl` | one canonical entity | Canonical id, display name, page, plus a team's short name (`Karmine Corp` → `KC`) and a champion's release date (`2011-12-14`) |
 | `aliases.jsonl` | one source string and entity | Every spelling, handle and page that resolves to a canonical entity, with the window the corpus dates |
 | `identity-unresolved.jsonl` | one unresolved source string | Strings that mint a provisional entity because no registry row answers |
 | `manifest.json` | the dataset | Every payload the build read (path, query, fetch time, sha256) and a digest of every emitted file |
@@ -231,6 +231,12 @@ Four rules make the model safe to join:
   `date_key`, `patch_key`) beside their grain keys, so "per event", "per date" and "per
   patch" need no hop through `dim_game`. The conformance suite checks every key against
   the dimension it names, and that a game's event agrees across all three facts.
+
+One date deliberately does **not** join `dim_date`: `dim_champion.release_date` is a dated
+attribute of the champion (2009 for the oldest champion in the corpus, 2026 for the
+newest). `dim_date` is the calendar of the games the facts describe, and a champion's
+release is not one of them — filling it with release dates would add calendar rows no fact
+can reach. Read it as a date, join the facts by `champion_key`.
 
 ## One game, from the curated record to the fact rows
 

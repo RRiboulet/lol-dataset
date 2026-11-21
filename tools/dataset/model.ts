@@ -556,6 +556,12 @@ function buildDimensions(input: ModelInput) {
 			natural("champion_id", "The curated champion's canonical ID (`ch-…`)."),
 			attribute("champion_name", "TEXT", "The champion's current display name."),
 			attribute("riot_key", "INTEGER", "Riot's numeric champion id.", "empty only for a champion minted from a name no registry carries"),
+			attribute(
+				"release_date",
+				"TEXT",
+				"The day the champion entered the game (`YYYY-MM-DD`), from the registry row that anchors its identity. A dated attribute, not a `date_key`: `dim_date` is the calendar of the games the facts describe, and a champion's release is not one of them.",
+				"empty when the source states no release date, which for a minted champion is always",
+			),
 		],
 		items: input.champions,
 		natural: (record) => record.id,
@@ -564,6 +570,7 @@ function buildDimensions(input: ModelInput) {
 			champion_id: record.id,
 			champion_name: record.name,
 			riot_key: record.riotKey ?? "",
+			release_date: record.releaseDate ?? "",
 		}),
 	});
 

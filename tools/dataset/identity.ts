@@ -136,6 +136,12 @@ export type ChampionRecord = {
 	name: string;
 	/** Riot's numeric champion id. Null only for an entity minted from an unresolved string. */
 	riotKey: number | null;
+	/**
+	 * The day the champion entered the game, as the registry row that anchors its identity
+	 * states it (`YYYY-MM-DD`), absent when it states none. A dated attribute, not a key:
+	 * nothing joins on it, and it is never rounded from a coarser source stamp.
+	 */
+	releaseDate?: string;
 };
 
 /**
@@ -603,7 +609,12 @@ export function assembleIdentity(
 	for (const champion of sources.champions) {
 		const id = surrogateId(KIND_PREFIX.champion, `riot:${champion.riotKey}`);
 		championIdByRiotKey.set(champion.riotKey, id);
-		champions.push({ id, name: displayName(champion.name), riotKey: champion.riotKey });
+		champions.push({
+			id,
+			name: displayName(champion.name),
+			riotKey: champion.riotKey,
+			...(champion.releaseDate === "" ? {} : { releaseDate: champion.releaseDate }),
+		});
 		names.set(id, displayName(champion.name));
 		register("champion", champion.name, id, "identity", "registry");
 	}

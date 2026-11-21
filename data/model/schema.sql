@@ -79,6 +79,7 @@ CREATE TABLE dim_champion (
   champion_id TEXT,
   champion_name TEXT,
   riot_key INTEGER,
+  release_date TEXT,
   PRIMARY KEY (champion_key),
   UNIQUE (champion_id)
 );

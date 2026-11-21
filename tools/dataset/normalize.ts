@@ -96,6 +96,12 @@ export type SourcePlayerName = {
 export type SourceChampion = {
 	name: string;
 	riotKey: number;
+	/**
+	 * Source `ReleaseDate` as a `YYYY-MM-DD` calendar date, empty when the source states
+	 * none. The registry row is the only place it comes from: the date is not inferred and
+	 * not taken from another champion.
+	 */
+	releaseDate: string;
 	sourceFile: string;
 };
 
@@ -553,7 +559,7 @@ export function normalizePlayerNames(payloads: CachedPayload[]): SourcePlayerNam
 	return dedupe(rows, (row) => `${row.page}\u0000${row.allName}`, (a, b) => a.id === b.id, "player name");
 }
 
-/** Champion registry rows, deduplicated by display name; one Riot id keeps one name. */
+/** Champion registry rows, deduplicated by display name; one Riot id keeps one name and one release date. */
 export function normalizeChampions(payloads: CachedPayload[]): SourceChampion[] {
 	const rows: SourceChampion[] = [];
 	for (const payload of payloads) {
@@ -564,10 +570,37 @@ export function normalizeChampions(payloads: CachedPayload[]): SourceChampion[] 
 			if (!Number.isInteger(riotKey) || riotKey <= 0) {
 				throw new Error(`${payload.file}: champion ${name} has no usable KeyInteger (${JSON.stringify(raw(row, "KeyInteger"))}) — Riot's champion id is the identity`);
 			}
-			rows.push({ name, riotKey, sourceFile: payload.file });
+			const stated = asText(raw(row, "ReleaseDate"));
+			const releaseDate = asDate(raw(row, "ReleaseDate"));
+			// A value the source states but this build cannot read is a defect, not an
+			// absence: emitting no key would turn a parse failure into "the source has none".
+			if (stated !== "" && releaseDate === "") {
+				throw new Error(`${payload.file}: champion ${name} states ReleaseDate ${JSON.stringify(stated)}, which is not a calendar date`);
+			}
+			// Cargo records how precisely it knows a date. The dataset states a day, so a
+			// coarser stamp has no column to go to: fail rather than round it to a day the
+			// source never claimed (spec B2).
+			if (releaseDate !== "") {
+				const precision = asInteger(raw(row, "ReleaseDate__precision"));
+				if (precision !== 1) {
+					throw new Error(
+						`${payload.file}: champion ${name} states ReleaseDate ${releaseDate} at precision ${Number.isNaN(precision) ? "unknown" : precision}, not day precision (1) — the dataset states a day only when the source does`,
+					);
+				}
+			}
+			rows.push({ name, riotKey, releaseDate, sourceFile: payload.file });
 		}
 	}
-	const byName = dedupe(rows, (row) => row.name, (a, b) => a.riotKey === b.riotKey, "champion");
+	const byName = dedupe(
+		rows,
+		(row) => row.name,
+		(a, b) => a.riotKey === b.riotKey && a.releaseDate === b.releaseDate,
+		"champion",
+		(seen, row, name) =>
+			seen.riotKey !== row.riotKey
+				? `champion ${JSON.stringify(name)}: ${seen.sourceFile} states Riot id ${seen.riotKey} and ${row.sourceFile} states ${row.riotKey}; one display name cannot denote two champions`
+				: `champion ${JSON.stringify(name)}: ${seen.sourceFile} states release date ${JSON.stringify(seen.releaseDate)} and ${row.sourceFile} states ${JSON.stringify(row.releaseDate)}; one champion cannot have two`,
+	);
 	const byKey = new Map<number, SourceChampion>();
 	for (const row of byName) {
 		const seen = byKey.get(row.riotKey);

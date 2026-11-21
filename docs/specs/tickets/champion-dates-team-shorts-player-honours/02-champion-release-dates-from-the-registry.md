@@ -1,7 +1,7 @@
 # 02: Every champion row states its release date
 
 **Blocked by:** 01 (landing order: same data files, no code dependency)
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -42,18 +42,18 @@ of this ticket. No new payload, no crawl.
 
 ## Acceptance criteria
 
-- [ ] All 171 committed champions carry `releaseDate`, and each value equals the fixture
+- [x] All 171 committed champions carry `releaseDate`, and each value equals the fixture
       row for that champion's Riot id.
-- [ ] A fixture row with a coarser precision fails the build with a message naming the
+- [x] A fixture row with a coarser precision fails the build with a message naming the
       champion; a fixture pair disagreeing on the date fails with a message naming both
       payloads. Both are tests over fixtures, no network.
-- [ ] A champion with no registry row (a minted one, if one ever appears) omits the key,
+- [x] A champion with no registry row (a minted one, if one ever appears) omits the key,
       and the model writes empty rather than a zero or a sentinel date.
-- [ ] The model column is a plain ISO date string, not a `date_key`, and the data
+- [x] The model column is a plain ISO date string, not a `date_key`, and the data
       dictionary says why.
-- [ ] The emitted output is byte-identical across two builds; `build --check` and
+- [x] The emitted output is byte-identical across two builds; `build --check` and
       `model --check` are clean; no other entity file changes.
-- [ ] Both dictionaries are regenerated in the same change.
+- [x] Both dictionaries are regenerated in the same change.
 
 ## Validation
 
@@ -64,3 +64,36 @@ spec B1, B2, B3 and B13, and decisions D1, D2 and D7.
 Landing order: second in the linear chain 01 → 02 → 03 → 04 → 05. The blocking edge is
 an ordering decision, not a code dependency: 01 and 02 do not touch each other's code,
 but both regenerate `data/curated/manifest.json` and `data/model/`.
+
+That prediction held, and is worth recording because the same conflict returns for 03–05.
+Rebasing this ticket onto the merged 01 hit four conflicts, exactly one of them a prose
+decision:
+
+- `CHANGELOG.md` — two `Added:` blocks under `Unreleased`; both bullets kept.
+- `docs/dataset/using-the-dataset.md` — both branches extended the same entity-file row;
+  the row now names both attributes.
+- `tools/dataset/test/model.test.ts` — both added a dimension test at the same anchor;
+  both kept, team first.
+- `data/curated/manifest.json` — generated, so it was taken from the base and rebuilt; no
+  hand-merge was possible or needed. The build, the model and the dictionaries were
+  regenerated after the rebase, and only the manifest actually moved.
+
+## Outcome
+
+The column needed no crawl, and the guards are all reachable from the recorded payloads:
+
+- **171 of 171 champions carry a date**, each equal to its registry row (compared against
+  the payloads, not against a rebuild of the same code). The corpus spans **2009-02-21**
+  (`Nunu & Willump`) to **2026-06-24**, and `Ahri` reads `2011-12-14`.
+- **Five tests**, one file (`tools/dataset/test/champions.test.ts`): the fixture-wide
+  value check, and one per way the date could lie — precision, disagreement, unreadable
+  value — plus the minted champion with nothing to state. Each negative case is a scratch
+  copy of the recorded payloads with one field changed, and the disagreement case finds
+  the narrow pull by content (a strict subset of another payload's champions) rather than
+  by row count, so a re-record cannot turn it into a no-op.
+- **A third guard the ticket did not ask for** came out of writing them: a `ReleaseDate`
+  the source states but no parser can read now fails instead of becoming an absent key.
+  That is the same class of lie as the other two, and it costs one branch.
+- **`dim_champion.release_date` is an attribute, not a `date_key`** (spec D7), and the
+  guide says so beside the model, because "join the date dimension" is the first thing a
+  star-schema reader will try.

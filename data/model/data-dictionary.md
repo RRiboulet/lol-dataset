@@ -189,6 +189,7 @@ One row per canonical champion; retired display names live in the alias bridge.
 | `champion_id` | TEXT | natural key | — | The curated champion's canonical ID (`ch-…`). |
 | `champion_name` | TEXT | attribute | — | The champion's current display name. |
 | `riot_key` | INTEGER | attribute | — | Riot's numeric champion id. Absent: empty only for a champion minted from a name no registry carries. |
+| `release_date` | TEXT | attribute | — | The day the champion entered the game (`YYYY-MM-DD`), from the registry row that anchors its identity. A dated attribute, not a `date_key`: `dim_date` is the calendar of the games the facts describe, and a champion's release is not one of them. Absent: empty when the source states no release date, which for a minted champion is always. |
 
 ### `dim_patch` — dimension
 
