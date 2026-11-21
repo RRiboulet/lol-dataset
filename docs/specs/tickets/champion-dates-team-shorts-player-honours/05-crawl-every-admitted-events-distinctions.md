@@ -31,8 +31,10 @@ visible there: the source's MVP coverage is partial (no Worlds MVP row for 2012,
   plus the regenerated curated dictionary — and, if 04 is merged, the regenerated model.
 - The worked question in `docs/dataset/using-the-dataset.md`, and the file's row count in
   the "at a glance" table.
-- `AGENTS.md`'s current-state paragraph and `CHANGELOG.md`'s unreleased section, as every
-  data-changing ticket before this one did.
+- `AGENTS.md`'s current-state paragraph and `CHANGELOG.md`'s unreleased section, so the
+  repository's description of what the build emits matches the data it carries — including
+  the team short names and champion release dates the earlier tickets in this series moved
+  without describing there.
 - The attribution check: `data/ATTRIBUTION.md` and `licenses/NOTICE.md` must cover the
   new payloads before they land.
 

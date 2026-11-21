@@ -79,7 +79,10 @@ rows pointing at one `tm-…` id rather than two teams. Four consequences worth 
   abbreviates `Karmine Corp`, and it reads well in a table, but it is not unique:
   measured, `ESC`, `GMB`, `IM` and `RED` each denote two teams in this corpus. Use
   `short` (in `teams.jsonl`, and on `dim_team`) to display a team, never to look one up
-  or to group by — that is what `team_id`, the page, or the alias bridge are for.
+  or to group by — that is what `team_id`, the page, or the alias bridge are for. It
+  comes from the team's **current** page, so a rebrand does not carry an older
+  abbreviation forward (`T1` never reads `SKT`), and a team the registries do not carry
+  has none at all.
 
 ### Events, selection and series that disagree
 

@@ -12,7 +12,8 @@ Added:
   close rename chains and the merge takes the value from whichever row states one. 193 of
   the 197 curated teams state a short and the 4 minted ones omit the key. It is a label,
   not an identity: measured, `ESC`, `GMB`, `IM` and `RED` each denote two teams, so the
-  field is for display and never a join (ticket 01, entity enrichment).
+  field is for display and never a join (ticket 01 of the entity-enrichment series — see
+  `docs/specs/2026-11-21-champion-dates-team-shorts-player-honours.md`).
 
 ## v1.1.0 — 2026-11-18
 

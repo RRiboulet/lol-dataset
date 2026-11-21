@@ -69,8 +69,17 @@ dependency.
   (`limit 2000`) and 3 582 rows (`limit 5000`), both with
   `_pageName,Name,OverviewPage,Region,RenamedTo,Short`; the old two payloads were deleted
   rather than kept, so no stale row without the field survives in the cache. Measured
-  afterwards: **no row in the registry has an empty short**, so an absent `short` in the
-  dataset always means "this team was minted", never "the source declined".
+  afterwards: **no row in the registry has an empty short**, so in today's corpus an
+  absent `short` means "this team was minted". That is a measurement, not a law of the
+  build: the field is read from the team's **current** page, not from any page in its
+  rename chain, because a rebrand renames the abbreviation too — carrying `SKT` onto `T1`
+  would be wrong. So a registered team whose current row states none would also omit the
+  key, and the schema says exactly that rather than promising "absent means minted".
+- **The `limit 2000` payload is kept although it is redundant.** It is a byte-exact
+  prefix of the `limit 5000` pull (2 000 rows, no field differing), so it carries no
+  information the wider payload does not. It stays because the cache is keyed by the
+  query: a re-run of the historical ad-hoc query then hits the cache instead of asking the
+  source for 2 000 rows it already has, and the cost is 39 917 bytes.
 - **The targeted `Teams` payloads were left as fetched.** They exist to close rename
   chains, and the normalizer already had the rule this needed: an empty value is an
   absence and a stated value wins, so the value travels from whichever payload states it

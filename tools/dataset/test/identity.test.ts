@@ -660,18 +660,25 @@ test("a short name stated by one payload wins over a payload that does not ask f
 	const page = "Karmine Corp";
 	try {
 		// Only the two registry-wide pulls ask for `Short`; the targeted closure pulls were
-		// recorded without it. Strip the field from the wide pulls and state it in a targeted
-		// pull instead: the value has to travel from whichever row states it.
-		for (const file of await payloadFiles(dir, "Teams")) {
+		// recorded without it. Which is which is read from the recorded query, not guessed
+		// from a row count, so a closure payload that grows cannot flip the classification.
+		const asksForShort = new Set<string>();
+		const files = await payloadFiles(dir, "Teams");
+		for (const file of files) {
+			const meta = JSON.parse(await readFile(sidecarPath(file), "utf8")) as { query: { fields: string; where?: string } };
+			if (meta.query.where === undefined && meta.query.fields.split(",").includes("Short")) asksForShort.add(file);
+		}
+		assert.equal(asksForShort.size, 2, "the fixtures must carry exactly the two registry-wide pulls that ask for Short");
+
+		// Strip the field from the wide pulls and state it in a targeted pull instead: the
+		// value has to travel from whichever row states it.
+		for (const file of files) {
 			const rows = await readRows(file);
 			let changed = false;
 			for (const row of rows) {
 				if (row.OverviewPage !== page) continue;
-				if (rows.length > 1000) {
-					delete row.Short;
-				} else {
-					row.Short = "KCX";
-				}
+				if (asksForShort.has(file)) delete row.Short;
+				else row.Short = "KCX";
 				changed = true;
 			}
 			if (changed) await savePayloadBody(file, JSON.stringify(rows));
@@ -680,9 +687,8 @@ test("a short name stated by one payload wins over a payload that does not ask f
 		assert.equal(stated?.short, "KCX", "the row that states a short must supply it, not the row that does not ask");
 
 		// Two rows that state *different* shorts are a contradiction, not a preference.
-		for (const file of await payloadFiles(dir, "Teams")) {
+		for (const file of asksForShort) {
 			const rows = await readRows(file);
-			if (rows.length <= 1000) continue;
 			for (const row of rows) if (row.OverviewPage === page) row.Short = "KC";
 			await savePayloadBody(file, JSON.stringify(rows));
 		}
@@ -691,6 +697,29 @@ test("a short name stated by one payload wins over a payload that does not ask f
 			/team page "Karmine Corp".*state different shorts/,
 			"two stated short names for one team must stop the build",
 		);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("a team's short name is decoded once, like every other emitted display string", async () => {
+	const dir = await fixtureCopy();
+	const page = "Karmine Corp";
+	try {
+		// The corpus states no entities in `Short` today, so nothing else would notice a
+		// regression that emitted the source string raw (spec B4 says it is decoded).
+		for (const file of await payloadFiles(dir, "Teams")) {
+			const rows = await readRows(file);
+			let changed = false;
+			for (const row of rows) {
+				if (row.OverviewPage !== page || !("Short" in row)) continue;
+				row.Short = "K&amp;M";
+				changed = true;
+			}
+			if (changed) await savePayloadBody(file, JSON.stringify(rows));
+		}
+		const team = (await buildDataset({ rawDir: dir })).identity.teams.find((row) => row.name === page);
+		assert.equal(team?.short, "K&M", "the source's entity must be decoded once, exactly as a display name is");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

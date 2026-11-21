@@ -503,8 +503,8 @@ function buildDimensions(input: ModelInput) {
 			attribute(
 				"short",
 				"TEXT",
-				"The team's short name as the source's registry states it (`Karmine Corp` -> `KC`). A label, not a key: two teams can share one, so never join on it.",
-				"empty when the source states no short name, which is the case for a team minted from a string no registry carries",
+				"The team's short name as the source's registry states it for the team's current page (`Karmine Corp` -> `KC`). A label, not a key: two teams can share one, so never join on it.",
+				"empty when the source states no short name for the team's current page — always the case for a minted team; a rename does not carry an older name's short forward",
 			),
 			attribute("overview_page", "TEXT", "The team's current wiki page.", "empty only for an entity minted from a string no registry carries"),
 			attribute("region", "TEXT", "The source's region string, verbatim; empty when it records none."),

@@ -521,6 +521,8 @@ export function assembleIdentity(
 	for (const { root, chain } of teamChains(sources.teams, redirectPage, danglingRenames)) {
 		const current = chain[chain.length - 1];
 		const id = surrogateId(KIND_PREFIX.team, root.page);
+		// The *current* page's short, deliberately: a rebrand renames the abbreviation too
+		// (SKT -> T1), so an older page's short would mislabel the team it renamed into.
 		const short = displayName(current.short);
 		teams.push({
 			id,
