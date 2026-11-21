@@ -4,6 +4,13 @@
 
 Added:
 
+- **The model carries a player's distinctions as a fact.** `fact_player_honour` holds one row
+  per (player, event, title) with the player and event keys required and `team_key` the
+  unknown member (`0`) when the source's team string resolves to no team — 7 rows from the
+  fixture. It carries no measure: counting MVPs is the analyst's `GROUP BY`, and the table
+  is deliberately the only fact without a `game_key`, which the per-game cross-checks skip
+  (ticket 04 of the entity-enrichment series).
+
 - **A player's tournament distinctions are a record now.** `honours.jsonl` carries the
   distinctions the source states for a player at an admitted tournament — Worlds and MSI
   MVPs, All-Pro team places, Best Coach — as one row per player per event per title, with

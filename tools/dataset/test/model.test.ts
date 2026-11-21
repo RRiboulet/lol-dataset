@@ -418,6 +418,23 @@ test("a champion's release date rides on its dimension row as a date, not as a d
 	assert.equal(rows("dim_champion").find((row) => row.champion_key === 0)?.release_date, "", "the unknown member states no date either");
 });
 
+test("a distinction is one fact row, with the unknown team when the source resolves none", () => {
+	const honourRows = rows("fact_player_honour");
+	assert.equal(honourRows.length, input.honours.length, "one row per curated distinction, no more and no fewer");
+	const players = new Map(rows("dim_player").map((row) => [String(row.player_id), row.player_key]));
+	const mvp = honourRows.find((row) => row.title === "Finals MVP");
+	assert.ok(mvp, "the fixtures' finals MVP must be a fact row");
+	assert.equal(mvp.player_key, players.get("pl-a9073fde3cbe"), "the fact joins the player dimension by key");
+	assert.notEqual(mvp.event_key, 0, "the event is always stated");
+	assert.equal(typeof mvp.team_key, "number", "the team key is a number, 0 when unknown");
+	// The grain is (player, event, title): no derived measure rides along.
+	const grain = honourRows.map((row) => `${row.player_key}\u0000${row.event_key}\u0000${row.title}`);
+	assert.equal(new Set(grain).size, grain.length, "the declared grain is unique");
+	for (const column of table("fact_player_honour").columns) {
+		assert.equal(column.key === "measure", false, `${column.name}: honours carry no measure`);
+	}
+});
+
 test("coverage declarations survive into the model rather than being averaged away", () => {
 	const gamesById = new Map(input.games.map((game) => [game.id, game]));
 	for (const row of rows("dim_game")) {
