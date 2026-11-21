@@ -49,6 +49,7 @@ import { COVERAGE_GROUPS, summariseGroup } from "./coverage.ts";
 import type { Coverage } from "./eras.ts";
 import type { GameRecord, MatchRecord } from "./games.ts";
 import type { AliasRecord, ChampionRecord, EntityKind, PlayerRecord, TeamRecord } from "./identity.ts";
+import type { HonourRecord } from "./honours.ts";
 import type { PlayerGameRecord } from "./playerGames.ts";
 
 export const DEFAULT_CURATED_DIR = path.join(import.meta.dirname, "..", "..", "data", "curated");
@@ -71,6 +72,7 @@ export const MODEL_TABLE_ORDER = [
 	"fact_game_side",
 	"fact_player_game",
 	"fact_draft_slot",
+	"fact_player_honour",
 ] as const;
 
 export type ModelTableName = (typeof MODEL_TABLE_ORDER)[number];
@@ -84,6 +86,7 @@ export type ModelInput = {
 	aliases: AliasRecord[];
 	games: GameRecord[];
 	playerGames: PlayerGameRecord[];
+	honours: HonourRecord[];
 };
 
 export type ModelColumn = {
@@ -321,6 +324,7 @@ export async function loadModelInput(curatedDir: string = DEFAULT_CURATED_DIR): 
 		aliases: await read<AliasRecord>("aliases.jsonl"),
 		games: await read<GameRecord>("games.jsonl"),
 		playerGames: await read<PlayerGameRecord>("player-games.jsonl"),
+		honours: await read<HonourRecord>("honours.jsonl"),
 	};
 }
 
@@ -1087,6 +1091,46 @@ function countBy<T>(items: T[], key: (item: T) => string): Map<string, number> {
 	return counts;
 }
 
+function factPlayerHonour(input: ModelInput, dimensions: ReturnType<typeof buildDimensions>): ModelTable {
+	// No measure, by design: counting MVPs is the analyst's job, and an `mvp_count` column
+	// would answer one question while closing the others.
+	const columns: ModelColumn[] = [
+		foreign("player_key", "dim_player.player_key", "The player the distinction belongs to."),
+		foreign("event_key", "dim_event.event_key", "The tournament the distinction was earned at."),
+		foreign(
+			"team_key",
+			"dim_team.team_key",
+			"The team the source states for the award, resolved through the alias registry.",
+			"0 (the unknown member) when the source's team string resolves to no team, or states none",
+		),
+		attribute("title", "TEXT", "The distinction in the source's own words (`Finals MVP`, `All Pro Team`)."),
+		attribute("type", "TEXT", "The source's award type, verbatim."),
+		attribute("source_page", "TEXT", "The page the award was stated on: the event page or a stage sub-page."),
+		attribute("place", "TEXT", "The source's place text when it states one.", "empty when the source states none, which is the case for every recorded row so far"),
+		attribute("place_number", "INTEGER", "The source's place as a number when it states one.", "empty when the source states none; a stated place of 1 is 1"),
+	];
+
+	const rows = input.honours.map((record): ModelRow => ({
+		player_key: requiredKey(dimensions.player.keys, record.playerId, "fact_player_honour"),
+		event_key: requiredKey(dimensions.event.keys, record.eventId, "fact_player_honour"),
+		team_key: optionalKey(dimensions.team.keys, record.teamId, "fact_player_honour"),
+		title: record.title,
+		type: record.type,
+		source_page: record.sourcePage,
+		place: record.place ?? "",
+		place_number: record.placeNumber === undefined ? "" : record.placeNumber,
+	}));
+
+	return buildFact({
+		name: "fact_player_honour",
+		description: "One row per distinction the source states for a player at a tournament.",
+		grain: "one row per player, event and distinction title",
+		columns,
+		rows,
+		grainColumns: ["player_key", "event_key", "title"],
+	});
+}
+
 /**
  * Every conformance violation in a built model, or an empty list.
  *
@@ -1106,7 +1150,7 @@ export function findModelViolations(input: ModelInput, result: ModelBuild): stri
 	};
 
 	const dimensions = ["dim_event", "dim_match", "dim_game", "dim_team", "dim_player", "dim_champion", "dim_patch", "dim_date"] as const;
-	const facts = ["fact_game_side", "fact_player_game", "fact_draft_slot"] as const;
+	const facts = ["fact_game_side", "fact_player_game", "fact_draft_slot", "fact_player_honour"] as const;
 
 	// Shape: one unknown member, unique keys, a natural key and a display name per row.
 	for (const name of dimensions) {
@@ -1175,7 +1219,10 @@ export function findModelViolations(input: ModelInput, result: ModelBuild): stri
 			for (const row of table.rows) {
 				const value = String(row[column.name]);
 				if (!targetValues.has(value)) violations.push(`${name}.${column.name}=${JSON.stringify(value)} does not resolve to ${targetTable}`);
-				if (REQUIRED_FACT_KEYS.has(column.name) && value === "0") {
+				// An award's team is legitimately unknown (the source's string resolved to no
+				// team, or stated none), so `team_key` is only required where a game states it.
+				const teamMayBeUnknown = name === "fact_player_honour" && column.name === "team_key";
+				if (!teamMayBeUnknown && REQUIRED_FACT_KEYS.has(column.name) && value === "0") {
 					violations.push(`${name}.${column.name} uses the unknown member where the curated record always states a value`);
 				}
 			}
@@ -1223,6 +1270,9 @@ export function findModelViolations(input: ModelInput, result: ModelBuild): stri
 	if (get("fact_draft_slot").rows.length !== expectedDraft) {
 		violations.push(`fact_draft_slot: ${get("fact_draft_slot").rows.length} rows, expected ${expectedDraft} draft entries`);
 	}
+	if (get("fact_player_honour").rows.length !== input.honours.length) {
+		violations.push(`fact_player_honour: ${get("fact_player_honour").rows.length} rows, expected ${input.honours.length} curated honours`);
+	}
 	if (get("bridge_alias").rows.length !== input.aliases.length) {
 		violations.push(`bridge_alias: ${get("bridge_alias").rows.length} rows, expected ${input.aliases.length} curated aliases`);
 	}
@@ -1267,6 +1317,9 @@ export function findModelViolations(input: ModelInput, result: ModelBuild): stri
 	// per-fact check and only contradicts across them.
 	const eventKeysByGame = new Map<string, Set<number>>();
 	for (const name of facts) {
+		// An honour is a fact about (player, event) with no game, so it has no `game_key` to
+		// agree on — only the per-game facts take part in this cross-check.
+		if (!get(name).columns.some((column) => column.name === "game_key")) continue;
 		for (const row of get(name).rows) {
 			const gameId = String(gameIdByKey.get(String(row.game_key)));
 			const set = eventKeysByGame.get(gameId) ?? new Set<number>();
@@ -1474,6 +1527,7 @@ export function assembleModel(input: ModelInput): ModelBuild {
 		["fact_game_side", factGameSide(input, dimensions)],
 		["fact_player_game", factPlayerGame(input, dimensions)],
 		["fact_draft_slot", factDraftSlot(input, dimensions)],
+		["fact_player_honour", factPlayerHonour(input, dimensions)],
 	]);
 	const tables = MODEL_TABLE_ORDER.map((name) => {
 		const table = tablesByName.get(name);

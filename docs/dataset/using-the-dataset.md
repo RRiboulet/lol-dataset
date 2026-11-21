@@ -231,6 +231,7 @@ the map.
 | `fact_game_side` | fact | one game per side | `(game_key, side)` |
 | `fact_player_game` | fact | one game per player | `(game_key, player_key)` |
 | `fact_draft_slot` | fact | one pick or ban | `(game_key, side, phase, entry_index)` |
+| `fact_player_honour` | fact | one player's distinction at one event | `(player_key, event_key, title)` |
 
 Four rules make the model safe to join:
 
@@ -249,6 +250,11 @@ Four rules make the model safe to join:
   `date_key`, `patch_key`) beside their grain keys, so "per event", "per date" and "per
   patch" need no hop through `dim_game`. The conformance suite checks every key against
   the dimension it names, and that a game's event agrees across all three facts.
+
+A distinction is a fact with no measure: `fact_player_honour` carries the keys (player, event,
+and the team when the source's string resolves — `0` when it does not) and the title, so
+"count the MVPs" is a `GROUP BY` you write, not a column somebody pre-computed. It is also
+the one fact with no `game_key`, which is why the per-game cross-checks skip it.
 
 One date deliberately does **not** join `dim_date`: `dim_champion.release_date` is a dated
 attribute of the champion (2009 for the oldest champion in the corpus, 2026 for the

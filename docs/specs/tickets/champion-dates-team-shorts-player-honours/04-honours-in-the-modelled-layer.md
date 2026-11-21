@@ -1,7 +1,7 @@
 # 04: The model carries player honours at one row per distinction
 
 **Blocked by:** 03
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -36,19 +36,19 @@ worked-query documentation belongs there, where the data exists.
 
 ## Acceptance criteria
 
-- [ ] `fact_player_honour.csv` has exactly one row per curated honour; a curated honour
+- [x] `fact_player_honour.csv` has exactly one row per curated honour; a curated honour
       missing from the fact, or a fact with no curated row, fails the model gate.
-- [ ] `player_key` and `event_key` always resolve; `team_key` is `0` exactly when the
+- [x] `player_key` and `event_key` always resolve; `team_key` is `0` exactly when the
       curated row carries no team id, and `0` is the documented unknown member.
-- [ ] The row carries title, award type, source page and place as attributes, and no
+- [x] The row carries title, award type, source page and place as attributes, and no
       derived measure.
-- [ ] Grain uniqueness is enforced and checked: (player, event, title, source page) — or
+- [x] Grain uniqueness is enforced and checked: (player, event, title, source page) — or
       whatever the curated id anchors — cannot repeat.
-- [ ] The coverage rollup still reproduces the committed per-event and per-era reports
+- [x] The coverage rollup still reproduces the committed per-event and per-era reports
       byte for byte.
-- [ ] `schema.sql`, the model dictionary and `MODEL_TABLE_ORDER` are regenerated
+- [x] `schema.sql`, the model dictionary and `MODEL_TABLE_ORDER` are regenerated
       together; `model --check` is clean; the SQLite and RFC 4180 load paths still pass.
-- [ ] The invariant that every emitted player is reachable from a fact does not fire for
+- [x] The invariant that every emitted player is reachable from a fact does not fire for
       a player whose only evidence is an honour (03 widened the curated gate; the model
       must agree).
 
@@ -59,3 +59,18 @@ Covers spec B11 and B13, and decisions D6 and D7.
 
 Note for landing: fourth in the linear chain 01 → 02 → 03 → 04 → 05; 05 rebuilds the
 model from a larger corpus on top of this ticket, so the two do not land side by side.
+
+## Outcome
+
+- **7 rows**, one per curated distinction, grain `(player_key, event_key, title)` enforced by
+  the primary key and re-checked by the conformance suite; `team_key` is a real key for all
+  seven (the fixture's teams resolve) and `0` is legal by design when a string does not.
+- **No measure column**, and the conformance check that refuses a derived measure passes over
+  the new table.
+- **One check had to learn about a fact without a game.** `fact_player_honour` is the first
+  fact with no `game_key`, so the "one game presents one event across every fact" cross-check
+  now skips a table whose columns carry no `game_key` rather than grouping every honour under
+  `game undefined` — which is what it did on the first run, failing the model build with a
+  message that named no game.
+- `schema.sql`, the model dictionary and `MODEL_TABLE_ORDER` are regenerated;
+  `model --check` is clean and the coverage rollup is untouched.

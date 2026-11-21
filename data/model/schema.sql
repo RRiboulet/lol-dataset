@@ -187,3 +187,16 @@ CREATE TABLE fact_draft_slot (
   champion_key INTEGER REFERENCES dim_champion(champion_key),
   PRIMARY KEY (game_key, side, phase, entry_index)
 );
+
+-- fact_player_honour: One row per distinction the source states for a player at a tournament.
+CREATE TABLE fact_player_honour (
+  player_key INTEGER REFERENCES dim_player(player_key),
+  event_key INTEGER REFERENCES dim_event(event_key),
+  team_key INTEGER REFERENCES dim_team(team_key),
+  title TEXT,
+  type TEXT,
+  source_page TEXT,
+  place TEXT,
+  place_number INTEGER,
+  PRIMARY KEY (player_key, event_key, title)
+);
