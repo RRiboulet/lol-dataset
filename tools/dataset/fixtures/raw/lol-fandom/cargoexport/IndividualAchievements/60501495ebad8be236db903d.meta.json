@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "IndividualAchievements",
+    "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+    "where": "OverviewPage LIKE '2026 Mid-Season Invitational%'",
+    "order_by": "Player",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=IndividualAchievements&fields=Player%2CLink%2CTeam%2COverviewPage%2CDisplay%2CPlace%2CPlace_Number%2CAchievementType&where=OverviewPage+LIKE+%272026+Mid-Season+Invitational%25%27&order_by=Player&limit=500",
+  "fetchedAt": "2026-11-21T19:23:59.686Z",
+  "status": 200,
+  "bodySha256": "b5956f99e3ca68226aa487ae5d3099921f26ff1350c478093b9afdedd3fc59aa",
+  "encoding": "gzip"
+}

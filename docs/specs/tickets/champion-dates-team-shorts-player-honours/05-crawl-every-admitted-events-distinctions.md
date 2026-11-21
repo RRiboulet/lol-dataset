@@ -1,7 +1,7 @@
 # 05: Every admitted event's distinctions are in the committed dataset
 
 **Blocked by:** 04
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -43,20 +43,20 @@ names or career awards across regional leagues, and neither is in scope here.
 
 ## Acceptance criteria
 
-- [ ] Every one of the 54 admitted events has been queried for distinctions; the report
+- [x] Every one of the 54 admitted events has been queried for distinctions; the report
       says which events stated none.
-- [ ] A re-run of the crawl issues zero requests for already-cached queries — the cache
+- [x] A re-run of the crawl issues zero requests for already-cached queries — the cache
       key, not a row counter, decides what is missing.
-- [ ] The games, series and player counts are unchanged by this change; only honours,
+- [x] The games, series and player counts are unchanged by this change; only honours,
       the players an honour is the sole evidence for, and the re-pinned manifest move.
-- [ ] The committed dataset answers "who was MVP at Worlds 2014?" and "who was finals MVP
+- [x] The committed dataset answers "who was MVP at Worlds 2014?" and "who was finals MVP
       at Worlds 2024?" from the files alone, and says nothing for a year the source has no
       row for.
-- [ ] Every new payload is pinned in the manifest with its query and fetch time, and the
+- [x] Every new payload is pinned in the manifest with its query and fetch time, and the
       tamper report names the files it feeds.
-- [ ] `build --check` and `model --check` are clean; both dictionaries are regenerated;
+- [x] `build --check` and `model --check` are clean; both dictionaries are regenerated;
       `node tools/check.ts` is green with no network.
-- [ ] Attribution covers the new payloads.
+- [x] Attribution covers the new payloads.
 
 ## Validation
 
@@ -68,3 +68,27 @@ left unmeasured.
 Note for landing: last in the linear chain 01 → 02 → 03 → 04 → 05. This ticket
 regenerates every data file and the model, which is why it closes the chain rather than
 running beside it.
+
+## Outcome
+
+- **The crawl ran to completion in one process**: 53 requests of ~65 minutes, the plan's
+  216 game queries and two already-recorded distinctions queries skipped (`no request`).
+  One *game* query was not in the cache and was fetched with the rest — the data did not
+  move, so the corpus was complete for games and only the awards were new.
+- **24 distinctions in the committed dataset**, from 19 events: nine Worlds editions
+  (Season 1, 2014, 2017, 2021–2026), six MSI editions (2015, 2016, 2022–2026), three
+  Esports World Cups and MSI 2016's five All-Pro places. `fact_player_honour` carries the
+  same 24 rows.
+- **The gaps are the source's and the guide says so**: no MVP row exists for Worlds
+  2012/2013/2015/2016/2018–2020, and MSI has none between 2017 and 2022. The worked
+  question in `using-the-dataset.md` lists all 15 MVP rows and names the missing editions,
+  so an empty answer is never mistaken for a dataset failure.
+- **Title coverage measured**: `Finals MVP` (11), `Most Valuable Player` (5), `All Pro Team`
+  (5), `MVP` (1), `MSI MVP` (1), `Tournament MVP` (1) — four spellings for "MVP", left as
+  the source words them.
+- **One row carries no team**: the Esports World Cup 2025 tournament MVP states a string the
+  registry resolves to nothing, so it is emitted with the string and `team_key` 0 — the
+  unknown member doing the job it exists for.
+- Gates: `build --check` and `model --check` clean, both dictionaries regenerated,
+  `AGENTS.md`'s current state and the CHANGELOG updated, attribution already covers the
+  table (ticket 03).

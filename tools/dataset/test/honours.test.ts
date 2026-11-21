@@ -54,7 +54,10 @@ async function guard(): Promise<Record<string, unknown>> {
 
 test("the recorded distinctions resolve to an event, a player, and the team the registry knows", async () => {
 	const { honours, files } = await buildDataset({ rawDir: FIXTURE_RAW });
-	assert.equal(honours.length, 7, "the fixtures carry six awards at MSI 2016 and one at Worlds 2024");
+	// The corpus grew to every admitted event (ticket 05), so the assertions below are about
+	// this fixture's events rather than about the file's size.
+	const msi2016 = honours.filter((row) => row.sourcePage === "2016 Mid-Season Invitational");
+	assert.equal(msi2016.length, 6, "the fixtures carry six awards at MSI 2016");
 
 	// The MVP row: a page-name player, a legacy team string that resolves to the current
 	// entity, and the title exactly as the source words it.
@@ -102,7 +105,8 @@ test("an award outside the admitted events is dropped and counted, not emitted",
 			return changed;
 		});
 		const { honours, honoursOutside } = await buildDataset({ rawDir: dir });
-		assert.equal(honours.length, 1, "only the Worlds 2024 award is still under an admitted event");
+		assert.equal(honours.filter((row) => row.sourcePage === "2016 Mid-Season Invitational").length, 0, "no MSI 2016 award survives");
+		assert.equal(honours.filter((row) => row.sourcePage === "2024 Season World Championship/Main Event").length, 1, "the Worlds 2024 award is untouched");
 		assert.deepEqual(honoursOutside, ["LCS/2016 Season/Spring Season"], "the page is counted, so a crawl that states awards cannot pass for one that states none");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
@@ -159,8 +163,10 @@ test("two payloads carrying the same award produce one row", async () => {
 		const copy = path.join(path.dirname(file), "aaaaaaaaaaaaaaaaaaaaaaaa.json.gz");
 		await writeFile(copy, await readFile(file));
 		await writeFile(copy.replace(/\.json\.gz$/, ".meta.json"), await readFile(file.replace(/\.json\.gz$/, ".meta.json")));
-		const { honours } = await buildDataset({ rawDir: dir });
-		assert.equal(honours.length, 7, "the same award twice is one distinction");
+		const duplicated = await buildDataset({ rawDir: dir });
+		const single = await buildDataset({ rawDir: FIXTURE_RAW });
+		assert.equal(duplicated.honours.length, single.honours.length, "the same award twice is one distinction");
+		assert.deepEqual(duplicated.honours, single.honours, "and the rows are identical, ids included");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

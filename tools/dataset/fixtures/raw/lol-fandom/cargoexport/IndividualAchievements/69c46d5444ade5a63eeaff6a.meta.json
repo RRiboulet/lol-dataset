@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "IndividualAchievements",
+    "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+    "where": "OverviewPage LIKE 'Esports World Cup 2025%'",
+    "order_by": "Player",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=IndividualAchievements&fields=Player%2CLink%2CTeam%2COverviewPage%2CDisplay%2CPlace%2CPlace_Number%2CAchievementType&where=OverviewPage+LIKE+%27Esports+World+Cup+2025%25%27&order_by=Player&limit=500",
+  "fetchedAt": "2026-11-21T19:19:49.131Z",
+  "status": 200,
+  "bodySha256": "37328e41c32f162f01abf9b2b577f5ed085f5c6875bf0ae6dc68b627ea60070f",
+  "encoding": "gzip"
+}

@@ -102,6 +102,43 @@ the same is the analyst's judgement. And it does not claim completeness: the sou
 a Worlds MVP for some editions and not others (2012, 2013, 2015, 2016 and 2018–2020 have
 no row), so "no honour" means "the source states none", not "nobody won".
 
+### 5. Who was MVP at each Worlds and MSI?
+
+`honours.jsonl` answers it, and says nothing for the years the source states no award:
+
+```bash
+jq -r 'select(.title | test("MVP")) | [.eventName, .title, .playerName, (.teamName // "-")] | @tsv' \
+  data/curated/honours.jsonl | sort
+```
+
+| Event | Title | Player | Team |
+|---|---|---|---|
+| Worlds Season 1 | Most Valuable Player | Shushei | Fnatic |
+| Worlds 2014 | Most Valuable Player | Mata | Samsung White |
+| Worlds 2017 | Finals MVP | Ruler | Samsung Galaxy |
+| Worlds 2021 | Finals MVP | Scout | EDward Gaming |
+| Worlds 2022 | Finals MVP | Kingen | Kiwoom DRX |
+| Worlds 2023 | Finals MVP | Zeus | T1 |
+| Worlds 2024 | Finals MVP | Faker | T1 |
+| Worlds 2025 | Finals MVP | Gumayusi | T1 |
+| Worlds 2026 | Finals MVP | Knight | Bilibili Gaming |
+| MSI 2015 | MSI MVP | Clearlove | EDward Gaming |
+| MSI 2016 | MVP | Faker | T1 |
+| MSI 2023 | Finals MVP | Knight | JD Gaming |
+| MSI 2024 | Finals MVP | Lehends | Gen.G |
+| MSI 2025 | Finals MVP | Chovy | Gen.G |
+| MSI 2026 | Finals MVP | Zeus | Hanwha Life Esports |
+
+Nine Worlds editions and six MSI editions state an MVP; the rest do not (there is no row
+for Worlds 2012, 2013, 2015, 2016, 2018–2020, nor for MSI 2017–2022 except 2016). That is
+the source's coverage, not the dataset's censorship: an absent row means "the source states
+no award for that edition", and the dataset never fills the gap from a news article or a
+guess. Four titles denote the same idea (`MVP`, `MSI MVP`, `Most Valuable Player`, `Finals
+MVP`) because the source words them differently per page, and the file keeps the wording.
+The 24 rows also include All-Pro places and an Esports World Cup tournament MVP; `type` is
+the source's own category (`Season Award` for all of them), so filter on `title` when you
+mean MVP.
+
 ### Events, selection and series that disagree
 
 `event-selection.jsonl` is not a log: it is the complete decision table for every event

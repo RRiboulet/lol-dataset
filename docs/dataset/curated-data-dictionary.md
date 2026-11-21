@@ -41,7 +41,7 @@ that forgets the dictionary fails the gate rather than leaving a stale table beh
 | `matches.jsonl` | 2068 row(s) | `match.schema.json` | Curated match (series) |
 | `series-conflicts.jsonl` | 14 row(s) | `series-conflicts.schema.json` | Series conflict report |
 | `player-games.jsonl` | 30910 row(s) | `player-game.schema.json` | Curated player-game |
-| `honours.jsonl` | 7 row(s) | `honour.schema.json` | Curated honour |
+| `honours.jsonl` | 24 row(s) | `honour.schema.json` | Curated honour |
 | `teams.jsonl` | 197 row(s) | `team.schema.json` | Curated team |
 | `players.jsonl` | 1140 row(s) | `player.schema.json` | Curated player |
 | `champions.jsonl` | 171 row(s) | `champion.schema.json` | Curated champion |
