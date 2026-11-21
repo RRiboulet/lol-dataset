@@ -36,12 +36,20 @@ async function committedPlan(): Promise<Map<string, CargoQuery[]>> {
 test("the generated queries are exactly the ones the committed plan fetched", async () => {
 	const byPage = await committedPlan();
 	assert.ok(byPage.size >= 5, "the committed plan must name several events, or this check proves nothing");
+	// The committed plan predates the distinctions query (ticket 03 of the enrichment
+	// series), so the generated plan is the committed one plus exactly that table. Every
+	// committed query still has to match byte for byte: its cache key is the payload's
+	// file name, and a changed field list would orphan the fixture.
+	const newest = new Set(["IndividualAchievements"]);
 	for (const [overviewPage, committed] of byPage) {
 		const generated = eventQueries({ overviewPage } as Parameters<typeof eventQueries>[0]);
-		assert.equal(generated.length, committed.length, `${overviewPage}: one query per event table`);
+		assert.equal(generated.length, committed.length + newest.size, `${overviewPage}: the committed tables plus the distinctions query`);
 		for (const query of generated) {
 			const same = committed.find((candidate) => candidate.tables === query.tables);
-			assert.ok(same, `${overviewPage}: the plan has a ${query.tables} query`);
+			if (same === undefined) {
+				assert.ok(newest.has(query.tables), `${overviewPage}: the plan has a ${query.tables} query`);
+				continue;
+			}
 			assert.deepEqual(
 				query,
 				same,
@@ -53,10 +61,10 @@ test("the generated queries are exactly the ones the committed plan fetched", as
 
 test("an event's queries address the page the plan addresses, with the stage pages included", () => {
 	const queries = eventQueries({ overviewPage: "2023 Season World Championship" } as Parameters<typeof eventQueries>[0]);
-	assert.equal(queries.length, 4, "four tables per event");
+	assert.equal(queries.length, 5, "the four game-bearing tables plus the distinctions");
 	assert.deepEqual(
 		queries.map((query) => query.tables),
-		["ScoreboardGames", "ScoreboardPlayers", "MatchSchedule", "PicksAndBansS7"],
+		["ScoreboardGames", "ScoreboardPlayers", "MatchSchedule", "PicksAndBansS7", "IndividualAchievements"],
 		"one query per event table, in a stable order",
 	);
 	assert.deepEqual(
@@ -66,8 +74,9 @@ test("an event's queries address the page the plan addresses, with the stage pag
 			"OverviewPage LIKE '2023 Season World Championship%'",
 			"OverviewPage LIKE '2023 Season World Championship%'",
 			"GameId LIKE '2023 Season World Championship%'",
+			"OverviewPage LIKE '2023 Season World Championship%'",
 		],
-		"a prefix match, so a stage page's games are collected under their parent event",
+		"a prefix match, so a stage page's games — and its awards — are collected under their parent event",
 	);
 	for (const query of queries) assert.equal(query.endpoint, "cargoexport");
 });

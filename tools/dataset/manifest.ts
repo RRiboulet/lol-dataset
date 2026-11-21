@@ -119,6 +119,7 @@ export const TABLE_CONSUMERS: Readonly<Record<string, readonly string[]>> = {
 	MatchSchedule: ["matches.jsonl", "games.jsonl", "event-games.jsonl"],
 	PicksAndBansS7: ["games.jsonl"],
 	ScoreboardPlayers: ["player-games.jsonl", "players.jsonl", "teams.jsonl", "champions.jsonl", "aliases.jsonl", "identity-unresolved.jsonl"],
+	IndividualAchievements: ["honours.jsonl", "players.jsonl", "aliases.jsonl", "identity-unresolved.jsonl"],
 };
 
 /**

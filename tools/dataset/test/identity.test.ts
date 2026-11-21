@@ -427,6 +427,7 @@ test("a declared era bounds a single candidate, and an inverted window is refuse
 			matches: [],
 			drafts: [],
 			playerGames: [],
+			honours: [],
 		};
 		const identity = assembleIdentity(empty, await loadDeclaredAliases(aliasFile));
 		const inside = identity.index.resolve("team", "CLG Prime", "2012-11-30");

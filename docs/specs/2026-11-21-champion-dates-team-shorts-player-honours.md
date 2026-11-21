@@ -94,9 +94,11 @@ Two teams sharing a short is data, not a defect, and the build must not "fix" it
 per player distinction at an admitted event, carrying: the player and the event it is
 attached to, the source page it was stated on, the distinction title as the source
 states it (`Display`), the source's award type, the source's team string and the
-resolved team id where the registry resolves one, and the source's place, place number
-and description where it states them. No row is dropped for being unusual:
-"Best Coach" and "All Pro Team" are distinctions the source states.
+resolved team id where the registry resolves one, and the source's place and place number
+where it states them. No row is dropped for being unusual: "Best Coach" and "All Pro
+Team" are distinctions the source states. The source's `Description` column is **not**
+carried: measured on the recorded rows it is `-` on a tournament MVP and the full roster's
+wikitext on an All-Pro row, so it is markup, not a description of the award.
 
 **B7 — A distinction has a stable identity and a declared grain.** Its canonical id is
 derived from the source tuple that identifies the row (event page, player page,

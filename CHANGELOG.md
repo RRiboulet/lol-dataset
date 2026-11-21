@@ -4,6 +4,20 @@
 
 Added:
 
+- **A player's tournament distinctions are a record now.** `honours.jsonl` carries the
+  distinctions the source states for a player at an admitted tournament — Worlds and MSI
+  MVPs, All-Pro team places, Best Coach — as one row per player per event per title, with
+  the title and the award type as the source words them (`MVP`, `Most Valuable Player` and
+  `MSI MVP` stay three strings; the table states one type, `Season Award`, for every
+  award). Scoped to the tournament, not the season: a regional All-Pro team is not fetched.
+  Measured on the recorded fixture (MSI 2016 and Worlds 2024), a player is named by a page
+  or a handle (`xiaohu` → `Xiaohu`) and the team by a string the registry may resolve
+  (`SKT T1` → `T1`); a team string nothing resolves is carried with no entity, because an
+  award is context rather than evidence a team existed, while a player named only by an
+  award is emitted and reported like any other reference. The crawl gains a fifth
+  per-event query, and `Description` is deliberately not fetched: measured, it is `-` or
+  the full roster's wikitext (ticket 03 of the entity-enrichment series).
+
 - **Every team row carries the registry's short name.** `teams.jsonl` and `dim_team` state
   the abbreviation the source's `Teams` registry uses (`Karmine Corp` → `KC`), so a team
   reads the way an analyst writes it without a lookup. The two registry-wide `Teams`

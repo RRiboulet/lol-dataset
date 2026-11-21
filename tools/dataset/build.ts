@@ -38,6 +38,8 @@ import type { GameFormats } from "./formats.ts";
 import { DEFAULT_FORMAT_FILE, loadGameFormats } from "./formats.ts";
 import type { ScoreboardAssembly } from "./games.ts";
 import { assembleScoreboards, selectedGameIds } from "./games.ts";
+import type { HonourRecord } from "./honours.ts";
+import { assembleHonours } from "./honours.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { assembleIdentity, DEFAULT_ALIAS_FILE, emitReferenced, loadDeclaredAliases } from "./identity.ts";
 import type { Manifest } from "./manifest.ts";
@@ -64,6 +66,7 @@ export const OUTPUTS = {
 	"matches.jsonl": { schema: "match.schema.json" },
 	"series-conflicts.jsonl": { schema: "series-conflicts.schema.json" },
 	"player-games.jsonl": { schema: "player-game.schema.json" },
+	"honours.jsonl": { schema: "honour.schema.json" },
 	"teams.jsonl": { schema: "team.schema.json" },
 	"players.jsonl": { schema: "player.schema.json" },
 	"champions.jsonl": { schema: "champion.schema.json" },
@@ -89,6 +92,8 @@ export type BuildOptions = {
 };
 
 export type BuildResult = AssembledDataset & {
+	/** The tournament distinctions the corpus states (ticket 03 of the enrichment series). */
+	honours: HonourRecord[];
 	/** The bytes to write, keyed by file name. */
 	files: Record<OutputFile, string>;
 	/** The provenance manifest: every payload read, and the digests of `files`. */
@@ -194,6 +199,11 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	// before it would report every game's player coverage as unavailable.
 	const coverage = assembleCoverage({ events: assembled.events, games: scoreboards.games, eras });
 
+	// Distinctions after player games: the players they name are observations identity has
+	// already resolved, and a player named *only* by an award becomes a referenced entity
+	// here, which is what puts a coach in `players.jsonl` without a player-game row.
+	const honours = assembleHonours({ source: sources.honours, events: assembled.events, identity: assembledIdentity.index });
+
 	// The identity tables the dataset emits, named by the emitted records themselves.
 	// This is the last assembly step on purpose: which rows are emitted is fully known
 	// only here — a series row whose games name other teams is held back above — so the
@@ -225,6 +235,10 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		referencedIds.add(row.teamId);
 		referencedIds.add(row.championId);
 	}
+	for (const row of honours) {
+		referencedIds.add(row.playerId);
+		if (row.teamId !== undefined) referencedIds.add(row.teamId);
+	}
 	const identity = emitReferenced(assembledIdentity, referencedIds);
 
 	const files: Record<OutputFile, string> = {
@@ -237,6 +251,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		"matches.jsonl": toJsonl(scoreboards.matches),
 		"series-conflicts.jsonl": toJsonl(scoreboards.seriesConflicts),
 		"player-games.jsonl": toJsonl(playerGames.rows),
+		"honours.jsonl": toJsonl(honours),
 		"teams.jsonl": toJsonl(identity.teams),
 		"players.jsonl": toJsonl(identity.players),
 		"champions.jsonl": toJsonl(identity.champions),
@@ -270,10 +285,11 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		eventCoverage: coverage.events,
 		eraCoverage: coverage.eras,
 		playerGames: playerGames.rows,
+		honours,
 		eras,
 	});
 
-	return { ...assembled, files, manifest, manifestText, identity, scoreboards, coverage, playerGames, rule, eras, formats };
+	return { ...assembled, files, manifest, manifestText, identity, scoreboards, coverage, playerGames, honours, rule, eras, formats };
 }
 
 /**

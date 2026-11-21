@@ -1,7 +1,7 @@
 # 03: A tournament distinction is a curated record
 
 **Blocked by:** 02 (landing order: same data files, no code dependency)
-**Status:** ready
+**Status:** done
 
 ## What to build
 
@@ -52,24 +52,24 @@ id is emitted when the registry already knows it (spec D8).
 
 ## Acceptance criteria
 
-- [ ] An award stated on an admitted event's page, and one stated on a stage sub-page of
+- [x] An award stated on an admitted event's page, and one stated on a stage sub-page of
       it, both resolve to that event; an award from a regional season page or a rejected
       event is never queried and never emitted.
-- [ ] A row carries the player id, the event id, the page the award was stated on, the
+- [x] A row carries the player id, the event id, the page the award was stated on, the
       title as stated, the award type, the source's team string, the resolved team id
       when the registry resolves it, and place/place number/description when stated.
-- [ ] Player resolution is proved on the measured cases: a page name; the alias
+- [x] Player resolution is proved on the measured cases: a page name; the alias
       `knight (Zhuo Ding)` → `Knight (Zhuo Ding)`; a coach with no player-game row (emitted
       and accepted by the gate); a handle shared by two pages (reported in
       `identity-unresolved.jsonl`, never guessed).
-- [ ] A team string the registry cannot resolve keeps the string, leaves the team id
+- [x] A team string the registry cannot resolve keeps the string, leaves the team id
       absent, mints no team row, and does not fail the build.
-- [ ] Reading one payload twice produces one row per award; two awards with different
+- [x] Reading one payload twice produces one row per award; two awards with different
       titles at the same event and player produce two rows; a second build reproduces the
       same ids.
-- [ ] The payload is pinned in the manifest, the tamper report names `honours.jsonl` for
+- [x] The payload is pinned in the manifest, the tamper report names `honours.jsonl` for
       it, and the curated dictionary is regenerated in the same change.
-- [ ] `build --check` is clean, the test suite needs no network, and two builds are
+- [x] `build --check` is clean, the test suite needs no network, and two builds are
       byte-identical.
 
 ## Validation
@@ -85,3 +85,40 @@ Landing order: third in the linear chain 01 → 02 → 03 → 04 → 05. The blo
 ordering decision, not a code dependency: this ticket could be built on its own, but it
 regenerates `data/curated/manifest.json`, the curated dictionary and the fixtures, which
 01 and 02 already moved.
+
+## Outcome
+
+Built over two recorded payloads — `2016 Mid-Season Invitational` (six rows: the MVP and
+five All-Pro places) and `2024 Season World Championship/Main Event` (one finals MVP) —
+which emit **7 rows**, and one full build (§the fixtures) is the reviewable evidence for
+every decision below.
+
+- **The page→event join is the crawl's own rule.** `2024 Season World Championship/Main
+  Event` resolves to `Worlds 2024`; the row keeps the stage page on `sourcePage` for
+  provenance, and an award whose page is under no admitted event stops the build rather
+  than floating free of the event list.
+- **Players resolve from `Player`, because `Link` is null on every recorded row.** A page
+  name resolves as itself, and a handle through the registry (`xiaohu` → `Xiaohu`,
+  `mlxg` → `Mlxg`). A player named only by an award is observed like any other reference,
+  so the entity is emitted and an unknown one is reported: tested with a made-up coach, who
+  lands in `players.jsonl` and `identity-unresolved.jsonl`.
+- **A team string is context, never an entity.** `SKT T1` resolves to `T1` through the
+  alias registry; a string nothing carries stays on the row with no `teamId` and **mints
+  nothing** — the first implementation observed the string (copying the player path) and
+  the test caught a team invented from an award, so the observation was removed. A string
+  that names several teams resolves to none of them (the ambiguity guard), because the row
+  still reads without it.
+- **`Description` is not carried**, and the spec says why: it is `-` or roster wikitext,
+  not a description. The plan therefore does not ask for the column, so the fixture payloads
+  and the crawl plan describe the same query.
+- **The crawl gained a fifth per-event query** (`IndividualAchievements`, same prefix rule,
+  ordered by `Player`), and `plan.test.ts` now asserts the generated plan is the committed
+  one plus exactly that table — every committed query still has to match byte for byte, or
+  the fixture's cache key would move.
+- **The invariant gate widened by one clause**, as the spec required: a player named by an
+  honour counts as referenced, so a coach is legal while an orphan entity still is not;
+  distinctions also get unique-id and event/player/team reference checks.
+- **Five tests** (`honours.test.ts`) cover the resolved shape, the schema, the
+  out-of-scope award, the coach, the unresolvable team, and the folded duplicate.
+
+Left for ticket 04: the model fact. Left for ticket 05: the 54-event crawl.

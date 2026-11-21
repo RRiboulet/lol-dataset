@@ -1,6 +1,6 @@
 {
   "format": "lol-dataset-provenance/1",
-  "entityDigest": "d58db63bc2590125a10385b7166a9e43335a018f24b52dee0f162ad7e46e42a0",
+  "entityDigest": "0e5f795c5f5b9e12bb8b7067005e1928da3129e31ed7faa310e23eb8e4011d91",
   "entities": [
     {
       "file": "events.jsonl",
@@ -46,6 +46,11 @@
       "file": "player-games.jsonl",
       "records": 30910,
       "sha256": "5da2b3676d1a95a4e0a340aad737b84ce4b48e3cdcb5f4a7f29e331b256ffaff"
+    },
+    {
+      "file": "honours.jsonl",
+      "records": 7,
+      "sha256": "0bc23fa3afd3dceb9a179832780d19bb444a42cb23af1f8ef0a620ff9607de7a"
     },
     {
       "file": "teams.jsonl",
@@ -103,6 +108,38 @@
         "where": "Name IN ('Alistar','Amumu','Annie','Aphelios','Ashe','Aurora','Azir','Braum','Cho''Gath','Corki','Elise','Fiora','Gnar','Gragas','Irelia','Janna','Jax','Jayce','K''Sante','Kalista','Karthus','LeBlanc','Lee Sin','Lucian','Lulu','Milio','Miss Fortune','Nautilus','Nunu &amp; Willump','Orianna','Rell','Renata Glasc','Rengar','Sejuani','Singed','Sivir','Soraka','Syndra','Tristana','Twisted Fate','Twitch','Vayne','Warwick','Wukong')",
         "order_by": "Name ASC",
         "limit": 60
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/e9ed4c1b76870b9314ed06e2.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "835253785e11984a6a6811773b64f0757af77f9e500f227c0557753fb2cf5338",
+      "fetchedAt": "2026-11-21T16:25:26.489Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2024 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/ece9714b535611debd12077b.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "2a63b52b95c882e88d224fa72c906380777bcd3a4e92903528a0409a756f610b",
+      "fetchedAt": "2026-11-21T16:24:05.093Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2016 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
       }
     },
     {

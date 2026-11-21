@@ -43,6 +43,7 @@ async function clean(): Promise<InvariantInput> {
 		eventCoverage: result.coverage.events,
 		eraCoverage: result.coverage.eras,
 		playerGames: result.playerGames.rows,
+		honours: result.honours,
 		eras: result.eras,
 	}) as InvariantInput;
 	return copy;

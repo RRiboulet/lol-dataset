@@ -106,6 +106,35 @@ export type SourceChampion = {
 };
 
 /**
+ * One distinction a tournament page states for one player (`IndividualAchievements`).
+ *
+ * `Link` is the player's page when the row states one and empty otherwise — measured on
+ * the recorded rows, every tournament-MVP row states none — so `playerName` is what the
+ * resolve actually works from, and it is either a page name or an alias of one.
+ * `Description` is deliberately not read: measured, it is `-` on an MVP row and the full
+ * roster's wikitext on an All-Pro row, so it is markup rather than a description.
+ */
+export type SourceHonour = {
+	/** The page the award was stated on: the event page or a stage sub-page of it. */
+	sourcePage: string;
+	/** Source `Player`, a page name or an alias of one. */
+	playerName: string;
+	/** Source `Link`, the player's page when stated, else empty. */
+	playerLink: string;
+	/** Source `Team`, a display string; resolved where the registry answers one. */
+	team: string;
+	/** Source `Display`: the distinction in the source's own words. */
+	title: string;
+	/** Source `AchievementType`, carried verbatim: one value today (`Season Award`). */
+	type: string;
+	/** Source `Place` as stated, empty when absent. */
+	place: string;
+	/** Source `Place_Number` when the source states one. */
+	placeNumber: number | null;
+	sourceFile: string;
+};
+
+/**
  * One player row from a game. Only the fields identity needs: tickets 03-05 own
  * the statistics. `Link` is the player page (the identity), `Name` is the handle
  * the scoreboard displayed (a string that denotes that entity on that date).
@@ -285,6 +314,8 @@ export type SourceDataset = {
 	drafts: SourceDraft[];
 	/** Per-player statistics for recorded games (ticket 04). */
 	playerGames: SourcePlayerGame[];
+	/** Tournament distinctions (ticket 03 of the enrichment series). Empty when none are recorded. */
+	honours: SourceHonour[];
 };
 
 /** Cargo returns list-typed fields as arrays; everything else as strings. */
@@ -1015,6 +1046,49 @@ export function normalizePicksAndBans(payloads: CachedPayload[]): SourceDraft[] 
 }
 
 /** Which normalizer reads which Cargo table. The cache layout names the table. */
+/**
+ * `IndividualAchievements` rows: one player's distinction at one tournament.
+ *
+ * Only the fields the curated record states are read, and the row is addressed by the
+ * tuple a reader can see (page, player, title) rather than by a row counter. Two payloads
+ * that both carry the same award fold into one row; two that disagree about its team or
+ * type are a stale cache and stop the build.
+ */
+export function normalizeHonours(payloads: CachedPayload[]): SourceHonour[] {
+	const rows: SourceHonour[] = [];
+	for (const payload of payloads) {
+		for (const row of parse(payload)) {
+			const sourcePage = asText(raw(row, "OverviewPage"));
+			const playerName = asText(raw(row, "Player"));
+			const playerLink = asText(raw(row, "Link"));
+			const title = asText(raw(row, "Display"));
+			const type = asText(raw(row, "AchievementType"));
+			if (sourcePage === "") throw new Error(`${payload.file}: an IndividualAchievements row without an OverviewPage cannot be attached to an event`);
+			if (playerName === "" && playerLink === "") throw new Error(`${payload.file}: ${sourcePage}: a distinction without a player cannot be attached to anyone`);
+			if (title === "") throw new Error(`${payload.file}: ${sourcePage}: a distinction without a Display has no title to state`);
+			if (type === "") throw new Error(`${payload.file}: ${sourcePage}: a distinction without an AchievementType cannot say what kind of award it is`);
+			const placeNumber = asInteger(raw(row, "Place_Number"));
+			rows.push({
+				sourcePage,
+				playerName,
+				playerLink,
+				team: asText(raw(row, "Team")),
+				title,
+				type,
+				place: asText(raw(row, "Place")),
+				placeNumber: Number.isInteger(placeNumber) ? placeNumber : null,
+				sourceFile: payload.file,
+			});
+		}
+	}
+	return dedupe(
+		rows,
+		(row) => `${row.sourcePage}\u0000${row.playerLink || row.playerName}\u0000${row.title}`,
+		(a, b) => a.team === b.team && a.type === b.type && a.place === b.place && a.placeNumber === b.placeNumber,
+		"distinction",
+	);
+}
+
 const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	Tournaments: normalizeTournaments,
 	Teams: normalizeTeams,
@@ -1025,6 +1099,7 @@ const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	ScoreboardGames: normalizeScoreboardGames,
 	MatchSchedule: normalizeMatches,
 	PicksAndBansS7: normalizePicksAndBans,
+	IndividualAchievements: normalizeHonours,
 };
 
 /** The tables this pipeline can read, for error messages and tests. */
@@ -1064,5 +1139,6 @@ export function normalizeSources(payloads: CachedPayload[]): SourceDataset {
 		matches: normalizeMatches(group("MatchSchedule")),
 		drafts: normalizePicksAndBans(group("PicksAndBansS7")),
 		playerGames: normalizePlayerGames(group("ScoreboardPlayers")),
+		honours: normalizeHonours(group("IndividualAchievements")),
 	};
 }
