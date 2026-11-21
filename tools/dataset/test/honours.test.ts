@@ -87,22 +87,23 @@ test("the recorded distinctions resolve to an event, a player, and the team the 
 	assert.ok(files["honours.jsonl"].endsWith("\n"));
 });
 
-test("an award stated outside the admitted events stops the build", async () => {
+test("an award outside the admitted events is dropped and counted, not emitted", async () => {
 	const dir = await fixtureCopy();
 	try {
+		// A regional season page is what the crawl's prefix never asks for, but a qualifier
+		// page under an admitted event is fetched legitimately — either way the rule drops it.
 		await editRows(dir, (rows) => {
 			let changed = false;
 			for (const row of rows) {
+				if (row.OverviewPage !== "2016 Mid-Season Invitational") continue;
 				row.OverviewPage = "LCS/2016 Season/Spring Season";
 				changed = true;
 			}
 			return changed;
 		});
-		await assert.rejects(
-			() => buildDataset({ rawDir: dir }),
-			/LCS\/2016 Season\/Spring Season: a distinction is stated under no admitted event/,
-			"a regional season award is not this dataset's to carry",
-		);
+		const { honours, honoursOutside } = await buildDataset({ rawDir: dir });
+		assert.equal(honours.length, 1, "only the Worlds 2024 award is still under an admitted event");
+		assert.deepEqual(honoursOutside, ["LCS/2016 Season/Spring Season"], "the page is counted, so a crawl that states awards cannot pass for one that states none");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
@@ -160,6 +161,44 @@ test("two payloads carrying the same award produce one row", async () => {
 		await writeFile(copy.replace(/\.json\.gz$/, ".meta.json"), await readFile(file.replace(/\.json\.gz$/, ".meta.json")));
 		const { honours } = await buildDataset({ rawDir: dir });
 		assert.equal(honours.length, 7, "the same award twice is one distinction");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("two titles for one player at one event are two rows", async () => {
+	const dir = await fixtureCopy();
+	try {
+		await editRows(dir, (rows) => {
+			const row = rows.find((candidate) => candidate.Display === "MVP");
+			if (row === undefined) return false;
+			rows.push({ ...row, Display: "Regular Season MVP" });
+			return true;
+		});
+		const { honours } = await buildDataset({ rawDir: dir });
+		const faker = honours.filter((row) => row.playerName === "Faker" && row.eventName === "MSI 2016");
+		assert.deepEqual(faker.map((row) => row.title).sort(), ["MVP", "Regular Season MVP"], "one player, two distinctions, two rows");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("a handle that names two players is reported rather than guessed", async () => {
+	const dir = await fixtureCopy();
+	try {
+		await editRows(dir, (rows) => {
+			const row = rows.find((candidate) => candidate.Display === "MVP");
+			if (row === undefined) return false;
+			// `Lee` is measured as three pages' handle; none of them is Faker.
+			row.Player = "Lee";
+			row.Link = null;
+			return true;
+		});
+		const { honours, files } = await buildDataset({ rawDir: dir });
+		const award = honours.find((row) => row.title === "MVP" && row.playerName !== "Faker");
+		assert.ok(award, "the award is still emitted, on a provisional entity");
+		assert.ok(files["identity-unresolved.jsonl"].includes("\"Lee\""), "and the report names the string");
+		assert.ok(files["identity-unresolved.jsonl"].includes("ambiguous"), "with the reason, not a silent pick");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}

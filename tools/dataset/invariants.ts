@@ -157,10 +157,10 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 		if (row.teamId !== undefined) referencedTeams.add(row.teamId);
 	}
 	for (const team of identity.teams) {
-		if (!referencedTeams.has(team.id)) collector.add(`team ${team.id} (${team.name})`, "is emitted but no game side, match side, player-game row or conflict-report row names it");
+		if (!referencedTeams.has(team.id)) collector.add(`team ${team.id} (${team.name})`, "is emitted but no game side, match side, player-game row, conflict-report row or honour row names it");
 	}
 	for (const player of identity.players) {
-		if (!referencedPlayers.has(player.id)) collector.add(`player ${player.id} (${player.name})`, "is emitted but no player-game row names it");
+		if (!referencedPlayers.has(player.id)) collector.add(`player ${player.id} (${player.name})`, "is emitted but no player-game row or honour row names it");
 	}
 	for (const champion of identity.champions) {
 		if (!referencedChampions.has(champion.id)) collector.add(`champion ${champion.id} (${champion.name})`, "is emitted but no draft entry or player-game row names it");
@@ -206,12 +206,13 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 	collector.uniqueBy("event-games", eventGames as unknown as Record<string, unknown>[], "eventId");
 
 	// ---- distinctions: they name an emitted event, player and (optionally) team ---------
-	collector.unique("honour", honours);
+	// The three reference checks are this gate's real honour coverage: assembly already
+	// dedupes by id and only sets `teamId` from a resolved string, so a uniqueness or
+	// "team without a string" check here could not fire.
 	for (const row of honours) {
 		if (!eventIds.has(row.eventId)) collector.add(`honour ${row.id}`, `names event ${row.eventId}, which is not emitted`);
 		if (!playerIds.has(row.playerId)) collector.add(`honour ${row.id}`, `names player ${row.playerId}, which is not emitted`);
 		if (row.teamId !== undefined && !teamIds.has(row.teamId)) collector.add(`honour ${row.id}`, `names team ${row.teamId}, which is not emitted`);
-		if (row.teamId !== undefined && row.team === undefined) collector.add(`honour ${row.id}`, "resolves a team but carries no source string for it");
 	}
 
 	// ---- games, matches and their cross-references -------------------------------

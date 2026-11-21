@@ -57,7 +57,8 @@ id is emitted when the registry already knows it (spec D8).
       event is never queried and never emitted.
 - [x] A row carries the player id, the event id, the page the award was stated on, the
       title as stated, the award type, the source's team string, the resolved team id
-      when the registry resolves it, and place/place number/description when stated.
+      when the registry resolves it, and place/place number when stated. The source's
+      `Description` is deliberately not carried (see B6): it is markup, not a description.
 - [x] Player resolution is proved on the measured cases: a page name; the alias
       `knight (Zhuo Ding)` → `Knight (Zhuo Ding)`; a coach with no player-game row (emitted
       and accepted by the gate); a handle shared by two pages (reported in
@@ -93,10 +94,14 @@ five All-Pro places) and `2024 Season World Championship/Main Event` (one finals
 which emit **7 rows**, and one full build (§the fixtures) is the reviewable evidence for
 every decision below.
 
-- **The page→event join is the crawl's own rule.** `2024 Season World Championship/Main
-  Event` resolves to `Worlds 2024`; the row keeps the stage page on `sourcePage` for
-  provenance, and an award whose page is under no admitted event stops the build rather
-  than floating free of the event list.
+- **The page→event join is the repo's one rule, not a copy.** `eventForPage` (moved into
+  `pages.ts`, so the scoreboard assembly and the distinctions share it) applies
+  `pageUnderEvent` — qualifier segments are not the event — and the longest match wins, so
+  overlapping event names cannot steal each other's rows. A page under no admitted event is
+  **dropped and counted**, not absorbed and not fatal: the crawl asks by prefix, so a
+  qualifier page under an admitted event arrives legitimately and B8 keeps it out. The
+  build prints the count (`honours: N row(s), M page(s) outside the admitted events`), the
+  way a silently empty crawl must not pass for "the source states no awards".
 - **Players resolve from `Player`, because `Link` is null on every recorded row.** A page
   name resolves as itself, and a handle through the registry (`xiaohu` → `Xiaohu`,
   `mlxg` → `Mlxg`). A player named only by an award is observed like any other reference,
@@ -122,3 +127,29 @@ every decision below.
   out-of-scope award, the coach, the unresolvable team, and the folded duplicate.
 
 Left for ticket 04: the model fact. Left for ticket 05: the 54-event crawl.
+
+### Review follow-up (same branch)
+
+One review read the change; every finding below was fixed in a second commit rather than
+argued away, because each is the kind that returns in ticket 05:
+
+- **The page→event rule was a third copy** and weaker than the two it duplicated: it did
+  not exclude qualifier pages and it picked the first match instead of the longest. Now
+  shared through `pages.ts`, with the outside-the-event case counted (`honoursOutside`).
+- **`plan.test.ts` could not catch a field-list drift** in the new query, because the
+  committed plan predates the table. It now compares the generated query against the
+  recorded payload's own sidecar — the committed record of what was fetched.
+- **The award id included the source page**, so the same award on an event's page and on
+  its `/Main Event` page was two rows against a documented grain of one. The id is now
+  (event, player, title); the page stays as provenance.
+- **`IndividualAchievements` feeds `teams.jsonl`** (a resolved team an honour names is a
+  reference) and the tamper map did not say so; added.
+- **The identity block registered `Player` as a handle alias** — a dead path on the
+  recorded rows, and a false alias if a row ever states both a `Link` and someone else's
+  handle. Removed.
+- **The normalizer's conflict message** read "file X and file X disagree" for two rows in
+  one payload; it now distinguishes a same-payload contradiction.
+- **Text that outran the code**: `Description` was said to be "measured on the recorded
+  rows" (it was measured live; the query no longer fetches it), the schema's `place`
+  example claimed an All-Pro rank the rows do not state, the NOTICE payload count was off
+  by one, and the guide's id-prefix list omitted `hn-`.

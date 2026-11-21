@@ -820,10 +820,10 @@ export function assembleIdentity(
 	for (const honour of sources.honours) {
 		if (pageRejected(honour.sourcePage)) continue;
 		const string = honour.playerLink !== "" ? honour.playerLink : honour.playerName;
-		const playerId = observe("player", string, "");
-		if (playerId !== null && honour.playerName !== "" && honour.playerLink !== "") {
-			register("player", honour.playerName, playerId, "alias", "handle");
-		}
+		// `observe` already registers the string it resolved — the page, or the handle when
+		// the source states no page. Registering `Player` again would write a handle alias for
+		// a string that may denote someone else.
+		observe("player", string, "");
 		// The team is *not* observed: an award is context, not evidence that a team existed,
 		// so a string the registries do not carry is carried on the row and mints nothing.
 	}

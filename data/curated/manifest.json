@@ -1,6 +1,6 @@
 {
   "format": "lol-dataset-provenance/1",
-  "entityDigest": "0e5f795c5f5b9e12bb8b7067005e1928da3129e31ed7faa310e23eb8e4011d91",
+  "entityDigest": "718f3ec249ec913402288a88c6bceb7b2cb5eac01ed051137d53832b5d0ecc92",
   "entities": [
     {
       "file": "events.jsonl",
@@ -50,7 +50,7 @@
     {
       "file": "honours.jsonl",
       "records": 7,
-      "sha256": "0bc23fa3afd3dceb9a179832780d19bb444a42cb23af1f8ef0a620ff9607de7a"
+      "sha256": "3e417cd6b31a7338f0506e3c2349a2f8cfda03639221c42985f564d68bca28cd"
     },
     {
       "file": "teams.jsonl",

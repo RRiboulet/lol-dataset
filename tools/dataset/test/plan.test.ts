@@ -8,13 +8,13 @@
 // plan turns "the constants match" from a hope into a check.
 
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import * as path from "node:path";
 import { test } from "node:test";
 
 import type { CargoQuery } from "../cache.ts";
 import { eventQueries } from "../plan.ts";
-import { DATASET_DIR } from "./helpers.ts";
+import { DATASET_DIR, FIXTURE_RAW } from "./helpers.ts";
 
 const PLAN_FILE = path.join(DATASET_DIR, "plans", "ticket-10-events.json");
 
@@ -56,6 +56,31 @@ test("the generated queries are exactly the ones the committed plan fetched", as
 				`${overviewPage}/${query.tables}: a generated query must equal the fetched one, or the cache key moves and the payload is orphaned`,
 			);
 		}
+	}
+});
+
+test("the distinctions query equals the one the fixtures were recorded with", async () => {
+	// The committed plan predates this table, so the recorded payload's own sidecar is the
+	// record of what was fetched. Comparing the two is the assertion that catches a drifted
+	// field list — otherwise the crawler's cache key moves and 54 events refetch into keys
+	// nobody committed.
+	const dir = path.join(FIXTURE_RAW, "lol-fandom", "cargoexport", "IndividualAchievements");
+	const names = (await readdir(dir)).filter((name) => name.endsWith(".meta.json")).sort();
+	assert.ok(names.length > 0, "the fixtures must carry recorded distinctions payloads");
+	for (const name of names) {
+		const meta = JSON.parse(await readFile(path.join(dir, name), "utf8")) as {
+			query: { tables: string; fields: string; where?: string; order_by?: string; limit?: number };
+		};
+		const match = /^(?:OverviewPage|GameId) LIKE '(.+)%'$/.exec(meta.query.where ?? "");
+		assert.ok(match, `${name}: a recorded distinctions query addresses a page by prefix`);
+		const generated = eventQueries({ overviewPage: match[1] } as Parameters<typeof eventQueries>[0]).find(
+			(query) => query.tables === "IndividualAchievements",
+		);
+		assert.ok(generated, `${name}: the plan carries a distinctions query`);
+		assert.equal(generated.fields, meta.query.fields, `${name}: the field list must not drift, or the cache key moves`);
+		assert.equal(generated.where, meta.query.where);
+		assert.equal(generated.order_by, meta.query.order_by);
+		assert.equal(generated.limit, meta.query.limit);
 	}
 });
 

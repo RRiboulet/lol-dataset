@@ -97,14 +97,16 @@ states it (`Display`), the source's award type, the source's team string and the
 resolved team id where the registry resolves one, and the source's place and place number
 where it states them. No row is dropped for being unusual: "Best Coach" and "All Pro
 Team" are distinctions the source states. The source's `Description` column is **not**
-carried: measured on the recorded rows it is `-` on a tournament MVP and the full roster's
+carried: measured live on the table, it is `-` on a tournament MVP and the full roster's
 wikitext on an All-Pro row, so it is markup, not a description of the award.
 
 **B7 — A distinction has a stable identity and a declared grain.** Its canonical id is
-derived from the source tuple that identifies the row (event page, player page,
-distinction title, source page), never from a row counter, so a re-crawl does not
-renumber and a new award does not shift the others. Re-reading the same payload twice
-yields one row; two rows that differ in title, event or player stay two rows.
+derived from the source tuple that identifies the distinction (event page, player and
+distinction title), never from a row counter, so a re-crawl does not renumber and a new
+award does not shift the others — the page it was stated on is provenance, not identity,
+so the same award stated on an event's page and on its `/Main Event` page is **one** row,
+matching the grain. Re-reading the same payload twice yields one row; two rows that differ
+in title, event or player stay two rows.
 
 **B8 — Distinctions belong to admitted events.** A distinction is included when the
 page it was stated on is the admitted event's page or a stage sub-page of it — the same
@@ -225,14 +227,16 @@ whoever needs the join.
 
 **D8 — A distinction's team stays optional.** The source states a team string that
 often is an abbreviation or an old name (`ssw`, `SKT T1`); resolving it through the
-existing alias registry is worth doing, but minting an entity from an award row would
-put a team in `teams.jsonl` that no game attests, contradicting the identity rule.
+existing alias registry is worth doing, and an award may therefore put a *known* team in
+`teams.jsonl` that no game attests — accepted, because the string is the source's and the
+entity is real. Minting a *new* team from an award would not be: it would invent an
+entity the corpus's games never name, so a string nothing carries stays text.
 
-**D9 — The invariant gate widens by one clause, not by a new exemption.** "Every
-emitted player is named by a player-game row" becomes "…by a player-game row or a
-distinction row", in the direction the gate already checks (an entity that nothing
-names is a defect), so a coach named only by an award is legal while an orphan entity
-still is not.
+**D9 — The invariant gate widens by one clause per entity kind, not by an exemption.**
+"Every emitted player is named by a player-game row" becomes "…by a player-game row or a
+distinction row", and the team clause follows because a resolved honour team is a
+reference too, in the direction the gate already checks (an entity that nothing names is a
+defect). A coach named only by an award is legal; an orphan entity still is not.
 
 ## Test seams
 

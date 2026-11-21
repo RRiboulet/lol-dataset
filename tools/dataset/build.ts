@@ -94,6 +94,12 @@ export type BuildOptions = {
 export type BuildResult = AssembledDataset & {
 	/** The tournament distinctions the corpus states (ticket 03 of the enrichment series). */
 	honours: HonourRecord[];
+	/**
+	 * Pages the honours payloads stated awards on that sit under no admitted event — a
+	 * qualifier page under one, for instance. Counted rather than emitted (spec B8), and
+	 * reported so a silently empty crawl cannot pass for "the source states no awards".
+	 */
+	honoursOutside: string[];
 	/** The bytes to write, keyed by file name. */
 	files: Record<OutputFile, string>;
 	/** The provenance manifest: every payload read, and the digests of `files`. */
@@ -202,7 +208,8 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 	// Distinctions after player games: the players they name are observations identity has
 	// already resolved, and a player named *only* by an award becomes a referenced entity
 	// here, which is what puts a coach in `players.jsonl` without a player-game row.
-	const honours = assembleHonours({ source: sources.honours, events: assembled.events, identity: assembledIdentity.index });
+	const honoursAssembly = assembleHonours({ source: sources.honours, events: assembled.events, identity: assembledIdentity.index });
+	const honours = honoursAssembly.rows;
 
 	// The identity tables the dataset emits, named by the emitted records themselves.
 	// This is the last assembly step on purpose: which rows are emitted is fully known
@@ -289,7 +296,7 @@ export async function buildDataset(options: BuildOptions): Promise<BuildResult> 
 		eras,
 	});
 
-	return { ...assembled, files, manifest, manifestText, identity, scoreboards, coverage, playerGames, honours, rule, eras, formats };
+	return { ...assembled, files, manifest, manifestText, identity, scoreboards, coverage, playerGames, honours, honoursOutside: honoursAssembly.outside, rule, eras, formats };
 }
 
 /**

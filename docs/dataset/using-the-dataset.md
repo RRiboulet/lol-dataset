@@ -56,7 +56,7 @@ Two conventions matter more than the field list:
   never `0`; a recorded zero is `0`. A 2012 game has no `gold` key on a player row
   because the wiki has no such column for it, and a game with no draft has no `draft`
   key at all rather than five empty lists.
-- **Canonical ids are opaque and stable.** `evt-`, `mt-`, `gm-`, `pg-`, `tm-`, `pl-` and
+- **Canonical ids are opaque and stable.** `evt-`, `mt-`, `gm-`, `pg-`, `hn-`, `tm-`, `pl-` and
   `ch-` plus 12 hex characters, derived from the source's own identifiers, so a rebuild
   cannot renumber them. The source's string survives beside it (`sourceTeam`,
   `sourcePlayer`, `sourceChampion`, `source.gameId`, `source.matchId`).
@@ -90,7 +90,8 @@ rows pointing at one `tm-…` id rather than two teams. Four consequences worth 
 `honours.jsonl` carries the tournament distinctions the source states for a player — a
 Worlds or MSI finals MVP, an All-Pro team place, Best Coach — for the **tournament**, never
 for a regional season (ticket 03; the event rule is the boundary). Its grain is one row per
-player per event per title, and it joins to `events.jsonl` by `eventId` and to
+player per event per title — the same award stated on an event's page and on its
+`/Main Event` page is one row, with the page it was stated on kept as provenance — and it joins to `events.jsonl` by `eventId` and to
 `players.jsonl` by `playerId`; `team` keeps the source's own string, and `teamId` appears
 only when the alias registry resolves it (`SKT T1` → `T1`), because an award is context
 rather than evidence that a team existed.

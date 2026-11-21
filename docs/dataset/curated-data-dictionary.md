@@ -335,7 +335,7 @@ Schema: `data/curated/schema/honour.schema.json`. Fields: 14.
 | `title` | string | always | The distinction as the source words it (`Finals MVP`, `Most Valuable Player`, `All Pro Team`). Never normalised: the corpus keeps the three spellings of the same idea distinct, because deciding they are one is the analyst's judgement, not the build's. |
 | `type` | string | always | The source's `AchievementType`, verbatim. One value today (`Season Award`) for tournament MVPs and regional season awards alike, which is why the title, not this field, names the distinction. |
 | `sourcePage` | string | always | The page the award was stated on, for provenance: the event's own page or a stage sub-page of it. |
-| `place` | string | no | The source's `Place` text when it states one (an All-Pro team's rank, for instance). Absent when the source states none, which is the case for the tournament MVP rows. |
+| `place` | string | no | The source's `Place` text when it states one. Absent when the source states none, which is the case for every recorded row so far: the MVP rows state no place, and neither do the All-Pro rows, whose rank lives in the title (`3rd All Pro Team`) rather than here. |
 | `placeNumber` | integer | no | The source's `Place_Number` when it states one. Absent when it states none: a stated place of `1` is 1, and no place is not 0. |
 
 ## `teams.jsonl` — Curated team

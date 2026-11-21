@@ -142,9 +142,10 @@ derived from Leaguepedia pages as well as from scoreboard rows.
 Every payload the build read is a Cargo query over one of ten wiki tables —
 `Tournaments`, `ScoreboardGames`, `ScoreboardPlayers`, `MatchSchedule`, `PicksAndBansS7`,
 `Teams`, `TeamRedirects`, `PlayerRedirects`, `Champions` and `IndividualAchievements` —
-cached with its query, URL,
-fetch time and body hash, and pinned by path in `data/curated/manifest.json` (288 payloads at the time of writing). Those cached bodies are the wiki's response bodies, so they are
-covered by this attribution too, not only the rows derived from them. The attribution
+cached with its query, URL, fetch time and body hash, and pinned by path in
+`data/curated/manifest.json` (287 payloads at the time of writing). Those cached bodies are
+the wiki's response bodies, so they are covered by this attribution too, not only the rows
+derived from them. The attribution
 that travels with the data lives in [`data/ATTRIBUTION.md`](../data/ATTRIBUTION.md), which
 restates the CC BY-SA obligations for anyone publishing output built on the dataset; the
 analyst-facing guide is [`docs/dataset/using-the-dataset.md`](../docs/dataset/using-the-dataset.md).

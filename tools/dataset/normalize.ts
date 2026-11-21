@@ -1086,6 +1086,10 @@ export function normalizeHonours(payloads: CachedPayload[]): SourceHonour[] {
 		(row) => `${row.sourcePage}\u0000${row.playerLink || row.playerName}\u0000${row.title}`,
 		(a, b) => a.team === b.team && a.type === b.type && a.place === b.place && a.placeNumber === b.placeNumber,
 		"distinction",
+		(seen, row, key) =>
+			seen.sourceFile === row.sourceFile
+				? `distinction ${JSON.stringify(key)}: ${row.sourceFile} states the same award twice with different details (team/type/place disagree)`
+				: `distinction ${JSON.stringify(key)}: ${seen.sourceFile} and ${row.sourceFile} disagree about the award`,
 	);
 }
 

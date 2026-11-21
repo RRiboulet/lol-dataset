@@ -30,3 +30,20 @@ export function pageUnderEvent(page: string, overviewPage: string): boolean {
 	const under = page.slice(overviewPage.length + 1).split("/");
 	return !under.some((segment) => segment.trim().toLowerCase() === "qualifiers");
 }
+
+/**
+ * The admitted event whose page `page` sits under, or undefined when it sits under none.
+ *
+ * The longest matching page wins, so overlapping event names cannot steal each other's
+ * rows, and a page under no selected event (an excluded event, or a qualifier under one)
+ * is returned to the caller rather than absorbed. Both the scoreboard assembly and the
+ * distinctions call this, because "which event is this page" is one rule.
+ */
+export function eventForPage<T extends { overviewPage: string }>(page: string, events: readonly T[]): T | undefined {
+	let found: T | undefined;
+	for (const event of events) {
+		if (!pageUnderEvent(page, event.overviewPage)) continue;
+		if (found === undefined || event.overviewPage.length > found.overviewPage.length) found = event;
+	}
+	return found;
+}

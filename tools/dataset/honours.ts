@@ -19,6 +19,7 @@
 // provisional entity and reported it in `identity-unresolved.jsonl`.
 
 import type { EventRecord } from "./assemble.ts";
+import { eventForPage } from "./pages.ts";
 import { AmbiguousIdentity, surrogateId } from "./identity.ts";
 import type { IdentityIndex } from "./identity.ts";
 import type { SourceHonour } from "./normalize.ts";
@@ -48,17 +49,6 @@ export type HonourRecord = {
 };
 
 /**
- * The page's own `overviewPage` under an event's page — the same rule the crawl uses.
- *
- * Equality is checked too, because an event can keep its awards on its own page
- * (measured: `2016 Mid-Season Invitational`), and a `/` boundary matters so that
- * `MSI 2018` does not claim `MSI 2018 Play-In` as a *different* event's prefix.
- */
-function underEvent(page: string, event: EventRecord): boolean {
-	return page === event.overviewPage || page.startsWith(`${event.overviewPage}/`);
-}
-
-/**
  * Resolve a distinction's player, failing loudly rather than dropping the record.
  *
  * Identity observed every honour's player string before this runs, so a null here means
@@ -80,7 +70,7 @@ function playerFor(identity: IdentityIndex, source: SourceHonour): { id: string;
  *
  * Never mints: a team string on an award is context, and an entity the corpus would
  * otherwise not carry must not enter `teams.jsonl` because an award mentioned it. A string
- * that names several teamsakes resolves to none of them — picking one is the guess the
+ * that names several teams resolves to none of them — picking one is the guess the
  * unresolved report exists to refuse — and the row still reads, because the source's own
  * string stays on it.
  */
@@ -106,16 +96,22 @@ export function assembleHonours(input: {
 	source: readonly SourceHonour[];
 	events: readonly EventRecord[];
 	identity: IdentityIndex;
-}): HonourRecord[] {
+}): { rows: HonourRecord[]; outside: string[] } {
 	const records: HonourRecord[] = [];
 	const seen = new Set<string>();
+	const outside = new Set<string>();
 	for (const source of input.source) {
-		const event = input.events.find((candidate) => underEvent(source.sourcePage, candidate));
+		// One rule for "which event is this page" (`pages.ts`), so a qualifier page under an
+		// admitted event is not absorbed and overlapping event names cannot steal each other's
+		// rows. A page under no admitted event is dropped and counted, not emitted: the crawl
+		// asks by prefix, so a qualifier page arrives legitimately and B8 keeps it out.
+		const event = eventForPage(source.sourcePage, input.events);
 		if (event === undefined) {
-			throw new Error(`${source.sourceFile}: ${source.sourcePage}: a distinction is stated under no admitted event — the crawl must only ask for admitted pages`);
+			outside.add(source.sourcePage);
+			continue;
 		}
 		const player = playerFor(input.identity, source);
-		const id = surrogateId("hn", `${event.overviewPage}\u0000${player.id}\u0000${source.title}\u0000${source.sourcePage}`);
+		const id = surrogateId("hn", `${event.overviewPage}\u0000${player.id}\u0000${source.title}`);
 		if (seen.has(id)) continue;
 		seen.add(id);
 		const team = teamFor(input.identity, source.team);
@@ -135,5 +131,8 @@ export function assembleHonours(input: {
 			...(source.placeNumber === null ? {} : { placeNumber: source.placeNumber }),
 		});
 	}
-	return records.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+	return {
+		rows: records.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)),
+		outside: [...outside].sort(),
+	};
 }

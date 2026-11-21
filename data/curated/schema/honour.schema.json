@@ -70,7 +70,7 @@
 		"place": {
 			"type": "string",
 			"minLength": 1,
-			"description": "The source's `Place` text when it states one (an All-Pro team's rank, for instance). Absent when the source states none, which is the case for the tournament MVP rows."
+			"description": "The source's `Place` text when it states one. Absent when the source states none, which is the case for every recorded row so far: the MVP rows state no place, and neither do the All-Pro rows, whose rank lives in the title (`3rd All Pro Team`) rather than here."
 		},
 		"placeNumber": {
 			"type": "integer",
