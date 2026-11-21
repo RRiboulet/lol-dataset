@@ -10,7 +10,9 @@ devcontainer, pi extensions, skills and templates are in place, and the project'
 own structure has grown on them: `docs/specs/` holds the dataset's spec and the
 ticket series under `docs/specs/tickets/lol-esports-dataset/`, and `data/curated/`
 holds what the build emits today — the selected events with the report of every
-rejection, the team, player, champion and alias identity tables, the games and
+rejection, the team, player, champion and alias identity tables (each team row
+carrying the registry's short name and each champion its release date), an `honours.jsonl` of the **24
+tournament distinctions** the source states (MVPs, All-Pro places), the games and
 matches of **54 events** (3 091 games, 2 068 series, 30 910 player rows), each game carrying
 its champion draft with the source's fidelity and a player row per participant, with
 kills and gold reconciled against the team totals — the per-event report of which
@@ -29,7 +31,7 @@ contradicts the data fails before anything is written; `build --check` compares 
 and the manifest on everything but `fetchedAt`, and `node tools/check.ts` runs both
 suites. `data/model/` holds the star schema derived from that curated layer:
 dimensions for event, match, game, team, player, champion, patch and date; facts at
-one row per game per side, per game per player and per draft slot; an alias bridge
+one row per game per side, per game per player, per draft slot and per player distinction; an alias bridge
 with validity dates; an unknown member at key 0 in every dimension; and the
 generated DDL and per-column data dictionary. `node tools/dataset/cli.ts model`
 rebuilds it from `data/curated/` and `model --check` proves the committed bytes are

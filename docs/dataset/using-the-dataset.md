@@ -96,11 +96,11 @@ player per event per title — the same award stated on an event's page and on i
 only when the alias registry resolves it (`SKT T1` → `T1`), because an award is context
 rather than evidence that a team existed.
 
-Two things the file deliberately does **not** do. It does not normalise titles: `MVP`,
-`Most Valuable Player` and `MSI MVP` are three strings for one idea, and deciding they are
-the same is the analyst's judgement. And it does not claim completeness: the source states
+Two things the file deliberately does **not** do. It does not normalise titles: `Finals MVP`,
+`Most Valuable Player`, `MVP` and `MSI MVP` are four strings for one idea, and deciding they
+are the same is the analyst's judgement. And it does not claim completeness: the source states
 a Worlds MVP for some editions and not others (2012, 2013, 2015, 2016 and 2018–2020 have
-no row), so "no honour" means "the source states none", not "nobody won".
+no row; question 5 under "Worked questions" lists the whole answer), so "no honour" means "the source states none", not "nobody won".
 
 ### Events, selection and series that disagree
 
@@ -406,6 +406,54 @@ appears in `data/curated/series-conflicts.jsonl`, whose rows name both the game'
 and the series' teams. `match_key = 0` alone does not tell you which of the three cases
 applies (no series in the source, a contradicted series, or a series that names other
 teams); join to the curated conflict report when the difference matters.
+
+### 5. Who was MVP at each Worlds and MSI?
+
+`honours.jsonl` answers it for the tournaments that state an award, and says nothing for
+the editions that do not:
+
+```bash
+jq -r 'select(.title | ascii_downcase | test("mvp|most valuable"))
+       | [.eventName, .title, .playerName, (.teamName // "\u2014")] | @tsv' \
+  data/curated/honours.jsonl | sort -t$'\t' -k1,1
+```
+
+`test("MVP")` alone is not enough: three of the rows are titled `Most Valuable Player`, and
+the command returns the three Esports World Cup awards too — the table below narrows to the
+sixteen Worlds and MSI rows.
+
+| Event | Title | Player | Team |
+|---|---|---|---|
+| Worlds Season 1 | Most Valuable Player | Shushei | Fnatic |
+| Worlds 2014 | Most Valuable Player | Mata | Samsung White |
+| Worlds 2017 | Finals MVP | Ruler | Samsung Galaxy |
+| Worlds 2021 | Finals MVP | Scout | EDward Gaming |
+| Worlds 2022 | Finals MVP | Kingen | Kiwoom DRX |
+| Worlds 2023 | Finals MVP | Zeus | T1 |
+| Worlds 2024 | Finals MVP | Faker | T1 |
+| Worlds 2025 | Finals MVP | Gumayusi | T1 |
+| Worlds 2026 | Finals MVP | Knight | Bilibili Gaming |
+| MSI 2015 | MSI MVP | Clearlove | EDward Gaming |
+| MSI 2016 | MVP | Faker | T1 |
+| MSI 2022 | Most Valuable Player | Wei | Royal Never Give Up |
+| MSI 2023 | Finals MVP | Knight | JD Gaming |
+| MSI 2024 | Finals MVP | Lehends | Gen.G |
+| MSI 2025 | Finals MVP | Chovy | Gen.G |
+| MSI 2026 | Finals MVP | Zeus | Hanwha Life Esports |
+
+Sixteen rows: nine Worlds editions and seven MSI editions. The editions that state none are
+Worlds 2012, 2013, 2015, 2016 and 2018-2020, and MSI 2017-2021. That is the source's
+coverage, not the dataset's censorship: an absent row means "the source states no MVP for
+that edition", and the dataset never fills the gap from a news article or a guess.
+
+Five spellings denote the same idea — `Finals MVP`, `Most Valuable Player`, `MVP`,
+`MSI MVP`, `Tournament MVP` — because the source words them differently per page, and the
+file keeps the wording rather than inventing a taxonomy. The three Esports World Cups carry
+one each (`Most Valuable Player` for Faker in 2024 and Smash in 2026, `Tournament MVP` for
+Kiin in 2025, whose team string `GEN` resolves to nothing and is carried without a team).
+`type` is the source's own category (`Season Award` for all 24 rows), so filter on `title`
+when you mean MVP; the remaining five rows are MSI 2016's All-Pro team.
+
 
 ## Rebuilding
 

@@ -422,9 +422,10 @@ test("a distinction is one fact row, with the unknown team when the source resol
 	const honourRows = rows("fact_player_honour");
 	assert.equal(honourRows.length, input.honours.length, "one row per curated distinction, no more and no fewer");
 	const players = new Map(rows("dim_player").map((row) => [String(row.player_id), row.player_key]));
-	const mvp = honourRows.find((row) => row.title === "Finals MVP");
-	assert.ok(mvp, "the fixtures' finals MVP must be a fact row");
-	assert.equal(mvp.player_key, players.get("pl-a9073fde3cbe"), "the fact joins the player dimension by key");
+	const faker = players.get("pl-a9073fde3cbe");
+	assert.ok(faker !== undefined, "the fixture's MVP player must be in the dimension");
+	const mvp = honourRows.find((row) => row.title === "Finals MVP" && row.player_key === faker);
+	assert.ok(mvp, "the fixtures' finals MVP must be a fact row, joined to the player dimension by key");
 	assert.notEqual(mvp.event_key, 0, "the event is always stated");
 	assert.equal(typeof mvp.team_key, "number", "the team key is a number, 0 when unknown");
 	// The grain is (player, event, title): no derived measure rides along.

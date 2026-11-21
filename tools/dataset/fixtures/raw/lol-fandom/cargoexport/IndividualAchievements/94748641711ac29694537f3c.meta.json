@@ -1,0 +1,17 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "IndividualAchievements",
+    "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+    "where": "OverviewPage LIKE 'Season 1 World Championship%'",
+    "order_by": "Player",
+    "limit": 500
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=IndividualAchievements&fields=Player%2CLink%2CTeam%2COverviewPage%2CDisplay%2CPlace%2CPlace_Number%2CAchievementType&where=OverviewPage+LIKE+%27Season+1+World+Championship%25%27&order_by=Player&limit=500",
+  "fetchedAt": "2026-11-21T18:16:28.259Z",
+  "status": 200,
+  "bodySha256": "560c3e2606360a7589a8812e8c20469c4022485a7d5a25e2b9c99a243b1983f2",
+  "encoding": "gzip"
+}

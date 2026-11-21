@@ -1,11 +1,11 @@
 // Tournament distinctions, at the build seam (ticket 03 of the enrichment series).
 //
-// The recorded fixtures carry the two measured shapes: an event whose awards sit on its
-// own page (`2016 Mid-Season Invitational`, six rows) and one whose awards sit on a stage
-// sub-page (`2024 Season World Championship/Main Event`, one row). Between them they also
-// carry the three resolution cases the source actually produces — a player named by a page
-// (`Faker`), a lowercase handle (`xiaohu`, `mlxg`), and a team string that is a legacy name
-// (`SKT T1` -> `T1`).
+// The recorded fixtures carry every admitted event's distinctions (ticket 05 committed
+// fifty-four payloads), including the two measured shapes: an event whose awards sit on its
+// own page (`2016 Mid-Season Invitational`) and one whose awards sit on a stage sub-page
+// (`2024 Season World Championship/Main Event`). They also carry the resolution cases the
+// source produces — a player named by a page (`Faker`), a lowercase handle (`xiaohu`,
+// `mlxg`), and a team string that is a legacy name (`SKT T1` -> `T1`).
 //
 // The cases that need a broken source edit a scratch copy of the payloads, as the rest of
 // this suite does: the build verifies each body against its sidecar's hash, and
@@ -54,7 +54,10 @@ async function guard(): Promise<Record<string, unknown>> {
 
 test("the recorded distinctions resolve to an event, a player, and the team the registry knows", async () => {
 	const { honours, files } = await buildDataset({ rawDir: FIXTURE_RAW });
-	assert.equal(honours.length, 7, "the fixtures carry six awards at MSI 2016 and one at Worlds 2024");
+	// The corpus grew to every admitted event (ticket 05), so the assertions below are about
+	// this fixture's events rather than about the file's size.
+	const msi2016 = honours.filter((row) => row.sourcePage === "2016 Mid-Season Invitational");
+	assert.equal(msi2016.length, 6, "the fixtures carry six awards at MSI 2016");
 
 	// The MVP row: a page-name player, a legacy team string that resolves to the current
 	// entity, and the title exactly as the source words it.
@@ -68,7 +71,7 @@ test("the recorded distinctions resolve to an event, a player, and the team the 
 	assert.equal(mvp.type, "Season Award", "the award type is the source's own value");
 
 	// The sub-page row belongs to the event, not to an event of its own.
-	const finals = honours.find((row) => row.title === "Finals MVP");
+	const finals = honours.find((row) => row.sourcePage === "2024 Season World Championship/Main Event");
 	assert.ok(finals, "the fixtures carry the Worlds 2024 finals MVP");
 	assert.equal(finals.sourcePage, "2024 Season World Championship/Main Event", "the record keeps the page it was stated on, for provenance");
 	assert.equal(finals.eventName, "Worlds 2024", "a stage page is collected under its parent event");
@@ -102,7 +105,9 @@ test("an award outside the admitted events is dropped and counted, not emitted",
 			return changed;
 		});
 		const { honours, honoursOutside } = await buildDataset({ rawDir: dir });
-		assert.equal(honours.length, 1, "only the Worlds 2024 award is still under an admitted event");
+		assert.equal(honours.filter((row) => row.sourcePage === "2016 Mid-Season Invitational").length, 0, "no MSI 2016 award survives");
+		assert.equal(honours.filter((row) => row.sourcePage === "2024 Season World Championship/Main Event").length, 1, "the Worlds 2024 award is untouched");
+		assert.ok(honours.every((row) => row.sourcePage !== "LCS/2016 Season/Spring Season"), "and no row survives from the region page, or the rule leaked");
 		assert.deepEqual(honoursOutside, ["LCS/2016 Season/Spring Season"], "the page is counted, so a crawl that states awards cannot pass for one that states none");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
@@ -159,8 +164,10 @@ test("two payloads carrying the same award produce one row", async () => {
 		const copy = path.join(path.dirname(file), "aaaaaaaaaaaaaaaaaaaaaaaa.json.gz");
 		await writeFile(copy, await readFile(file));
 		await writeFile(copy.replace(/\.json\.gz$/, ".meta.json"), await readFile(file.replace(/\.json\.gz$/, ".meta.json")));
-		const { honours } = await buildDataset({ rawDir: dir });
-		assert.equal(honours.length, 7, "the same award twice is one distinction");
+		const duplicated = await buildDataset({ rawDir: dir });
+		const single = await buildDataset({ rawDir: FIXTURE_RAW });
+		assert.equal(duplicated.honours.length, single.honours.length, "the same award twice is one distinction");
+		assert.deepEqual(duplicated.honours, single.honours, "and the rows are identical, ids included");
 	} finally {
 		await rm(dir, { recursive: true, force: true });
 	}
