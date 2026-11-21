@@ -20,8 +20,9 @@ Added:
   champion's identity — so it cost no request, because the payloads already fetched the
   column and the normalizer simply never read it. Three ways the date could lie now stop
   the build instead of becoming a plausible day: a source stamp coarser than a day is not
-  rounded, two registry rows that disagree are refused rather than picked, and a value no
-  date parser can read fails instead of turning into an absent key. The model keeps it as
+  rounded, two registry rows that disagree are refused rather than picked, and a value that
+  no parser can read — or that passes a shape check without being a day that exists, such
+  as `0000-00-00` — fails instead of turning into an absent key. The model keeps it as
   a dated attribute of `dim_champion`, deliberately not a `date_key`: `dim_date` is the
   calendar of the games the facts describe (ticket 02 of the entity-enrichment series —
   see `docs/specs/2026-11-21-champion-dates-team-shorts-player-honours.md`).

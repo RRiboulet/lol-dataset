@@ -307,6 +307,31 @@ function asDate(value: unknown): string {
 	return match ? match[1] : "";
 }
 
+/**
+ * A calendar day the source states, or `""` when the value is not one.
+ *
+ * Deliberately stricter than `asDate`, which truncates an instant to its day for fields
+ * whose type is a timestamp. A champion's release date is a `Date` in the source, so a
+ * value carrying a time part means the column is not what this build thinks it is; and a
+ * value that passes a shape check without existing — `0000-00-00`, the zero-date sentinel
+ * SQL and Cargo both write, or `2010-02-31`, or `2010-13-01` — would land in the data as
+ * a day SQLite and pandas cannot parse, which is the one thing the guard exists to stop.
+ * Hence the round trip: parse the components in UTC and require the same day back. Years
+ * `0000`–`0099` fail that trip because `Date.UTC` maps them to the 1900s, which is fine
+ * here: no champion predates the game.
+ */
+function asCalendarDay(value: unknown): string {
+	const text = asText(value);
+	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+	if (match === null) return "";
+	const year = Number(match[1]);
+	const month = Number(match[2]);
+	const day = Number(match[3]);
+	const stamp = new Date(Date.UTC(year, month - 1, day));
+	const exists = stamp.getUTCFullYear() === year && stamp.getUTCMonth() === month - 1 && stamp.getUTCDate() === day;
+	return exists && year > 0 ? text : "";
+}
+
 /** An integer field, or NaN when the source has none (the caller decides what that means). */
 function asInteger(value: unknown): number {
 	const text = asText(value);
@@ -571,38 +596,54 @@ export function normalizeChampions(payloads: CachedPayload[]): SourceChampion[] 
 				throw new Error(`${payload.file}: champion ${name} has no usable KeyInteger (${JSON.stringify(raw(row, "KeyInteger"))}) — Riot's champion id is the identity`);
 			}
 			const stated = asText(raw(row, "ReleaseDate"));
-			const releaseDate = asDate(raw(row, "ReleaseDate"));
-			// A value the source states but this build cannot read is a defect, not an
-			// absence: emitting no key would turn a parse failure into "the source has none".
-			if (stated !== "" && releaseDate === "") {
-				throw new Error(`${payload.file}: champion ${name} states ReleaseDate ${JSON.stringify(stated)}, which is not a calendar date`);
-			}
-			// Cargo records how precisely it knows a date. The dataset states a day, so a
-			// coarser stamp has no column to go to: fail rather than round it to a day the
-			// source never claimed (spec B2).
-			if (releaseDate !== "") {
+			let releaseDate = "";
+			if (stated !== "") {
+				// Precision first, and before the value is judged: the source states how precisely
+				// it knows a date, and a coarser stamp arrives in a *shape* this schema cannot hold
+				// (`2011-12`), so reporting it as unparseable would name the wrong defect. The
+				// dataset states a day only when the source does (spec B2).
 				const precision = asInteger(raw(row, "ReleaseDate__precision"));
 				if (precision !== 1) {
 					throw new Error(
-						`${payload.file}: champion ${name} states ReleaseDate ${releaseDate} at precision ${Number.isNaN(precision) ? "unknown" : precision}, not day precision (1) — the dataset states a day only when the source does`,
+						`${payload.file}: champion ${name} states ReleaseDate ${JSON.stringify(stated)} at precision ${Number.isNaN(precision) ? "unknown" : precision}, not day precision (1) — the dataset states a day only when the source does`,
 					);
+				}
+				// A value the source states but this build cannot read is a defect, not an
+				// absence: emitting no key would turn a parse failure into "the source has none".
+				releaseDate = asCalendarDay(stated);
+				if (releaseDate === "") {
+					throw new Error(`${payload.file}: champion ${name} states ReleaseDate ${JSON.stringify(stated)}, which is not a calendar day (YYYY-MM-DD, and a day that exists)`);
 				}
 			}
 			rows.push({ name, riotKey, releaseDate, sourceFile: payload.file });
 		}
 	}
-	const byName = dedupe(
-		rows,
-		(row) => row.name,
-		(a, b) => a.riotKey === b.riotKey && a.releaseDate === b.releaseDate,
-		"champion",
-		(seen, row, name) =>
-			seen.riotKey !== row.riotKey
-				? `champion ${JSON.stringify(name)}: ${seen.sourceFile} states Riot id ${seen.riotKey} and ${row.sourceFile} states ${row.riotKey}; one display name cannot denote two champions`
-				: `champion ${JSON.stringify(name)}: ${seen.sourceFile} states release date ${JSON.stringify(seen.releaseDate)} and ${row.sourceFile} states ${JSON.stringify(row.releaseDate)}; one champion cannot have two`,
-	);
+	// One display name is one champion, and one champion has one release date. A payload
+	// that does not carry the column is silent about the date, not disagreeing: an absence
+	// loses to a stated value (as `Teams.Short` does), while two *stated* days that differ
+	// are a contradiction and stop the build.
+	const byName = new Map<string, SourceChampion>();
+	for (const row of rows) {
+		const seen = byName.get(row.name);
+		if (seen === undefined) {
+			byName.set(row.name, row);
+			continue;
+		}
+		if (seen.riotKey !== row.riotKey) {
+			throw new Error(
+				`champion ${JSON.stringify(row.name)}: ${seen.sourceFile} states Riot id ${seen.riotKey} and ${row.sourceFile} states ${row.riotKey}; one display name cannot denote two champions`,
+			);
+		}
+		if (seen.releaseDate !== "" && row.releaseDate !== "" && seen.releaseDate !== row.releaseDate) {
+			throw new Error(
+				`champion ${JSON.stringify(row.name)}: ${seen.sourceFile} states release date ${JSON.stringify(seen.releaseDate)} and ${row.sourceFile} states ${JSON.stringify(row.releaseDate)}; one champion cannot have two`,
+			);
+		}
+		byName.set(row.name, { ...seen, releaseDate: seen.releaseDate !== "" ? seen.releaseDate : row.releaseDate });
+	}
+	const unique = [...byName.values()];
 	const byKey = new Map<number, SourceChampion>();
-	for (const row of byName) {
+	for (const row of unique) {
 		const seen = byKey.get(row.riotKey);
 		if (seen !== undefined) {
 			throw new Error(
@@ -612,7 +653,7 @@ export function normalizeChampions(payloads: CachedPayload[]): SourceChampion[] 
 		}
 		byKey.set(row.riotKey, row);
 	}
-	return byName;
+	return unique;
 }
 
 /** Player rows from games: one per player per game, kept as observations of identity. */

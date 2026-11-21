@@ -84,16 +84,28 @@ The column needed no crawl, and the guards are all reachable from the recorded p
 
 - **171 of 171 champions carry a date**, each equal to its registry row (compared against
   the payloads, not against a rebuild of the same code). The corpus spans **2009-02-21**
-  (`Nunu & Willump`) to **2026-06-24**, and `Ahri` reads `2011-12-14`.
-- **Five tests**, one file (`tools/dataset/test/champions.test.ts`): the fixture-wide
+  (shared by the 17 launch champions) to **2026-06-24**, and `Ahri` reads `2011-12-14`.
+- **Seven tests**, one file (`tools/dataset/test/champions.test.ts`): the fixture-wide
   value check, and one per way the date could lie — precision, disagreement, unreadable
-  value — plus the minted champion with nothing to state. Each negative case is a scratch
-  copy of the recorded payloads with one field changed, and the disagreement case finds
-  the narrow pull by content (a strict subset of another payload's champions) rather than
-  by row count, so a re-record cannot turn it into a no-op.
-- **A third guard the ticket did not ask for** came out of writing them: a `ReleaseDate`
-  the source states but no parser can read now fails instead of becoming an absent key.
-  That is the same class of lie as the other two, and it costs one branch.
+  value, and a well-shaped day that does not exist — plus two cases about what absence
+  means: a payload that does not ask for the column is silent rather than disagreeing,
+  and a minted champion carries no date in either layer. Each negative case is a scratch
+  copy of the recorded payloads with one field changed, and the narrow pull is found by
+  content (a strict subset of another payload's champions) rather than by row count, so a
+  re-record cannot turn a case into a no-op.
+- **Two guards the ticket did not spell out** came out of writing them, both the same
+  class of lie as B2's: a `ReleaseDate` the source states but no parser can read fails
+  instead of becoming an absent key, and a value that passes a shape check without being
+  a day — `0000-00-00`, `2010-02-31`, `2010-13-01`, an instant — fails too. The calendar
+  check is a round trip through `Date.UTC`, not a regex.
+- **The precision marker is checked before the value**, because a coarser stamp arrives in
+  a shape this schema cannot hold (`2011-12`): judging the value first reports a parse
+  error for what is really a precision refusal, which names the wrong defect.
+- **An absence is not a disagreement.** A payload that omits `ReleaseDate` is silent about
+  it, so the stated value travels (as `Teams.Short` already does) and only two *stated*
+  days that differ stop the build. The symmetric risk — every `Champions` query
+  re-recorded without the column — would produce dateless rows rather than a failure, so
+  the fixture-wide test asserts the column is stated at all.
 - **`dim_champion.release_date` is an attribute, not a `date_key`** (spec D7), and the
   guide says so beside the model, because "join the date dimension" is the first thing a
   star-schema reader will try.
