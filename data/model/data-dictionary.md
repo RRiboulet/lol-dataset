@@ -156,6 +156,7 @@ One row per canonical team; renames live in the alias bridge, not here.
 | `team_key` | INTEGER | surrogate key | — | Build-local surrogate key. 0 is the unknown member; values are assigned 1..N in natural-key order. |
 | `team_id` | TEXT | natural key | — | The curated team's canonical ID (`tm-…`). |
 | `team_name` | TEXT | attribute | — | The team's current display name. |
+| `short` | TEXT | attribute | — | The team's short name as the source's registry states it for the team's current page (`Karmine Corp` -> `KC`). A label, not a key: two teams can share one, so never join on it. Absent: empty when the source states no short name for the team's current page — always the case for a minted team; a rename does not carry an older name's short forward. |
 | `overview_page` | TEXT | attribute | — | The team's current wiki page. Absent: empty only for an entity minted from a string no registry carries. |
 | `region` | TEXT | attribute | — | The source's region string, verbatim; empty when it records none. |
 

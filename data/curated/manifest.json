@@ -1,6 +1,6 @@
 {
   "format": "lol-dataset-provenance/1",
-  "entityDigest": "30e07d17ec8ea64bbd508ca00e64ad35414f50654099a25b1cdf6c76247c7c65",
+  "entityDigest": "9df0eecbc13e57c7273e6304b5f908996e7fba96b695a2225f711faf84f03dfa",
   "entities": [
     {
       "file": "events.jsonl",
@@ -50,7 +50,7 @@
     {
       "file": "teams.jsonl",
       "records": 197,
-      "sha256": "5cefed71f1f05a4935242840dcfc3b9d4ff048e6a9807734cc6a014711c71584"
+      "sha256": "5bd2c4d59f59f82d843f33a45bec15d22c2df73abcb5bae5415b7d73b131bd26"
     },
     {
       "file": "players.jsonl",
@@ -4392,6 +4392,21 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/Teams/186694003d7d973c5100c4e1.json.gz",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "b599e8450de4c86ce14433e5d3d6729400ea99c05aa6161077c1edbbe6b2c71c",
+      "fetchedAt": "2026-11-21T10:11:18.985Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo,Short",
+        "order_by": "_pageName ASC",
+        "limit": 5000
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/Teams/27bc601f8c7e0a08d62207a4.json.gz",
       "table": "Teams",
       "endpoint": "cargoexport",
@@ -4421,21 +4436,6 @@
         "where": "_pageName IN ('Rainbow7')",
         "order_by": "OverviewPage ASC",
         "limit": 20
-      }
-    },
-    {
-      "file": "lol-fandom/cargoexport/Teams/5fa780f600a5ee1fe4e8e529.json.gz",
-      "table": "Teams",
-      "endpoint": "cargoexport",
-      "bodySha256": "9fc938c25dcfd82a5775ea9ebdec2d9c35a442e65b8e95817e5c453d1891036f",
-      "fetchedAt": "2026-11-18T19:29:05.283Z",
-      "status": 200,
-      "query": {
-        "endpoint": "cargoexport",
-        "tables": "Teams",
-        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
-        "order_by": "_pageName ASC",
-        "limit": 2000
       }
     },
     {
@@ -4567,18 +4567,18 @@
       }
     },
     {
-      "file": "lol-fandom/cargoexport/Teams/ef9e97615b6e3317e2a27fb3.json.gz",
+      "file": "lol-fandom/cargoexport/Teams/f397146e4366bd5fcbda6876.json.gz",
       "table": "Teams",
       "endpoint": "cargoexport",
-      "bodySha256": "598d62edc009cda65cfa24826b1b78d40e60833b4b8d5b63e2ee3e2cfa82fb25",
-      "fetchedAt": "2026-11-18T19:40:28.241Z",
+      "bodySha256": "98300a4218d257e5172b5ea35992a9d848ec896ad8d180b0d394595139e5e46d",
+      "fetchedAt": "2026-11-21T10:09:53.923Z",
       "status": 200,
       "query": {
         "endpoint": "cargoexport",
         "tables": "Teams",
-        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo,Short",
         "order_by": "_pageName ASC",
-        "limit": 5000
+        "limit": 2000
       }
     },
     {

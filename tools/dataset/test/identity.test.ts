@@ -630,6 +630,101 @@ test("every emitted reference carries a display name beside its ID", async () =>
 	}
 })
 
+test("a team carries the registry's short name, and a shared short is data rather than a collision", async () => {
+	const { identity } = await fixtureBuild();
+	const karmine = identity.teams.find((team) => team.name === "Karmine Corp");
+	assert.ok(karmine, "the fixtures must carry Karmine Corp");
+	assert.equal(karmine.short, "KC", "the short name is the registry's, not a derivation from the display name");
+
+	// A short name is a label, not an identity: measured, four of them each denote two
+	// teams in this corpus, and both rows must keep the value.
+	for (const short of ["ESC", "GMB", "IM", "RED"]) {
+		const sharing = identity.teams.filter((team) => team.short === short);
+		assert.equal(sharing.length, 2, `${short} must stay the short name of two teams`);
+		assert.equal(new Set(sharing.map((team) => team.id)).size, 2, `${short} must not merge two teams into one`);
+	}
+
+	// Every team the registry answers for states one (measured: all 193), and a team
+	// minted from a string no registry carries has none to state. An absent key is the
+	// absence spec R4 asks for, so the minted rows must not carry an empty string.
+	const minted = identity.teams.filter((team) => team.overviewPage === null);
+	assert.equal(minted.length, 4, "the fixtures mint four teams from strings no registry carries");
+	for (const team of identity.teams) {
+		if (team.overviewPage === null) assert.ok(!("short" in team), `${team.name}: a minted team must omit short`);
+		else assert.ok((team.short ?? "") !== "", `${team.name}: a registered team must state its short name`);
+	}
+});
+
+test("a short name stated by one payload wins over a payload that does not ask for it, and two statements must agree", async () => {
+	const dir = await fixtureCopy();
+	const page = "Karmine Corp";
+	try {
+		// Only the two registry-wide pulls ask for `Short`; the targeted closure pulls were
+		// recorded without it. Which is which is read from the recorded query, not guessed
+		// from a row count, so a closure payload that grows cannot flip the classification.
+		const asksForShort = new Set<string>();
+		const files = await payloadFiles(dir, "Teams");
+		for (const file of files) {
+			const meta = JSON.parse(await readFile(sidecarPath(file), "utf8")) as { query: { fields: string; where?: string } };
+			if (meta.query.where === undefined && meta.query.fields.split(",").includes("Short")) asksForShort.add(file);
+		}
+		assert.equal(asksForShort.size, 2, "the fixtures must carry exactly the two registry-wide pulls that ask for Short");
+
+		// Strip the field from the wide pulls and state it in a targeted pull instead: the
+		// value has to travel from whichever row states it.
+		for (const file of files) {
+			const rows = await readRows(file);
+			let changed = false;
+			for (const row of rows) {
+				if (row.OverviewPage !== page) continue;
+				if (asksForShort.has(file)) delete row.Short;
+				else row.Short = "KCX";
+				changed = true;
+			}
+			if (changed) await savePayloadBody(file, JSON.stringify(rows));
+		}
+		const stated = (await buildDataset({ rawDir: dir })).identity.teams.find((team) => team.name === page);
+		assert.equal(stated?.short, "KCX", "the row that states a short must supply it, not the row that does not ask");
+
+		// Two rows that state *different* shorts are a contradiction, not a preference.
+		for (const file of asksForShort) {
+			const rows = await readRows(file);
+			for (const row of rows) if (row.OverviewPage === page) row.Short = "KC";
+			await savePayloadBody(file, JSON.stringify(rows));
+		}
+		await assert.rejects(
+			() => buildDataset({ rawDir: dir }),
+			/team page "Karmine Corp".*state different shorts/,
+			"two stated short names for one team must stop the build",
+		);
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
+test("a team's short name is decoded once, like every other emitted display string", async () => {
+	const dir = await fixtureCopy();
+	const page = "Karmine Corp";
+	try {
+		// The corpus states no entities in `Short` today, so nothing else would notice a
+		// regression that emitted the source string raw (spec B4 says it is decoded).
+		for (const file of await payloadFiles(dir, "Teams")) {
+			const rows = await readRows(file);
+			let changed = false;
+			for (const row of rows) {
+				if (row.OverviewPage !== page || !("Short" in row)) continue;
+				row.Short = "K&amp;M";
+				changed = true;
+			}
+			if (changed) await savePayloadBody(file, JSON.stringify(rows));
+		}
+		const team = (await buildDataset({ rawDir: dir })).identity.teams.find((row) => row.name === page);
+		assert.equal(team?.short, "K&M", "the source's entity must be decoded once, exactly as a display name is");
+	} finally {
+		await rm(dir, { recursive: true, force: true });
+	}
+});
+
 test("every identity file satisfies its checked-in schema, and an empty file is legal", async () => {
 	const { identity } = await fixtureBuild();
 	const files: [string, Record<string, unknown>, unknown[]][] = [

@@ -316,14 +316,15 @@ Schema: `data/curated/schema/player-game.schema.json`. Fields: 32.
 
 ## `teams.jsonl` — Curated team
 
-One row of data/curated/teams.jsonl: a team the corpus references, with the display name and region the source states. Its canonical ID is anchored on the root of the source's rename chain (see tools/dataset/identity.ts), so it survives a rebrand; the other strings that denote this team are rows in aliases.jsonl. Contains no build timestamp, so the file is byte-identical across builds (spec R8).
+One row of data/curated/teams.jsonl: a team the corpus references, with the display name, short name and region the source states. Its canonical ID is anchored on the root of the source's rename chain (see tools/dataset/identity.ts), so it survives a rebrand; the other strings that denote this team are rows in aliases.jsonl. Contains no build timestamp, so the file is byte-identical across builds (spec R8).
 
-Schema: `data/curated/schema/team.schema.json`. Fields: 4.
+Schema: `data/curated/schema/team.schema.json`. Fields: 5.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `id` | string | always | Opaque surrogate key derived from the source identity (spec D3). Do not parse it: read the row through `name`. |
 | `name` | string | always | The team's current display name as the source states it, so the row reads without decoding the ID (spec R12). |
+| `short` | string | no | The team's short name as the source's registry states it (`Karmine Corp` -> `KC`), so an abbreviation an analyst recognises reads without a lookup. Absent when the registry states none for the team's **current** page — always the case for a team minted from a string no registry carries, and in principle also for a registered team whose current name row is blank. A rename does not carry an older name's short forward, because the abbreviation changes with the name. A label, not an identity: measured, `ESC`, `GMB`, `IM` and `RED` each denote two teams in this corpus, so nothing may join, deduplicate or look up by this field. |
 | `overviewPage` | string,null | always | The team's current wiki page. Null only when a scoreboard cited a team the source registers no page for: that entity is minted, and reported in identity-unresolved.jsonl, rather than dropped. |
 | `region` | string | always | The source's Region string, verbatim. Empty when the source records none — including for a minted entity, whose region nobody recorded. |
 

@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+Added:
+
+- **Every team row carries the registry's short name.** `teams.jsonl` and `dim_team` state
+  the abbreviation the source's `Teams` registry uses (`Karmine Corp` → `KC`), so a team
+  reads the way an analyst writes it without a lookup. The two registry-wide `Teams`
+  payloads were re-recorded with `Short` and re-pinned, because the field list is part of
+  the cache key; the targeted `Teams` payloads were left as fetched, since they exist to
+  close rename chains and the merge takes the value from whichever row states one. 193 of
+  the 197 curated teams state a short and the 4 minted ones omit the key. It is a label,
+  not an identity: measured, `ESC`, `GMB`, `IM` and `RED` each denote two teams, so the
+  field is for display and never a join (ticket 01 of the entity-enrichment series — see
+  `docs/specs/2026-11-21-champion-dates-team-shorts-player-honours.md`).
+
 ## v1.1.0 — 2026-11-18
 
 Changed:

@@ -56,6 +56,7 @@ CREATE TABLE dim_team (
   team_key INTEGER,
   team_id TEXT,
   team_name TEXT,
+  short TEXT,
   overview_page TEXT,
   region TEXT,
   PRIMARY KEY (team_key),

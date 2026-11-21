@@ -1,197 +1,197 @@
-{"id":"tm-01149467eceb","name":"NaJin Black Sword","overviewPage":"NaJin Black Sword","region":"Korea"}
-{"id":"tm-017ed54b4572","name":"MAD Team","overviewPage":"MAD Team","region":"LMS"}
-{"id":"tm-01a3f4d54ae6","name":"Ground Zero Gaming","overviewPage":"Ground Zero Gaming","region":"Asia Pacific"}
-{"id":"tm-026c7a511ce7","name":"FURIA","overviewPage":"FURIA","region":"Brazil"}
-{"id":"tm-053333398f39","name":"ThunderTalk Gaming","overviewPage":"ThunderTalk Gaming","region":"China"}
-{"id":"tm-05d3799e8d57","name":"ORDER","overviewPage":"ORDER","region":"Oceania"}
-{"id":"tm-07e1012abad8","name":"Vikings Gaming","overviewPage":"Vikings Gaming","region":"Vietnam"}
-{"id":"tm-0904a6aad568","name":"Flash Wolves","overviewPage":"Flash Wolves","region":"LMS"}
-{"id":"tm-09cf152475ca","name":"LØS","overviewPage":"LØS","region":"Brazil"}
-{"id":"tm-0afdaffa9083","name":"The RED","overviewPage":"The RED","region":"CIS"}
-{"id":"tm-0eaafb0e46ef","name":"GAM Esports","overviewPage":"GAM Esports","region":"Asia Pacific"}
-{"id":"tm-0ee1d7d7c31a","name":"CJ Entus","overviewPage":"CJ Entus","region":"Korea"}
-{"id":"tm-0fbcd42c658a","name":"Samsung Blue","overviewPage":"Samsung Blue","region":"Korea"}
-{"id":"tm-144c44d86e2c","name":"Fenerbahçe Esports","overviewPage":"Fenerbahçe Esports","region":"Turkey"}
-{"id":"tm-167a940c6278","name":"Astralis","overviewPage":"Astralis","region":"EMEA"}
-{"id":"tm-192f5142d623","name":"Suning","overviewPage":"Suning","region":"China"}
-{"id":"tm-19ea5f2be308","name":"Team AURORA","overviewPage":"Team AURORA","region":"Turkey"}
-{"id":"tm-19f46dd5c0f7","name":"Albus NoX Luna","overviewPage":"Albus NoX Luna","region":"CIS"}
-{"id":"tm-1a0edf11b6b1","name":"Rebirth eSports","overviewPage":"Rebirth eSports","region":"Latin America"}
-{"id":"tm-1adf6a64d8c0","name":"Liyab Esports","overviewPage":"Liyab Esports","region":"Asia Pacific"}
-{"id":"tm-1b3d024fdcbb","name":"Rogue","overviewPage":"Rogue (European Team)","region":"EMEA"}
-{"id":"tm-1c6a25914979","name":"Team Liquid","overviewPage":"Team Liquid","region":"North America"}
-{"id":"tm-1d1f59fbb46b","name":"KaBuM! Ilha das Lendas","overviewPage":"KaBuM! Ilha das Lendas","region":"Brazil"}
-{"id":"tm-1f631fade9e0","name":"Team Vitality","overviewPage":"Team Vitality","region":"EMEA"}
-{"id":"tm-21acea006c65","name":"100 Thieves","overviewPage":"100 Thieves","region":"Americas"}
-{"id":"tm-24c56cf1ad27","name":"Ninjas in Pyjamas","overviewPage":"Ninjas in Pyjamas.CN","region":"China"}
-{"id":"tm-25b9b1c91296","name":"KT Rolster","overviewPage":"KT Rolster","region":"Korea"}
-{"id":"tm-281934929b8c","name":"Beşiktaş Esports","overviewPage":"Beşiktaş Esports","region":"EMEA"}
-{"id":"tm-2f5d70fc6f37","name":"Gen.G","overviewPage":"Gen.G","region":"Korea"}
-{"id":"tm-32aa66be0dfb","name":"Beyond Gaming","overviewPage":"Beyond Gaming","region":"Asia Pacific"}
-{"id":"tm-33fe65c2f185","name":"Vaevictis eSports","overviewPage":"Vaevictis eSports","region":"CIS"}
-{"id":"tm-34d0a8fab220","name":"Estral Esports","overviewPage":"Estral Esports","region":"Brazil"}
-{"id":"tm-38d08bea0716","name":"Dark Passage","overviewPage":"Dark Passage","region":"EMEA"}
-{"id":"tm-394b5b1ea1d6","name":"XDG Gaming","overviewPage":"XDG Gaming","region":"North America"}
-{"id":"tm-3953f7eea41d","name":"MVP","overviewPage":"MVP","region":"Korea"}
-{"id":"tm-39da3af55725","name":"Nongshim RedForce","overviewPage":"Nongshim RedForce","region":"Korea"}
-{"id":"tm-3a4b5d4d7288","name":"Samsung Galaxy","overviewPage":"Samsung Galaxy","region":"Korea"}
-{"id":"tm-3a76b34e3c82","name":"LOUD","overviewPage":"LOUD","region":"Brazil"}
-{"id":"tm-3a97a5d4aef2","name":"Saigon Jokers","overviewPage":"Saigon Jokers","region":"SEA"}
-{"id":"tm-3b823183c96b","name":"M19","overviewPage":"M19","region":"CIS"}
-{"id":"tm-3bb658d12868","name":"Team Dynamic","overviewPage":"Team Dynamic","region":"North America"}
-{"id":"tm-3bcb9efd5846","name":"SK Gaming","overviewPage":"SK Gaming","region":"EMEA"}
-{"id":"tm-3c8aa94cea87","name":"Bilibili Gaming","overviewPage":"Bilibili Gaming","region":"China"}
-{"id":"tm-3cd10a732f23","name":"Vega Squadron","overviewPage":"Vega Squadron","region":"CIS"}
-{"id":"tm-3d748c517149","name":"Leviatan","overviewPage":"Leviatan","region":"Brazil"}
+{"id":"tm-01149467eceb","name":"NaJin Black Sword","short":"NJBS","overviewPage":"NaJin Black Sword","region":"Korea"}
+{"id":"tm-017ed54b4572","name":"MAD Team","short":"MAD","overviewPage":"MAD Team","region":"LMS"}
+{"id":"tm-01a3f4d54ae6","name":"Ground Zero Gaming","short":"GZ","overviewPage":"Ground Zero Gaming","region":"Asia Pacific"}
+{"id":"tm-026c7a511ce7","name":"FURIA","short":"FUR","overviewPage":"FURIA","region":"Brazil"}
+{"id":"tm-053333398f39","name":"ThunderTalk Gaming","short":"TT","overviewPage":"ThunderTalk Gaming","region":"China"}
+{"id":"tm-05d3799e8d57","name":"ORDER","short":"ORD","overviewPage":"ORDER","region":"Oceania"}
+{"id":"tm-07e1012abad8","name":"Vikings Gaming","short":"HNV","overviewPage":"Vikings Gaming","region":"Vietnam"}
+{"id":"tm-0904a6aad568","name":"Flash Wolves","short":"FW","overviewPage":"Flash Wolves","region":"LMS"}
+{"id":"tm-09cf152475ca","name":"LØS","short":"LOS","overviewPage":"LØS","region":"Brazil"}
+{"id":"tm-0afdaffa9083","name":"The RED","short":"RED","overviewPage":"The RED","region":"CIS"}
+{"id":"tm-0eaafb0e46ef","name":"GAM Esports","short":"GAM","overviewPage":"GAM Esports","region":"Asia Pacific"}
+{"id":"tm-0ee1d7d7c31a","name":"CJ Entus","short":"CJ","overviewPage":"CJ Entus","region":"Korea"}
+{"id":"tm-0fbcd42c658a","name":"Samsung Blue","short":"SSB","overviewPage":"Samsung Blue","region":"Korea"}
+{"id":"tm-144c44d86e2c","name":"Fenerbahçe Esports","short":"FB","overviewPage":"Fenerbahçe Esports","region":"Turkey"}
+{"id":"tm-167a940c6278","name":"Astralis","short":"AST","overviewPage":"Astralis","region":"EMEA"}
+{"id":"tm-192f5142d623","name":"Suning","short":"SN","overviewPage":"Suning","region":"China"}
+{"id":"tm-19ea5f2be308","name":"Team AURORA","short":"AUR","overviewPage":"Team AURORA","region":"Turkey"}
+{"id":"tm-19f46dd5c0f7","name":"Albus NoX Luna","short":"ANX","overviewPage":"Albus NoX Luna","region":"CIS"}
+{"id":"tm-1a0edf11b6b1","name":"Rebirth eSports","short":"RBT","overviewPage":"Rebirth eSports","region":"Latin America"}
+{"id":"tm-1adf6a64d8c0","name":"Liyab Esports","short":"LYB","overviewPage":"Liyab Esports","region":"Asia Pacific"}
+{"id":"tm-1b3d024fdcbb","name":"Rogue","short":"RGE","overviewPage":"Rogue (European Team)","region":"EMEA"}
+{"id":"tm-1c6a25914979","name":"Team Liquid","short":"TL","overviewPage":"Team Liquid","region":"North America"}
+{"id":"tm-1d1f59fbb46b","name":"KaBuM! Ilha das Lendas","short":"KBM","overviewPage":"KaBuM! Ilha das Lendas","region":"Brazil"}
+{"id":"tm-1f631fade9e0","name":"Team Vitality","short":"VIT","overviewPage":"Team Vitality","region":"EMEA"}
+{"id":"tm-21acea006c65","name":"100 Thieves","short":"100T","overviewPage":"100 Thieves","region":"Americas"}
+{"id":"tm-24c56cf1ad27","name":"Ninjas in Pyjamas","short":"NIP","overviewPage":"Ninjas in Pyjamas.CN","region":"China"}
+{"id":"tm-25b9b1c91296","name":"KT Rolster","short":"KT","overviewPage":"KT Rolster","region":"Korea"}
+{"id":"tm-281934929b8c","name":"Beşiktaş Esports","short":"BJK","overviewPage":"Beşiktaş Esports","region":"EMEA"}
+{"id":"tm-2f5d70fc6f37","name":"Gen.G","short":"GEN","overviewPage":"Gen.G","region":"Korea"}
+{"id":"tm-32aa66be0dfb","name":"Beyond Gaming","short":"BYG","overviewPage":"Beyond Gaming","region":"Asia Pacific"}
+{"id":"tm-33fe65c2f185","name":"Vaevictis eSports","short":"VS","overviewPage":"Vaevictis eSports","region":"CIS"}
+{"id":"tm-34d0a8fab220","name":"Estral Esports","short":"EST","overviewPage":"Estral Esports","region":"Brazil"}
+{"id":"tm-38d08bea0716","name":"Dark Passage","short":"DP","overviewPage":"Dark Passage","region":"EMEA"}
+{"id":"tm-394b5b1ea1d6","name":"XDG Gaming","short":"XDG","overviewPage":"XDG Gaming","region":"North America"}
+{"id":"tm-3953f7eea41d","name":"MVP","short":"MVP","overviewPage":"MVP","region":"Korea"}
+{"id":"tm-39da3af55725","name":"Nongshim RedForce","short":"NS","overviewPage":"Nongshim RedForce","region":"Korea"}
+{"id":"tm-3a4b5d4d7288","name":"Samsung Galaxy","short":"SSG","overviewPage":"Samsung Galaxy","region":"Korea"}
+{"id":"tm-3a76b34e3c82","name":"LOUD","short":"LOUD","overviewPage":"LOUD","region":"Brazil"}
+{"id":"tm-3a97a5d4aef2","name":"Saigon Jokers","short":"SAJ","overviewPage":"Saigon Jokers","region":"SEA"}
+{"id":"tm-3b823183c96b","name":"M19","short":"M19","overviewPage":"M19","region":"CIS"}
+{"id":"tm-3bb658d12868","name":"Team Dynamic","short":"DYN","overviewPage":"Team Dynamic","region":"North America"}
+{"id":"tm-3bcb9efd5846","name":"SK Gaming","short":"SK","overviewPage":"SK Gaming","region":"EMEA"}
+{"id":"tm-3c8aa94cea87","name":"Bilibili Gaming","short":"BLG","overviewPage":"Bilibili Gaming","region":"China"}
+{"id":"tm-3cd10a732f23","name":"Vega Squadron","short":"VEG","overviewPage":"Vega Squadron","region":"CIS"}
+{"id":"tm-3d748c517149","name":"Leviatan","short":"LEV","overviewPage":"Leviatan","region":"Brazil"}
 {"id":"tm-3d9937b61922","name":"Team Baron (MSI 2026)","overviewPage":null,"region":""}
-{"id":"tm-3ee178c1a857","name":"RoX","overviewPage":"RoX (2014 CIS Team)","region":"CIS"}
-{"id":"tm-41bcf79cfe0d","name":"MiTH Flashdive","overviewPage":"MiTH Flashdive","region":"SEA"}
-{"id":"tm-424a766329cc","name":"Immortals","overviewPage":"Immortals","region":"North America"}
-{"id":"tm-43ac03320fb2","name":"CJ Entus Frost","overviewPage":"CJ Entus Frost","region":"Korea"}
-{"id":"tm-462fe76fc32a","name":"Karmine Corp","overviewPage":"Karmine Corp","region":"EMEA"}
-{"id":"tm-46d49b3c0bfb","name":"CJ Entus Blaze","overviewPage":"CJ Entus Blaze","region":"Korea"}
-{"id":"tm-478a97e49e4b","name":"Team LoLPro","overviewPage":"Team LoLPro","region":"North America"}
-{"id":"tm-49b0ea9ef3a5","name":"FlyQuest","overviewPage":"FlyQuest","region":"North America"}
-{"id":"tm-4e25a22fc19c","name":"Azubu Frost","overviewPage":"Azubu Frost","region":"Korea"}
-{"id":"tm-4e30564007de","name":"Royal Paladin Eclipse","overviewPage":"Royal Paladin eSports Eclipse","region":"LAS"}
-{"id":"tm-4e650482e7d7","name":"Ascension Gaming","overviewPage":"Ascension Gaming","region":"SEA"}
-{"id":"tm-4fc0614f3ef7","name":"Counter Logic Gaming Europe","overviewPage":"Counter Logic Gaming Europe","region":"Europe"}
-{"id":"tm-4fc491745cc3","name":"INTZ","overviewPage":"INTZ","region":"Brazil"}
-{"id":"tm-50038f5deaa0","name":"Weibo Gaming","overviewPage":"Weibo Gaming","region":"China"}
-{"id":"tm-5083f194807a","name":"Deep Cross Gaming","overviewPage":"Deep Cross Gaming","region":"Asia Pacific"}
-{"id":"tm-52ed30f9893e","name":"Machi Esports","overviewPage":"Machi Esports","region":"Asia Pacific"}
-{"id":"tm-56335e9d9649","name":"Furious Gaming","overviewPage":"Furious Gaming","region":"Americas"}
-{"id":"tm-5ad6b7b25af6","name":"Team Sypher","overviewPage":"Team Sypher","region":"Europe"}
-{"id":"tm-5b8d311624f9","name":"Bombers","overviewPage":"Bombers","region":"Oceania"}
-{"id":"tm-5b9458c5bb13","name":"Lemondogs","overviewPage":"Lemondogs","region":"Europe"}
-{"id":"tm-5c47db8dbbf4","name":"MAMMOTH","overviewPage":"MAMMOTH","region":"Asia Pacific"}
-{"id":"tm-5e9b85271e7c","name":"Solary","overviewPage":"Solary","region":"EMEA"}
-{"id":"tm-5f7d7acdce6f","name":"Echo Fox","overviewPage":"Echo Fox","region":"North America"}
-{"id":"tm-60eac80615ba","name":"Team FeaR","overviewPage":"Team FeaR","region":"North America"}
-{"id":"tm-622122ef2999","name":"LNG Esports","overviewPage":"LNG Esports","region":"China"}
-{"id":"tm-64248513e110","name":"Shifters","overviewPage":"Shifters","region":"EMEA"}
-{"id":"tm-6505d50295d1","name":"Kiwoom DRX","overviewPage":"Kiwoom DRX","region":"Korea"}
-{"id":"tm-652813670ae3","name":"MVK Esports","overviewPage":"MVK Esports","region":"Asia Pacific"}
-{"id":"tm-653b0a79a8a4","name":"Kaos Latin Gamers","overviewPage":"Kaos Latin Gamers","region":"Latin America"}
-{"id":"tm-65e25e287fe3","name":"Dash9 Gaming","overviewPage":"Dash9 Gaming","region":"LAN"}
-{"id":"tm-6984112c4cd7","name":"ESC Shane","overviewPage":"ESC Shane","region":"Korea"}
-{"id":"tm-69e3aa65d006","name":"Ultra Prime","overviewPage":"Ultra Prime","region":"China"}
-{"id":"tm-69eb13529d72","name":"Anexis eSports","overviewPage":"Anexis eSports","region":"Europe"}
-{"id":"tm-6ab07ee850e8","name":"ALTERNATE aTTaX","overviewPage":"ALTERNATE aTTaX","region":"Europe"}
-{"id":"tm-6ffab94dda6a","name":"Millenium","overviewPage":"Millenium","region":"Europe"}
-{"id":"tm-71230c22fb3b","name":"GashBears","overviewPage":"GashBears","region":"LMS"}
-{"id":"tm-714172e58a75","name":"BNK FEARX","overviewPage":"BNK FEARX","region":"Korea"}
-{"id":"tm-719ce3208528","name":"I May","overviewPage":"I May","region":"China"}
-{"id":"tm-71d9f0e83524","name":"Meat Playground","overviewPage":"Meat Playground","region":"North America"}
-{"id":"tm-71fb2632f448","name":"Top Esports","overviewPage":"Top Esports","region":"China"}
-{"id":"tm-740bcd0dae8c","name":"NASR eSports Turkey","overviewPage":"NASR eSports Turkey","region":"EMEA"}
-{"id":"tm-74c285cb505c","name":"HANJIN BRION","overviewPage":"HANJIN BRION","region":"Korea"}
-{"id":"tm-766b8e6c7117","name":"Fukuoka SoftBank HAWKS gaming","overviewPage":"Fukuoka SoftBank HAWKS gaming","region":"Asia Pacific"}
-{"id":"tm-76f0ac3ed97f","name":"Longzhu Gaming","overviewPage":"Longzhu Gaming","region":"Korea"}
-{"id":"tm-77f2f4dc5e6c","name":"İstanbul Wildcats","overviewPage":"Istanbul Wildcats","region":"EMEA"}
-{"id":"tm-79c8655a26fe","name":"G2 Esports","overviewPage":"G2 Esports","region":"EMEA"}
-{"id":"tm-7b82dadd0cdd","name":"Newbee","overviewPage":"Newbee","region":"China"}
-{"id":"tm-7b9a68399cde","name":"INFINITY","overviewPage":"INFINITY","region":"Americas"}
-{"id":"tm-7bf6e5998b18","name":"Invictus Gaming","overviewPage":"Invictus Gaming","region":"China"}
-{"id":"tm-7c06f5ab8884","name":"Papara SuperMassive","overviewPage":"Papara SuperMassive","region":"EMEA"}
-{"id":"tm-7db50111a95d","name":"Lowkey Esports.Vietnam","overviewPage":"Lowkey Esports.Vietnam","region":"Vietnam"}
-{"id":"tm-7e5eb06d8646","name":"H2k-Gaming","overviewPage":"H2k-Gaming","region":"Europe"}
+{"id":"tm-3ee178c1a857","name":"RoX","short":"RoX","overviewPage":"RoX (2014 CIS Team)","region":"CIS"}
+{"id":"tm-41bcf79cfe0d","name":"MiTH Flashdive","short":"MiTH FD","overviewPage":"MiTH Flashdive","region":"SEA"}
+{"id":"tm-424a766329cc","name":"Immortals","short":"IMT","overviewPage":"Immortals","region":"North America"}
+{"id":"tm-43ac03320fb2","name":"CJ Entus Frost","short":"CJF","overviewPage":"CJ Entus Frost","region":"Korea"}
+{"id":"tm-462fe76fc32a","name":"Karmine Corp","short":"KC","overviewPage":"Karmine Corp","region":"EMEA"}
+{"id":"tm-46d49b3c0bfb","name":"CJ Entus Blaze","short":"CJB","overviewPage":"CJ Entus Blaze","region":"Korea"}
+{"id":"tm-478a97e49e4b","name":"Team LoLPro","short":"PRO","overviewPage":"Team LoLPro","region":"North America"}
+{"id":"tm-49b0ea9ef3a5","name":"FlyQuest","short":"FLY","overviewPage":"FlyQuest","region":"North America"}
+{"id":"tm-4e25a22fc19c","name":"Azubu Frost","short":"AZF","overviewPage":"Azubu Frost","region":"Korea"}
+{"id":"tm-4e30564007de","name":"Royal Paladin Eclipse","short":"RPE.E","overviewPage":"Royal Paladin eSports Eclipse","region":"LAS"}
+{"id":"tm-4e650482e7d7","name":"Ascension Gaming","short":"ASC","overviewPage":"Ascension Gaming","region":"SEA"}
+{"id":"tm-4fc0614f3ef7","name":"Counter Logic Gaming Europe","short":"CLG.EU","overviewPage":"Counter Logic Gaming Europe","region":"Europe"}
+{"id":"tm-4fc491745cc3","name":"INTZ","short":"INTZ","overviewPage":"INTZ","region":"Brazil"}
+{"id":"tm-50038f5deaa0","name":"Weibo Gaming","short":"WBG","overviewPage":"Weibo Gaming","region":"China"}
+{"id":"tm-5083f194807a","name":"Deep Cross Gaming","short":"DCG","overviewPage":"Deep Cross Gaming","region":"Asia Pacific"}
+{"id":"tm-52ed30f9893e","name":"Machi Esports","short":"MCX","overviewPage":"Machi Esports","region":"Asia Pacific"}
+{"id":"tm-56335e9d9649","name":"Furious Gaming","short":"FG","overviewPage":"Furious Gaming","region":"Americas"}
+{"id":"tm-5ad6b7b25af6","name":"Team Sypher","short":"Sypher","overviewPage":"Team Sypher","region":"Europe"}
+{"id":"tm-5b8d311624f9","name":"Bombers","short":"BMR","overviewPage":"Bombers","region":"Oceania"}
+{"id":"tm-5b9458c5bb13","name":"Lemondogs","short":"LD","overviewPage":"Lemondogs","region":"Europe"}
+{"id":"tm-5c47db8dbbf4","name":"MAMMOTH","short":"MEC","overviewPage":"MAMMOTH","region":"Asia Pacific"}
+{"id":"tm-5e9b85271e7c","name":"Solary","short":"SLY","overviewPage":"Solary","region":"EMEA"}
+{"id":"tm-5f7d7acdce6f","name":"Echo Fox","short":"FOX","overviewPage":"Echo Fox","region":"North America"}
+{"id":"tm-60eac80615ba","name":"Team FeaR","short":"FR","overviewPage":"Team FeaR","region":"North America"}
+{"id":"tm-622122ef2999","name":"LNG Esports","short":"LNG","overviewPage":"LNG Esports","region":"China"}
+{"id":"tm-64248513e110","name":"Shifters","short":"SHFT","overviewPage":"Shifters","region":"EMEA"}
+{"id":"tm-6505d50295d1","name":"Kiwoom DRX","short":"KRX","overviewPage":"Kiwoom DRX","region":"Korea"}
+{"id":"tm-652813670ae3","name":"MVK Esports","short":"MVK","overviewPage":"MVK Esports","region":"Asia Pacific"}
+{"id":"tm-653b0a79a8a4","name":"Kaos Latin Gamers","short":"KLG","overviewPage":"Kaos Latin Gamers","region":"Latin America"}
+{"id":"tm-65e25e287fe3","name":"Dash9 Gaming","short":"D9","overviewPage":"Dash9 Gaming","region":"LAN"}
+{"id":"tm-6984112c4cd7","name":"ESC Shane","short":"ESC","overviewPage":"ESC Shane","region":"Korea"}
+{"id":"tm-69e3aa65d006","name":"Ultra Prime","short":"UP","overviewPage":"Ultra Prime","region":"China"}
+{"id":"tm-69eb13529d72","name":"Anexis eSports","short":"AXS","overviewPage":"Anexis eSports","region":"Europe"}
+{"id":"tm-6ab07ee850e8","name":"ALTERNATE aTTaX","short":"ATN","overviewPage":"ALTERNATE aTTaX","region":"Europe"}
+{"id":"tm-6ffab94dda6a","name":"Millenium","short":"MIL","overviewPage":"Millenium","region":"Europe"}
+{"id":"tm-71230c22fb3b","name":"GashBears","short":"GB","overviewPage":"GashBears","region":"LMS"}
+{"id":"tm-714172e58a75","name":"BNK FEARX","short":"BFX","overviewPage":"BNK FEARX","region":"Korea"}
+{"id":"tm-719ce3208528","name":"I May","short":"IM","overviewPage":"I May","region":"China"}
+{"id":"tm-71d9f0e83524","name":"Meat Playground","short":"MP","overviewPage":"Meat Playground","region":"North America"}
+{"id":"tm-71fb2632f448","name":"Top Esports","short":"TES","overviewPage":"Top Esports","region":"China"}
+{"id":"tm-740bcd0dae8c","name":"NASR eSports Turkey","short":"NASR","overviewPage":"NASR eSports Turkey","region":"EMEA"}
+{"id":"tm-74c285cb505c","name":"HANJIN BRION","short":"BRO","overviewPage":"HANJIN BRION","region":"Korea"}
+{"id":"tm-766b8e6c7117","name":"Fukuoka SoftBank HAWKS gaming","short":"SHG","overviewPage":"Fukuoka SoftBank HAWKS gaming","region":"Asia Pacific"}
+{"id":"tm-76f0ac3ed97f","name":"Longzhu Gaming","short":"LZ","overviewPage":"Longzhu Gaming","region":"Korea"}
+{"id":"tm-77f2f4dc5e6c","name":"İstanbul Wildcats","short":"IW","overviewPage":"Istanbul Wildcats","region":"EMEA"}
+{"id":"tm-79c8655a26fe","name":"G2 Esports","short":"G2","overviewPage":"G2 Esports","region":"EMEA"}
+{"id":"tm-7b82dadd0cdd","name":"Newbee","short":"NB","overviewPage":"Newbee","region":"China"}
+{"id":"tm-7b9a68399cde","name":"INFINITY","short":"INF","overviewPage":"INFINITY","region":"Americas"}
+{"id":"tm-7bf6e5998b18","name":"Invictus Gaming","short":"iG","overviewPage":"Invictus Gaming","region":"China"}
+{"id":"tm-7c06f5ab8884","name":"Papara SuperMassive","short":"SUP","overviewPage":"Papara SuperMassive","region":"EMEA"}
+{"id":"tm-7db50111a95d","name":"Lowkey Esports.Vietnam","short":"LK","overviewPage":"Lowkey Esports.Vietnam","region":"Vietnam"}
+{"id":"tm-7e5eb06d8646","name":"H2k-Gaming","short":"H2K","overviewPage":"H2k-Gaming","region":"Europe"}
 {"id":"tm-80988f4e16e4","name":"LoL Championship Series","overviewPage":null,"region":""}
-{"id":"tm-80aa4e025750","name":"compLexity Gaming","overviewPage":"CompLexity Gaming","region":"North America"}
-{"id":"tm-816e45e1dd85","name":"NRG","overviewPage":"NRG","region":"North America"}
-{"id":"tm-831f185fefe8","name":"Sin Gaming","overviewPage":"Sin Gaming","region":"Oceania"}
-{"id":"tm-84c390678a6f","name":"MEGA","overviewPage":"MEGA","region":"SEA"}
-{"id":"tm-855c2602fe26","name":"Virtus.pro","overviewPage":"Virtus.pro","region":"CIS"}
-{"id":"tm-865c6ae41d30","name":"Vivo Keyd Stars","overviewPage":"Vivo Keyd Stars","region":"Brazil"}
-{"id":"tm-8785e1bcf241","name":"Singapore Sentinels","overviewPage":"Singapore Sentinels","region":"SEA"}
-{"id":"tm-87d2c66de97e","name":"Unicorns of Love.CIS","overviewPage":"Unicorns of Love.CIS","region":"CIS"}
-{"id":"tm-88cc4600b863","name":"Team Ultra Vires","overviewPage":"Team Ultra Vires","region":"Europe"}
+{"id":"tm-80aa4e025750","name":"compLexity Gaming","short":"COL","overviewPage":"CompLexity Gaming","region":"North America"}
+{"id":"tm-816e45e1dd85","name":"NRG","short":"NRG","overviewPage":"NRG","region":"North America"}
+{"id":"tm-831f185fefe8","name":"Sin Gaming","short":"SIN","overviewPage":"Sin Gaming","region":"Oceania"}
+{"id":"tm-84c390678a6f","name":"MEGA","short":"MG","overviewPage":"MEGA","region":"SEA"}
+{"id":"tm-855c2602fe26","name":"Virtus.pro","short":"VP","overviewPage":"Virtus.pro","region":"CIS"}
+{"id":"tm-865c6ae41d30","name":"Vivo Keyd Stars","short":"VKS","overviewPage":"Vivo Keyd Stars","region":"Brazil"}
+{"id":"tm-8785e1bcf241","name":"Singapore Sentinels","short":"SGS","overviewPage":"Singapore Sentinels","region":"SEA"}
+{"id":"tm-87d2c66de97e","name":"Unicorns of Love.CIS","short":"UOL","overviewPage":"Unicorns of Love.CIS","region":"CIS"}
+{"id":"tm-88cc4600b863","name":"Team Ultra Vires","short":"TUV","overviewPage":"Team Ultra Vires","region":"Europe"}
 {"id":"tm-8b55d7e7c888","name":"LoL EMEA Championship","overviewPage":null,"region":""}
-{"id":"tm-8db39d6bbdd3","name":"J Team","overviewPage":"J Team","region":"Asia Pacific"}
-{"id":"tm-902962056a3a","name":"Pentanet.GG","overviewPage":"Pentanet.GG","region":"Asia Pacific"}
-{"id":"tm-92dbf7c4c2de","name":"Legacy Esports","overviewPage":"Legacy Esports","region":"Oceania"}
-{"id":"tm-93bb7e588f1d","name":"ahq eSports Club","overviewPage":"Ahq eSports Club","region":"Asia Pacific"}
-{"id":"tm-94fa0eac3812","name":"DetonatioN FocusMe","overviewPage":"DetonatioN FocusMe","region":"Asia Pacific"}
-{"id":"tm-9a44679442c3","name":"Cloud9","overviewPage":"Cloud9","region":"North America"}
-{"id":"tm-9a4fde0c4aad","name":"T1","overviewPage":"T1","region":"Korea"}
-{"id":"tm-9c6aa95845a7","name":"PENTAGRAM","overviewPage":"PENTAGRAM","region":"Japan"}
-{"id":"tm-9eb09b7f9ca5","name":"ESC Gaming","overviewPage":"ESC Gaming","region":"Europe"}
-{"id":"tm-9ffc97384e48","name":"Gambit Esports","overviewPage":"Gambit Esports","region":"CIS"}
-{"id":"tm-a26225283b64","name":"PEACE","overviewPage":"PEACE (Oceanic Team)","region":"Asia Pacific"}
-{"id":"tm-a43f798173a3","name":"EVOS Esports","overviewPage":"EVOS Esports","region":"Vietnam"}
-{"id":"tm-a86e5d5c6076","name":"Royal Club","overviewPage":"Royal Club","region":"China"}
-{"id":"tm-a8eb66c3e24b","name":"Just Toys Havoks","overviewPage":"Just Toys Havoks","region":"LAN"}
-{"id":"tm-ab24332e4df4","name":"Team Secret Whales","overviewPage":"Team Secret Whales","region":"Asia Pacific"}
-{"id":"tm-ab6d9fac5a57","name":"Unsold Stuff Gaming","overviewPage":"Unsold Stuff Gaming","region":"Japan"}
-{"id":"tm-ad25099785e8","name":"NaJin White Shield","overviewPage":"NaJin White Shield","region":"Korea"}
-{"id":"tm-adfaf147ffb4","name":"Hong Kong Attitude","overviewPage":"Hong Kong Attitude","region":"Asia Pacific"}
-{"id":"tm-ae55ee1f5eed","name":"Shopify Rebellion","overviewPage":"Shopify Rebellion","region":"North America"}
-{"id":"tm-aecf2932501d","name":"CTBC Flying Oyster","overviewPage":"CTBC Flying Oyster","region":"Asia Pacific"}
-{"id":"tm-afbbbc1a704d","name":"LGD Gaming","overviewPage":"LGD Gaming","region":"China"}
-{"id":"tm-afe3c1947d3b","name":"Elements","overviewPage":"Elements","region":"Europe"}
-{"id":"tm-b007641c5b83","name":"Evil Geniuses","overviewPage":"Evil Geniuses.NA","region":"North America"}
+{"id":"tm-8db39d6bbdd3","name":"J Team","short":"JT","overviewPage":"J Team","region":"Asia Pacific"}
+{"id":"tm-902962056a3a","name":"Pentanet.GG","short":"PGG","overviewPage":"Pentanet.GG","region":"Asia Pacific"}
+{"id":"tm-92dbf7c4c2de","name":"Legacy Esports","short":"LGC","overviewPage":"Legacy Esports","region":"Oceania"}
+{"id":"tm-93bb7e588f1d","name":"ahq eSports Club","short":"ahq","overviewPage":"Ahq eSports Club","region":"Asia Pacific"}
+{"id":"tm-94fa0eac3812","name":"DetonatioN FocusMe","short":"DFM","overviewPage":"DetonatioN FocusMe","region":"Asia Pacific"}
+{"id":"tm-9a44679442c3","name":"Cloud9","short":"C9","overviewPage":"Cloud9","region":"North America"}
+{"id":"tm-9a4fde0c4aad","name":"T1","short":"T1","overviewPage":"T1","region":"Korea"}
+{"id":"tm-9c6aa95845a7","name":"PENTAGRAM","short":"PGM","overviewPage":"PENTAGRAM","region":"Japan"}
+{"id":"tm-9eb09b7f9ca5","name":"ESC Gaming","short":"ESC","overviewPage":"ESC Gaming","region":"Europe"}
+{"id":"tm-9ffc97384e48","name":"Gambit Esports","short":"GMB","overviewPage":"Gambit Esports","region":"CIS"}
+{"id":"tm-a26225283b64","name":"PEACE","short":"PCE","overviewPage":"PEACE (Oceanic Team)","region":"Asia Pacific"}
+{"id":"tm-a43f798173a3","name":"EVOS Esports","short":"EVS","overviewPage":"EVOS Esports","region":"Vietnam"}
+{"id":"tm-a86e5d5c6076","name":"Royal Club","short":"RYL","overviewPage":"Royal Club","region":"China"}
+{"id":"tm-a8eb66c3e24b","name":"Just Toys Havoks","short":"JTH","overviewPage":"Just Toys Havoks","region":"LAN"}
+{"id":"tm-ab24332e4df4","name":"Team Secret Whales","short":"TSW","overviewPage":"Team Secret Whales","region":"Asia Pacific"}
+{"id":"tm-ab6d9fac5a57","name":"Unsold Stuff Gaming","short":"USG","overviewPage":"Unsold Stuff Gaming","region":"Japan"}
+{"id":"tm-ad25099785e8","name":"NaJin White Shield","short":"NJWS","overviewPage":"NaJin White Shield","region":"Korea"}
+{"id":"tm-adfaf147ffb4","name":"Hong Kong Attitude","short":"HKA","overviewPage":"Hong Kong Attitude","region":"Asia Pacific"}
+{"id":"tm-ae55ee1f5eed","name":"Shopify Rebellion","short":"SR","overviewPage":"Shopify Rebellion","region":"North America"}
+{"id":"tm-aecf2932501d","name":"CTBC Flying Oyster","short":"CFO","overviewPage":"CTBC Flying Oyster","region":"Asia Pacific"}
+{"id":"tm-afbbbc1a704d","name":"LGD Gaming","short":"LGD","overviewPage":"LGD Gaming","region":"China"}
+{"id":"tm-afe3c1947d3b","name":"Elements","short":"EL","overviewPage":"Elements","region":"Europe"}
+{"id":"tm-b007641c5b83","name":"Evil Geniuses","short":"EG","overviewPage":"Evil Geniuses.NA","region":"North America"}
 {"id":"tm-b163af0174c5","name":"Team Dragon (MSI 2026)","overviewPage":null,"region":""}
-{"id":"tm-b22fd695db09","name":"Misfits Gaming","overviewPage":"Misfits Gaming","region":"Europe"}
-{"id":"tm-b36ea6c613eb","name":"Chiefs Esports Club","overviewPage":"Chiefs Esports Club","region":"Asia Pacific"}
-{"id":"tm-b54099fc2014","name":"Fnatic","overviewPage":"Fnatic","region":"EMEA"}
-{"id":"tm-b5ef6905579e","name":"Energy Pacemaker","overviewPage":"Energy Pacemaker","region":"China"}
-{"id":"tm-b5f2d1b32dc6","name":"Dplus Kia","overviewPage":"Dplus Kia","region":"Korea"}
-{"id":"tm-b894b9da44f7","name":"PSG Talon","overviewPage":"PSG Talon","region":"Asia Pacific"}
-{"id":"tm-b8bca1021cd5","name":"LYON","overviewPage":"LYON (2024 American Team)","region":"North America"}
-{"id":"tm-baeebc746cc5","name":"MeetYourMakers","overviewPage":"MeetYourMakers","region":"Europe"}
-{"id":"tm-bc125bba9cec","name":"Dignitas","overviewPage":"Dignitas","region":"North America"}
-{"id":"tm-bc44d3ff4d27","name":"Azubu Blaze","overviewPage":"Azubu Blaze","region":"Korea"}
-{"id":"tm-be1c5136689c","name":"Counter Logic Gaming","overviewPage":"Counter Logic Gaming","region":"North America"}
-{"id":"tm-c1c29bcba8cf","name":"Team ANG","overviewPage":"Team ANG","region":"LAN"}
-{"id":"tm-c2e71e1fc026","name":"Team Just","overviewPage":"Team Just","region":"CIS"}
-{"id":"tm-c450827d3eea","name":"Sentinels","overviewPage":"Sentinels","region":"North America"}
-{"id":"tm-c5e835c550a5","name":"KT Rolster Bullets","overviewPage":"KT Rolster Bullets","region":"Korea"}
-{"id":"tm-c74809016870","name":"Kongdoo Monster","overviewPage":"Kongdoo Monster","region":"Korea"}
-{"id":"tm-c7fd5f1d7017","name":"Bangkok Titans","overviewPage":"Bangkok Titans","region":"SEA"}
-{"id":"tm-c8a4660dc55a","name":"Team Immunity","overviewPage":"Team Immunity","region":"Oceania"}
-{"id":"tm-c94b01026f88","name":"Taipei Assassins","overviewPage":"Taipei Assassins","region":"LMS"}
-{"id":"tm-ca4972dc6dc8","name":"Fluxo W7M","overviewPage":"Fluxo W7M","region":"Brazil"}
-{"id":"tm-cb15b056a5ad","name":"TSM","overviewPage":"TSM","region":"North America"}
-{"id":"tm-cd8d0e943ce5","name":"ROX Tigers","overviewPage":"ROX Tigers","region":"Korea"}
-{"id":"tm-cf60264a481e","name":"Royal Never Give Up","overviewPage":"Royal Never Give Up","region":"China"}
-{"id":"tm-d0d4a4d767cd","name":"Movistar KOI","overviewPage":"Movistar KOI","region":"EMEA"}
-{"id":"tm-d3b6d66f7710","name":"Golden Guardians","overviewPage":"Golden Guardians","region":"North America"}
-{"id":"tm-d4e6485fc336","name":"Kuala Lumpur Hunters","overviewPage":"Kuala Lumpur Hunters","region":"SEA"}
-{"id":"tm-d58747baf8ab","name":"SK Telecom T1 S","overviewPage":"SK Telecom T1 S","region":"Korea"}
-{"id":"tm-d92a0819d063","name":"V3 Esports","overviewPage":"V3 Esports","region":"Asia Pacific"}
-{"id":"tm-db47240fee06","name":"Team Impulse","overviewPage":"Team Impulse","region":"North America"}
-{"id":"tm-de147975c625","name":"EHOME","overviewPage":"EHOME","region":"China"}
-{"id":"tm-e0ac3973ed3e","name":"JD Gaming","overviewPage":"JD Gaming","region":"China"}
-{"id":"tm-e0e36dac6ddd","name":"FunPlus Phoenix","overviewPage":"FunPlus Phoenix","region":"China"}
-{"id":"tm-e4557042772e","name":"Team gamed!de","overviewPage":"Team gamed!de","region":"Europe"}
-{"id":"tm-e496b66b90a1","name":"Team Heretics","overviewPage":"Team Heretics","region":"EMEA"}
-{"id":"tm-e512c54f1754","name":"Anyone's Legend","overviewPage":"Anyone's Legend","region":"China"}
-{"id":"tm-e516642486cc","name":"Team Aze","overviewPage":"Team Aze","region":"Latin America"}
-{"id":"tm-e538e225ab36","name":"YouthCrew Esports","overviewPage":"YouthCrew Esports","region":"Turkey"}
-{"id":"tm-e5a95fe1ee24","name":"Galatasaray Esports","overviewPage":"Galatasaray Esports","region":"Turkey"}
-{"id":"tm-e603064f4a0f","name":"Moscow 5","overviewPage":"Moscow Five","region":"Europe"}
-{"id":"tm-e6bcb4c3de62","name":"Dire Wolves","overviewPage":"Dire Wolves","region":"Asia Pacific"}
-{"id":"tm-e9d15086dc10","name":"GIANTX","overviewPage":"GIANTX","region":"EMEA"}
-{"id":"tm-e9f98466e300","name":"EDward Gaming","overviewPage":"EDward Gaming","region":"China"}
-{"id":"tm-eb2eec43fa28","name":"EPIK Gamer","overviewPage":"Epik Gamer","region":"North America"}
-{"id":"tm-eb4bc7a296bd","name":"Rogue Warriors","overviewPage":"Rogue Warriors","region":"China"}
-{"id":"tm-ed4eca8e1caa","name":"Galions","overviewPage":"Galions","region":"EMEA"}
-{"id":"tm-edc35c2d5808","name":"Isurus","overviewPage":"Isurus","region":"Brazil"}
-{"id":"tm-ef4ffe9d062e","name":"Pacific eSports","overviewPage":"Pacific eSports","region":"SEA"}
-{"id":"tm-f1abaf9eba9b","name":"Natus Vincere","overviewPage":"Natus Vincere","region":"EMEA"}
-{"id":"tm-f1d489b0d24d","name":"Disguised","overviewPage":"Disguised","region":"North America"}
-{"id":"tm-f1fd17aef82e","name":"Griffin","overviewPage":"Griffin (Korean Team)","region":"Korea"}
-{"id":"tm-f369789f5181","name":"Flamengo MDL","overviewPage":"Flamengo MDL","region":"Brazil"}
-{"id":"tm-f4fcd2fe50af","name":"RED Canids","overviewPage":"RED Canids","region":"Brazil"}
-{"id":"tm-f5665c13ca53","name":"Team WE","overviewPage":"Team WE","region":"China"}
-{"id":"tm-f5816dd3b988","name":"G-Rex","overviewPage":"G-Rex","region":"Asia Pacific"}
-{"id":"tm-f5ff3f4474af","name":"Hanwha Life Esports","overviewPage":"Hanwha Life Esports","region":"Korea"}
-{"id":"tm-f60c32258444","name":"Xan","overviewPage":"Xan","region":"SEA"}
-{"id":"tm-f642dbf0692c","name":"paiN Gaming","overviewPage":"PaiN Gaming","region":"Brazil"}
-{"id":"tm-f8a350bee7a9","name":"IceLanD","overviewPage":"IceLanD","region":"LMS"}
-{"id":"tm-fa32a4bab6cd","name":"against All authority","overviewPage":"Against All authority","region":"Europe"}
-{"id":"tm-fa988589be4e","name":"Oh My God","overviewPage":"Oh My God","region":"China"}
-{"id":"tm-fb40b0e96e89","name":"Samsung White","overviewPage":"Samsung White","region":"Korea"}
-{"id":"tm-fea9d39f1fb4","name":"Gambit Gaming","overviewPage":"Gambit Gaming","region":"Europe"}
-{"id":"tm-ff80302a6d80","name":"DN SOOPers","overviewPage":"DN SOOPers","region":"Korea"}
-{"id":"tm-ffeb9af2caae","name":"Blackbean","overviewPage":"Blackbean","region":"SEA"}
+{"id":"tm-b22fd695db09","name":"Misfits Gaming","short":"MSF","overviewPage":"Misfits Gaming","region":"Europe"}
+{"id":"tm-b36ea6c613eb","name":"Chiefs Esports Club","short":"CHF","overviewPage":"Chiefs Esports Club","region":"Asia Pacific"}
+{"id":"tm-b54099fc2014","name":"Fnatic","short":"FNC","overviewPage":"Fnatic","region":"EMEA"}
+{"id":"tm-b5ef6905579e","name":"Energy Pacemaker","short":"EP","overviewPage":"Energy Pacemaker","region":"China"}
+{"id":"tm-b5f2d1b32dc6","name":"Dplus Kia","short":"DK","overviewPage":"Dplus Kia","region":"Korea"}
+{"id":"tm-b894b9da44f7","name":"PSG Talon","short":"PSG","overviewPage":"PSG Talon","region":"Asia Pacific"}
+{"id":"tm-b8bca1021cd5","name":"LYON","short":"LYON","overviewPage":"LYON (2024 American Team)","region":"North America"}
+{"id":"tm-baeebc746cc5","name":"MeetYourMakers","short":"MYM","overviewPage":"MeetYourMakers","region":"Europe"}
+{"id":"tm-bc125bba9cec","name":"Dignitas","short":"DIG","overviewPage":"Dignitas","region":"North America"}
+{"id":"tm-bc44d3ff4d27","name":"Azubu Blaze","short":"AZB","overviewPage":"Azubu Blaze","region":"Korea"}
+{"id":"tm-be1c5136689c","name":"Counter Logic Gaming","short":"CLG","overviewPage":"Counter Logic Gaming","region":"North America"}
+{"id":"tm-c1c29bcba8cf","name":"Team ANG","short":"ANG","overviewPage":"Team ANG","region":"LAN"}
+{"id":"tm-c2e71e1fc026","name":"Team Just","short":"TJ","overviewPage":"Team Just","region":"CIS"}
+{"id":"tm-c450827d3eea","name":"Sentinels","short":"SEN","overviewPage":"Sentinels","region":"North America"}
+{"id":"tm-c5e835c550a5","name":"KT Rolster Bullets","short":"KT.B","overviewPage":"KT Rolster Bullets","region":"Korea"}
+{"id":"tm-c74809016870","name":"Kongdoo Monster","short":"KDM","overviewPage":"Kongdoo Monster","region":"Korea"}
+{"id":"tm-c7fd5f1d7017","name":"Bangkok Titans","short":"BKT","overviewPage":"Bangkok Titans","region":"SEA"}
+{"id":"tm-c8a4660dc55a","name":"Team Immunity","short":"IM","overviewPage":"Team Immunity","region":"Oceania"}
+{"id":"tm-c94b01026f88","name":"Taipei Assassins","short":"TPA","overviewPage":"Taipei Assassins","region":"LMS"}
+{"id":"tm-ca4972dc6dc8","name":"Fluxo W7M","short":"FX","overviewPage":"Fluxo W7M","region":"Brazil"}
+{"id":"tm-cb15b056a5ad","name":"TSM","short":"TSM","overviewPage":"TSM","region":"North America"}
+{"id":"tm-cd8d0e943ce5","name":"ROX Tigers","short":"ROX","overviewPage":"ROX Tigers","region":"Korea"}
+{"id":"tm-cf60264a481e","name":"Royal Never Give Up","short":"RNG","overviewPage":"Royal Never Give Up","region":"China"}
+{"id":"tm-d0d4a4d767cd","name":"Movistar KOI","short":"MKOI","overviewPage":"Movistar KOI","region":"EMEA"}
+{"id":"tm-d3b6d66f7710","name":"Golden Guardians","short":"GG","overviewPage":"Golden Guardians","region":"North America"}
+{"id":"tm-d4e6485fc336","name":"Kuala Lumpur Hunters","short":"KLH","overviewPage":"Kuala Lumpur Hunters","region":"SEA"}
+{"id":"tm-d58747baf8ab","name":"SK Telecom T1 S","short":"SKT S","overviewPage":"SK Telecom T1 S","region":"Korea"}
+{"id":"tm-d92a0819d063","name":"V3 Esports","short":"V3","overviewPage":"V3 Esports","region":"Asia Pacific"}
+{"id":"tm-db47240fee06","name":"Team Impulse","short":"TIP","overviewPage":"Team Impulse","region":"North America"}
+{"id":"tm-de147975c625","name":"EHOME","short":"EHOME","overviewPage":"EHOME","region":"China"}
+{"id":"tm-e0ac3973ed3e","name":"JD Gaming","short":"JDG","overviewPage":"JD Gaming","region":"China"}
+{"id":"tm-e0e36dac6ddd","name":"FunPlus Phoenix","short":"FPX","overviewPage":"FunPlus Phoenix","region":"China"}
+{"id":"tm-e4557042772e","name":"Team gamed!de","short":"GDE","overviewPage":"Team gamed!de","region":"Europe"}
+{"id":"tm-e496b66b90a1","name":"Team Heretics","short":"TH","overviewPage":"Team Heretics","region":"EMEA"}
+{"id":"tm-e512c54f1754","name":"Anyone's Legend","short":"AL","overviewPage":"Anyone's Legend","region":"China"}
+{"id":"tm-e516642486cc","name":"Team Aze","short":"AZE","overviewPage":"Team Aze","region":"Latin America"}
+{"id":"tm-e538e225ab36","name":"YouthCrew Esports","short":"YC","overviewPage":"YouthCrew Esports","region":"Turkey"}
+{"id":"tm-e5a95fe1ee24","name":"Galatasaray Esports","short":"GS","overviewPage":"Galatasaray Esports","region":"Turkey"}
+{"id":"tm-e603064f4a0f","name":"Moscow 5","short":"M5","overviewPage":"Moscow Five","region":"Europe"}
+{"id":"tm-e6bcb4c3de62","name":"Dire Wolves","short":"DW","overviewPage":"Dire Wolves","region":"Asia Pacific"}
+{"id":"tm-e9d15086dc10","name":"GIANTX","short":"GX","overviewPage":"GIANTX","region":"EMEA"}
+{"id":"tm-e9f98466e300","name":"EDward Gaming","short":"EDG","overviewPage":"EDward Gaming","region":"China"}
+{"id":"tm-eb2eec43fa28","name":"EPIK Gamer","short":"EPIK","overviewPage":"Epik Gamer","region":"North America"}
+{"id":"tm-eb4bc7a296bd","name":"Rogue Warriors","short":"RW","overviewPage":"Rogue Warriors","region":"China"}
+{"id":"tm-ed4eca8e1caa","name":"Galions","short":"GL","overviewPage":"Galions","region":"EMEA"}
+{"id":"tm-edc35c2d5808","name":"Isurus","short":"ISG","overviewPage":"Isurus","region":"Brazil"}
+{"id":"tm-ef4ffe9d062e","name":"Pacific eSports","short":"PCFC","overviewPage":"Pacific eSports","region":"SEA"}
+{"id":"tm-f1abaf9eba9b","name":"Natus Vincere","short":"NAVI","overviewPage":"Natus Vincere","region":"EMEA"}
+{"id":"tm-f1d489b0d24d","name":"Disguised","short":"DSG","overviewPage":"Disguised","region":"North America"}
+{"id":"tm-f1fd17aef82e","name":"Griffin","short":"GRF","overviewPage":"Griffin (Korean Team)","region":"Korea"}
+{"id":"tm-f369789f5181","name":"Flamengo MDL","short":"FLA","overviewPage":"Flamengo MDL","region":"Brazil"}
+{"id":"tm-f4fcd2fe50af","name":"RED Canids","short":"RED","overviewPage":"RED Canids","region":"Brazil"}
+{"id":"tm-f5665c13ca53","name":"Team WE","short":"WE","overviewPage":"Team WE","region":"China"}
+{"id":"tm-f5816dd3b988","name":"G-Rex","short":"GRX","overviewPage":"G-Rex","region":"Asia Pacific"}
+{"id":"tm-f5ff3f4474af","name":"Hanwha Life Esports","short":"HLE","overviewPage":"Hanwha Life Esports","region":"Korea"}
+{"id":"tm-f60c32258444","name":"Xan","short":"XAN","overviewPage":"Xan","region":"SEA"}
+{"id":"tm-f642dbf0692c","name":"paiN Gaming","short":"PAIN","overviewPage":"PaiN Gaming","region":"Brazil"}
+{"id":"tm-f8a350bee7a9","name":"IceLanD","short":"ILD","overviewPage":"IceLanD","region":"LMS"}
+{"id":"tm-fa32a4bab6cd","name":"against All authority","short":"aAa","overviewPage":"Against All authority","region":"Europe"}
+{"id":"tm-fa988589be4e","name":"Oh My God","short":"OMG","overviewPage":"Oh My God","region":"China"}
+{"id":"tm-fb40b0e96e89","name":"Samsung White","short":"SSW","overviewPage":"Samsung White","region":"Korea"}
+{"id":"tm-fea9d39f1fb4","name":"Gambit Gaming","short":"GMB","overviewPage":"Gambit Gaming","region":"Europe"}
+{"id":"tm-ff80302a6d80","name":"DN SOOPers","short":"DNS","overviewPage":"DN SOOPers","region":"Korea"}
+{"id":"tm-ffeb9af2caae","name":"Blackbean","short":"BB","overviewPage":"Blackbean","region":"SEA"}

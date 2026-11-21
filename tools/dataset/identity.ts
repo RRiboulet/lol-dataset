@@ -111,6 +111,11 @@ export type TeamRecord = {
 	id: string;
 	/** The current display name from the registry, so the row reads without decoding the ID. */
 	name: string;
+	/**
+	 * The source's short name for the team (`Karmine Corp` -> `KC`), absent when it states
+	 * none. A label, never an identity: two teams can share one, so nothing may join on it.
+	 */
+	short?: string;
 	/** The current page. Null only for an entity minted from a string no registry carries. */
 	overviewPage: string | null;
 	/** The source's region string, verbatim; empty when the source records none. */
@@ -516,7 +521,16 @@ export function assembleIdentity(
 	for (const { root, chain } of teamChains(sources.teams, redirectPage, danglingRenames)) {
 		const current = chain[chain.length - 1];
 		const id = surrogateId(KIND_PREFIX.team, root.page);
-		teams.push({ id, name: displayName(current.name), overviewPage: current.page, region: current.region });
+		// The *current* page's short, deliberately: a rebrand renames the abbreviation too
+		// (SKT -> T1), so an older page's short would mislabel the team it renamed into.
+		const short = displayName(current.short);
+		teams.push({
+			id,
+			name: displayName(current.name),
+			...(short === "" ? {} : { short }),
+			overviewPage: current.page,
+			region: current.region,
+		});
 		names.set(id, displayName(current.name));
 		for (const page of chain) teamIdByPage.set(page.page, id);
 		chain.forEach((page, index) => {

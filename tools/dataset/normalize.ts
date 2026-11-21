@@ -69,6 +69,8 @@ export type SourceEvent = {
 export type SourceTeam = {
 	page: string;
 	name: string;
+	/** Source `Short`: the abbreviation the registry states, empty when it states none. */
+	short: string;
 	/** The page this team was renamed to, or empty. Never a display string. */
 	renamedTo: string;
 	region: string;
@@ -474,6 +476,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 			rows.push({
 				page,
 				name: asText(row.Name) || page,
+				short: asText(row.Short),
 				renamedTo: asText(row.RenamedTo),
 				region: asText(row.Region),
 				sourceFile: payload.file,
@@ -491,7 +494,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 			folded.set(row.page, row);
 			continue;
 		}
-		const merge = (field: "name" | "region"): string => {
+		const merge = (field: "name" | "short" | "region"): string => {
 			if (seen[field] !== "" && row[field] !== "" && seen[field] !== row[field]) {
 				throw new Error(
 					`team page ${JSON.stringify(row.page)}: ${seen.sourceFile} and ${row.sourceFile} state different ${field}s ` +
@@ -509,6 +512,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 		folded.set(row.page, {
 			...seen,
 			name: merge("name"),
+			short: merge("short"),
 			region: merge("region"),
 			renamedTo: seen.renamedTo !== "" ? seen.renamedTo : row.renamedTo,
 		});
@@ -516,7 +520,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 	return dedupe(
 		[...folded.values()],
 		(row) => row.page,
-		(a, b) => same([a.name, a.renamedTo, a.region], [b.name, b.renamedTo, b.region]),
+		(a, b) => same([a.name, a.short, a.renamedTo, a.region], [b.name, b.short, b.renamedTo, b.region]),
 		"team page",
 	);
 }

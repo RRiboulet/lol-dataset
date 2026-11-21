@@ -44,7 +44,7 @@ data does not have — and the row counts are in its "At a glance" table.
 | `matches.jsonl` | one series (match) | Both sides with their series score, the declared length, the round label, the source id |
 | `series-conflicts.jsonl` | one conflicted game **or** series | Games detached from a series that names other teams, and series every game of which contradicts them |
 | `player-games.jsonl` | one player in one game | Champion, role, side, and the statistics the source states |
-| `teams.jsonl`, `players.jsonl`, `champions.jsonl` | one canonical entity | Canonical id, display name, page |
+| `teams.jsonl`, `players.jsonl`, `champions.jsonl` | one canonical entity | Canonical id, display name, page, and — for teams — the registry's short name (`Karmine Corp` → `KC`) |
 | `aliases.jsonl` | one source string and entity | Every spelling, handle and page that resolves to a canonical entity, with the window the corpus dates |
 | `identity-unresolved.jsonl` | one unresolved source string | Strings that mint a provisional entity because no registry row answers |
 | `manifest.json` | the dataset | Every payload the build read (path, query, fetch time, sha256) and a digest of every emitted file |
@@ -65,7 +65,7 @@ Two conventions matter more than the field list:
 A team that renamed, a player who changed handle and a champion Riot renamed each stay
 **one** canonical entity. The strings that referred to it accumulate in `aliases.jsonl`
 with the dates the corpus saw them, which is why `T1` and `SK Telecom T1` are two alias
-rows pointing at one `tm-…` id rather than two teams. Three consequences worth knowing:
+rows pointing at one `tm-…` id rather than two teams. Four consequences worth knowing:
 
 - Team and player pages are wiki pages, so the same org spelled two ways in one table is
   a data problem, not two entities. IPL 5's `MatchSchedule` is the measured case: one
@@ -75,6 +75,14 @@ rows pointing at one `tm-…` id rather than two teams. Three consequences worth
   and the row says why. Treat those ids as usable, not certain.
 - The alias bridge in the model carries the same rows, so a join on a wiki page name
   should resolve through `bridge_alias`, never by matching a display name by hand.
+- A team's **short name** is a label, not an identity. `KC` is how the source's registry
+  abbreviates `Karmine Corp`, and it reads well in a table, but it is not unique:
+  measured, `ESC`, `GMB`, `IM` and `RED` each denote two teams in this corpus. Use
+  `short` (in `teams.jsonl`, and on `dim_team`) to display a team, never to look one up
+  or to group by — that is what `team_id`, the page, or the alias bridge are for. It
+  comes from the team's **current** page, so a rebrand does not carry an older
+  abbreviation forward (`T1` never reads `SKT`), and a team the registries do not carry
+  has none at all.
 
 ### Events, selection and series that disagree
 
