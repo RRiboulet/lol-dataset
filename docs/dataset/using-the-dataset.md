@@ -45,6 +45,7 @@ data does not have — and the row counts are in its "At a glance" table.
 | `series-conflicts.jsonl` | one conflicted game **or** series | Games detached from a series that names other teams, and series every game of which contradicts them |
 | `player-games.jsonl` | one player in one game | Champion, role, side, and the statistics the source states |
 | `teams.jsonl`, `players.jsonl`, `champions.jsonl` | one canonical entity | Canonical id, display name, page, plus a team's short name (`Karmine Corp` → `KC`) and a champion's release date (`2011-12-14`) |
+| `honours.jsonl` | one player's distinction at one event | The title as the source words it (`Finals MVP`, `All Pro Team`), the award type, the player, the event, and the team string with the entity it resolves to |
 | `aliases.jsonl` | one source string and entity | Every spelling, handle and page that resolves to a canonical entity, with the window the corpus dates |
 | `identity-unresolved.jsonl` | one unresolved source string | Strings that mint a provisional entity because no registry row answers |
 | `manifest.json` | the dataset | Every payload the build read (path, query, fetch time, sha256) and a digest of every emitted file |
@@ -55,7 +56,7 @@ Two conventions matter more than the field list:
   never `0`; a recorded zero is `0`. A 2012 game has no `gold` key on a player row
   because the wiki has no such column for it, and a game with no draft has no `draft`
   key at all rather than five empty lists.
-- **Canonical ids are opaque and stable.** `evt-`, `mt-`, `gm-`, `pg-`, `tm-`, `pl-` and
+- **Canonical ids are opaque and stable.** `evt-`, `mt-`, `gm-`, `pg-`, `hn-`, `tm-`, `pl-` and
   `ch-` plus 12 hex characters, derived from the source's own identifiers, so a rebuild
   cannot renumber them. The source's string survives beside it (`sourceTeam`,
   `sourcePlayer`, `sourceChampion`, `source.gameId`, `source.matchId`).
@@ -83,6 +84,23 @@ rows pointing at one `tm-…` id rather than two teams. Four consequences worth 
   comes from the team's **current** page, so a rebrand does not carry an older
   abbreviation forward (`T1` never reads `SKT`), and a team the registries do not carry
   has none at all.
+
+### Distinctions: who was MVP, and where
+
+`honours.jsonl` carries the tournament distinctions the source states for a player — a
+Worlds or MSI finals MVP, an All-Pro team place, Best Coach — for the **tournament**, never
+for a regional season (ticket 03; the event rule is the boundary). Its grain is one row per
+player per event per title — the same award stated on an event's page and on its
+`/Main Event` page is one row, with the page it was stated on kept as provenance — and it joins to `events.jsonl` by `eventId` and to
+`players.jsonl` by `playerId`; `team` keeps the source's own string, and `teamId` appears
+only when the alias registry resolves it (`SKT T1` → `T1`), because an award is context
+rather than evidence that a team existed.
+
+Two things the file deliberately does **not** do. It does not normalise titles: `MVP`,
+`Most Valuable Player` and `MSI MVP` are three strings for one idea, and deciding they are
+the same is the analyst's judgement. And it does not claim completeness: the source states
+a Worlds MVP for some editions and not others (2012, 2013, 2015, 2016 and 2018–2020 have
+no row), so "no honour" means "the source states none", not "nobody won".
 
 ### Events, selection and series that disagree
 

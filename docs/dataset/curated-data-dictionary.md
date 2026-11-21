@@ -41,6 +41,7 @@ that forgets the dictionary fails the gate rather than leaving a stale table beh
 | `matches.jsonl` | 2068 row(s) | `match.schema.json` | Curated match (series) |
 | `series-conflicts.jsonl` | 14 row(s) | `series-conflicts.schema.json` | Series conflict report |
 | `player-games.jsonl` | 30910 row(s) | `player-game.schema.json` | Curated player-game |
+| `honours.jsonl` | 7 row(s) | `honour.schema.json` | Curated honour |
 | `teams.jsonl` | 197 row(s) | `team.schema.json` | Curated team |
 | `players.jsonl` | 1140 row(s) | `player.schema.json` | Curated player |
 | `champions.jsonl` | 171 row(s) | `champion.schema.json` | Curated champion |
@@ -313,6 +314,29 @@ Schema: `data/curated/schema/player-game.schema.json`. Fields: 32.
 | `source` | object | always | — |
 | `source.gameId` | string | always | — |
 | `source.playerLink` | string | always | — |
+
+## `honours.jsonl` — Curated honour
+
+One row of data/curated/honours.jsonl: a distinction the source states for one player at one admitted tournament (`IndividualAchievements`), such as a Worlds finals MVP or an All-Pro team place. A distinction is a fact about (player, event), so it is its own record rather than a field on either entity. The title and the award type travel verbatim: the source states one type (`Season Award`) for every award, and names the distinction in free text, so the dataset does not pretend to a controlled vocabulary. Contains no build timestamp, so the file is byte-identical across builds (spec R8).
+
+Schema: `data/curated/schema/honour.schema.json`. Fields: 14.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `id` | string | always | Opaque surrogate key derived from the source tuple that identifies the row (event page, player page, title and the page the award was stated on), so a re-crawl cannot renumber it (spec D3). Do not parse it: read the row through `title` and `playerName`. |
+| `eventId` | string | always | The admitted event the award belongs to. The award's own page may be a stage sub-page of that event (`2024 Season World Championship/Main Event`); the record keeps the event it belongs to, so an award never floats free of the corpus's event list. |
+| `eventName` | string | always | The event's display name, so the row reads without a join (spec R12). |
+| `playerId` | string | always | The player the distinction belongs to. A player named only by an award (a coach, an analyst) is still a player the corpus references, so the entity is emitted in players.jsonl even when no player-game row names them. |
+| `playerName` | string | always | The player's current handle, so the row reads without a join. |
+| `sourcePlayer` | string | always | The source's own `Player` string, verbatim, so the row walks back to the award table (spec R7). It is a page name or one of its aliases, never the identity. |
+| `team` | string | no | The source's `Team` string, verbatim. Absent when the source states none. A team string the registry does not resolve is carried and no entity is minted from it: an award is context, not evidence that a team existed. |
+| `teamId` | string | no | The team the corpus knows, when the alias registry resolves the stated string (`SKT T1` -> `T1`). Absent when it does not: the string stays on `team` and the distinction is still emitted. |
+| `teamName` | string | no | That team's current display name, so a resolved team reads without a join. |
+| `title` | string | always | The distinction as the source words it (`Finals MVP`, `Most Valuable Player`, `All Pro Team`). Never normalised: the corpus keeps the three spellings of the same idea distinct, because deciding they are one is the analyst's judgement, not the build's. |
+| `type` | string | always | The source's `AchievementType`, verbatim. One value today (`Season Award`) for tournament MVPs and regional season awards alike, which is why the title, not this field, names the distinction. |
+| `sourcePage` | string | always | The page the award was stated on, for provenance: the event's own page or a stage sub-page of it. |
+| `place` | string | no | The source's `Place` text when it states one. Absent when the source states none, which is the case for every recorded row so far: the MVP rows state no place, and neither do the All-Pro rows, whose rank lives in the title (`3rd All Pro Team`) rather than here. |
+| `placeNumber` | integer | no | The source's `Place_Number` when it states one. Absent when it states none: a stated place of `1` is 1, and no place is not 0. |
 
 ## `teams.jsonl` — Curated team
 

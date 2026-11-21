@@ -812,6 +812,22 @@ export function assembleIdentity(
 		observe("champion", row.champion, row.date);
 	}
 
+	// A distinction names a player as a page name or one of its aliases, and it may be the
+	// only evidence that player exists here: a coach is on no scoreboard. Observing the
+	// string is what lets the distinction resolve, and what puts an unknown one in
+	// `identity-unresolved.jsonl` instead of dropping the award. No date: the source states
+	// no day for an award, and a page or a handle is a property of the entity, not a window.
+	for (const honour of sources.honours) {
+		if (pageRejected(honour.sourcePage)) continue;
+		const string = honour.playerLink !== "" ? honour.playerLink : honour.playerName;
+		// `observe` already registers the string it resolved — the page, or the handle when
+		// the source states no page. Registering `Player` again would write a handle alias for
+		// a string that may denote someone else.
+		observe("player", string, "");
+		// The team is *not* observed: an award is context, not evidence that a team existed,
+		// so a string the registries do not carry is carried on the row and mints nothing.
+	}
+
 	// ---- games and matches: the team references ticket 03 joins on ------------------
 	// A `ScoreboardGames` row names its two sides as display strings, so they are
 	// observations exactly like a player scoreboard's: resolved through the registry and

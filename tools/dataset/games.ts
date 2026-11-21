@@ -42,7 +42,7 @@ import type { IdentityIndex, Resolution } from "./identity.ts";
 import { AmbiguousIdentity, surrogateId } from "./identity.ts";
 import type { SourceDraft, SourceGame, SourceMatch, TeamStatField } from "./normalize.ts";
 import { TEAM_STAT_FIELDS } from "./normalize.ts";
-import { pageUnderEvent } from "./pages.ts";
+import { eventForPage, pageUnderEvent } from "./pages.ts";
 
 /** One side of a game. Stats are present only where the source stated a value. */
 export type GameSideRecord = {
@@ -268,18 +268,6 @@ function resolveTeam(identity: IdentityIndex, source: string, date: string, wher
 			`${where}: team ${JSON.stringify(source)} resolves to no entity; identity-unresolved.jsonl records the reference, ` +
 				"and rules/identity-aliases.json is where a human resolution belongs",
 		);
-	}
-	return found;
-}
-
-function eventForPage(page: string, events: EventRecord[]): EventRecord | undefined {
-	// The longest matching page wins, so overlapping event names cannot steal each other's
-	// games; a page under no selected event (an excluded event, or a qualifier under one —
-	// see `pageUnderEvent`) is returned to the caller rather than emitted.
-	let found: EventRecord | undefined;
-	for (const event of events) {
-		if (!pageUnderEvent(page, event.overviewPage)) continue;
-		if (found === undefined || event.overviewPage.length > found.overviewPage.length) found = event;
 	}
 	return found;
 }

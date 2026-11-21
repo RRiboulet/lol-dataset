@@ -47,6 +47,7 @@ a cached response whose URL, query, fetch time and body hash are in
 | `Teams`, `TeamRedirects` | Team identity and renames |
 | `PlayerRedirects` | Player identity and old pages |
 | `Champions` | Canonical champion names and Riot's numeric ids |
+| `IndividualAchievements` | The distinctions a tournament states for a player: MVP, All-Pro team, Best Coach |
 
 Every event whose games are committed here is named, with its counts, in
 `licenses/NOTICE.md`. The patch boundaries behind

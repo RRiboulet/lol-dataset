@@ -40,6 +40,10 @@ export const EVENT_QUERY_FIELDS = {
 		"OverviewPage,MatchId,Team1,Team2,Team1Final,Team2Final,Winner,Team1Score,Team2Score,Team1Points,Team2Points,BestOf,Phase,Round,Tab,N_MatchInTab,FF,IsNullified,DateTime_UTC,HasTime,MatchDay,Patch,PatchPage",
 	PicksAndBansS7:
 		"GameId,MatchId,SwitchedSides,Team1Role1,Team1Role2,Team1Role3,Team1Role4,Team1Role5,Team2Role1,Team2Role2,Team2Role3,Team2Role4,Team2Role5,Team1Ban1,Team1Ban2,Team1Ban3,Team1Ban4,Team1Ban5,Team2Ban1,Team2Ban2,Team2Ban3,Team2Ban4,Team2Ban5,Team1Pick1,Team1Pick2,Team1Pick3,Team1Pick4,Team1Pick5,Team2Pick1,Team2Pick2,Team2Pick3,Team2Pick4,Team2Pick5,Team1PicksByRoleOrder",
+	// The distinctions, as `honours.jsonl` reads them (ticket 03). `Description` is not
+	// asked for: measured live on the table, it is `-` or the full roster's wikitext, so it
+	// is markup rather than a description, and a field nobody reads is payload weight.
+	IndividualAchievements: "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
 } as const;
 
 type EventTable = keyof typeof EVENT_QUERY_FIELDS;
@@ -50,6 +54,9 @@ const EVENT_TABLE_SHAPE: Record<EventTable, { column: "OverviewPage" | "GameId";
 	ScoreboardPlayers: { column: "OverviewPage", orderBy: "GameId", limit: 2000 },
 	MatchSchedule: { column: "OverviewPage", orderBy: "MatchId", limit: 500 },
 	PicksAndBansS7: { column: "GameId", orderBy: "GameId", limit: 500 },
+	// Ordered by the player so paging is deterministic; a tournament's awards are a
+	// handful of rows, so one response always holds them.
+	IndividualAchievements: { column: "OverviewPage", orderBy: "Player", limit: 500 },
 };
 
 export type EventDecision = { source: SourceEvent; decision: RuleDecision };
