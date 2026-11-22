@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v1.2.0 — 2026-11-22
+
 Added:
 
 - **The model carries a player's distinctions as a fact.** `fact_player_honour` holds one row
