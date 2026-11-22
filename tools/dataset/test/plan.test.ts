@@ -8,13 +8,13 @@
 // plan turns "the constants match" from a hope into a check.
 
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import * as path from "node:path";
 import { test } from "node:test";
 
 import type { CargoQuery } from "../cache.ts";
 import { eventQueries } from "../plan.ts";
-import { DATASET_DIR } from "./helpers.ts";
+import { DATASET_DIR, FIXTURE_RAW } from "./helpers.ts";
 
 const PLAN_FILE = path.join(DATASET_DIR, "plans", "ticket-10-events.json");
 
@@ -36,12 +36,20 @@ async function committedPlan(): Promise<Map<string, CargoQuery[]>> {
 test("the generated queries are exactly the ones the committed plan fetched", async () => {
 	const byPage = await committedPlan();
 	assert.ok(byPage.size >= 5, "the committed plan must name several events, or this check proves nothing");
+	// The committed plan predates the distinctions query (ticket 03 of the enrichment
+	// series), so the generated plan is the committed one plus exactly that table. Every
+	// committed query still has to match byte for byte: its cache key is the payload's
+	// file name, and a changed field list would orphan the fixture.
+	const newest = new Set(["IndividualAchievements"]);
 	for (const [overviewPage, committed] of byPage) {
 		const generated = eventQueries({ overviewPage } as Parameters<typeof eventQueries>[0]);
-		assert.equal(generated.length, committed.length, `${overviewPage}: one query per event table`);
+		assert.equal(generated.length, committed.length + newest.size, `${overviewPage}: the committed tables plus the distinctions query`);
 		for (const query of generated) {
 			const same = committed.find((candidate) => candidate.tables === query.tables);
-			assert.ok(same, `${overviewPage}: the plan has a ${query.tables} query`);
+			if (same === undefined) {
+				assert.ok(newest.has(query.tables), `${overviewPage}: the plan has a ${query.tables} query`);
+				continue;
+			}
 			assert.deepEqual(
 				query,
 				same,
@@ -51,12 +59,37 @@ test("the generated queries are exactly the ones the committed plan fetched", as
 	}
 });
 
+test("the distinctions query equals the one the fixtures were recorded with", async () => {
+	// The committed plan predates this table, so the recorded payload's own sidecar is the
+	// record of what was fetched. Comparing the two is the assertion that catches a drifted
+	// field list — otherwise the crawler's cache key moves and 54 events refetch into keys
+	// nobody committed.
+	const dir = path.join(FIXTURE_RAW, "lol-fandom", "cargoexport", "IndividualAchievements");
+	const names = (await readdir(dir)).filter((name) => name.endsWith(".meta.json")).sort();
+	assert.ok(names.length > 0, "the fixtures must carry recorded distinctions payloads");
+	for (const name of names) {
+		const meta = JSON.parse(await readFile(path.join(dir, name), "utf8")) as {
+			query: { tables: string; fields: string; where?: string; order_by?: string; limit?: number };
+		};
+		const match = /^(?:OverviewPage|GameId) LIKE '(.+)%'$/.exec(meta.query.where ?? "");
+		assert.ok(match, `${name}: a recorded distinctions query addresses a page by prefix`);
+		const generated = eventQueries({ overviewPage: match[1] } as Parameters<typeof eventQueries>[0]).find(
+			(query) => query.tables === "IndividualAchievements",
+		);
+		assert.ok(generated, `${name}: the plan carries a distinctions query`);
+		assert.equal(generated.fields, meta.query.fields, `${name}: the field list must not drift, or the cache key moves`);
+		assert.equal(generated.where, meta.query.where);
+		assert.equal(generated.order_by, meta.query.order_by);
+		assert.equal(generated.limit, meta.query.limit);
+	}
+});
+
 test("an event's queries address the page the plan addresses, with the stage pages included", () => {
 	const queries = eventQueries({ overviewPage: "2023 Season World Championship" } as Parameters<typeof eventQueries>[0]);
-	assert.equal(queries.length, 4, "four tables per event");
+	assert.equal(queries.length, 5, "the four game-bearing tables plus the distinctions");
 	assert.deepEqual(
 		queries.map((query) => query.tables),
-		["ScoreboardGames", "ScoreboardPlayers", "MatchSchedule", "PicksAndBansS7"],
+		["ScoreboardGames", "ScoreboardPlayers", "MatchSchedule", "PicksAndBansS7", "IndividualAchievements"],
 		"one query per event table, in a stable order",
 	);
 	assert.deepEqual(
@@ -66,8 +99,9 @@ test("an event's queries address the page the plan addresses, with the stage pag
 			"OverviewPage LIKE '2023 Season World Championship%'",
 			"OverviewPage LIKE '2023 Season World Championship%'",
 			"GameId LIKE '2023 Season World Championship%'",
+			"OverviewPage LIKE '2023 Season World Championship%'",
 		],
-		"a prefix match, so a stage page's games are collected under their parent event",
+		"a prefix match, so a stage page's games — and its awards — are collected under their parent event",
 	);
 	for (const query of queries) assert.equal(query.endpoint, "cargoexport");
 });

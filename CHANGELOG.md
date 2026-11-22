@@ -2,6 +2,60 @@
 
 ## Unreleased
 
+## v1.2.0 — 2026-11-22
+
+Added:
+
+- **The model carries a player's distinctions as a fact.** `fact_player_honour` holds one row
+  per (player, event, title) with the player and event keys required and `team_key` the
+  unknown member (`0`) when the source's team string resolves to no team — 7 rows from the
+  fixture. It carries no measure: counting MVPs is the analyst's `GROUP BY`, and the table
+  is deliberately the only fact without a `game_key`, which the per-game cross-checks skip
+  (ticket 04 of the entity-enrichment series).
+- **The award history is crawled, not a fixture.** Fifty-four distinctions queries (one per
+  admitted event, ~65 minutes of throttled requests, one game query that was missing from
+  the cache) brought the corpus to **24 distinctions** — nine Worlds editions, seven MSI
+  editions, three Esports World Cups and MSI 2016's five All-Pro places. The gaps are the
+  source's: no MVP row exists for Worlds 2012/2013/2015/2016/2018–2020 nor MSI 2017–2021,
+  and the guide says so beside the answer rather than leaving a reader to guess (ticket 05).
+
+- **A player's tournament distinctions are a record now.** `honours.jsonl` carries the
+  distinctions the source states for a player at an admitted tournament — Worlds and MSI
+  MVPs, All-Pro team places, Best Coach — as one row per player per event per title, with
+  the title and the award type as the source words them (`MVP`, `Most Valuable Player` and
+  `MSI MVP` stay three strings; the table states one type, `Season Award`, for every
+  award). Scoped to the tournament, not the season: a regional All-Pro team is not fetched.
+  Measured on the recorded fixture (MSI 2016 and Worlds 2024), a player is named by a page
+  or a handle (`xiaohu` → `Xiaohu`) and the team by a string the registry may resolve
+  (`SKT T1` → `T1`); a team string nothing resolves is carried with no entity, because an
+  award is context rather than evidence a team existed, while a player named only by an
+  award is emitted and reported like any other reference. The crawl gains a fifth
+  per-event query, and `Description` is deliberately not fetched: measured, it is `-` or
+  the full roster's wikitext (ticket 03 of the entity-enrichment series).
+
+- **Every team row carries the registry's short name.** `teams.jsonl` and `dim_team` state
+  the abbreviation the source's `Teams` registry uses (`Karmine Corp` → `KC`), so a team
+  reads the way an analyst writes it without a lookup. The two registry-wide `Teams`
+  payloads were re-recorded with `Short` and re-pinned, because the field list is part of
+  the cache key; the targeted `Teams` payloads were left as fetched, since they exist to
+  close rename chains and the merge takes the value from whichever row states one. 193 of
+  the 197 curated teams state a short and the 4 minted ones omit the key. It is a label,
+  not an identity: measured, `ESC`, `GMB`, `IM` and `RED` each denote two teams, so the
+  field is for display and never a join (ticket 01 of the entity-enrichment series — see
+  `docs/specs/2026-11-21-champion-dates-team-shorts-player-honours.md`).
+- **Every champion row states its release date.** `champions.jsonl` and `dim_champion`
+  carry the day the champion entered the game (`Ahri` → `2011-12-14`, the corpus spanning
+  2009-02-21 to 2026-06-24), taken from the registry row that already anchors the
+  champion's identity — so it cost no request, because the payloads already fetched the
+  column and the normalizer simply never read it. Three ways the date could lie now stop
+  the build instead of becoming a plausible day: a source stamp coarser than a day is not
+  rounded, two registry rows that disagree are refused rather than picked, and a value that
+  no parser can read — or that passes a shape check without being a day that exists, such
+  as `0000-00-00` — fails instead of turning into an absent key. The model keeps it as
+  a dated attribute of `dim_champion`, deliberately not a `date_key`: `dim_date` is the
+  calendar of the games the facts describe (ticket 02 of the entity-enrichment series —
+  see `docs/specs/2026-11-21-champion-dates-team-shorts-player-honours.md`).
+
 ## v1.1.0 — 2026-11-18
 
 Changed:

@@ -56,6 +56,7 @@ CREATE TABLE dim_team (
   team_key INTEGER,
   team_id TEXT,
   team_name TEXT,
+  short TEXT,
   overview_page TEXT,
   region TEXT,
   PRIMARY KEY (team_key),
@@ -78,6 +79,7 @@ CREATE TABLE dim_champion (
   champion_id TEXT,
   champion_name TEXT,
   riot_key INTEGER,
+  release_date TEXT,
   PRIMARY KEY (champion_key),
   UNIQUE (champion_id)
 );
@@ -184,4 +186,17 @@ CREATE TABLE fact_draft_slot (
   is_ordered INTEGER,
   champion_key INTEGER REFERENCES dim_champion(champion_key),
   PRIMARY KEY (game_key, side, phase, entry_index)
+);
+
+-- fact_player_honour: One row per distinction the source states for a player at a tournament.
+CREATE TABLE fact_player_honour (
+  player_key INTEGER REFERENCES dim_player(player_key),
+  event_key INTEGER REFERENCES dim_event(event_key),
+  team_key INTEGER REFERENCES dim_team(team_key),
+  title TEXT,
+  type TEXT,
+  source_page TEXT,
+  place TEXT,
+  place_number INTEGER,
+  PRIMARY KEY (player_key, event_key, title)
 );

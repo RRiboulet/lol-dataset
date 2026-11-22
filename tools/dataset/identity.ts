@@ -111,6 +111,11 @@ export type TeamRecord = {
 	id: string;
 	/** The current display name from the registry, so the row reads without decoding the ID. */
 	name: string;
+	/**
+	 * The source's short name for the team (`Karmine Corp` -> `KC`), absent when it states
+	 * none. A label, never an identity: two teams can share one, so nothing may join on it.
+	 */
+	short?: string;
 	/** The current page. Null only for an entity minted from a string no registry carries. */
 	overviewPage: string | null;
 	/** The source's region string, verbatim; empty when the source records none. */
@@ -131,6 +136,12 @@ export type ChampionRecord = {
 	name: string;
 	/** Riot's numeric champion id. Null only for an entity minted from an unresolved string. */
 	riotKey: number | null;
+	/**
+	 * The day the champion entered the game, as the registry row that anchors its identity
+	 * states it (`YYYY-MM-DD`), absent when it states none. A dated attribute, not a key:
+	 * nothing joins on it, and it is never rounded from a coarser source stamp.
+	 */
+	releaseDate?: string;
 };
 
 /**
@@ -516,7 +527,16 @@ export function assembleIdentity(
 	for (const { root, chain } of teamChains(sources.teams, redirectPage, danglingRenames)) {
 		const current = chain[chain.length - 1];
 		const id = surrogateId(KIND_PREFIX.team, root.page);
-		teams.push({ id, name: displayName(current.name), overviewPage: current.page, region: current.region });
+		// The *current* page's short, deliberately: a rebrand renames the abbreviation too
+		// (SKT -> T1), so an older page's short would mislabel the team it renamed into.
+		const short = displayName(current.short);
+		teams.push({
+			id,
+			name: displayName(current.name),
+			...(short === "" ? {} : { short }),
+			overviewPage: current.page,
+			region: current.region,
+		});
 		names.set(id, displayName(current.name));
 		for (const page of chain) teamIdByPage.set(page.page, id);
 		chain.forEach((page, index) => {
@@ -589,7 +609,12 @@ export function assembleIdentity(
 	for (const champion of sources.champions) {
 		const id = surrogateId(KIND_PREFIX.champion, `riot:${champion.riotKey}`);
 		championIdByRiotKey.set(champion.riotKey, id);
-		champions.push({ id, name: displayName(champion.name), riotKey: champion.riotKey });
+		champions.push({
+			id,
+			name: displayName(champion.name),
+			riotKey: champion.riotKey,
+			...(champion.releaseDate === "" ? {} : { releaseDate: champion.releaseDate }),
+		});
 		names.set(id, displayName(champion.name));
 		register("champion", champion.name, id, "identity", "registry");
 	}
@@ -785,6 +810,22 @@ export function assembleIdentity(
 			recordObservation("player", row.playerName, playerId, row.date);
 		}
 		observe("champion", row.champion, row.date);
+	}
+
+	// A distinction names a player as a page name or one of its aliases, and it may be the
+	// only evidence that player exists here: a coach is on no scoreboard. Observing the
+	// string is what lets the distinction resolve, and what puts an unknown one in
+	// `identity-unresolved.jsonl` instead of dropping the award. No date: the source states
+	// no day for an award, and a page or a handle is a property of the entity, not a window.
+	for (const honour of sources.honours) {
+		if (pageRejected(honour.sourcePage)) continue;
+		const string = honour.playerLink !== "" ? honour.playerLink : honour.playerName;
+		// `observe` already registers the string it resolved — the page, or the handle when
+		// the source states no page. Registering `Player` again would write a handle alias for
+		// a string that may denote someone else.
+		observe("player", string, "");
+		// The team is *not* observed: an award is context, not evidence that a team existed,
+		// so a string the registries do not carry is carried on the row and mints nothing.
 	}
 
 	// ---- games and matches: the team references ticket 03 joins on ------------------

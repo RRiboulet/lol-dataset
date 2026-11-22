@@ -20,6 +20,7 @@ written back to the curated files.
 | `fact_game_side` | `fact_game_side.csv` | fact | one row per game per side | — | — |
 | `fact_player_game` | `fact_player_game.csv` | fact | one row per game per player | — | — |
 | `fact_draft_slot` | `fact_draft_slot.csv` | fact | one row per game, side, phase and draft position | — | — |
+| `fact_player_honour` | `fact_player_honour.csv` | fact | one row per player, event and distinction title | — | — |
 
 ## Canonical form
 
@@ -156,6 +157,7 @@ One row per canonical team; renames live in the alias bridge, not here.
 | `team_key` | INTEGER | surrogate key | — | Build-local surrogate key. 0 is the unknown member; values are assigned 1..N in natural-key order. |
 | `team_id` | TEXT | natural key | — | The curated team's canonical ID (`tm-…`). |
 | `team_name` | TEXT | attribute | — | The team's current display name. |
+| `short` | TEXT | attribute | — | The team's short name as the source's registry states it for the team's current page (`Karmine Corp` -> `KC`). A label, not a key: two teams can share one, so never join on it. Absent: empty when the source states no short name for the team's current page — always the case for a minted team; a rename does not carry an older name's short forward. |
 | `overview_page` | TEXT | attribute | — | The team's current wiki page. Absent: empty only for an entity minted from a string no registry carries. |
 | `region` | TEXT | attribute | — | The source's region string, verbatim; empty when it records none. |
 
@@ -188,6 +190,7 @@ One row per canonical champion; retired display names live in the alias bridge.
 | `champion_id` | TEXT | natural key | — | The curated champion's canonical ID (`ch-…`). |
 | `champion_name` | TEXT | attribute | — | The champion's current display name. |
 | `riot_key` | INTEGER | attribute | — | Riot's numeric champion id. Absent: empty only for a champion minted from a name no registry carries. |
+| `release_date` | TEXT | attribute | — | The day the champion entered the game (`YYYY-MM-DD`), from the registry row that anchors its identity. A dated attribute, not a `date_key`: `dim_date` is the calendar of the games the facts describe, and a champion's release is not one of them. Absent: empty when the source states no release date, which for a minted champion is always. |
 
 ### `dim_patch` — dimension
 
@@ -321,3 +324,21 @@ One row per pick or ban, ordered and unordered drafts alike.
 | `slot` | INTEGER | attribute | — | The source's slot number, present only when the draft is ordered. Absent: empty for an unordered draft — absent order is never invented. |
 | `is_ordered` | INTEGER | attribute | — | 1 when the source kept pick/ban slots, else 0. |
 | `champion_key` | INTEGER | foreign key | `dim_champion.champion_key` | The champion picked or banned in this slot. |
+
+### `fact_player_honour` — fact
+
+One row per distinction the source states for a player at a tournament.
+
+**Grain:** one row per player, event and distinction title.
+**Grain key:** `player_key`, `event_key`, `title`.
+
+| Column | Type | Role | References | Absent / notes |
+|---|---|---|---|---|
+| `player_key` | INTEGER | foreign key | `dim_player.player_key` | The player the distinction belongs to. |
+| `event_key` | INTEGER | foreign key | `dim_event.event_key` | The tournament the distinction was earned at. |
+| `team_key` | INTEGER | foreign key | `dim_team.team_key` | The team the source states for the award, resolved through the alias registry. Absent: 0 (the unknown member) when the source's team string resolves to no team, or states none. |
+| `title` | TEXT | attribute | — | The distinction in the source's own words (`Finals MVP`, `All Pro Team`). |
+| `type` | TEXT | attribute | — | The source's award type, verbatim. |
+| `source_page` | TEXT | attribute | — | The page the award was stated on: the event page or a stage sub-page. |
+| `place` | TEXT | attribute | — | The source's place text when it states one. Absent: empty when the source states none, which is the case for every recorded row so far. |
+| `place_number` | INTEGER | attribute | — | The source's place as a number when it states one. Absent: empty when the source states none; a stated place of 1 is 1. |

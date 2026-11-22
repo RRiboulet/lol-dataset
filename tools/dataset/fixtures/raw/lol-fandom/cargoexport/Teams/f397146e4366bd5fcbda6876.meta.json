@@ -1,0 +1,16 @@
+{
+  "source": "lol-fandom",
+  "endpoint": "cargoexport",
+  "query": {
+    "endpoint": "cargoexport",
+    "tables": "Teams",
+    "fields": "_pageName,Name,OverviewPage,Region,RenamedTo,Short",
+    "order_by": "_pageName ASC",
+    "limit": 2000
+  },
+  "url": "https://lol.fandom.com/wiki/Special:CargoExport?format=json&tables=Teams&fields=_pageName%2CName%2COverviewPage%2CRegion%2CRenamedTo%2CShort&order_by=_pageName+ASC&limit=2000",
+  "fetchedAt": "2026-11-21T10:09:53.923Z",
+  "status": 200,
+  "bodySha256": "98300a4218d257e5172b5ea35992a9d848ec896ad8d180b0d394595139e5e46d",
+  "encoding": "gzip"
+}

@@ -431,6 +431,10 @@ async function main(): Promise<void> {
 		`provenance: ${result.manifest.payloads.length} payload(s) pinned by sha256, ` +
 			`${result.manifest.entities.length} entity file(s) under digest ${result.manifest.entityDigest.slice(0, 12)}`,
 	);
+	console.log(
+		`honours: ${result.honours.length} row(s)` +
+			(result.honoursOutside.length === 0 ? "" : `, ${result.honoursOutside.length} page(s) outside the admitted events`),
+	);
 	console.log(`rule: ${values.rule ?? DEFAULT_RULE_FILE}`);
 	console.log(`inputs: ${rawDir}`);
 

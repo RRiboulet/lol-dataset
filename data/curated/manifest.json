@@ -1,6 +1,6 @@
 {
   "format": "lol-dataset-provenance/1",
-  "entityDigest": "30e07d17ec8ea64bbd508ca00e64ad35414f50654099a25b1cdf6c76247c7c65",
+  "entityDigest": "0bf1065c1f0304a49ca427cf3a174a075f2705a9c89442b00b4bafbcad90f2c7",
   "entities": [
     {
       "file": "events.jsonl",
@@ -48,9 +48,14 @@
       "sha256": "5da2b3676d1a95a4e0a340aad737b84ce4b48e3cdcb5f4a7f29e331b256ffaff"
     },
     {
+      "file": "honours.jsonl",
+      "records": 24,
+      "sha256": "63a5ff754224f91ba50a8d1317002ffe817e45a47897d0dcbf796e16e94b164b"
+    },
+    {
       "file": "teams.jsonl",
       "records": 197,
-      "sha256": "5cefed71f1f05a4935242840dcfc3b9d4ff048e6a9807734cc6a014711c71584"
+      "sha256": "5bd2c4d59f59f82d843f33a45bec15d22c2df73abcb5bae5415b7d73b131bd26"
     },
     {
       "file": "players.jsonl",
@@ -60,7 +65,7 @@
     {
       "file": "champions.jsonl",
       "records": 171,
-      "sha256": "f8d90d74c9133655a47edea81b27c87f5616bb49f951ae41c2a8dbdf03f73261"
+      "sha256": "29cb7ceb2660d164eb15d0dac580f9dc96035f394c7bc25824069075647b89f3"
     },
     {
       "file": "aliases.jsonl",
@@ -103,6 +108,870 @@
         "where": "Name IN ('Alistar','Amumu','Annie','Aphelios','Ashe','Aurora','Azir','Braum','Cho''Gath','Corki','Elise','Fiora','Gnar','Gragas','Irelia','Janna','Jax','Jayce','K''Sante','Kalista','Karthus','LeBlanc','Lee Sin','Lucian','Lulu','Milio','Miss Fortune','Nautilus','Nunu &amp; Willump','Orianna','Rell','Renata Glasc','Rengar','Sejuani','Singed','Sivir','Soraka','Syndra','Tristana','Twisted Fate','Twitch','Vayne','Warwick','Wukong')",
         "order_by": "Name ASC",
         "limit": 60
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/02616a0e417dea8c9db4e8eb.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:17:57.221Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2011 World Cyber Games%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/02e0fc6b478103aec5f55977.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:21:52.999Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'IGN ProLeague Season 5%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/085828b622aa92fa3bd7dd96.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:35:42.269Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2016 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/101bea9447a3a0c95c348e15.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:42:34.401Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/NA-EU%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/1bb6eefe850c7a9b0955742c.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:59:02.887Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2019/NA-EU%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/1d054e9b5bb9b4243e8c3ef9.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:45:19.627Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/LCL-TCL%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/1e0b128139e8e608a8691f9d.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:49:36.822Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2018/SEA-LJL-OPL%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/30e26e970cd58f78071f548e.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:55:00.801Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2018/NA-EU%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/383b1fdb7ff6f1c6bb459c43.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "974d03b4f2c51fdc793957ba9d0a39e9551ab5b439cecbd99fe0bf949d3ff7cd",
+      "fetchedAt": "2026-11-21T19:11:37.370Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2023 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/3d41d8544997a21c4b1fe249.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "89850235b774366013206fd62fc68866ac737f2d37f075c643cd1bae47f3b93f",
+      "fetchedAt": "2026-11-21T19:08:48.800Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2022 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/3fe35f238300091288aee4f7.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:37:11.687Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'IEM Season 11/World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/499068229acdb9c9763edb19.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "40d1f0f7743f962aa16729fc4fa016ccbd1c16715dca729a3683d4391a47f0df",
+      "fetchedAt": "2026-11-21T19:14:15.391Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2024 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/4a255a9172b978d46f716da2.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "db62bf03ece2bd224f768d61122b916797ee78b23e6d7ea8b9d078269d1ce609",
+      "fetchedAt": "2026-11-21T18:28:58.298Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2014 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/5443dd0a31daf88073fa3e8a.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:52:16.973Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2018/LLN-CLS-CBLOL%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/5a3814c81bae658b2ff3e047.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:56:18.776Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2018 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/60501495ebad8be236db903d.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "b5956f99e3ca68226aa487ae5d3099921f26ff1350c478093b9afdedd3fc59aa",
+      "fetchedAt": "2026-11-21T19:23:59.686Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2026 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/60deb7aaf9bb1d31345d325d.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T19:00:29.074Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2019/LCK-LPL-LMS-VCS%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/6213ee63a67e57319b81a13c.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T19:17:01.447Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2025 First Stand%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/6969baa363f94a9b3157d8e0.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:53:39.327Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2018/LCK-LPL-LMS%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/69c46d5444ade5a63eeaff6a.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "37328e41c32f162f01abf9b2b577f5ed085f5c6875bf0ae6dc68b627ea60070f",
+      "fetchedAt": "2026-11-21T19:19:49.131Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Esports World Cup 2025%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/72b78f35051a17885af030b7.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "a2c3b6904a1b61b94bfcf04ce185d7823033e2e2ab9e6e06a8b707f4302e71b6",
+      "fetchedAt": "2026-11-21T19:12:55.220Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2023 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/731a7989aedf7deebec9444e.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:34:25.810Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'IEM Season X - World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/73ffd0711603174641286e20.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:20:35.820Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Season 2 World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/7b6cad4f2a464e7e4d3b9aee.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "b034fcbf43b1044b7960a0192f26403448895f65475e902c57ca10cb93e497c5",
+      "fetchedAt": "2026-11-21T19:21:13.166Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2025 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/7ce447cde42911a1ffcff910.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "780ff0c504fb998341b407bf9692e6257fe34fe2ae9b47295fa8cb48d9c7bd3e",
+      "fetchedAt": "2026-11-21T18:46:48.216Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2017 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/855afd72e5fa5c5186e4b256.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T19:01:51.723Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2019 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/86164d598c85fc851de41c1e.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "55592dd4c403dd08cc6974a159dddef027ae24d6fba49c196f55e61c756f85dc",
+      "fetchedAt": "2026-11-21T19:28:01.241Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2026 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/88e778c90ac80e9bad80a95c.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:50:58.180Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2018/LCL-TCL-VCS%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/8a1a6872201ba2f7b9e8fdf6.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T19:06:01.979Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2021 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/90255c18ca17e11140a5670d.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T19:04:37.522Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2020 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/93304b3a67a24f3dc2013236.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:57:38.605Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2019 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/937e83a59a8abe5e76fbc815.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "e69f6988233b98fe0e235c27eace1a054ee1dc039d2fbbe253f07bde4a8a6642",
+      "fetchedAt": "2026-11-21T19:15:37.746Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Esports World Cup 2024%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/94748641711ac29694537f3c.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "560c3e2606360a7589a8812e8c20469c4022485a7d5a25e2b9c99a243b1983f2",
+      "fetchedAt": "2026-11-21T18:16:28.259Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Season 1 World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/ac3142a15a0438949cae605c.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T19:03:15.732Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2020 Mid-Season Cup%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/afad9c1861064ffcf5832bd7.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:48:07.571Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2018 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/b7f2fdf5bd3f1973825bd1f7.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:39:48.100Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/GPL-LJL-OPL%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/ba207d59bf4697d92e6a9f7c.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "b9d9b873afbb85a41adbf65d472234685b02308e749d571d3695c14fce66ae6d",
+      "fetchedAt": "2026-11-21T19:10:10.581Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2022 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/c634278374a7932d5ae063b5.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:33:08.955Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2015 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/d118a83780d2d680d5d39611.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "9a27ea0bf9fbe4676c7c4b6e395477d93b572be5ea517d4f769de2a009affe98",
+      "fetchedAt": "2026-11-21T19:26:44.784Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Esports World Cup 2026%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/d228b7b6f7f7c0056829b46d.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "ad64a99118b1cfa328317c8bc31bd2fcf9b0551c7b8c18f870177747e9ec5094",
+      "fetchedAt": "2026-11-21T19:18:24.998Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2025 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/d59400a6acf25364c6720fbf.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "f3e9adc55de8417bfbe54a32f53f7fc4f03be3540a503df7e5944d8a57b2c404",
+      "fetchedAt": "2026-11-21T19:07:20.604Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2021 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/d6df39191f3bb469e20073a3.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T19:22:34.250Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2026 First Stand%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/dde234324ef6afaf5d45f70c.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "0b3aa630aa458942302b24c00b71354814d32267278ab4049673c14fa84d0259",
+      "fetchedAt": "2026-11-21T18:31:43.375Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2015 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/e2c717edc896c6b4629a81f5.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:38:30.264Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2017 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/e455be38e9c7988b539af5fc.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:19:13.236Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'IEM Season VI - World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/e759f8379d50e534721eeed5.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:30:14.388Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'IEM Season IX - World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/e9ed4c1b76870b9314ed06e2.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "835253785e11984a6a6811773b64f0757af77f9e500f227c0557753fb2cf5338",
+      "fetchedAt": "2026-11-21T16:25:26.489Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2024 Season World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/ece9714b535611debd12077b.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "2a63b52b95c882e88d224fa72c906380777bcd3a4e92903528a0409a756f610b",
+      "fetchedAt": "2026-11-21T16:24:05.093Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2016 Mid-Season Invitational%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/f7c007988748884f45d95ace.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:41:04.877Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/LLN-CLS-CBLOL%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/f86575b6615cda94c3cf66de.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:24:43.812Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Season 3 World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/f8d38dbf1551b61e96fc7b64.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:26:11.185Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE '2013 World Cyber Games%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/f936159014eabb9e257b9d0e.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:23:18.723Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'IEM Season VII - World Championship%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/fc6860bbf0839a6e22fe6aa6.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:43:53.489Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'Rift Rivals 2017/LCK-LPL-LMS%'",
+        "order_by": "Player",
+        "limit": 500
+      }
+    },
+    {
+      "file": "lol-fandom/cargoexport/IndividualAchievements/fe9e22673d306c71c0ab3019.json.gz",
+      "table": "IndividualAchievements",
+      "endpoint": "cargoexport",
+      "bodySha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "fetchedAt": "2026-11-21T18:27:39.659Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "IndividualAchievements",
+        "fields": "Player,Link,Team,OverviewPage,Display,Place,Place_Number,AchievementType",
+        "where": "OverviewPage LIKE 'IEM Season VIII - World Championship%'",
+        "order_by": "Player",
+        "limit": 500
       }
     },
     {
@@ -3689,6 +4558,22 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/ScoreboardPlayers/84770a69940abca9965609e9.json.gz",
+      "table": "ScoreboardPlayers",
+      "endpoint": "cargoexport",
+      "bodySha256": "1e2f93d1782dec3bfc0900c7285ada1a4af0d5ce886e2eadabbf7217800d5569",
+      "fetchedAt": "2026-11-21T19:25:26.138Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "ScoreboardPlayers",
+        "fields": "OverviewPage,Name,Link,Champion,Kills,Deaths,Assists,SummonerSpells,Gold,CS,DamageToChampions,VisionScore,Items,RoleBoundItem,Trinket,Pentakills,KeystoneMastery,KeystoneRune,PrimaryTree,SecondaryTree,Runes,TeamKills,TeamGold,Team,TeamVs,Time,PlayerWin,DateTime_UTC,DST,Tournament,Role,Role_Number,IngameRole,Side,UniqueLine,UniqueLineVs,UniqueRole,UniqueRoleVs,GameId,MatchId,GameTeamId,GameRoleId,GameRoleIdVs,StatsPage",
+        "where": "OverviewPage LIKE 'Esports World Cup 2026%'",
+        "order_by": "GameId",
+        "limit": 2000
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/ScoreboardPlayers/8b02e8acb159c93cadd4e65a.json.gz",
       "table": "ScoreboardPlayers",
       "endpoint": "cargoexport",
@@ -4392,6 +5277,21 @@
       }
     },
     {
+      "file": "lol-fandom/cargoexport/Teams/186694003d7d973c5100c4e1.json.gz",
+      "table": "Teams",
+      "endpoint": "cargoexport",
+      "bodySha256": "b599e8450de4c86ce14433e5d3d6729400ea99c05aa6161077c1edbbe6b2c71c",
+      "fetchedAt": "2026-11-21T10:11:18.985Z",
+      "status": 200,
+      "query": {
+        "endpoint": "cargoexport",
+        "tables": "Teams",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo,Short",
+        "order_by": "_pageName ASC",
+        "limit": 5000
+      }
+    },
+    {
       "file": "lol-fandom/cargoexport/Teams/27bc601f8c7e0a08d62207a4.json.gz",
       "table": "Teams",
       "endpoint": "cargoexport",
@@ -4421,21 +5321,6 @@
         "where": "_pageName IN ('Rainbow7')",
         "order_by": "OverviewPage ASC",
         "limit": 20
-      }
-    },
-    {
-      "file": "lol-fandom/cargoexport/Teams/5fa780f600a5ee1fe4e8e529.json.gz",
-      "table": "Teams",
-      "endpoint": "cargoexport",
-      "bodySha256": "9fc938c25dcfd82a5775ea9ebdec2d9c35a442e65b8e95817e5c453d1891036f",
-      "fetchedAt": "2026-11-18T19:29:05.283Z",
-      "status": 200,
-      "query": {
-        "endpoint": "cargoexport",
-        "tables": "Teams",
-        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
-        "order_by": "_pageName ASC",
-        "limit": 2000
       }
     },
     {
@@ -4567,18 +5452,18 @@
       }
     },
     {
-      "file": "lol-fandom/cargoexport/Teams/ef9e97615b6e3317e2a27fb3.json.gz",
+      "file": "lol-fandom/cargoexport/Teams/f397146e4366bd5fcbda6876.json.gz",
       "table": "Teams",
       "endpoint": "cargoexport",
-      "bodySha256": "598d62edc009cda65cfa24826b1b78d40e60833b4b8d5b63e2ee3e2cfa82fb25",
-      "fetchedAt": "2026-11-18T19:40:28.241Z",
+      "bodySha256": "98300a4218d257e5172b5ea35992a9d848ec896ad8d180b0d394595139e5e46d",
+      "fetchedAt": "2026-11-21T10:09:53.923Z",
       "status": 200,
       "query": {
         "endpoint": "cargoexport",
         "tables": "Teams",
-        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo",
+        "fields": "_pageName,Name,OverviewPage,Region,RenamedTo,Short",
         "order_by": "_pageName ASC",
-        "limit": 5000
+        "limit": 2000
       }
     },
     {

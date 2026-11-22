@@ -23,6 +23,7 @@ import type { Coverage, EraTable } from "./eras.ts";
 import type { EventGamesRecord, GameRecord, MatchRecord, SeriesConflictRecord } from "./games.ts";
 import type { AssembledIdentity } from "./identity.ts";
 import { TEAM_STAT_FIELDS } from "./normalize.ts";
+import type { HonourRecord } from "./honours.ts";
 import type { PlayerGameRecord } from "./playerGames.ts";
 
 /** Everything the gate reads: the emitted records, not the payloads they came from. */
@@ -39,6 +40,8 @@ export type InvariantInput = {
 	/** The per-era aggregation of the same markers (ticket 10). */
 	eraCoverage: EraCoverageRecord[];
 	playerGames: PlayerGameRecord[];
+	/** Tournament distinctions (ticket 03 of the enrichment series). */
+	honours: HonourRecord[];
 	eras: EraTable;
 };
 
@@ -107,7 +110,7 @@ function eligibleByEra(eras: EraTable): Map<string, Set<string>> {
  */
 export function findInvariantViolations(input: InvariantInput): string[] {
 	const collector = new Collector();
-	const { events, selection, identity, games, matches, eventGames, seriesConflicts, eventCoverage, eraCoverage, playerGames, eras } = input;
+	const { events, selection, identity, games, matches, eventGames, seriesConflicts, eventCoverage, eraCoverage, playerGames, honours, eras } = input;
 
 	// ---- identity: the tables every other record references ----------------------
 	const teamIds = new Set(identity.teams.map((team) => team.id));
@@ -147,11 +150,17 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 		referencedTeams.add(row.teamId);
 		referencedChampions.add(row.championId);
 	}
+	// An award is evidence a player exists in this corpus even when no game row names
+	// them (a coach), and its resolved team is context the entity files must keep.
+	for (const row of honours) {
+		referencedPlayers.add(row.playerId);
+		if (row.teamId !== undefined) referencedTeams.add(row.teamId);
+	}
 	for (const team of identity.teams) {
-		if (!referencedTeams.has(team.id)) collector.add(`team ${team.id} (${team.name})`, "is emitted but no game side, match side, player-game row or conflict-report row names it");
+		if (!referencedTeams.has(team.id)) collector.add(`team ${team.id} (${team.name})`, "is emitted but no game side, match side, player-game row, conflict-report row or honour row names it");
 	}
 	for (const player of identity.players) {
-		if (!referencedPlayers.has(player.id)) collector.add(`player ${player.id} (${player.name})`, "is emitted but no player-game row names it");
+		if (!referencedPlayers.has(player.id)) collector.add(`player ${player.id} (${player.name})`, "is emitted but no player-game row or honour row names it");
 	}
 	for (const champion of identity.champions) {
 		if (!referencedChampions.has(champion.id)) collector.add(`champion ${champion.id} (${champion.name})`, "is emitted but no draft entry or player-game row names it");
@@ -195,6 +204,16 @@ export function findInvariantViolations(input: InvariantInput): string[] {
 		if (!eventIds.has(record.eventId)) collector.add(`event-games ${record.eventId}`, "reports on an event that is not emitted");
 	}
 	collector.uniqueBy("event-games", eventGames as unknown as Record<string, unknown>[], "eventId");
+
+	// ---- distinctions: they name an emitted event, player and (optionally) team ---------
+	// The three reference checks are this gate's real honour coverage: assembly already
+	// dedupes by id and only sets `teamId` from a resolved string, so a uniqueness or
+	// "team without a string" check here could not fire.
+	for (const row of honours) {
+		if (!eventIds.has(row.eventId)) collector.add(`honour ${row.id}`, `names event ${row.eventId}, which is not emitted`);
+		if (!playerIds.has(row.playerId)) collector.add(`honour ${row.id}`, `names player ${row.playerId}, which is not emitted`);
+		if (row.teamId !== undefined && !teamIds.has(row.teamId)) collector.add(`honour ${row.id}`, `names team ${row.teamId}, which is not emitted`);
+	}
 
 	// ---- games, matches and their cross-references -------------------------------
 	const gameIds = new Set(games.map((game) => game.id));

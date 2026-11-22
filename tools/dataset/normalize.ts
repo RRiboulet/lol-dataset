@@ -69,6 +69,8 @@ export type SourceEvent = {
 export type SourceTeam = {
 	page: string;
 	name: string;
+	/** Source `Short`: the abbreviation the registry states, empty when it states none. */
+	short: string;
 	/** The page this team was renamed to, or empty. Never a display string. */
 	renamedTo: string;
 	region: string;
@@ -94,6 +96,41 @@ export type SourcePlayerName = {
 export type SourceChampion = {
 	name: string;
 	riotKey: number;
+	/**
+	 * Source `ReleaseDate` as a `YYYY-MM-DD` calendar date, empty when the source states
+	 * none. The registry row is the only place it comes from: the date is not inferred and
+	 * not taken from another champion.
+	 */
+	releaseDate: string;
+	sourceFile: string;
+};
+
+/**
+ * One distinction a tournament page states for one player (`IndividualAchievements`).
+ *
+ * `Link` is the player's page when the row states one and empty otherwise — measured on
+ * the recorded rows, every tournament-MVP row states none — so `playerName` is what the
+ * resolve actually works from, and it is either a page name or an alias of one.
+ * `Description` is deliberately not read: measured, it is `-` on an MVP row and the full
+ * roster's wikitext on an All-Pro row, so it is markup rather than a description.
+ */
+export type SourceHonour = {
+	/** The page the award was stated on: the event page or a stage sub-page of it. */
+	sourcePage: string;
+	/** Source `Player`, a page name or an alias of one. */
+	playerName: string;
+	/** Source `Link`, the player's page when stated, else empty. */
+	playerLink: string;
+	/** Source `Team`, a display string; resolved where the registry answers one. */
+	team: string;
+	/** Source `Display`: the distinction in the source's own words. */
+	title: string;
+	/** Source `AchievementType`, carried verbatim: one value today (`Season Award`). */
+	type: string;
+	/** Source `Place` as stated, empty when absent. */
+	place: string;
+	/** Source `Place_Number` when the source states one. */
+	placeNumber: number | null;
 	sourceFile: string;
 };
 
@@ -277,6 +314,8 @@ export type SourceDataset = {
 	drafts: SourceDraft[];
 	/** Per-player statistics for recorded games (ticket 04). */
 	playerGames: SourcePlayerGame[];
+	/** Tournament distinctions (ticket 03 of the enrichment series). Empty when none are recorded. */
+	honours: SourceHonour[];
 };
 
 /** Cargo returns list-typed fields as arrays; everything else as strings. */
@@ -297,6 +336,31 @@ function asDate(value: unknown): string {
 	const text = asText(value);
 	const match = /^(\d{4}-\d{2}-\d{2})/.exec(text);
 	return match ? match[1] : "";
+}
+
+/**
+ * A calendar day the source states, or `""` when the value is not one.
+ *
+ * Deliberately stricter than `asDate`, which truncates an instant to its day for fields
+ * whose type is a timestamp. A champion's release date is a `Date` in the source, so a
+ * value carrying a time part means the column is not what this build thinks it is; and a
+ * value that passes a shape check without existing — `0000-00-00`, the zero-date sentinel
+ * SQL and Cargo both write, or `2010-02-31`, or `2010-13-01` — would land in the data as
+ * a day SQLite and pandas cannot parse, which is the one thing the guard exists to stop.
+ * Hence the round trip: parse the components in UTC and require the same day back. Years
+ * `0000`–`0099` fail that trip because `Date.UTC` maps them to the 1900s, which is fine
+ * here: no champion predates the game.
+ */
+function asCalendarDay(value: unknown): string {
+	const text = asText(value);
+	const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+	if (match === null) return "";
+	const year = Number(match[1]);
+	const month = Number(match[2]);
+	const day = Number(match[3]);
+	const stamp = new Date(Date.UTC(year, month - 1, day));
+	const exists = stamp.getUTCFullYear() === year && stamp.getUTCMonth() === month - 1 && stamp.getUTCDate() === day;
+	return exists && year > 0 ? text : "";
 }
 
 /** An integer field, or NaN when the source has none (the caller decides what that means). */
@@ -474,6 +538,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 			rows.push({
 				page,
 				name: asText(row.Name) || page,
+				short: asText(row.Short),
 				renamedTo: asText(row.RenamedTo),
 				region: asText(row.Region),
 				sourceFile: payload.file,
@@ -491,7 +556,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 			folded.set(row.page, row);
 			continue;
 		}
-		const merge = (field: "name" | "region"): string => {
+		const merge = (field: "name" | "short" | "region"): string => {
 			if (seen[field] !== "" && row[field] !== "" && seen[field] !== row[field]) {
 				throw new Error(
 					`team page ${JSON.stringify(row.page)}: ${seen.sourceFile} and ${row.sourceFile} state different ${field}s ` +
@@ -509,6 +574,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 		folded.set(row.page, {
 			...seen,
 			name: merge("name"),
+			short: merge("short"),
 			region: merge("region"),
 			renamedTo: seen.renamedTo !== "" ? seen.renamedTo : row.renamedTo,
 		});
@@ -516,7 +582,7 @@ export function normalizeTeams(payloads: CachedPayload[]): SourceTeam[] {
 	return dedupe(
 		[...folded.values()],
 		(row) => row.page,
-		(a, b) => same([a.name, a.renamedTo, a.region], [b.name, b.renamedTo, b.region]),
+		(a, b) => same([a.name, a.short, a.renamedTo, a.region], [b.name, b.short, b.renamedTo, b.region]),
 		"team page",
 	);
 }
@@ -549,7 +615,7 @@ export function normalizePlayerNames(payloads: CachedPayload[]): SourcePlayerNam
 	return dedupe(rows, (row) => `${row.page}\u0000${row.allName}`, (a, b) => a.id === b.id, "player name");
 }
 
-/** Champion registry rows, deduplicated by display name; one Riot id keeps one name. */
+/** Champion registry rows, deduplicated by display name; one Riot id keeps one name and one release date. */
 export function normalizeChampions(payloads: CachedPayload[]): SourceChampion[] {
 	const rows: SourceChampion[] = [];
 	for (const payload of payloads) {
@@ -560,12 +626,55 @@ export function normalizeChampions(payloads: CachedPayload[]): SourceChampion[] 
 			if (!Number.isInteger(riotKey) || riotKey <= 0) {
 				throw new Error(`${payload.file}: champion ${name} has no usable KeyInteger (${JSON.stringify(raw(row, "KeyInteger"))}) — Riot's champion id is the identity`);
 			}
-			rows.push({ name, riotKey, sourceFile: payload.file });
+			const stated = asText(raw(row, "ReleaseDate"));
+			let releaseDate = "";
+			if (stated !== "") {
+				// Precision first, and before the value is judged: the source states how precisely
+				// it knows a date, and a coarser stamp arrives in a *shape* this schema cannot hold
+				// (`2011-12`), so reporting it as unparseable would name the wrong defect. The
+				// dataset states a day only when the source does (spec B2).
+				const precision = asInteger(raw(row, "ReleaseDate__precision"));
+				if (precision !== 1) {
+					throw new Error(
+						`${payload.file}: champion ${name} states ReleaseDate ${JSON.stringify(stated)} at precision ${Number.isNaN(precision) ? "unknown" : precision}, not day precision (1) — the dataset states a day only when the source does`,
+					);
+				}
+				// A value the source states but this build cannot read is a defect, not an
+				// absence: emitting no key would turn a parse failure into "the source has none".
+				releaseDate = asCalendarDay(stated);
+				if (releaseDate === "") {
+					throw new Error(`${payload.file}: champion ${name} states ReleaseDate ${JSON.stringify(stated)}, which is not a calendar day (YYYY-MM-DD, and a day that exists)`);
+				}
+			}
+			rows.push({ name, riotKey, releaseDate, sourceFile: payload.file });
 		}
 	}
-	const byName = dedupe(rows, (row) => row.name, (a, b) => a.riotKey === b.riotKey, "champion");
+	// One display name is one champion, and one champion has one release date. A payload
+	// that does not carry the column is silent about the date, not disagreeing: an absence
+	// loses to a stated value (as `Teams.Short` does), while two *stated* days that differ
+	// are a contradiction and stop the build.
+	const byName = new Map<string, SourceChampion>();
+	for (const row of rows) {
+		const seen = byName.get(row.name);
+		if (seen === undefined) {
+			byName.set(row.name, row);
+			continue;
+		}
+		if (seen.riotKey !== row.riotKey) {
+			throw new Error(
+				`champion ${JSON.stringify(row.name)}: ${seen.sourceFile} states Riot id ${seen.riotKey} and ${row.sourceFile} states ${row.riotKey}; one display name cannot denote two champions`,
+			);
+		}
+		if (seen.releaseDate !== "" && row.releaseDate !== "" && seen.releaseDate !== row.releaseDate) {
+			throw new Error(
+				`champion ${JSON.stringify(row.name)}: ${seen.sourceFile} states release date ${JSON.stringify(seen.releaseDate)} and ${row.sourceFile} states ${JSON.stringify(row.releaseDate)}; one champion cannot have two`,
+			);
+		}
+		byName.set(row.name, { ...seen, releaseDate: seen.releaseDate !== "" ? seen.releaseDate : row.releaseDate });
+	}
+	const unique = [...byName.values()];
 	const byKey = new Map<number, SourceChampion>();
-	for (const row of byName) {
+	for (const row of unique) {
 		const seen = byKey.get(row.riotKey);
 		if (seen !== undefined) {
 			throw new Error(
@@ -575,7 +684,7 @@ export function normalizeChampions(payloads: CachedPayload[]): SourceChampion[] 
 		}
 		byKey.set(row.riotKey, row);
 	}
-	return byName;
+	return unique;
 }
 
 /** Player rows from games: one per player per game, kept as observations of identity. */
@@ -937,6 +1046,53 @@ export function normalizePicksAndBans(payloads: CachedPayload[]): SourceDraft[] 
 }
 
 /** Which normalizer reads which Cargo table. The cache layout names the table. */
+/**
+ * `IndividualAchievements` rows: one player's distinction at one tournament.
+ *
+ * Only the fields the curated record states are read, and the row is addressed by the
+ * tuple a reader can see (page, player, title) rather than by a row counter. Two payloads
+ * that both carry the same award fold into one row; two that disagree about its team or
+ * type are a stale cache and stop the build.
+ */
+export function normalizeHonours(payloads: CachedPayload[]): SourceHonour[] {
+	const rows: SourceHonour[] = [];
+	for (const payload of payloads) {
+		for (const row of parse(payload)) {
+			const sourcePage = asText(raw(row, "OverviewPage"));
+			const playerName = asText(raw(row, "Player"));
+			const playerLink = asText(raw(row, "Link"));
+			const title = asText(raw(row, "Display"));
+			const type = asText(raw(row, "AchievementType"));
+			if (sourcePage === "") throw new Error(`${payload.file}: an IndividualAchievements row without an OverviewPage cannot be attached to an event`);
+			if (playerName === "" && playerLink === "") throw new Error(`${payload.file}: ${sourcePage}: a distinction without a player cannot be attached to anyone`);
+			if (title === "") throw new Error(`${payload.file}: ${sourcePage}: a distinction without a Display has no title to state`);
+			if (type === "") throw new Error(`${payload.file}: ${sourcePage}: a distinction without an AchievementType cannot say what kind of award it is`);
+			const placeNumber = asInteger(raw(row, "Place_Number"));
+			rows.push({
+				sourcePage,
+				playerName,
+				playerLink,
+				team: asText(raw(row, "Team")),
+				title,
+				type,
+				place: asText(raw(row, "Place")),
+				placeNumber: Number.isInteger(placeNumber) ? placeNumber : null,
+				sourceFile: payload.file,
+			});
+		}
+	}
+	return dedupe(
+		rows,
+		(row) => `${row.sourcePage}\u0000${row.playerLink || row.playerName}\u0000${row.title}`,
+		(a, b) => a.team === b.team && a.type === b.type && a.place === b.place && a.placeNumber === b.placeNumber,
+		"distinction",
+		(seen, row, key) =>
+			seen.sourceFile === row.sourceFile
+				? `distinction ${JSON.stringify(key)}: ${row.sourceFile} states the same award twice with different details (team/type/place disagree)`
+				: `distinction ${JSON.stringify(key)}: ${seen.sourceFile} and ${row.sourceFile} disagree about the award`,
+	);
+}
+
 const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	Tournaments: normalizeTournaments,
 	Teams: normalizeTeams,
@@ -947,6 +1103,7 @@ const NORMALIZERS: Record<string, (payloads: CachedPayload[]) => unknown> = {
 	ScoreboardGames: normalizeScoreboardGames,
 	MatchSchedule: normalizeMatches,
 	PicksAndBansS7: normalizePicksAndBans,
+	IndividualAchievements: normalizeHonours,
 };
 
 /** The tables this pipeline can read, for error messages and tests. */
@@ -986,5 +1143,6 @@ export function normalizeSources(payloads: CachedPayload[]): SourceDataset {
 		matches: normalizeMatches(group("MatchSchedule")),
 		drafts: normalizePicksAndBans(group("PicksAndBansS7")),
 		playerGames: normalizePlayerGames(group("ScoreboardPlayers")),
+		honours: normalizeHonours(group("IndividualAchievements")),
 	};
 }

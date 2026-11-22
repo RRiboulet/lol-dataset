@@ -1,199 +1,199 @@
-team_key,team_id,team_name,overview_page,region
-0,,Unknown,,
-1,tm-01149467eceb,NaJin Black Sword,NaJin Black Sword,Korea
-2,tm-017ed54b4572,MAD Team,MAD Team,LMS
-3,tm-01a3f4d54ae6,Ground Zero Gaming,Ground Zero Gaming,Asia Pacific
-4,tm-026c7a511ce7,FURIA,FURIA,Brazil
-5,tm-053333398f39,ThunderTalk Gaming,ThunderTalk Gaming,China
-6,tm-05d3799e8d57,ORDER,ORDER,Oceania
-7,tm-07e1012abad8,Vikings Gaming,Vikings Gaming,Vietnam
-8,tm-0904a6aad568,Flash Wolves,Flash Wolves,LMS
-9,tm-09cf152475ca,LØS,LØS,Brazil
-10,tm-0afdaffa9083,The RED,The RED,CIS
-11,tm-0eaafb0e46ef,GAM Esports,GAM Esports,Asia Pacific
-12,tm-0ee1d7d7c31a,CJ Entus,CJ Entus,Korea
-13,tm-0fbcd42c658a,Samsung Blue,Samsung Blue,Korea
-14,tm-144c44d86e2c,Fenerbahçe Esports,Fenerbahçe Esports,Turkey
-15,tm-167a940c6278,Astralis,Astralis,EMEA
-16,tm-192f5142d623,Suning,Suning,China
-17,tm-19ea5f2be308,Team AURORA,Team AURORA,Turkey
-18,tm-19f46dd5c0f7,Albus NoX Luna,Albus NoX Luna,CIS
-19,tm-1a0edf11b6b1,Rebirth eSports,Rebirth eSports,Latin America
-20,tm-1adf6a64d8c0,Liyab Esports,Liyab Esports,Asia Pacific
-21,tm-1b3d024fdcbb,Rogue,Rogue (European Team),EMEA
-22,tm-1c6a25914979,Team Liquid,Team Liquid,North America
-23,tm-1d1f59fbb46b,KaBuM! Ilha das Lendas,KaBuM! Ilha das Lendas,Brazil
-24,tm-1f631fade9e0,Team Vitality,Team Vitality,EMEA
-25,tm-21acea006c65,100 Thieves,100 Thieves,Americas
-26,tm-24c56cf1ad27,Ninjas in Pyjamas,Ninjas in Pyjamas.CN,China
-27,tm-25b9b1c91296,KT Rolster,KT Rolster,Korea
-28,tm-281934929b8c,Beşiktaş Esports,Beşiktaş Esports,EMEA
-29,tm-2f5d70fc6f37,Gen.G,Gen.G,Korea
-30,tm-32aa66be0dfb,Beyond Gaming,Beyond Gaming,Asia Pacific
-31,tm-33fe65c2f185,Vaevictis eSports,Vaevictis eSports,CIS
-32,tm-34d0a8fab220,Estral Esports,Estral Esports,Brazil
-33,tm-38d08bea0716,Dark Passage,Dark Passage,EMEA
-34,tm-394b5b1ea1d6,XDG Gaming,XDG Gaming,North America
-35,tm-3953f7eea41d,MVP,MVP,Korea
-36,tm-39da3af55725,Nongshim RedForce,Nongshim RedForce,Korea
-37,tm-3a4b5d4d7288,Samsung Galaxy,Samsung Galaxy,Korea
-38,tm-3a76b34e3c82,LOUD,LOUD,Brazil
-39,tm-3a97a5d4aef2,Saigon Jokers,Saigon Jokers,SEA
-40,tm-3b823183c96b,M19,M19,CIS
-41,tm-3bb658d12868,Team Dynamic,Team Dynamic,North America
-42,tm-3bcb9efd5846,SK Gaming,SK Gaming,EMEA
-43,tm-3c8aa94cea87,Bilibili Gaming,Bilibili Gaming,China
-44,tm-3cd10a732f23,Vega Squadron,Vega Squadron,CIS
-45,tm-3d748c517149,Leviatan,Leviatan,Brazil
-46,tm-3d9937b61922,Team Baron (MSI 2026),,
-47,tm-3ee178c1a857,RoX,RoX (2014 CIS Team),CIS
-48,tm-41bcf79cfe0d,MiTH Flashdive,MiTH Flashdive,SEA
-49,tm-424a766329cc,Immortals,Immortals,North America
-50,tm-43ac03320fb2,CJ Entus Frost,CJ Entus Frost,Korea
-51,tm-462fe76fc32a,Karmine Corp,Karmine Corp,EMEA
-52,tm-46d49b3c0bfb,CJ Entus Blaze,CJ Entus Blaze,Korea
-53,tm-478a97e49e4b,Team LoLPro,Team LoLPro,North America
-54,tm-49b0ea9ef3a5,FlyQuest,FlyQuest,North America
-55,tm-4e25a22fc19c,Azubu Frost,Azubu Frost,Korea
-56,tm-4e30564007de,Royal Paladin Eclipse,Royal Paladin eSports Eclipse,LAS
-57,tm-4e650482e7d7,Ascension Gaming,Ascension Gaming,SEA
-58,tm-4fc0614f3ef7,Counter Logic Gaming Europe,Counter Logic Gaming Europe,Europe
-59,tm-4fc491745cc3,INTZ,INTZ,Brazil
-60,tm-50038f5deaa0,Weibo Gaming,Weibo Gaming,China
-61,tm-5083f194807a,Deep Cross Gaming,Deep Cross Gaming,Asia Pacific
-62,tm-52ed30f9893e,Machi Esports,Machi Esports,Asia Pacific
-63,tm-56335e9d9649,Furious Gaming,Furious Gaming,Americas
-64,tm-5ad6b7b25af6,Team Sypher,Team Sypher,Europe
-65,tm-5b8d311624f9,Bombers,Bombers,Oceania
-66,tm-5b9458c5bb13,Lemondogs,Lemondogs,Europe
-67,tm-5c47db8dbbf4,MAMMOTH,MAMMOTH,Asia Pacific
-68,tm-5e9b85271e7c,Solary,Solary,EMEA
-69,tm-5f7d7acdce6f,Echo Fox,Echo Fox,North America
-70,tm-60eac80615ba,Team FeaR,Team FeaR,North America
-71,tm-622122ef2999,LNG Esports,LNG Esports,China
-72,tm-64248513e110,Shifters,Shifters,EMEA
-73,tm-6505d50295d1,Kiwoom DRX,Kiwoom DRX,Korea
-74,tm-652813670ae3,MVK Esports,MVK Esports,Asia Pacific
-75,tm-653b0a79a8a4,Kaos Latin Gamers,Kaos Latin Gamers,Latin America
-76,tm-65e25e287fe3,Dash9 Gaming,Dash9 Gaming,LAN
-77,tm-6984112c4cd7,ESC Shane,ESC Shane,Korea
-78,tm-69e3aa65d006,Ultra Prime,Ultra Prime,China
-79,tm-69eb13529d72,Anexis eSports,Anexis eSports,Europe
-80,tm-6ab07ee850e8,ALTERNATE aTTaX,ALTERNATE aTTaX,Europe
-81,tm-6ffab94dda6a,Millenium,Millenium,Europe
-82,tm-71230c22fb3b,GashBears,GashBears,LMS
-83,tm-714172e58a75,BNK FEARX,BNK FEARX,Korea
-84,tm-719ce3208528,I May,I May,China
-85,tm-71d9f0e83524,Meat Playground,Meat Playground,North America
-86,tm-71fb2632f448,Top Esports,Top Esports,China
-87,tm-740bcd0dae8c,NASR eSports Turkey,NASR eSports Turkey,EMEA
-88,tm-74c285cb505c,HANJIN BRION,HANJIN BRION,Korea
-89,tm-766b8e6c7117,Fukuoka SoftBank HAWKS gaming,Fukuoka SoftBank HAWKS gaming,Asia Pacific
-90,tm-76f0ac3ed97f,Longzhu Gaming,Longzhu Gaming,Korea
-91,tm-77f2f4dc5e6c,İstanbul Wildcats,Istanbul Wildcats,EMEA
-92,tm-79c8655a26fe,G2 Esports,G2 Esports,EMEA
-93,tm-7b82dadd0cdd,Newbee,Newbee,China
-94,tm-7b9a68399cde,INFINITY,INFINITY,Americas
-95,tm-7bf6e5998b18,Invictus Gaming,Invictus Gaming,China
-96,tm-7c06f5ab8884,Papara SuperMassive,Papara SuperMassive,EMEA
-97,tm-7db50111a95d,Lowkey Esports.Vietnam,Lowkey Esports.Vietnam,Vietnam
-98,tm-7e5eb06d8646,H2k-Gaming,H2k-Gaming,Europe
-99,tm-80988f4e16e4,LoL Championship Series,,
-100,tm-80aa4e025750,compLexity Gaming,CompLexity Gaming,North America
-101,tm-816e45e1dd85,NRG,NRG,North America
-102,tm-831f185fefe8,Sin Gaming,Sin Gaming,Oceania
-103,tm-84c390678a6f,MEGA,MEGA,SEA
-104,tm-855c2602fe26,Virtus.pro,Virtus.pro,CIS
-105,tm-865c6ae41d30,Vivo Keyd Stars,Vivo Keyd Stars,Brazil
-106,tm-8785e1bcf241,Singapore Sentinels,Singapore Sentinels,SEA
-107,tm-87d2c66de97e,Unicorns of Love.CIS,Unicorns of Love.CIS,CIS
-108,tm-88cc4600b863,Team Ultra Vires,Team Ultra Vires,Europe
-109,tm-8b55d7e7c888,LoL EMEA Championship,,
-110,tm-8db39d6bbdd3,J Team,J Team,Asia Pacific
-111,tm-902962056a3a,Pentanet.GG,Pentanet.GG,Asia Pacific
-112,tm-92dbf7c4c2de,Legacy Esports,Legacy Esports,Oceania
-113,tm-93bb7e588f1d,ahq eSports Club,Ahq eSports Club,Asia Pacific
-114,tm-94fa0eac3812,DetonatioN FocusMe,DetonatioN FocusMe,Asia Pacific
-115,tm-9a44679442c3,Cloud9,Cloud9,North America
-116,tm-9a4fde0c4aad,T1,T1,Korea
-117,tm-9c6aa95845a7,PENTAGRAM,PENTAGRAM,Japan
-118,tm-9eb09b7f9ca5,ESC Gaming,ESC Gaming,Europe
-119,tm-9ffc97384e48,Gambit Esports,Gambit Esports,CIS
-120,tm-a26225283b64,PEACE,PEACE (Oceanic Team),Asia Pacific
-121,tm-a43f798173a3,EVOS Esports,EVOS Esports,Vietnam
-122,tm-a86e5d5c6076,Royal Club,Royal Club,China
-123,tm-a8eb66c3e24b,Just Toys Havoks,Just Toys Havoks,LAN
-124,tm-ab24332e4df4,Team Secret Whales,Team Secret Whales,Asia Pacific
-125,tm-ab6d9fac5a57,Unsold Stuff Gaming,Unsold Stuff Gaming,Japan
-126,tm-ad25099785e8,NaJin White Shield,NaJin White Shield,Korea
-127,tm-adfaf147ffb4,Hong Kong Attitude,Hong Kong Attitude,Asia Pacific
-128,tm-ae55ee1f5eed,Shopify Rebellion,Shopify Rebellion,North America
-129,tm-aecf2932501d,CTBC Flying Oyster,CTBC Flying Oyster,Asia Pacific
-130,tm-afbbbc1a704d,LGD Gaming,LGD Gaming,China
-131,tm-afe3c1947d3b,Elements,Elements,Europe
-132,tm-b007641c5b83,Evil Geniuses,Evil Geniuses.NA,North America
-133,tm-b163af0174c5,Team Dragon (MSI 2026),,
-134,tm-b22fd695db09,Misfits Gaming,Misfits Gaming,Europe
-135,tm-b36ea6c613eb,Chiefs Esports Club,Chiefs Esports Club,Asia Pacific
-136,tm-b54099fc2014,Fnatic,Fnatic,EMEA
-137,tm-b5ef6905579e,Energy Pacemaker,Energy Pacemaker,China
-138,tm-b5f2d1b32dc6,Dplus Kia,Dplus Kia,Korea
-139,tm-b894b9da44f7,PSG Talon,PSG Talon,Asia Pacific
-140,tm-b8bca1021cd5,LYON,LYON (2024 American Team),North America
-141,tm-baeebc746cc5,MeetYourMakers,MeetYourMakers,Europe
-142,tm-bc125bba9cec,Dignitas,Dignitas,North America
-143,tm-bc44d3ff4d27,Azubu Blaze,Azubu Blaze,Korea
-144,tm-be1c5136689c,Counter Logic Gaming,Counter Logic Gaming,North America
-145,tm-c1c29bcba8cf,Team ANG,Team ANG,LAN
-146,tm-c2e71e1fc026,Team Just,Team Just,CIS
-147,tm-c450827d3eea,Sentinels,Sentinels,North America
-148,tm-c5e835c550a5,KT Rolster Bullets,KT Rolster Bullets,Korea
-149,tm-c74809016870,Kongdoo Monster,Kongdoo Monster,Korea
-150,tm-c7fd5f1d7017,Bangkok Titans,Bangkok Titans,SEA
-151,tm-c8a4660dc55a,Team Immunity,Team Immunity,Oceania
-152,tm-c94b01026f88,Taipei Assassins,Taipei Assassins,LMS
-153,tm-ca4972dc6dc8,Fluxo W7M,Fluxo W7M,Brazil
-154,tm-cb15b056a5ad,TSM,TSM,North America
-155,tm-cd8d0e943ce5,ROX Tigers,ROX Tigers,Korea
-156,tm-cf60264a481e,Royal Never Give Up,Royal Never Give Up,China
-157,tm-d0d4a4d767cd,Movistar KOI,Movistar KOI,EMEA
-158,tm-d3b6d66f7710,Golden Guardians,Golden Guardians,North America
-159,tm-d4e6485fc336,Kuala Lumpur Hunters,Kuala Lumpur Hunters,SEA
-160,tm-d58747baf8ab,SK Telecom T1 S,SK Telecom T1 S,Korea
-161,tm-d92a0819d063,V3 Esports,V3 Esports,Asia Pacific
-162,tm-db47240fee06,Team Impulse,Team Impulse,North America
-163,tm-de147975c625,EHOME,EHOME,China
-164,tm-e0ac3973ed3e,JD Gaming,JD Gaming,China
-165,tm-e0e36dac6ddd,FunPlus Phoenix,FunPlus Phoenix,China
-166,tm-e4557042772e,Team gamed!de,Team gamed!de,Europe
-167,tm-e496b66b90a1,Team Heretics,Team Heretics,EMEA
-168,tm-e512c54f1754,Anyone's Legend,Anyone's Legend,China
-169,tm-e516642486cc,Team Aze,Team Aze,Latin America
-170,tm-e538e225ab36,YouthCrew Esports,YouthCrew Esports,Turkey
-171,tm-e5a95fe1ee24,Galatasaray Esports,Galatasaray Esports,Turkey
-172,tm-e603064f4a0f,Moscow 5,Moscow Five,Europe
-173,tm-e6bcb4c3de62,Dire Wolves,Dire Wolves,Asia Pacific
-174,tm-e9d15086dc10,GIANTX,GIANTX,EMEA
-175,tm-e9f98466e300,EDward Gaming,EDward Gaming,China
-176,tm-eb2eec43fa28,EPIK Gamer,Epik Gamer,North America
-177,tm-eb4bc7a296bd,Rogue Warriors,Rogue Warriors,China
-178,tm-ed4eca8e1caa,Galions,Galions,EMEA
-179,tm-edc35c2d5808,Isurus,Isurus,Brazil
-180,tm-ef4ffe9d062e,Pacific eSports,Pacific eSports,SEA
-181,tm-f1abaf9eba9b,Natus Vincere,Natus Vincere,EMEA
-182,tm-f1d489b0d24d,Disguised,Disguised,North America
-183,tm-f1fd17aef82e,Griffin,Griffin (Korean Team),Korea
-184,tm-f369789f5181,Flamengo MDL,Flamengo MDL,Brazil
-185,tm-f4fcd2fe50af,RED Canids,RED Canids,Brazil
-186,tm-f5665c13ca53,Team WE,Team WE,China
-187,tm-f5816dd3b988,G-Rex,G-Rex,Asia Pacific
-188,tm-f5ff3f4474af,Hanwha Life Esports,Hanwha Life Esports,Korea
-189,tm-f60c32258444,Xan,Xan,SEA
-190,tm-f642dbf0692c,paiN Gaming,PaiN Gaming,Brazil
-191,tm-f8a350bee7a9,IceLanD,IceLanD,LMS
-192,tm-fa32a4bab6cd,against All authority,Against All authority,Europe
-193,tm-fa988589be4e,Oh My God,Oh My God,China
-194,tm-fb40b0e96e89,Samsung White,Samsung White,Korea
-195,tm-fea9d39f1fb4,Gambit Gaming,Gambit Gaming,Europe
-196,tm-ff80302a6d80,DN SOOPers,DN SOOPers,Korea
-197,tm-ffeb9af2caae,Blackbean,Blackbean,SEA
+team_key,team_id,team_name,short,overview_page,region
+0,,Unknown,,,
+1,tm-01149467eceb,NaJin Black Sword,NJBS,NaJin Black Sword,Korea
+2,tm-017ed54b4572,MAD Team,MAD,MAD Team,LMS
+3,tm-01a3f4d54ae6,Ground Zero Gaming,GZ,Ground Zero Gaming,Asia Pacific
+4,tm-026c7a511ce7,FURIA,FUR,FURIA,Brazil
+5,tm-053333398f39,ThunderTalk Gaming,TT,ThunderTalk Gaming,China
+6,tm-05d3799e8d57,ORDER,ORD,ORDER,Oceania
+7,tm-07e1012abad8,Vikings Gaming,HNV,Vikings Gaming,Vietnam
+8,tm-0904a6aad568,Flash Wolves,FW,Flash Wolves,LMS
+9,tm-09cf152475ca,LØS,LOS,LØS,Brazil
+10,tm-0afdaffa9083,The RED,RED,The RED,CIS
+11,tm-0eaafb0e46ef,GAM Esports,GAM,GAM Esports,Asia Pacific
+12,tm-0ee1d7d7c31a,CJ Entus,CJ,CJ Entus,Korea
+13,tm-0fbcd42c658a,Samsung Blue,SSB,Samsung Blue,Korea
+14,tm-144c44d86e2c,Fenerbahçe Esports,FB,Fenerbahçe Esports,Turkey
+15,tm-167a940c6278,Astralis,AST,Astralis,EMEA
+16,tm-192f5142d623,Suning,SN,Suning,China
+17,tm-19ea5f2be308,Team AURORA,AUR,Team AURORA,Turkey
+18,tm-19f46dd5c0f7,Albus NoX Luna,ANX,Albus NoX Luna,CIS
+19,tm-1a0edf11b6b1,Rebirth eSports,RBT,Rebirth eSports,Latin America
+20,tm-1adf6a64d8c0,Liyab Esports,LYB,Liyab Esports,Asia Pacific
+21,tm-1b3d024fdcbb,Rogue,RGE,Rogue (European Team),EMEA
+22,tm-1c6a25914979,Team Liquid,TL,Team Liquid,North America
+23,tm-1d1f59fbb46b,KaBuM! Ilha das Lendas,KBM,KaBuM! Ilha das Lendas,Brazil
+24,tm-1f631fade9e0,Team Vitality,VIT,Team Vitality,EMEA
+25,tm-21acea006c65,100 Thieves,100T,100 Thieves,Americas
+26,tm-24c56cf1ad27,Ninjas in Pyjamas,NIP,Ninjas in Pyjamas.CN,China
+27,tm-25b9b1c91296,KT Rolster,KT,KT Rolster,Korea
+28,tm-281934929b8c,Beşiktaş Esports,BJK,Beşiktaş Esports,EMEA
+29,tm-2f5d70fc6f37,Gen.G,GEN,Gen.G,Korea
+30,tm-32aa66be0dfb,Beyond Gaming,BYG,Beyond Gaming,Asia Pacific
+31,tm-33fe65c2f185,Vaevictis eSports,VS,Vaevictis eSports,CIS
+32,tm-34d0a8fab220,Estral Esports,EST,Estral Esports,Brazil
+33,tm-38d08bea0716,Dark Passage,DP,Dark Passage,EMEA
+34,tm-394b5b1ea1d6,XDG Gaming,XDG,XDG Gaming,North America
+35,tm-3953f7eea41d,MVP,MVP,MVP,Korea
+36,tm-39da3af55725,Nongshim RedForce,NS,Nongshim RedForce,Korea
+37,tm-3a4b5d4d7288,Samsung Galaxy,SSG,Samsung Galaxy,Korea
+38,tm-3a76b34e3c82,LOUD,LOUD,LOUD,Brazil
+39,tm-3a97a5d4aef2,Saigon Jokers,SAJ,Saigon Jokers,SEA
+40,tm-3b823183c96b,M19,M19,M19,CIS
+41,tm-3bb658d12868,Team Dynamic,DYN,Team Dynamic,North America
+42,tm-3bcb9efd5846,SK Gaming,SK,SK Gaming,EMEA
+43,tm-3c8aa94cea87,Bilibili Gaming,BLG,Bilibili Gaming,China
+44,tm-3cd10a732f23,Vega Squadron,VEG,Vega Squadron,CIS
+45,tm-3d748c517149,Leviatan,LEV,Leviatan,Brazil
+46,tm-3d9937b61922,Team Baron (MSI 2026),,,
+47,tm-3ee178c1a857,RoX,RoX,RoX (2014 CIS Team),CIS
+48,tm-41bcf79cfe0d,MiTH Flashdive,MiTH FD,MiTH Flashdive,SEA
+49,tm-424a766329cc,Immortals,IMT,Immortals,North America
+50,tm-43ac03320fb2,CJ Entus Frost,CJF,CJ Entus Frost,Korea
+51,tm-462fe76fc32a,Karmine Corp,KC,Karmine Corp,EMEA
+52,tm-46d49b3c0bfb,CJ Entus Blaze,CJB,CJ Entus Blaze,Korea
+53,tm-478a97e49e4b,Team LoLPro,PRO,Team LoLPro,North America
+54,tm-49b0ea9ef3a5,FlyQuest,FLY,FlyQuest,North America
+55,tm-4e25a22fc19c,Azubu Frost,AZF,Azubu Frost,Korea
+56,tm-4e30564007de,Royal Paladin Eclipse,RPE.E,Royal Paladin eSports Eclipse,LAS
+57,tm-4e650482e7d7,Ascension Gaming,ASC,Ascension Gaming,SEA
+58,tm-4fc0614f3ef7,Counter Logic Gaming Europe,CLG.EU,Counter Logic Gaming Europe,Europe
+59,tm-4fc491745cc3,INTZ,INTZ,INTZ,Brazil
+60,tm-50038f5deaa0,Weibo Gaming,WBG,Weibo Gaming,China
+61,tm-5083f194807a,Deep Cross Gaming,DCG,Deep Cross Gaming,Asia Pacific
+62,tm-52ed30f9893e,Machi Esports,MCX,Machi Esports,Asia Pacific
+63,tm-56335e9d9649,Furious Gaming,FG,Furious Gaming,Americas
+64,tm-5ad6b7b25af6,Team Sypher,Sypher,Team Sypher,Europe
+65,tm-5b8d311624f9,Bombers,BMR,Bombers,Oceania
+66,tm-5b9458c5bb13,Lemondogs,LD,Lemondogs,Europe
+67,tm-5c47db8dbbf4,MAMMOTH,MEC,MAMMOTH,Asia Pacific
+68,tm-5e9b85271e7c,Solary,SLY,Solary,EMEA
+69,tm-5f7d7acdce6f,Echo Fox,FOX,Echo Fox,North America
+70,tm-60eac80615ba,Team FeaR,FR,Team FeaR,North America
+71,tm-622122ef2999,LNG Esports,LNG,LNG Esports,China
+72,tm-64248513e110,Shifters,SHFT,Shifters,EMEA
+73,tm-6505d50295d1,Kiwoom DRX,KRX,Kiwoom DRX,Korea
+74,tm-652813670ae3,MVK Esports,MVK,MVK Esports,Asia Pacific
+75,tm-653b0a79a8a4,Kaos Latin Gamers,KLG,Kaos Latin Gamers,Latin America
+76,tm-65e25e287fe3,Dash9 Gaming,D9,Dash9 Gaming,LAN
+77,tm-6984112c4cd7,ESC Shane,ESC,ESC Shane,Korea
+78,tm-69e3aa65d006,Ultra Prime,UP,Ultra Prime,China
+79,tm-69eb13529d72,Anexis eSports,AXS,Anexis eSports,Europe
+80,tm-6ab07ee850e8,ALTERNATE aTTaX,ATN,ALTERNATE aTTaX,Europe
+81,tm-6ffab94dda6a,Millenium,MIL,Millenium,Europe
+82,tm-71230c22fb3b,GashBears,GB,GashBears,LMS
+83,tm-714172e58a75,BNK FEARX,BFX,BNK FEARX,Korea
+84,tm-719ce3208528,I May,IM,I May,China
+85,tm-71d9f0e83524,Meat Playground,MP,Meat Playground,North America
+86,tm-71fb2632f448,Top Esports,TES,Top Esports,China
+87,tm-740bcd0dae8c,NASR eSports Turkey,NASR,NASR eSports Turkey,EMEA
+88,tm-74c285cb505c,HANJIN BRION,BRO,HANJIN BRION,Korea
+89,tm-766b8e6c7117,Fukuoka SoftBank HAWKS gaming,SHG,Fukuoka SoftBank HAWKS gaming,Asia Pacific
+90,tm-76f0ac3ed97f,Longzhu Gaming,LZ,Longzhu Gaming,Korea
+91,tm-77f2f4dc5e6c,İstanbul Wildcats,IW,Istanbul Wildcats,EMEA
+92,tm-79c8655a26fe,G2 Esports,G2,G2 Esports,EMEA
+93,tm-7b82dadd0cdd,Newbee,NB,Newbee,China
+94,tm-7b9a68399cde,INFINITY,INF,INFINITY,Americas
+95,tm-7bf6e5998b18,Invictus Gaming,iG,Invictus Gaming,China
+96,tm-7c06f5ab8884,Papara SuperMassive,SUP,Papara SuperMassive,EMEA
+97,tm-7db50111a95d,Lowkey Esports.Vietnam,LK,Lowkey Esports.Vietnam,Vietnam
+98,tm-7e5eb06d8646,H2k-Gaming,H2K,H2k-Gaming,Europe
+99,tm-80988f4e16e4,LoL Championship Series,,,
+100,tm-80aa4e025750,compLexity Gaming,COL,CompLexity Gaming,North America
+101,tm-816e45e1dd85,NRG,NRG,NRG,North America
+102,tm-831f185fefe8,Sin Gaming,SIN,Sin Gaming,Oceania
+103,tm-84c390678a6f,MEGA,MG,MEGA,SEA
+104,tm-855c2602fe26,Virtus.pro,VP,Virtus.pro,CIS
+105,tm-865c6ae41d30,Vivo Keyd Stars,VKS,Vivo Keyd Stars,Brazil
+106,tm-8785e1bcf241,Singapore Sentinels,SGS,Singapore Sentinels,SEA
+107,tm-87d2c66de97e,Unicorns of Love.CIS,UOL,Unicorns of Love.CIS,CIS
+108,tm-88cc4600b863,Team Ultra Vires,TUV,Team Ultra Vires,Europe
+109,tm-8b55d7e7c888,LoL EMEA Championship,,,
+110,tm-8db39d6bbdd3,J Team,JT,J Team,Asia Pacific
+111,tm-902962056a3a,Pentanet.GG,PGG,Pentanet.GG,Asia Pacific
+112,tm-92dbf7c4c2de,Legacy Esports,LGC,Legacy Esports,Oceania
+113,tm-93bb7e588f1d,ahq eSports Club,ahq,Ahq eSports Club,Asia Pacific
+114,tm-94fa0eac3812,DetonatioN FocusMe,DFM,DetonatioN FocusMe,Asia Pacific
+115,tm-9a44679442c3,Cloud9,C9,Cloud9,North America
+116,tm-9a4fde0c4aad,T1,T1,T1,Korea
+117,tm-9c6aa95845a7,PENTAGRAM,PGM,PENTAGRAM,Japan
+118,tm-9eb09b7f9ca5,ESC Gaming,ESC,ESC Gaming,Europe
+119,tm-9ffc97384e48,Gambit Esports,GMB,Gambit Esports,CIS
+120,tm-a26225283b64,PEACE,PCE,PEACE (Oceanic Team),Asia Pacific
+121,tm-a43f798173a3,EVOS Esports,EVS,EVOS Esports,Vietnam
+122,tm-a86e5d5c6076,Royal Club,RYL,Royal Club,China
+123,tm-a8eb66c3e24b,Just Toys Havoks,JTH,Just Toys Havoks,LAN
+124,tm-ab24332e4df4,Team Secret Whales,TSW,Team Secret Whales,Asia Pacific
+125,tm-ab6d9fac5a57,Unsold Stuff Gaming,USG,Unsold Stuff Gaming,Japan
+126,tm-ad25099785e8,NaJin White Shield,NJWS,NaJin White Shield,Korea
+127,tm-adfaf147ffb4,Hong Kong Attitude,HKA,Hong Kong Attitude,Asia Pacific
+128,tm-ae55ee1f5eed,Shopify Rebellion,SR,Shopify Rebellion,North America
+129,tm-aecf2932501d,CTBC Flying Oyster,CFO,CTBC Flying Oyster,Asia Pacific
+130,tm-afbbbc1a704d,LGD Gaming,LGD,LGD Gaming,China
+131,tm-afe3c1947d3b,Elements,EL,Elements,Europe
+132,tm-b007641c5b83,Evil Geniuses,EG,Evil Geniuses.NA,North America
+133,tm-b163af0174c5,Team Dragon (MSI 2026),,,
+134,tm-b22fd695db09,Misfits Gaming,MSF,Misfits Gaming,Europe
+135,tm-b36ea6c613eb,Chiefs Esports Club,CHF,Chiefs Esports Club,Asia Pacific
+136,tm-b54099fc2014,Fnatic,FNC,Fnatic,EMEA
+137,tm-b5ef6905579e,Energy Pacemaker,EP,Energy Pacemaker,China
+138,tm-b5f2d1b32dc6,Dplus Kia,DK,Dplus Kia,Korea
+139,tm-b894b9da44f7,PSG Talon,PSG,PSG Talon,Asia Pacific
+140,tm-b8bca1021cd5,LYON,LYON,LYON (2024 American Team),North America
+141,tm-baeebc746cc5,MeetYourMakers,MYM,MeetYourMakers,Europe
+142,tm-bc125bba9cec,Dignitas,DIG,Dignitas,North America
+143,tm-bc44d3ff4d27,Azubu Blaze,AZB,Azubu Blaze,Korea
+144,tm-be1c5136689c,Counter Logic Gaming,CLG,Counter Logic Gaming,North America
+145,tm-c1c29bcba8cf,Team ANG,ANG,Team ANG,LAN
+146,tm-c2e71e1fc026,Team Just,TJ,Team Just,CIS
+147,tm-c450827d3eea,Sentinels,SEN,Sentinels,North America
+148,tm-c5e835c550a5,KT Rolster Bullets,KT.B,KT Rolster Bullets,Korea
+149,tm-c74809016870,Kongdoo Monster,KDM,Kongdoo Monster,Korea
+150,tm-c7fd5f1d7017,Bangkok Titans,BKT,Bangkok Titans,SEA
+151,tm-c8a4660dc55a,Team Immunity,IM,Team Immunity,Oceania
+152,tm-c94b01026f88,Taipei Assassins,TPA,Taipei Assassins,LMS
+153,tm-ca4972dc6dc8,Fluxo W7M,FX,Fluxo W7M,Brazil
+154,tm-cb15b056a5ad,TSM,TSM,TSM,North America
+155,tm-cd8d0e943ce5,ROX Tigers,ROX,ROX Tigers,Korea
+156,tm-cf60264a481e,Royal Never Give Up,RNG,Royal Never Give Up,China
+157,tm-d0d4a4d767cd,Movistar KOI,MKOI,Movistar KOI,EMEA
+158,tm-d3b6d66f7710,Golden Guardians,GG,Golden Guardians,North America
+159,tm-d4e6485fc336,Kuala Lumpur Hunters,KLH,Kuala Lumpur Hunters,SEA
+160,tm-d58747baf8ab,SK Telecom T1 S,SKT S,SK Telecom T1 S,Korea
+161,tm-d92a0819d063,V3 Esports,V3,V3 Esports,Asia Pacific
+162,tm-db47240fee06,Team Impulse,TIP,Team Impulse,North America
+163,tm-de147975c625,EHOME,EHOME,EHOME,China
+164,tm-e0ac3973ed3e,JD Gaming,JDG,JD Gaming,China
+165,tm-e0e36dac6ddd,FunPlus Phoenix,FPX,FunPlus Phoenix,China
+166,tm-e4557042772e,Team gamed!de,GDE,Team gamed!de,Europe
+167,tm-e496b66b90a1,Team Heretics,TH,Team Heretics,EMEA
+168,tm-e512c54f1754,Anyone's Legend,AL,Anyone's Legend,China
+169,tm-e516642486cc,Team Aze,AZE,Team Aze,Latin America
+170,tm-e538e225ab36,YouthCrew Esports,YC,YouthCrew Esports,Turkey
+171,tm-e5a95fe1ee24,Galatasaray Esports,GS,Galatasaray Esports,Turkey
+172,tm-e603064f4a0f,Moscow 5,M5,Moscow Five,Europe
+173,tm-e6bcb4c3de62,Dire Wolves,DW,Dire Wolves,Asia Pacific
+174,tm-e9d15086dc10,GIANTX,GX,GIANTX,EMEA
+175,tm-e9f98466e300,EDward Gaming,EDG,EDward Gaming,China
+176,tm-eb2eec43fa28,EPIK Gamer,EPIK,Epik Gamer,North America
+177,tm-eb4bc7a296bd,Rogue Warriors,RW,Rogue Warriors,China
+178,tm-ed4eca8e1caa,Galions,GL,Galions,EMEA
+179,tm-edc35c2d5808,Isurus,ISG,Isurus,Brazil
+180,tm-ef4ffe9d062e,Pacific eSports,PCFC,Pacific eSports,SEA
+181,tm-f1abaf9eba9b,Natus Vincere,NAVI,Natus Vincere,EMEA
+182,tm-f1d489b0d24d,Disguised,DSG,Disguised,North America
+183,tm-f1fd17aef82e,Griffin,GRF,Griffin (Korean Team),Korea
+184,tm-f369789f5181,Flamengo MDL,FLA,Flamengo MDL,Brazil
+185,tm-f4fcd2fe50af,RED Canids,RED,RED Canids,Brazil
+186,tm-f5665c13ca53,Team WE,WE,Team WE,China
+187,tm-f5816dd3b988,G-Rex,GRX,G-Rex,Asia Pacific
+188,tm-f5ff3f4474af,Hanwha Life Esports,HLE,Hanwha Life Esports,Korea
+189,tm-f60c32258444,Xan,XAN,Xan,SEA
+190,tm-f642dbf0692c,paiN Gaming,PAIN,PaiN Gaming,Brazil
+191,tm-f8a350bee7a9,IceLanD,ILD,IceLanD,LMS
+192,tm-fa32a4bab6cd,against All authority,aAa,Against All authority,Europe
+193,tm-fa988589be4e,Oh My God,OMG,Oh My God,China
+194,tm-fb40b0e96e89,Samsung White,SSW,Samsung White,Korea
+195,tm-fea9d39f1fb4,Gambit Gaming,GMB,Gambit Gaming,Europe
+196,tm-ff80302a6d80,DN SOOPers,DNS,DN SOOPers,Korea
+197,tm-ffeb9af2caae,Blackbean,BB,Blackbean,SEA

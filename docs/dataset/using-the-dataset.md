@@ -44,7 +44,8 @@ data does not have — and the row counts are in its "At a glance" table.
 | `matches.jsonl` | one series (match) | Both sides with their series score, the declared length, the round label, the source id |
 | `series-conflicts.jsonl` | one conflicted game **or** series | Games detached from a series that names other teams, and series every game of which contradicts them |
 | `player-games.jsonl` | one player in one game | Champion, role, side, and the statistics the source states |
-| `teams.jsonl`, `players.jsonl`, `champions.jsonl` | one canonical entity | Canonical id, display name, page |
+| `teams.jsonl`, `players.jsonl`, `champions.jsonl` | one canonical entity | Canonical id, display name, page, plus a team's short name (`Karmine Corp` → `KC`) and a champion's release date (`2011-12-14`) |
+| `honours.jsonl` | one player's distinction at one event | The title as the source words it (`Finals MVP`, `All Pro Team`), the award type, the player, the event, and the team string with the entity it resolves to |
 | `aliases.jsonl` | one source string and entity | Every spelling, handle and page that resolves to a canonical entity, with the window the corpus dates |
 | `identity-unresolved.jsonl` | one unresolved source string | Strings that mint a provisional entity because no registry row answers |
 | `manifest.json` | the dataset | Every payload the build read (path, query, fetch time, sha256) and a digest of every emitted file |
@@ -55,7 +56,7 @@ Two conventions matter more than the field list:
   never `0`; a recorded zero is `0`. A 2012 game has no `gold` key on a player row
   because the wiki has no such column for it, and a game with no draft has no `draft`
   key at all rather than five empty lists.
-- **Canonical ids are opaque and stable.** `evt-`, `mt-`, `gm-`, `pg-`, `tm-`, `pl-` and
+- **Canonical ids are opaque and stable.** `evt-`, `mt-`, `gm-`, `pg-`, `hn-`, `tm-`, `pl-` and
   `ch-` plus 12 hex characters, derived from the source's own identifiers, so a rebuild
   cannot renumber them. The source's string survives beside it (`sourceTeam`,
   `sourcePlayer`, `sourceChampion`, `source.gameId`, `source.matchId`).
@@ -65,7 +66,7 @@ Two conventions matter more than the field list:
 A team that renamed, a player who changed handle and a champion Riot renamed each stay
 **one** canonical entity. The strings that referred to it accumulate in `aliases.jsonl`
 with the dates the corpus saw them, which is why `T1` and `SK Telecom T1` are two alias
-rows pointing at one `tm-…` id rather than two teams. Three consequences worth knowing:
+rows pointing at one `tm-…` id rather than two teams. Four consequences worth knowing:
 
 - Team and player pages are wiki pages, so the same org spelled two ways in one table is
   a data problem, not two entities. IPL 5's `MatchSchedule` is the measured case: one
@@ -75,6 +76,31 @@ rows pointing at one `tm-…` id rather than two teams. Three consequences worth
   and the row says why. Treat those ids as usable, not certain.
 - The alias bridge in the model carries the same rows, so a join on a wiki page name
   should resolve through `bridge_alias`, never by matching a display name by hand.
+- A team's **short name** is a label, not an identity. `KC` is how the source's registry
+  abbreviates `Karmine Corp`, and it reads well in a table, but it is not unique:
+  measured, `ESC`, `GMB`, `IM` and `RED` each denote two teams in this corpus. Use
+  `short` (in `teams.jsonl`, and on `dim_team`) to display a team, never to look one up
+  or to group by — that is what `team_id`, the page, or the alias bridge are for. It
+  comes from the team's **current** page, so a rebrand does not carry an older
+  abbreviation forward (`T1` never reads `SKT`), and a team the registries do not carry
+  has none at all.
+
+### Distinctions: who was MVP, and where
+
+`honours.jsonl` carries the tournament distinctions the source states for a player — a
+Worlds or MSI finals MVP, an All-Pro team place, Best Coach — for the **tournament**, never
+for a regional season (ticket 03; the event rule is the boundary). Its grain is one row per
+player per event per title — the same award stated on an event's page and on its
+`/Main Event` page is one row, with the page it was stated on kept as provenance — and it joins to `events.jsonl` by `eventId` and to
+`players.jsonl` by `playerId`; `team` keeps the source's own string, and `teamId` appears
+only when the alias registry resolves it (`SKT T1` → `T1`), because an award is context
+rather than evidence that a team existed.
+
+Two things the file deliberately does **not** do. It does not normalise titles: `Finals MVP`,
+`Most Valuable Player`, `MVP` and `MSI MVP` are four strings for one idea, and deciding they
+are the same is the analyst's judgement. And it does not claim completeness: the source states
+a Worlds MVP for some editions and not others (2012, 2013, 2015, 2016 and 2018–2020 have
+no row; question 5 under "Worked questions" lists the whole answer), so "no honour" means "the source states none", not "nobody won".
 
 ### Events, selection and series that disagree
 
@@ -205,6 +231,7 @@ the map.
 | `fact_game_side` | fact | one game per side | `(game_key, side)` |
 | `fact_player_game` | fact | one game per player | `(game_key, player_key)` |
 | `fact_draft_slot` | fact | one pick or ban | `(game_key, side, phase, entry_index)` |
+| `fact_player_honour` | fact | one player's distinction at one event | `(player_key, event_key, title)` |
 
 Four rules make the model safe to join:
 
@@ -223,6 +250,17 @@ Four rules make the model safe to join:
   `date_key`, `patch_key`) beside their grain keys, so "per event", "per date" and "per
   patch" need no hop through `dim_game`. The conformance suite checks every key against
   the dimension it names, and that a game's event agrees across all three facts.
+
+A distinction is a fact with no measure: `fact_player_honour` carries the keys (player, event,
+and the team when the source's string resolves — `0` when it does not) and the title, so
+"count the MVPs" is a `GROUP BY` you write, not a column somebody pre-computed. It is also
+the one fact with no `game_key`, which is why the per-game cross-checks skip it.
+
+One date deliberately does **not** join `dim_date`: `dim_champion.release_date` is a dated
+attribute of the champion (2009 for the oldest champion in the corpus, 2026 for the
+newest). `dim_date` is the calendar of the games the facts describe, and a champion's
+release is not one of them — filling it with release dates would add calendar rows no fact
+can reach. Read it as a date, join the facts by `champion_key`.
 
 ## One game, from the curated record to the fact rows
 
@@ -368,6 +406,54 @@ appears in `data/curated/series-conflicts.jsonl`, whose rows name both the game'
 and the series' teams. `match_key = 0` alone does not tell you which of the three cases
 applies (no series in the source, a contradicted series, or a series that names other
 teams); join to the curated conflict report when the difference matters.
+
+### 5. Who was MVP at each Worlds and MSI?
+
+`honours.jsonl` answers it for the tournaments that state an award, and says nothing for
+the editions that do not:
+
+```bash
+jq -r 'select(.title | ascii_downcase | test("mvp|most valuable"))
+       | [.eventName, .title, .playerName, (.teamName // "\u2014")] | @tsv' \
+  data/curated/honours.jsonl | sort -t$'\t' -k1,1
+```
+
+`test("MVP")` alone is not enough: three of the rows are titled `Most Valuable Player`, and
+the command returns the three Esports World Cup awards too — the table below narrows to the
+sixteen Worlds and MSI rows.
+
+| Event | Title | Player | Team |
+|---|---|---|---|
+| Worlds Season 1 | Most Valuable Player | Shushei | Fnatic |
+| Worlds 2014 | Most Valuable Player | Mata | Samsung White |
+| Worlds 2017 | Finals MVP | Ruler | Samsung Galaxy |
+| Worlds 2021 | Finals MVP | Scout | EDward Gaming |
+| Worlds 2022 | Finals MVP | Kingen | Kiwoom DRX |
+| Worlds 2023 | Finals MVP | Zeus | T1 |
+| Worlds 2024 | Finals MVP | Faker | T1 |
+| Worlds 2025 | Finals MVP | Gumayusi | T1 |
+| Worlds 2026 | Finals MVP | Knight | Bilibili Gaming |
+| MSI 2015 | MSI MVP | Clearlove | EDward Gaming |
+| MSI 2016 | MVP | Faker | T1 |
+| MSI 2022 | Most Valuable Player | Wei | Royal Never Give Up |
+| MSI 2023 | Finals MVP | Knight | JD Gaming |
+| MSI 2024 | Finals MVP | Lehends | Gen.G |
+| MSI 2025 | Finals MVP | Chovy | Gen.G |
+| MSI 2026 | Finals MVP | Zeus | Hanwha Life Esports |
+
+Sixteen rows: nine Worlds editions and seven MSI editions. The editions that state none are
+Worlds 2012, 2013, 2015, 2016 and 2018-2020, and MSI 2017-2021. That is the source's
+coverage, not the dataset's censorship: an absent row means "the source states no MVP for
+that edition", and the dataset never fills the gap from a news article or a guess.
+
+Five spellings denote the same idea — `Finals MVP`, `Most Valuable Player`, `MVP`,
+`MSI MVP`, `Tournament MVP` — because the source words them differently per page, and the
+file keeps the wording rather than inventing a taxonomy. The three Esports World Cups carry
+one each (`Most Valuable Player` for Faker in 2024 and Smash in 2026, `Tournament MVP` for
+Kiin in 2025, whose team string `GEN` resolves to nothing and is carried without a team).
+`type` is the source's own category (`Season Award` for all 24 rows), so filter on `title`
+when you mean MVP; the remaining five rows are MSI 2016's All-Pro team.
+
 
 ## Rebuilding
 

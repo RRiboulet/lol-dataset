@@ -392,6 +392,50 @@ test("a rename is one dimension row plus two dated alias rows, and both strings 
 	assert.equal(resolve("T1", "2023-05-10"), team.team_key);
 });
 
+test("a team's short name rides on its dimension row, and absence is empty rather than a value", () => {
+	const karmine = rows("dim_team").find((row) => row.team_name === "Karmine Corp");
+	assert.ok(karmine, "the model must carry the team the curated layer carries");
+	assert.equal(karmine.short, "KC", "the dimension repeats the curated short name so a fact still reads");
+
+	// A minted team has no registry row to answer with, and the model's absent value is
+	// the empty column the dictionary documents, not a placeholder string.
+	const minted = rows("dim_team").find((row) => row.team_name === "LoL EMEA Championship");
+	assert.ok(minted, "the fixture's minted team must be in the model");
+	assert.equal(minted.short, "");
+	assert.equal(rows("dim_team").find((row) => row.team_key === 0)?.short, "", "the unknown member states no short name either");
+
+	// Two dimension rows sharing a short is data, not a duplicated key: neither id moved.
+	const sharing = rows("dim_team").filter((row) => row.short === "ESC");
+	assert.equal(sharing.length, 2, "ESC must stay the short name of two teams");
+	assert.equal(new Set(sharing.map((row) => row.team_id)).size, 2);
+});
+
+test("a champion's release date rides on its dimension row as a date, not as a date key", () => {
+	const ahri = rows("dim_champion").find((row) => row.champion_name === "Ahri");
+	assert.ok(ahri, "the model must carry the champion the curated layer carries");
+	assert.equal(ahri.release_date, "2011-12-14");
+	assert.equal("date_key" in ahri, false, "a release date is an attribute, not a join to dim_date");
+	assert.equal(rows("dim_champion").find((row) => row.champion_key === 0)?.release_date, "", "the unknown member states no date either");
+});
+
+test("a distinction is one fact row, with the unknown team when the source resolves none", () => {
+	const honourRows = rows("fact_player_honour");
+	assert.equal(honourRows.length, input.honours.length, "one row per curated distinction, no more and no fewer");
+	const players = new Map(rows("dim_player").map((row) => [String(row.player_id), row.player_key]));
+	const faker = players.get("pl-a9073fde3cbe");
+	assert.ok(faker !== undefined, "the fixture's MVP player must be in the dimension");
+	const mvp = honourRows.find((row) => row.title === "Finals MVP" && row.player_key === faker);
+	assert.ok(mvp, "the fixtures' finals MVP must be a fact row, joined to the player dimension by key");
+	assert.notEqual(mvp.event_key, 0, "the event is always stated");
+	assert.equal(typeof mvp.team_key, "number", "the team key is a number, 0 when unknown");
+	// The grain is (player, event, title): no derived measure rides along.
+	const grain = honourRows.map((row) => `${row.player_key}\u0000${row.event_key}\u0000${row.title}`);
+	assert.equal(new Set(grain).size, grain.length, "the declared grain is unique");
+	for (const column of table("fact_player_honour").columns) {
+		assert.equal(column.key === "measure", false, `${column.name}: honours carry no measure`);
+	}
+});
+
 test("coverage declarations survive into the model rather than being averaged away", () => {
 	const gamesById = new Map(input.games.map((game) => [game.id, game]));
 	for (const row of rows("dim_game")) {
